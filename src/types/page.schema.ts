@@ -1,5 +1,5 @@
 import ISchema from './schema';
-import IComponentSchema from './component-schema';
+import IComponentSchema from './component.schema';
 
 export default interface IPageSchema extends ISchema {
   // 页面展示名，也用来写入代码文件的 file 注释
