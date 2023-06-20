@@ -17,4 +17,6 @@ export default interface IPageSchema extends ISchema {
   storage: DynamicObject;
   // 从 url 获取参数
   query: DynamicObject<string>;
+  // 需要在这里存服务么？
+  service: DynamicObject;
 }
