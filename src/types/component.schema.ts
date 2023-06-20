@@ -1,8 +1,10 @@
 import ISchema from "./schema";
+import IPropsSchema from "@/types/props.schema";
+import DynamicObject from "@/types/dynamic-object";
 
 export default interface IComponentSchema extends ISchema {
-  //
-  importType: 'default' | 'object' | '*' ;
+  // 这个组件的打包方式有关
+  importType: 'default' | 'object' | '*';
   // 组件的导入路径
   importPath: string;
   // 组件包的名字
@@ -11,18 +13,18 @@ export default interface IComponentSchema extends ISchema {
   name: string;
   // 组件展示名，一般是中文
   displayName: string;
+  // 组件属性
   props: {
     // 基础属性
-    baseProps: {
-      [key: string]: any;
-    };
+    baseProps: DynamicObject<IPropsSchema>;
     // 样式属性
-    styleProps: {
-      [key: string]: any;
-    };
+    styleProps: DynamicObject<IPropsSchema>;
     // 事件属性
-    eventProps: {
-      [key: string]: any;
+    eventProps: DynamicObject<IPropsSchema>;
+    // 子节点（个别组件的其他 props和children 是冲突的）
+    otherProps: {
+      children: IPropsSchema;
+      [key: string]: IPropsSchema;
     };
   }
 }
