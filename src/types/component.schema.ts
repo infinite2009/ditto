@@ -1,6 +1,9 @@
+/**
+ * @file 组件的 DSL 定义
+ * @description 这里不会生命组件用了什么属性，主要是处于对代码
+ */
 import ISchema from "./schema";
-import IPropsSchema from "@/types/props.schema";
-import DynamicObject from "@/types/dynamic-object";
+import { PropsId } from '@/types/index';
 
 export default interface IComponentSchema extends ISchema {
   // 这个组件的打包方式有关
@@ -14,17 +17,16 @@ export default interface IComponentSchema extends ISchema {
   // 组件展示名，一般是中文
   displayName: string;
   // 组件属性
-  props: {
+  propsRefs: {
     // 基础属性
-    baseProps: DynamicObject<IPropsSchema>;
+    basic: PropsId[];
     // 样式属性
-    styleProps: DynamicObject<IPropsSchema>;
+    style: PropsId[];
     // 事件属性
-    eventProps: DynamicObject<IPropsSchema>;
+    event: PropsId[];
     // 子节点（个别组件的其他 props和children 是冲突的）
-    otherProps: {
-      children: IPropsSchema;
-      [key: string]: IPropsSchema;
-    };
+    advanced: PropsId[];
+    //
+    children: PropsId[];
   }
 }
