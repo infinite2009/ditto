@@ -11,8 +11,6 @@ export default interface IPageSchema extends ISchema {
   desc: string;
   // 页面名
   name: string;
-  // 页面描述
-  description: string;
   // 组件的属性
   props: {
     [key: ComponentId]: {
