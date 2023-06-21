@@ -18,5 +18,6 @@ export default interface IPropsSchema extends ISchema {
    * dataSource: 从后端获取的数据，且没有经过计算转换的，经过转换存入 state
    * calculation: 计算数据，主要是通过后端数据源算出来的，或者根据用户输入算出来的，用 useMemo 实现
    */
-  valueSource: 'fixed' | 'dataSource' | 'calculation'
+  valueSource: 'fixed' | 'dataSource' | 'calculation',
+  value: string | boolean | number | object;
 }

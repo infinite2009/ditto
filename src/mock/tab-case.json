@@ -1,5 +1,83 @@
 {
   "id": 123,
-  "name": "test",
-  "children": []
+  "name": "testPage",
+  "description": "测试页面",
+  "props": {
+    "c5": {
+      "p10": {
+        "name": "value",
+        "category": "basic",
+        "value": "1",
+        "valueType": "string",
+        "valueSource": "fixed"
+      }
+    },
+    "c6": {
+      "p11": {
+        "name": "value",
+        "category": "basic",
+        "value": "2",
+        "valueType": "string",
+        "valueSource": "fixed"
+      },
+      "p12": {
+        "name": "value",
+        "category": "basic",
+        "value": "[{ value: \"1\", \"label\": \"选项1\" }, { value: \"2\", \"label\": \"选项2\" }]",
+        "valueType": "string",
+        "valueSource": "fixed"
+      }
+    }
+  },
+  "children": [
+    {
+      "id": "c4",
+      "packageName": "html",
+      "name": "div",
+      "children": [
+        {
+          "id": "c5",
+          "packageName": "antd",
+          "name": "Input.Search",
+          "propsRefs": {
+            "basic": ["p10"]
+          }
+        },
+        {
+          "id": "c6",
+          "packageName": "antd",
+          "name": "Select",
+          "propsRefs": {
+            "basic": ["p11", "p12"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "c1",
+      "packageName": "antd",
+      "name": "Tab",
+      "propsRefs": {
+        "basic": ["p7", "p8", "p9"]
+      }
+    },
+    {
+      "id": "c2",
+      "packageName": "antd",
+      "name": "Table",
+      "propsRefs": {
+        "basic": ["p1", "p2"],
+        "event": ["p3"]
+      }
+    },
+    {
+      "id": "c3",
+      "packageName": "antd",
+      "name": "Table",
+      "propsRefs": {
+        "basic": ["p4", "p5"],
+        "event": ["p6"]
+      }
+    }
+  ]
 }
