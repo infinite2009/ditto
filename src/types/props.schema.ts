@@ -11,7 +11,7 @@ export default interface IPropsSchema extends ISchema {
   // 属性的名字
   name: string;
   // 属性值的类型
-  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object';
+  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object' | 'handler';
   /*
    * 这个值的来源
    * fixed: 用户输入的常量，会指导代码生成器生成常量声明和赋值代码，存入 const
@@ -19,5 +19,5 @@ export default interface IPropsSchema extends ISchema {
    * calculation: 计算数据，主要是通过后端数据源算出来的，或者根据用户输入算出来的，用 useMemo 实现
    */
   valueSource: 'fixed' | 'dataSource' | 'calculation',
-  value: string | boolean | number | object;
+  value: string | boolean | number | object | Function;
 }
