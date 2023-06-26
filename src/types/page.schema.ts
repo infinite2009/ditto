@@ -5,6 +5,7 @@ import IPropsSchema from '@/types/props.schema';
 import { ComponentId } from '@/types/index';
 import IActionSchema from '@/types/action.schema';
 import IEventSchema from '@/types/event.schema';
+import IHandlerSchema from '@/types/handler.schema';
 
 export default interface IPageSchema extends ISchema {
   // 页面的总体介绍，用于写入代码文件的 desc 注释
@@ -38,4 +39,6 @@ export default interface IPageSchema extends ISchema {
   actions: DynamicObject<IActionSchema>;
   // 页面内的事件，页面载入、退出、滚动、周期性事件
   events: DynamicObject<IEventSchema>
+  // 事件处理器
+  handlers: DynamicObject<IHandlerSchema>
 }
