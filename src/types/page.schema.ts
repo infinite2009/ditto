@@ -38,7 +38,11 @@ export default interface IPageSchema extends ISchema {
   // 动作函数：转移状态、变换和格式化数据（最好放到 BFF 层），调用服务
   actions: DynamicObject<IActionSchema>;
   // 页面内的事件，页面载入、退出、滚动、周期性事件
-  events: DynamicObject<IEventSchema>
+  events: {
+    onload: IEventSchema;
+    onunload: IEventSchema;
+    interval: IEventSchema;
+  }
   // 事件处理器
   handlers: DynamicObject<IHandlerSchema>
 }
