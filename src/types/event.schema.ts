@@ -6,5 +6,5 @@ import { HandlerId } from '@/types/index';
 
 export default interface IEventSchema extends ISchema {
   triggerType: 'interval' | 'loaded' | 'unloaded';
-  handlerRefs: HandlerId;
+  handlerRef: HandlerId;
 }
