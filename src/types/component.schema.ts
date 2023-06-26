@@ -11,7 +11,7 @@ export default interface IComponentSchema extends ISchema {
   // 组件的导入路径
   importPath: string;
   // 组件包的名字
-  packageName: string;
+  package: string;
   // 组件名，用于代码生成的调用环节
   name: string;
   // 组件属性

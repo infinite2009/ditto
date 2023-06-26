@@ -10,6 +10,13 @@
         "value": "1",
         "valueType": "string",
         "valueSource": "fixed"
+      },
+      "p13": {
+        "name": "onSearch",
+        "category": "event",
+        "value": "h1",
+        "valueType": "handler",
+        "valueSource": "fixed"
       }
     },
     "c6": {
@@ -32,12 +39,12 @@
   "children": [
     {
       "id": "c4",
-      "packageName": "html",
+      "package": "html",
       "name": "div",
       "children": [
         {
           "id": "c5",
-          "packageName": "antd",
+          "package": "antd",
           "name": "Input.Search",
           "propsRefs": {
             "basic": ["p10"]
@@ -45,7 +52,7 @@
         },
         {
           "id": "c6",
-          "packageName": "antd",
+          "package": "antd",
           "name": "Select",
           "propsRefs": {
             "basic": ["p11", "p12"]
@@ -55,7 +62,7 @@
     },
     {
       "id": "c1",
-      "packageName": "antd",
+      "package": "antd",
       "name": "Tab",
       "propsRefs": {
         "basic": ["p7", "p8", "p9"]
@@ -63,7 +70,7 @@
     },
     {
       "id": "c2",
-      "packageName": "antd",
+      "package": "antd",
       "name": "Table",
       "propsRefs": {
         "basic": ["p1", "p2"],
@@ -72,12 +79,40 @@
     },
     {
       "id": "c3",
-      "packageName": "antd",
+      "package": "antd",
       "name": "Table",
       "propsRefs": {
         "basic": ["p4", "p5"],
         "event": ["p6"]
       }
     }
-  ]
+  ],
+  "storage": {
+    "inputSearchValue1": "测试"
+  },
+  "query": {
+    "selectValue1": "1"
+  },
+  "events": {
+    "loaded": "h1"
+  },
+  "handlers": {
+    "h1": {
+      "name": "searchData",
+      "desc": "搜索数据",
+      "actionRefs": ["a1"]
+    }
+  },
+  "actions": {
+    "a1": {
+      "type": "service",
+      "payload": {
+        "method": "GET",
+        "params": {
+          "keyword": "inputSearchValue1",
+          "type": "selectValue1"
+        }
+      }
+    }
+  }
 }
