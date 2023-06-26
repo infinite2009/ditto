@@ -113,6 +113,12 @@
           "type": "selectValue1"
         }
       }
+    },
+    "a2": {
+      "type": "dataConversion",
+      "payload": {
+        "dataName": "tableValue1"
+      }
     }
   }
 }
