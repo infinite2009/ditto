@@ -25,4 +25,16 @@ describe('import code generator', () => {
     const tsCodeGenerator = new TypeScriptCodeGenerator();
     expect(tsCodeGenerator.generateImportSentence(testCase)).toBe("import Component from 'antd';");
   });
+
+  test('default import Button', () => {
+    const testCase = {
+      importType: 'default',
+      importNames: 'Button',
+      importPath: 'es/button',
+      packageName: 'antd',
+      needSemicolon: ';'
+    } as unknown as IImportOptions;
+    const tsCodeGenerator = new TypeScriptCodeGenerator();
+    expect(tsCodeGenerator.generateImportSentence(testCase)).toBe("import Button from 'antd/es/button';");
+  });
 });

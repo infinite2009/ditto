@@ -18,7 +18,7 @@ export default class TypeScriptCodeGenerator {
 
     let importPathPart = `from '${packageName}`;
 
-    if (importPath && importPath.indexOf('/') < 0) {
+    if (importPath && !importPath.startsWith('/')) {
       importPathPart += '/';
     }
 
