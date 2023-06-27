@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import TypeScriptCodeGenerator, { IImportOptions } from '@/service/code-generator/react';
 
 describe('import code generator', () => {
-  test('import sentences', () => {
+  test('object import', () => {
     const testCase = {
       importType: 'object',
       importNames: ['Button', 'Tab', 'Table'],
@@ -12,5 +12,17 @@ describe('import code generator', () => {
     } as unknown as IImportOptions;
     const tsCodeGenerator = new TypeScriptCodeGenerator();
     expect(tsCodeGenerator.generateImportSentence(testCase)).toBe("import { Button, Tab, Table } from 'antd';");
+  });
+
+  test('default import', () => {
+    const testCase = {
+      importType: 'default',
+      importNames: 'Component',
+      importPath: '',
+      packageName: 'antd',
+      needSemicolon: ';'
+    } as unknown as IImportOptions;
+    const tsCodeGenerator = new TypeScriptCodeGenerator();
+    expect(tsCodeGenerator.generateImportSentence(testCase)).toBe("import Component from 'antd';");
   });
 });
