@@ -3,20 +3,35 @@ export interface IImportOptions {
   packageName: string;
   importPath?: string;
   importType?: 'default' | 'object' | '*';
-  needSemicolon?: boolean;
+  useSemicolon?: boolean;
 }
 
 export default class TypeScriptCodeGenerator {
-
   generateImportSentence(data: IImportOptions) {
     if (!data) {
-      throw new Error('no import data error');
+      throw new Error('no import manifest error');
     }
-    const { importType, importNames, importPath = '', packageName, needSemicolon = true } = data;
+    const { importType, importNames, importPath = '', packageName, useSemicolon = true } = data;
     if (!packageName) {
       throw new Error('no package name error');
     }
-    const importPathPart = `from ${packageName}${importPath.indexOf('/') === 0 ? importPath : '/' + importPath}${needSemicolon ? ';' : ''}`;
+
+    let importPathPart = `from '${packageName}`;
+
+    if (importPath && importPath.indexOf('/') < 0) {
+      importPathPart += '/';
+    }
+
+    if (importPath !== '/') {
+      importPathPart += importPath;
+    }
+
+    importPathPart += "'";
+
+    if (useSemicolon) {
+      importPathPart += ';';
+    }
+
     switch (importType) {
       case 'object':
         // 无论是字符串还是数组，都可以被检查到
@@ -26,8 +41,8 @@ export default class TypeScriptCodeGenerator {
         return `import { ${typeof importNames === 'string' ? importNames : importNames.join(', ')} } ${importPathPart}`;
       case '*':
         return `import * as ${importNames} ${importPathPart}`;
-        default:
-          return `import ${importNames} ${importPathPart}`
+      default:
+        return `import ${importNames} ${importPathPart}`;
     }
   }
 }
