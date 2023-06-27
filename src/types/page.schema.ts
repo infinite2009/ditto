@@ -42,7 +42,7 @@ export default interface IPageSchema extends ISchema {
     onload: IEventSchema;
     onunload: IEventSchema;
     interval: IEventSchema;
-  }
+  };
   // 事件处理器
-  handlers: DynamicObject<IHandlerSchema>
+  handlers: DynamicObject<IHandlerSchema>;
 }
