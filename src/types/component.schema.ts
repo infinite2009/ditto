@@ -3,17 +3,13 @@
  * @description 这里不会生命组件用了什么属性，主要是处于对代码。前期不支持 importType 和 importPath
  */
 import ISchema from "./schema";
-import { ComponentId, PropsId } from '@/types/index';
+import { PropsId } from '@/types/index';
 
 export default interface IComponentSchema extends ISchema {
-  // 导入的名字或者数组
-  importNames: string[] | string;
-  // 这个组件的打包方式有关
-  importType: 'default' | 'object' | '*';
-  // 组件的导入路径
-  importPath: string;
+  // 导入的名字
+  importName: string;
   // 组件包的名字
-  package: string;
+  dependency: string;
   // 组件名，用于代码生成的调用环节
   name: string;
   // 组件属性
