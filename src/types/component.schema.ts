@@ -6,6 +6,8 @@ import ISchema from "./schema";
 import { ComponentId, PropsId } from '@/types/index';
 
 export default interface IComponentSchema extends ISchema {
+  // 导入的名字或者数组
+  importNames: string[] | string;
   // 这个组件的打包方式有关
   importType: 'default' | 'object' | '*';
   // 组件的导入路径
@@ -24,6 +26,5 @@ export default interface IComponentSchema extends ISchema {
     event: PropsId[];
     // 子节点（个别组件的其他 props和children 是冲突的）
     advanced: PropsId[];
-    // children: ComponentId[];
   }
 }
