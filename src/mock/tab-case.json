@@ -36,57 +36,81 @@
       }
     }
   },
-  "children": [
-    {
-      "id": "c4",
-      "package": "html",
-      "name": "div",
-      "children": [
-        {
-          "id": "c5",
-          "package": "antd",
-          "name": "Input.Search",
-          "propsRefs": {
-            "basic": ["p10"]
+  "child": {
+    "id": "c0",
+    "name": "div",
+    "package": "html",
+    "children": [
+      {
+        "id": "c4",
+        "package": "html",
+        "name": "div",
+        "children": [
+          {
+            "id": "c5",
+            "package": "antd",
+            "name": "Input.Search",
+            "propsRefs": {
+              "basic": [
+                "p10"
+              ]
+            }
+          },
+          {
+            "id": "c6",
+            "package": "antd",
+            "name": "Select",
+            "propsRefs": {
+              "basic": [
+                "p11",
+                "p12"
+              ]
+            }
           }
-        },
-        {
-          "id": "c6",
-          "package": "antd",
-          "name": "Select",
-          "propsRefs": {
-            "basic": ["p11", "p12"]
-          }
+        ]
+      },
+      {
+        "id": "c1",
+        "package": "antd",
+        "name": "Tab",
+        "propsRefs": {
+          "basic": [
+            "p7",
+            "p8",
+            "p9"
+          ]
         }
-      ]
-    },
-    {
-      "id": "c1",
-      "package": "antd",
-      "name": "Tab",
-      "propsRefs": {
-        "basic": ["p7", "p8", "p9"]
+      },
+      {
+        "id": "c2",
+        "package": "antd",
+        "name": "Table",
+        "propsRefs": {
+          "basic": [
+            "p1",
+            "p2"
+          ],
+          "event": [
+            "p3"
+          ]
+        }
+      },
+      {
+        "id": "c3",
+        "package": "antd",
+        "name": "Table",
+        "propsRefs": {
+          "basic": [
+            "p4",
+            "p5"
+          ],
+          "event": [
+            "p6"
+          ]
+        }
       }
-    },
-    {
-      "id": "c2",
-      "package": "antd",
-      "name": "Table",
-      "propsRefs": {
-        "basic": ["p1", "p2"],
-        "event": ["p3"]
-      }
-    },
-    {
-      "id": "c3",
-      "package": "antd",
-      "name": "Table",
-      "propsRefs": {
-        "basic": ["p4", "p5"],
-        "event": ["p6"]
-      }
-    }
-  ],
+    ]
+  },
   "storage": {
     "inputSearchValue1": "测试"
   },
@@ -100,7 +124,9 @@
     "h1": {
       "name": "searchData",
       "desc": "搜索数据",
-      "actionRefs": ["a1"]
+      "actionRefs": [
+        "a1"
+      ]
     }
   },
   "actions": {

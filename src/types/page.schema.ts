@@ -28,7 +28,7 @@ export default interface IPageSchema extends ISchema {
     }
   };
   // 页面的模板
-  children: IComponentSchema[];
+  child: IComponentSchema;
   // 客户端存储
   storage: DynamicObject;
   // 从 url 获取参数
