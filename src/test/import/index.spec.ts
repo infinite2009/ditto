@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import TypeScriptCodeGenerator, { IImportOptions } from '@/service/code-generator/react';
+import TypeScriptCodeGenerator, { IImportOptions } from '@/service/code-generator/typescript';
 
 describe('import code generator', () => {
   test('object import', () => {
