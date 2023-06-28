@@ -6,6 +6,15 @@ export interface IImportOptions {
   useSemicolon?: boolean;
 }
 
+export interface IFunctionOptions {
+  functionName: string;
+  functionParams: string[];
+  useArrow?: boolean;
+  useAsync?: boolean;
+  bodyGeneratorParams?: any[];
+  bodyGenerator?: (...args: any[]) => string[];
+}
+
 export default class TypeScriptCodeGenerator {
   generateImportSentence(data: IImportOptions) {
     if (!data) {
@@ -26,7 +35,7 @@ export default class TypeScriptCodeGenerator {
       importPathPart += importPath;
     }
 
-    importPathPart += "'";
+    importPathPart += '\'';
 
     if (useSemicolon) {
       importPathPart += ';';
@@ -44,5 +53,37 @@ export default class TypeScriptCodeGenerator {
       default:
         return `import ${importNames} ${importPathPart}`;
     }
+  }
+
+  generateFunction(data: IFunctionOptions) {
+    const {
+      functionParams = [],
+      functionName,
+      useAsync = false,
+      useArrow = false,
+      bodyGeneratorParams = [],
+      bodyGenerator = () => []
+    } = data;
+    let sentences = [];
+    let signatureSentence = '';
+    const functionParamsStr = functionParams.join(', ');
+    if (useArrow) {
+      signatureSentence = `(${functionParamsStr}) => {`;
+    } else {
+      if (functionName) {
+        signatureSentence = `function ${functionName}(${functionParamsStr}) {`;
+      } else {
+        signatureSentence = `function (${functionParamsStr}) {`;
+      }
+    }
+    if (useAsync) {
+      signatureSentence = `async ${signatureSentence}`;
+    }
+    sentences.push(signatureSentence);
+    const bodySentences = bodyGenerator(...bodyGeneratorParams);
+    sentences = sentences.concat(bodySentences);
+
+    sentences.push('}');
+    return sentences;
   }
 }
