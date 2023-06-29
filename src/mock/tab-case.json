@@ -1,10 +1,13 @@
 {
-  "id": 123,
+  "id": "123",
+  "schemaType": "page",
   "name": "testPage",
-  "description": "测试页面",
+  "desc": "测试页面",
   "props": {
     "c5": {
       "p10": {
+        "id": "p10",
+        "schemaType": "props",
         "name": "value",
         "category": "basic",
         "value": "1",
@@ -38,76 +41,69 @@
   },
   "child": {
     "id": "c0",
+    "schemaType": "component",
     "name": "div",
-    "package": "html",
+    "dependency": "html",
     "children": [
       {
         "id": "c4",
-        "package": "html",
+        "schemaType": "component",
+        "dependency": "html",
         "name": "div",
         "children": [
           {
             "id": "c5",
-            "package": "antd",
-            "name": "Input.Search",
-            "propsRefs": {
-              "basic": [
-                "p10"
-              ]
-            }
+            "schemaType": "component",
+            "callingName": "Input.Search",
+            "dependency": "antd",
+            "name": "Input",
+            "propsRefs": [
+              "p10"
+            ]
           },
           {
             "id": "c6",
-            "package": "antd",
+            "schemaType": "component",
+            "dependency": "antd",
             "name": "Select",
-            "propsRefs": {
-              "basic": [
-                "p11",
-                "p12"
-              ]
-            }
+            "propsRefs": [
+              "p11",
+              "p12"
+            ]
           }
         ]
       },
       {
         "id": "c1",
-        "package": "antd",
+        "schemaType": "component",
+        "dependency": "antd",
         "name": "Tab",
-        "propsRefs": {
-          "basic": [
-            "p7",
-            "p8",
-            "p9"
-          ]
-        }
+        "propsRefs": [
+          "p7",
+          "p8",
+          "p9"
+        ]
       },
       {
         "id": "c2",
-        "package": "antd",
+        "schemaType": "component",
+        "dependency": "antd",
         "name": "Table",
-        "propsRefs": {
-          "basic": [
-            "p1",
-            "p2"
-          ],
-          "event": [
-            "p3"
-          ]
-        }
+        "propsRefs": [
+          "p1",
+          "p2",
+          "p3"
+        ]
       },
       {
         "id": "c3",
-        "package": "antd",
+        "dependency": "antd",
         "name": "Table",
-        "propsRefs": {
-          "basic": [
-            "p4",
-            "p5"
-          ],
-          "event": [
-            "p6"
-          ]
-        }
+        "propsRefs": [
+          "p4",
+          "p5",
+          "p6"
+        ]
       }
     ]
   },
@@ -119,6 +115,12 @@
   },
   "events": {
     "loaded": "h1"
+  },
+  "httpService": {
+    "s1": {
+      "url": "http://localhost",
+      "method": "GET"
+    }
   },
   "handlers": {
     "h1": {

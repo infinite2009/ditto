@@ -1,7 +1,9 @@
 import IPageSchema from '@/types/page.schema';
 
 export interface ITSXOptions {
-
+  componentName: string;
+  propsStrArr?: string[];
+  children?: ITSXOptions[];
 }
 
 export interface IPropsOptions {
@@ -18,16 +20,24 @@ export default class ReactCodeGenerator {
 
   dsl: IPageSchema;
 
-  generateTSX(opt: ITSXOptions): string[] {
-    const result: string[] = [];
-
-
-
-    return result;
+  generateTSX(opt: ITSXOptions, sentences: string[] = []): string[] {
+    const { propsStrArr = [], componentName, children = [] } = opt;
+    const startTagStr = `<${componentName}${propsStrArr?.length ? ' ': ''}${propsStrArr.join(' ')} ${children?.length ? '' : '/'}>`;
+    sentences.push(startTagStr);
+    if (children?.length) {
+      children?.forEach(child => {
+        this.generateTSX(child).forEach(item => {
+          sentences.push(item);
+        });
+      });
+      const closeTagStr = `</${componentName}>`;
+      sentences.push(closeTagStr);
+    }
+    return sentences;
   }
 
-  generatePropsStr(opt: IPropsOptions): string {
-    const { name, variableName, variableType} = opt;
+  generatePropStr(opt: IPropsOptions): string {
+    const { name, variableName, variableType } = opt;
     if (variableType === 'function') {
       return `${name}={(...args) => ${variableName}(...args)}`;
     }

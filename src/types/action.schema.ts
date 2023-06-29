@@ -1,5 +1,5 @@
 import ISchema from "./schema";
-import IServicePayload from '@/types/service-payload.schema';
+import IHttpServicePayload from '@/types/service-payload.schema';
 import IStatePayload from '@/types/state.schema';
 import IDataConversionPayload from '@/types/data-conversion-payload';
 
@@ -11,5 +11,5 @@ export default interface IActionSchema extends ISchema {
    * transfer: 转换和格式化数据
    */
   type: 'stateSetting' | 'service' | 'dataConversion';
-  payload: IServicePayload | IStatePayload | IDataConversionPayload;
+  payload: IHttpServicePayload | IStatePayload | IDataConversionPayload;
 }

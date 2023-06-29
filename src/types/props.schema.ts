@@ -2,12 +2,12 @@ import ISchema from '@/types/schema';
 
 /**
  * @file 属性本身的属性定义
+ * @description 这里的 props 是狭义的，也就是说不包含 children 这个属性。
+ * 之所以这么设计是为了让 dsl 读写效率更高，且 DSL 类型定义相对简洁一些
  */
 export default interface IPropsSchema extends ISchema {
-  // 属性的类别：事件、样式、基础、高级
-  category: 'event' | 'style' | 'basic' | 'advanced' | 'children';
   // 如果是值，那么该属性变更时，可以用 useEffect 监听并做出响应。目前来说，对于一个组件，值属性最多支持一个
-  isValue: boolean;
+  isValue?: boolean;
   // 属性的名字
   name: string;
   // 属性值的类型
@@ -19,5 +19,5 @@ export default interface IPropsSchema extends ISchema {
    * calculation: 计算数据，主要是通过后端数据源算出来的，或者根据用户输入算出来的，用 useMemo 实现
    */
   valueSource: 'fixed' | 'dataSource' | 'calculation',
-  value: string | boolean | number | object | Function;
+  value: string | boolean | number | object | ((...params: any[]) => any);
 }
