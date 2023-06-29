@@ -13,6 +13,11 @@ export interface IPropsOptions {
   variableValueSource: 'fixed' | 'dataSource' | 'calculation';
 }
 
+export interface IUseEffectOptions {
+  dependencies?: string[];
+  handlerCallingSentence: string;
+}
+
 export default class ReactCodeGenerator {
   constructor(dsl: IPageSchema) {
     this.dsl = dsl;
@@ -42,5 +47,22 @@ export default class ReactCodeGenerator {
       return `${name}={(...args) => ${variableName}(...args)}`;
     }
     return `${name}={${variableName}}`;
+  }
+
+  generateUseEffect(opt: IUseEffectOptions): string[] {
+    const { handlerCallingSentence, dependencies } = opt;
+    const result: string[] = [];
+    const useEffectHeadStr = 'useEffect(() => {';
+    result.push(useEffectHeadStr);
+    result.push(handlerCallingSentence);
+    let dependenciesStr = '';
+    if (dependencies) {
+      dependenciesStr = `[${dependencies.join(', ')}]`;
+    } else {
+      dependenciesStr = '';
+    }
+    const tailSentence = `}${dependenciesStr ? ', ' : ''}${dependenciesStr});`;
+    result.push(tailSentence);
+    return result;
   }
 }

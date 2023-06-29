@@ -1,5 +1,5 @@
 import { describe, expect } from '@jest/globals';
-import ReactCodeGenerator, { IPropsOptions, ITSXOptions } from '@/service/code-generator/react';
+import ReactCodeGenerator, { IPropsOptions, ITSXOptions, IUseEffectOptions } from '@/service/code-generator/react';
 import IPageSchema from '@/types/page.schema';
 import dsl from '@/mock/tab-case.json';
 
@@ -48,6 +48,38 @@ describe('react-template', () => {
       '<p />',
       '</div>',
       '</div>'
+    ]);
+  });
+  test('should return use effect hook sentence array', () => {
+    const effectOpt: IUseEffectOptions = {
+      handlerCallingSentence: 'fetchData().then();',
+      dependencies: ['value']
+    };
+    expect(react.generateUseEffect(effectOpt)).toStrictEqual([
+      'useEffect(() => {',
+      'fetchData().then();',
+      '}, [value]);',
+    ]);
+  });
+  test('should return use effect hook sentence array with no dependencies', () => {
+    const effectOpt: IUseEffectOptions = {
+      handlerCallingSentence: 'fetchData().then();',
+      dependencies: []
+    };
+    expect(react.generateUseEffect(effectOpt)).toStrictEqual([
+      'useEffect(() => {',
+      'fetchData().then();',
+      '}, []);',
+    ]);
+  });
+  test('should return use effect hook sentence array with no dependencies 2', () => {
+    const effectOpt: IUseEffectOptions = {
+      handlerCallingSentence: 'fetchData().then();',
+    };
+    expect(react.generateUseEffect(effectOpt)).toStrictEqual([
+      'useEffect(() => {',
+      'fetchData().then();',
+      '});',
     ]);
   });
 });
