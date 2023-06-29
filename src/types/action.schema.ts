@@ -1,4 +1,4 @@
-import ISchema from "./schema";
+import ISchema from './schema';
 import IHttpServicePayload from '@/types/service-payload.schema';
 import IStatePayload from '@/types/state.schema';
 import IDataConversionPayload from '@/types/data-conversion-payload';

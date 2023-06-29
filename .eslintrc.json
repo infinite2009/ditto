@@ -18,8 +18,21 @@
         "react"
     ],
     "rules": {
-        "semi-style": ["error", "last"],
-        "semi": "error",
-        "indent": ["warn", 2]
+        "indent": ["warn", 2],
+        "no-debugger": "error",
+        "@typescript-eslint/semi": "error",
+        "@typescript-eslint/member-delimiter-style": [
+            "error",
+            {
+                "multiline": {
+                    "delimiter": "semi",
+                    "requireLast": true
+                },
+                "singleline": {
+                    "delimiter": "semi",
+                    "requireLast": false
+                }
+            }
+        ]
     }
 }

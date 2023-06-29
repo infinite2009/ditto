@@ -36,7 +36,9 @@ export default class ReactCodeGenerator {
 
   generateTSX(opt: ITSXOptions, sentences: string[] = []): string[] {
     const { propsStrArr = [], componentName, children = [] } = opt;
-    const startTagStr = `<${componentName}${propsStrArr?.length ? ' ' : ''}${propsStrArr.join(' ')} ${children?.length ? '' : '/'}>`;
+    const startTagStr = `<${componentName}${propsStrArr?.length ? ' ' : ''}${propsStrArr.join(' ')} ${
+      children?.length ? '' : '/'
+    }>`;
     sentences.push(startTagStr);
     if (children?.length) {
       children?.forEach(child => {
@@ -77,6 +79,8 @@ export default class ReactCodeGenerator {
 
   generateUseState(opt: IUseStateOptions) {
     const { initialValueStr, valueType, name } = opt;
-    return `const [${name}, set${toUpperCase(name)}] = useState<${valueType}>(${initialValueStr === undefined ? 'null' : initialValueStr});`;
+    return `const [${name}, set${toUpperCase(name)}] = useState<${valueType}>(${
+      initialValueStr === undefined ? 'null' : initialValueStr
+    });`;
   }
 }
