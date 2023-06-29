@@ -18,5 +18,8 @@
         "react"
     ],
     "rules": {
+        "semi-style": ["error", "last"],
+        "semi": "error",
+        "indent": ["warn", 2]
     }
 }
