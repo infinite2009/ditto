@@ -91,35 +91,34 @@ export default class TypeScriptCodeGenerator {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  generateObjectStrArr(data: any, key = '', useComma = true, sentences: string[] = []): string[] {
+  generateObjectStrArr(data: any, spaces = 0, indent = 2, key = '', useComma = true, sentences: string[] = []): string[] {
     const type = typeOf(data);
+    const spacesPrefix = ''.padStart(spaces, ' ');
     switch (type) {
       case 'object':
-        sentences.push(`${key}${key ? ': ' : ''}{`);
+        sentences.push(`${spacesPrefix}${key}${key ? ': ' : ''}{`);
         Object.entries(data).forEach(([key, value]) => {
-          this.generateObjectStrArr(value, key).forEach(item => {
+          this.generateObjectStrArr(value, spaces + indent, indent, key).forEach(item => {
             sentences.push(item);
           });
-          sentences.push('},');
         });
+        sentences.push(`${spacesPrefix}},`);
         break;
       case 'array':
-        sentences.push(`${key}${key ? ': ' : ''}[`);
-        this.generateObjectStrArr(data).forEach(item => {
-          sentences.push(item);
+        sentences.push(`${spacesPrefix}${key}${key ? ': ' : ''}[`);
+        data.forEach((val: any) => {
+          this.generateObjectStrArr(val, spaces + indent, indent).forEach(item => {
+            sentences.push(item);
+          });
         });
-        sentences.push(']');
+        sentences.push(`${spacesPrefix}],`);
         break;
       case 'string':
-        if (key) {
-          sentences.push(`${key}: '${data}'`);
-        }
+        sentences.push(spacesPrefix + (key ? `${key}: '${data}'` : `'${data}'`) + (useComma ? ',' : ''));
         break;
       default:
         // 这里假设变量都是驼峰命名，符合语法要求
-        if (key) {
-          sentences.push(`${key}: {${data}}`);
-        }
+        sentences.push(spacesPrefix + (key ? `${key}: ${data}` : data) + (useComma ? ',' : ''));
         break;
     }
     return sentences;
