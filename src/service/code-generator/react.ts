@@ -1,9 +1,5 @@
 import IPageSchema from '@/types/page.schema';
 
-export interface ITSXOptions {
-
-}
-
 export interface IPropsOptions {
   name: string;
   variableName: string;
