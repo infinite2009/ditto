@@ -38,7 +38,7 @@ export default class TypeScriptCodeGenerator {
       importPathPart += importPath;
     }
 
-    importPathPart += '\'';
+    importPathPart += "'";
 
     if (useSemicolon) {
       importPathPart += ';';
