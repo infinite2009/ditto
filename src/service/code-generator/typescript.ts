@@ -1,3 +1,6 @@
+import DynamicObject from '@/types/dynamic-object';
+import { typeOf } from '@/util';
+
 export interface IImportOptions {
   importNames?: string[] | string;
   packageName: string;
@@ -84,6 +87,41 @@ export default class TypeScriptCodeGenerator {
     sentences = sentences.concat(bodySentences);
 
     sentences.push('}');
+    return sentences;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  generateObjectStrArr(data: any, key = '', useComma = true, sentences: string[] = []): string[] {
+    const type = typeOf(data);
+    switch (type) {
+      case 'object':
+        sentences.push(`${key}${key ? ': ' : ''}{`);
+        Object.entries(data).forEach(([key, value]) => {
+          this.generateObjectStrArr(value, key).forEach(item => {
+            sentences.push(item);
+          });
+          sentences.push('},');
+        });
+        break;
+      case 'array':
+        sentences.push(`${key}${key ? ': ' : ''}[`);
+        this.generateObjectStrArr(data).forEach(item => {
+          sentences.push(item);
+        });
+        sentences.push(']');
+        break;
+      case 'string':
+        if (key) {
+          sentences.push(`${key}: '${data}'`);
+        }
+        break;
+      default:
+        // 这里假设变量都是驼峰命名，符合语法要求
+        if (key) {
+          sentences.push(`${key}: {${data}}`);
+        }
+        break;
+    }
     return sentences;
   }
 }

@@ -1,4 +1,6 @@
 import IPageSchema from '@/types/page.schema';
+import { toUpperCase } from '@/util';
+import { s } from '@tauri-apps/api/path-f8d71c21';
 
 export interface ITSXOptions {
   componentName: string;
@@ -18,6 +20,13 @@ export interface IUseEffectOptions {
   handlerCallingSentence: string;
 }
 
+export interface IUseStateOptions {
+  // 初始值的字符串
+  initialValueStr: any;
+  valueType: string;
+  name: string;
+}
+
 export default class ReactCodeGenerator {
   constructor(dsl: IPageSchema) {
     this.dsl = dsl;
@@ -27,7 +36,7 @@ export default class ReactCodeGenerator {
 
   generateTSX(opt: ITSXOptions, sentences: string[] = []): string[] {
     const { propsStrArr = [], componentName, children = [] } = opt;
-    const startTagStr = `<${componentName}${propsStrArr?.length ? ' ': ''}${propsStrArr.join(' ')} ${children?.length ? '' : '/'}>`;
+    const startTagStr = `<${componentName}${propsStrArr?.length ? ' ' : ''}${propsStrArr.join(' ')} ${children?.length ? '' : '/'}>`;
     sentences.push(startTagStr);
     if (children?.length) {
       children?.forEach(child => {
@@ -64,5 +73,10 @@ export default class ReactCodeGenerator {
     const tailSentence = `}${dependenciesStr ? ', ' : ''}${dependenciesStr});`;
     result.push(tailSentence);
     return result;
+  }
+
+  generateUseState(opt: IUseStateOptions) {
+    const { initialValueStr, valueType, name } = opt;
+    return `const [${name}, set${toUpperCase(name)}] = useState<${valueType}>(${initialValueStr === undefined ? 'null' : initialValueStr});`;
   }
 }

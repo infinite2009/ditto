@@ -1,5 +1,10 @@
 import { describe, expect } from '@jest/globals';
-import ReactCodeGenerator, { IPropsOptions, ITSXOptions, IUseEffectOptions } from '@/service/code-generator/react';
+import ReactCodeGenerator, {
+  IPropsOptions,
+  ITSXOptions,
+  IUseEffectOptions,
+  IUseStateOptions
+} from '@/service/code-generator/react';
 import IPageSchema from '@/types/page.schema';
 import dsl from '@/mock/tab-case.json';
 
@@ -81,5 +86,23 @@ describe('react-template', () => {
       'fetchData().then();',
       '});',
     ]);
+  });
+  test('test boolean', () => {
+    const stateOpt: IUseStateOptions = {
+      initialValueStr: true, valueType: 'boolean', name: 'testValue'
+    };
+    expect(react.generateUseState(stateOpt)).toStrictEqual('const [testValue, setTestValue] = useState<boolean>(true);');
+  });
+  test('test number', () => {
+    const stateOpt: IUseStateOptions = {
+      initialValueStr: 123, valueType: 'number', name: 'testValue'
+    };
+    expect(react.generateUseState(stateOpt)).toStrictEqual('const [testValue, setTestValue] = useState<number>(123);');
+  });
+  test('test string', () => {
+    const stateOpt: IUseStateOptions = {
+      initialValueStr: 'hello world', valueType: 'string', name: 'testValue'
+    };
+    expect(react.generateUseState(stateOpt)).toStrictEqual('const [testValue, setTestValue] = useState<string>(hello world);');
   });
 });
