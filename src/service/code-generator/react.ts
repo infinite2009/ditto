@@ -50,20 +50,21 @@ export default class ReactCodeGenerator {
 
   dsl: IPageSchema;
 
-  generateTSX(opt: ITSXOptions, sentences: string[] = []): string[] {
+  generateTSX(opt: ITSXOptions, spaces = 0, indent = 2, sentences: string[] = []): string[] {
     const { propsStrArr = [], componentName, children = [] } = opt;
     const startTagStr = `<${componentName}${propsStrArr?.length ? ' ' : ''}${propsStrArr.join(' ')} ${
       children?.length ? '' : '/'
     }>`;
-    sentences.push(startTagStr);
+    const spacesPrefix = ''.padStart(spaces, ' ');
+    sentences.push(`${spacesPrefix}${startTagStr}`);
     if (children?.length) {
       children?.forEach(child => {
-        this.generateTSX(child).forEach(item => {
+        this.generateTSX(child, spaces + indent, indent).forEach(item => {
           sentences.push(item);
         });
       });
       const closeTagStr = `</${componentName}>`;
-      sentences.push(closeTagStr);
+      sentences.push(`${spacesPrefix}${closeTagStr}`);
     }
     return sentences;
   }
