@@ -95,7 +95,7 @@ export default class TypeScriptCodeGenerator {
     return sentences;
   }
 
-  generateFunctionCall(opt: IFunctionCallOptions) {
+  generateFunctionCall(opt: IFunctionCallOptions): string {
     const { name, args } = opt;
     return `${name}(${(args.join(', '))})`;
   }
