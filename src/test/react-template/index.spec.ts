@@ -2,7 +2,9 @@ import { describe, expect } from '@jest/globals';
 import ReactCodeGenerator, {
   IPropsOptions,
   ITSXOptions,
-  IUseEffectOptions, IUseMemoOptions,
+  IUseEffectOptions,
+  IUseMemoOptions,
+  IUseRefOptions,
   IUseStateOptions
 } from '@/service/code-generator/react';
 import IPageSchema from '@/types/page.schema';
@@ -121,5 +123,14 @@ describe('react-template', () => {
   test('test dependencies generator', () => {
     const deps: string[] = [];
     expect(react.generateDependenciesSentence(deps)).toBe('[]');
+  });
+
+  test('test use ref', () => {
+    const opt: IUseRefOptions = {
+      initialValueStr: '1',
+      valueType: 'string',
+      name: 'test',
+    };
+    expect(react.generateUseRef(opt)).toBe('const testRef = useRef<string>(\'1\');');
   });
 });

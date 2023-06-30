@@ -1,5 +1,5 @@
 import IPageSchema from '@/types/page.schema';
-import { toUpperCase } from '@/util';
+import { toUpperCase, typeOf } from '@/util';
 import { s } from '@tauri-apps/api/path-f8d71c21';
 
 export interface ITSXOptions {
@@ -35,6 +35,12 @@ export interface IUseMemoOptions {
 export interface IUseCallbackOptions {
   dependencies?: string[];
   handlerCallingSentence: string;
+}
+
+export interface IUseRefOptions {
+  initialValueStr: any;
+  valueType: string;
+  name: string;
 }
 
 export default class ReactCodeGenerator {
@@ -111,5 +117,12 @@ export default class ReactCodeGenerator {
   // TODO 半成品，需要 DSL 补充函数类 props 的签名
   generateUseCallback(opt: IUseCallbackOptions) {
     return this.generateUseMemo(opt);
+  }
+
+  generateUseRef(opt: IUseRefOptions) {
+    const { initialValueStr, valueType, name } = opt;
+    return `const ${name}Ref = useRef<${valueType}>(${
+      valueType === 'string' ? `'${initialValueStr}'` : initialValueStr
+    });`;
   }
 }
