@@ -64,7 +64,7 @@ describe('function test', () => {
         return [`console.log(${a1})`];
       }
     } as unknown as IFunctionOptions;
-    expect(tsCodeGenerator.generateFunction(data)).toStrictEqual([
+    expect(tsCodeGenerator.generateFunctionDefinition(data)).toStrictEqual([
       'function testF(a1, a2, a3) {',
       'console.log(123)',
       '}'

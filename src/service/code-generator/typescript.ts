@@ -58,7 +58,7 @@ export default class TypeScriptCodeGenerator {
     }
   }
 
-  generateFunction(data: IFunctionOptions) {
+  generateFunctionDefinition(data: IFunctionOptions) {
     const {
       functionParams = [],
       functionName,
