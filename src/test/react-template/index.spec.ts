@@ -2,7 +2,7 @@ import { describe, expect } from '@jest/globals';
 import ReactCodeGenerator, {
   IPropsOptions,
   ITSXOptions,
-  IUseEffectOptions,
+  IUseEffectOptions, IUseMemoOptions,
   IUseStateOptions
 } from '@/service/code-generator/react';
 import IPageSchema from '@/types/page.schema';
@@ -104,5 +104,22 @@ describe('react-template', () => {
       initialValueStr: 'hello world', valueType: 'string', name: 'testValue'
     };
     expect(react.generateUseState(stateOpt)).toStrictEqual('const [testValue, setTestValue] = useState<string>(hello world);');
+  });
+
+  test('test use memo with dependencies', () => {
+    const memoOpt: IUseMemoOptions = {
+      dependencies: ['state1', 'state2'],
+      handlerCallingSentence: 'handleChanging(state1, state2);'
+    };
+    expect(react.generateUseMemo(memoOpt)).toStrictEqual([
+      'useMemo(() => {',
+      'return handleChanging(state1, state2);',
+      '}, [state1, state2]);'
+    ]);
+  });
+
+  test('test dependencies generator', () => {
+    const deps: string[] = [];
+    expect(react.generateDependenciesSentence(deps)).toBe('[]');
   });
 });

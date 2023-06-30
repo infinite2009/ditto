@@ -27,6 +27,11 @@ export interface IUseStateOptions {
   name: string;
 }
 
+export interface IUseMemoOptions {
+  dependencies?: string[];
+  handlerCallingSentence: string;
+}
+
 export default class ReactCodeGenerator {
   constructor(dsl: IPageSchema) {
     this.dsl = dsl;
@@ -66,12 +71,7 @@ export default class ReactCodeGenerator {
     const useEffectHeadStr = 'useEffect(() => {';
     result.push(useEffectHeadStr);
     result.push(handlerCallingSentence);
-    let dependenciesStr = '';
-    if (dependencies) {
-      dependenciesStr = `[${dependencies.join(', ')}]`;
-    } else {
-      dependenciesStr = '';
-    }
+    const dependenciesStr = this.generateDependenciesSentence(dependencies);
     const tailSentence = `}${dependenciesStr ? ', ' : ''}${dependenciesStr});`;
     result.push(tailSentence);
     return result;
@@ -82,5 +82,24 @@ export default class ReactCodeGenerator {
     return `const [${name}, set${toUpperCase(name)}] = useState<${valueType}>(${
       initialValueStr === undefined ? 'null' : initialValueStr
     });`;
+  }
+
+  generateUseMemo(opt: IUseMemoOptions) {
+    const { handlerCallingSentence, dependencies } = opt;
+    const result: string[] = [];
+    const useEffectHeadStr = 'useMemo(() => {';
+    result.push(useEffectHeadStr);
+    result.push(`return ${handlerCallingSentence}`);
+    const dependenciesStr = this.generateDependenciesSentence(dependencies);
+    const tailSentence = `}${dependenciesStr ? ', ' : ''}${dependenciesStr});`;
+    result.push(tailSentence);
+    return result;
+  }
+
+  generateDependenciesSentence(dependencies: string[] | undefined): string {
+    if (!dependencies) {
+      return '';
+    }
+    return `[${dependencies.join(', ')}]`;
   }
 }
