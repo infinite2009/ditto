@@ -90,7 +90,6 @@ export default class TypeScriptCodeGenerator {
     return sentences;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   generateObjectStrArr(data: any, spaces = 0, indent = 2, key = '', useComma = true, sentences: string[] = []): string[] {
     const type = typeOf(data);
     const spacesPrefix = ''.padStart(spaces, ' ');
