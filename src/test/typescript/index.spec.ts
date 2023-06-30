@@ -106,4 +106,11 @@ describe('function test', () => {
       '},'
     ]);
   });
+  test('test function call', () => {
+    const opt = {
+      args: ['data', 'state1', 'props1'],
+      name: 'handleChanging'
+    };
+    expect(tsCodeGenerator.generateFunctionCall(opt)).toBe('handleChanging(data, state1, props1)');
+  });
 });

@@ -18,6 +18,11 @@ export interface IFunctionOptions {
   bodyGenerator?: (...args: any[]) => string[];
 }
 
+export interface IFunctionCallOptions {
+  args: string[];
+  name: string;
+}
+
 export default class TypeScriptCodeGenerator {
   generateImportSentence(data: IImportOptions) {
     if (!data) {
@@ -90,7 +95,19 @@ export default class TypeScriptCodeGenerator {
     return sentences;
   }
 
-  generateObjectStrArr(data: any, spaces = 0, indent = 2, key = '', useComma = true, sentences: string[] = []): string[] {
+  generateFunctionCall(opt: IFunctionCallOptions) {
+    const { name, args } = opt;
+    return `${name}(${(args.join(', '))})`;
+  }
+
+  generateObjectStrArr(
+    data: any,
+    spaces = 0,
+    indent = 2,
+    key = '',
+    useComma = true,
+    sentences: string[] = []
+  ): string[] {
     const type = typeOf(data);
     const spacesPrefix = ''.padStart(spaces, ' ');
     switch (type) {
