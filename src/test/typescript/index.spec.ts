@@ -1,5 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
-import TypeScriptCodeGenerator, { IFunctionOptions, IImportOptions } from '@/service/code-generator/typescript';
+import TypeScriptCodeGenerator, {
+  IAssignmentOptions,
+  IFunctionOptions,
+  IImportOptions
+} from '@/service/code-generator/typescript';
 
 describe('import code generator', () => {
   test('object import', () => {
@@ -112,5 +116,61 @@ describe('function test', () => {
       name: 'handleChanging'
     };
     expect(tsCodeGenerator.generateFunctionCall(opt)).toBe('handleChanging(data, state1, props1)');
+  });
+
+  test('test assignment', () => {
+    const opt: IAssignmentOptions = {
+      variableName: 'someData',
+      expressions: [
+        '{',
+        '  a: 1,',
+        "  b: '2',",
+        '  c: [',
+        '    10,',
+        "    '33',",
+        '    true,',
+        '  ],',
+        '  d: {',
+        "    test: 'hello world',",
+        '    arr: [',
+        '      {',
+        '        id: 1,',
+        '      },',
+        '      {',
+        '        id: 2,',
+        '      },',
+        '      {',
+        '        id: 3,',
+        '      },',
+        '    ],',
+        '  },',
+        '},'
+      ]
+    };
+    expect(tsCodeGenerator.generateAssignment(opt)).toStrictEqual([
+      'const someData = {',
+      '  a: 1,',
+      "  b: '2',",
+      '  c: [',
+      '    10,',
+      "    '33',",
+      '    true,',
+      '  ],',
+      '  d: {',
+      "    test: 'hello world',",
+      '    arr: [',
+      '      {',
+      '        id: 1,',
+      '      },',
+      '      {',
+      '        id: 2,',
+      '      },',
+      '      {',
+      '        id: 3,',
+      '      },',
+      '    ],',
+      '  },',
+      '},'
+    ]);
   });
 });

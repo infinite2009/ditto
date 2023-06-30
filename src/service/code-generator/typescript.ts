@@ -23,6 +23,12 @@ export interface IFunctionCallOptions {
   name: string;
 }
 
+export interface IAssignmentOptions {
+  variableName: string;
+  expressions: string[];
+  useLet?: boolean;
+}
+
 export default class TypeScriptCodeGenerator {
   generateImportSentence(data: IImportOptions) {
     if (!data) {
@@ -97,7 +103,7 @@ export default class TypeScriptCodeGenerator {
 
   generateFunctionCall(opt: IFunctionCallOptions): string {
     const { name, args } = opt;
-    return `${name}(${(args.join(', '))})`;
+    return `${name}(${args.join(', ')})`;
   }
 
   generateObjectStrArr(
@@ -138,5 +144,12 @@ export default class TypeScriptCodeGenerator {
         break;
     }
     return sentences;
+  }
+
+  generateAssignment(opt: IAssignmentOptions): string[] {
+    const { variableName, expressions, useLet = false } = opt;
+    const cp = [...expressions];
+    cp[0] = `${useLet ? 'let' : 'const'} ${variableName} = ${cp[0]}`;
+    return cp;
   }
 }
