@@ -103,7 +103,7 @@ describe('react-template', () => {
     const stateOpt: IUseStateOptions = {
       initialValueStr: 'hello world', valueType: 'string', name: 'testValue'
     };
-    expect(react.generateUseState(stateOpt)).toStrictEqual('const [testValue, setTestValue] = useState<string>(hello world);');
+    expect(react.generateUseState(stateOpt)).toStrictEqual('const [testValue, setTestValue] = useState<string>(\'hello world\');');
   });
 
   test('test use memo with dependencies', () => {
