@@ -10,7 +10,7 @@ import ReactCodeGenerator, {
 import IPageSchema from '@/types/page.schema';
 import dsl from '@/mock/tab-case.json';
 
-describe('react-template', () => {
+describe('react', () => {
   const react = new ReactCodeGenerator(dsl as unknown as IPageSchema);
   test('should return props string', () => {
     const propsOpt: IPropsOptions = {
