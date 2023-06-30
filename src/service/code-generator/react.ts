@@ -32,6 +32,11 @@ export interface IUseMemoOptions {
   handlerCallingSentence: string;
 }
 
+export interface IUseCallbackOptions {
+  dependencies?: string[];
+  handlerCallingSentence: string;
+}
+
 export default class ReactCodeGenerator {
   constructor(dsl: IPageSchema) {
     this.dsl = dsl;
@@ -101,5 +106,10 @@ export default class ReactCodeGenerator {
       return '';
     }
     return `[${dependencies.join(', ')}]`;
+  }
+
+  // TODO 半成品，需要 DSL 补充函数类 props 的签名
+  generateUseCallback(opt: IUseCallbackOptions) {
+    return this.generateUseMemo(opt);
   }
 }
