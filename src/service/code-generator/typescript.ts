@@ -1,11 +1,11 @@
 import DynamicObject from '@/types/dynamic-object';
 import { typeOf } from '@/util';
+import { ImportType } from '@/types';
 
 export interface IImportOptions {
   importNames?: string[] | string;
-  packageName: string;
-  importPath?: string;
-  importType?: 'default' | 'object' | '*';
+  importPath: string;
+  importType?: ImportType;
   useSemicolon?: boolean;
 }
 
@@ -34,22 +34,12 @@ export default class TypeScriptCodeGenerator {
     if (!data) {
       throw new Error('no import manifest error');
     }
-    const { importType, importNames, importPath = '', packageName, useSemicolon = true } = data;
-    if (!packageName) {
-      throw new Error('no package name error');
+    const { importType, importNames, importPath, useSemicolon = true } = data;
+    if (!importPath) {
+      throw new Error('no import path error');
     }
 
-    let importPathPart = `from '${packageName}`;
-
-    if (importPath && !importPath.startsWith('/')) {
-      importPathPart += '/';
-    }
-
-    if (importPath !== '/') {
-      importPathPart += importPath;
-    }
-
-    importPathPart += "'";
+    let importPathPart = `from '${importPath}'`;
 
     if (useSemicolon) {
       importPathPart += ';';
@@ -151,5 +141,17 @@ export default class TypeScriptCodeGenerator {
     const cp = [...expressions];
     cp[0] = `${useLet ? 'let' : 'const'} ${variableName} = ${cp[0]}`;
     return cp;
+  }
+
+  calculateImportPath(packageName: string, importRelativePath = '' ): string {
+    let result = `${packageName}`;
+    if (importRelativePath && !importRelativePath.startsWith('/')) {
+      result += '/';
+    }
+
+    if (importRelativePath !== '/') {
+      result += importRelativePath;
+    }
+    return `${result}`;
   }
 }

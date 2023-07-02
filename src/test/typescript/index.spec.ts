@@ -10,8 +10,7 @@ describe('import code generator', () => {
     const testCase = {
       importType: 'object',
       importNames: ['Button', 'Tab', 'Table'],
-      importPath: '',
-      packageName: 'antd',
+      importPath: 'antd',
       needSemicolon: ';'
     } as unknown as IImportOptions;
     const tsCodeGenerator = new TypeScriptCodeGenerator();
@@ -22,8 +21,7 @@ describe('import code generator', () => {
     const testCase = {
       importType: 'default',
       importNames: 'Component',
-      importPath: '',
-      packageName: 'antd',
+      importPath: 'antd',
       needSemicolon: ';'
     } as unknown as IImportOptions;
     const tsCodeGenerator = new TypeScriptCodeGenerator();
@@ -34,8 +32,7 @@ describe('import code generator', () => {
     const testCase = {
       importType: 'default',
       importNames: 'Button',
-      importPath: 'es/button',
-      packageName: 'antd',
+      importPath: 'antd/es/button',
       needSemicolon: ';'
     } as unknown as IImportOptions;
     const tsCodeGenerator = new TypeScriptCodeGenerator();
@@ -46,12 +43,11 @@ describe('import code generator', () => {
     const testCase = {
       importType: 'object',
       importNames: ['Button', 'Input'],
-      importPath: 'es/button',
-      packageName: 'antd',
+      importPath: 'antd/es',
       needSemicolon: ';'
     } as unknown as IImportOptions;
     const tsCodeGenerator = new TypeScriptCodeGenerator();
-    expect(tsCodeGenerator.generateImportSentence(testCase)).toBe("import { Button, Input } from 'antd/es/button';");
+    expect(tsCodeGenerator.generateImportSentence(testCase)).toBe("import { Button, Input } from 'antd/es';");
   });
 });
 
@@ -172,5 +168,21 @@ describe('function test', () => {
       '  },',
       '},'
     ]);
+  });
+
+  test('should generate import path', () => {
+    expect(tsCodeGenerator.calculateImportPath('antd')).toBe('antd');
+  });
+
+  test('should generate import with path', () => {
+    expect(tsCodeGenerator.calculateImportPath('antd', 'es/Button')).toBe('antd/es/Button');
+  });
+
+  test('should generate import with slash path', () => {
+    expect(tsCodeGenerator.calculateImportPath('antd', '/es/Button')).toBe('antd/es/Button');
+  });
+
+  test('should generate import slash', () => {
+    expect(tsCodeGenerator.calculateImportPath('antd', '/')).toBe('antd');
   });
 });
