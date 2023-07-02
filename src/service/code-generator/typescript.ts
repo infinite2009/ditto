@@ -3,7 +3,7 @@ import { typeOf } from '@/util';
 import { ImportType } from '@/types';
 
 export interface IImportOptions {
-  importNames?: string[] | string;
+  importNames?: string[];
   importPath: string;
   importType?: ImportType;
   useSemicolon?: boolean;
@@ -51,7 +51,7 @@ export default class TypeScriptCodeGenerator {
         if (!importNames?.length) {
           throw new Error('no dependencies error');
         }
-        return `import { ${typeof importNames === 'string' ? importNames : importNames.join(', ')} } ${importPathPart}`;
+        return `import { ${importNames.join(', ')} } ${importPathPart}`;
       case '*':
         return `import * as ${importNames} ${importPathPart}`;
       default:
