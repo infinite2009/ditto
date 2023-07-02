@@ -18,6 +18,11 @@ export interface IFunctionOptions {
   bodyGenerator?: (...args: any[]) => string[];
 }
 
+export interface IConstantOptions {
+  constName: string;
+  value: string[];
+}
+
 export interface IFunctionCallOptions {
   args: string[];
   name: string;
@@ -44,7 +49,6 @@ export default class TypeScriptCodeGenerator {
     if (useSemicolon) {
       importPathPart += ';';
     }
-    debugger;
 
     switch (importType) {
       case 'object':

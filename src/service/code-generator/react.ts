@@ -1,6 +1,6 @@
 import IPageSchema from '@/types/page.schema';
 import { toUpperCase } from '@/util';
-import TypeScriptCodeGenerator, { IFunctionOptions } from '@/service/code-generator/typescript';
+import TypeScriptCodeGenerator, { IConstantOptions, IFunctionOptions } from '@/service/code-generator/typescript';
 import IComponentSchema from '@/types/component.schema';
 import { ImportType } from '@/types';
 import DynamicObject from '@/types/dynamic-object';
@@ -64,11 +64,17 @@ export interface IDSLStatsInfo {
   effectInfo: {
     [effectName: string]: IUseEffectOptions | null;
   };
+  callbackInfo: {
+    [callbackName: string]: IUseCallbackOptions | null;
+  };
   handlerInfo: {
     [handlerName: string]: IFunctionOptions | null;
   };
   actionInfo: {
     [handlerName: string]: IFunctionOptions | null;
+  };
+  constantInfo: {
+    [constantName: string]: IConstantOptions | null;
   };
   tsxInfo: ITSXOptions | null;
 }
@@ -167,7 +173,12 @@ export default class ReactCodeGenerator {
 
   analysisDsl(): IDSLStatsInfo {
     const result: Partial<IDSLStatsInfo> = {
-      importInfo: {}
+      importInfo: {},
+      stateInfo: {},
+      memoInfo: {},
+      callbackInfo: {},
+      effectInfo: {},
+      constantInfo: {}
     };
     const { child, props, httpService, actions, handlers, name: pageName, desc: PageDesc } = this.dsl;
     result.pageName = pageName;
@@ -219,6 +230,18 @@ export default class ReactCodeGenerator {
 
         // 提取 props
         const pNode = p.shift();
+        if (pNode) {
+          const { propsStrArr, stateInfo, callbackInfo, memoInfo, effectInfo } = this.analysisProps(
+            this.dsl.props[id],
+            propsRefs
+          );
+          pNode.propsStrArr = propsStrArr;
+          // 将每个组件节点的 stateInfo 合并到 result 中，通过命名系统避免 state 重名，callback，memo，effect 亦然
+          Object.assign(result.stateInfo as object, stateInfo);
+          Object.assign(result.callbackInfo as object, callbackInfo);
+          Object.assign(result.memoInfo as object, memoInfo);
+          Object.assign(result.effectInfo as object, effectInfo);
+        }
 
         q = q.concat(node.children || []);
         //
@@ -250,7 +273,16 @@ export default class ReactCodeGenerator {
     return result;
   }
 
-  analysisProps(componentPropsDict: DynamicObject, componentName: string, propsRefs: string[]) {
+  analysisProps(
+    componentPropsDict: DynamicObject,
+    propsRefs: string[]
+  ): {
+    propsStrArr: string[];
+    stateInfo: { [stateName: string]: IUseStateOptions };
+    callbackInfo: { [callbackName: string]: IUseCallbackOptions };
+    memoInfo: { [memoName: string]: IUseMemoOptions };
+    effectInfo: { [effectName: string]: IUseEffectOptions };
+  } {
     const propsStrArr: string[] = [];
     const stateInfo: { [key: string]: IUseStateOptions } = {};
     const memoInfo: { [key: string]: IUseMemoOptions } = {};
@@ -324,7 +356,7 @@ export default class ReactCodeGenerator {
       }
     });
     return {
-      propsInfo: propsStrArr,
+      propsStrArr,
       stateInfo,
       callbackInfo,
       memoInfo,
