@@ -3,6 +3,8 @@ import { toUpperCase } from '@/util';
 import TypeScriptCodeGenerator, { IFunctionOptions } from '@/service/code-generator/typescript';
 import IComponentSchema from '@/types/component.schema';
 import { ImportType } from '@/types';
+import DynamicObject from '@/types/dynamic-object';
+import { p } from '@tauri-apps/api/path-f8d71c21';
 
 export interface ITSXOptions {
   componentName: string;
@@ -12,9 +14,10 @@ export interface ITSXOptions {
 
 export interface IPropsOptions {
   name: string;
-  variableName: string;
+  variableName?: string;
+  value?: string;
   variableType: string;
-  variableValueSource: 'fixed' | 'dataSource' | 'calculation';
+  variableValueSource?: 'editorInput' | 'httpRequest' | 'calculation';
 }
 
 export interface IUseEffectOptions {
@@ -99,11 +102,16 @@ export default class ReactCodeGenerator {
     return sentences;
   }
 
-  generatePropStr(opt: IPropsOptions): string {
-    const { name, variableName, variableType } = opt;
-    if (variableType === 'function') {
-      return `${name}={(...args) => ${variableName}(...args)}`;
+  generatePropsStrWithLiteral(opt: IPropsOptions): string {
+    const { name, variableType, value } = opt;
+    if (variableType === 'string') {
+      return `${name}="${value}"`;
     }
+    return `${name}={${value}}`;
+  }
+
+  generatePropStrWithVariable(opt: IPropsOptions): string {
+    const { name, variableName } = opt;
     return `${name}={${variableName}}`;
   }
 
@@ -163,9 +171,15 @@ export default class ReactCodeGenerator {
     };
     const { child, props, httpService, actions, handlers, name: pageName, desc: PageDesc } = this.dsl;
     result.pageName = pageName;
+    result.tsxInfo = {
+      componentName: child.callingName || child.name,
+      propsStrArr: [],
+      children: []
+    };
 
     // 广度遍历 components，获取其中的导入信息和 props
     let q: IComponentSchema[] = [child];
+    let p: ITSXOptions[] = [result.tsxInfo];
     while (q.length) {
       // 弹出头部的节点
       const node: IComponentSchema | undefined = q.shift();
@@ -186,17 +200,26 @@ export default class ReactCodeGenerator {
         if (dependency) {
           const importInfoForComponent = this.extractImportInfo(dependency, importType, importRelativePath, name);
           if (importInfoForComponent.importPath && result.importInfo) {
-            result.importInfo[importInfoForComponent.importPath] = result.importInfo[importInfoForComponent.importPath] || {
-              [importInfoForComponent.importType as string]: [],
+            result.importInfo[importInfoForComponent.importPath] = result.importInfo[
+              importInfoForComponent.importPath
+            ] || {
+              [importInfoForComponent.importType as string]: []
             };
-            if (!result.importInfo[importInfoForComponent.importPath][importInfoForComponent.importType as string]?.includes(name)) {
-              result.importInfo[importInfoForComponent.importPath][importInfoForComponent.importType as string]?.push(name);
+            if (
+              !result.importInfo[importInfoForComponent.importPath][
+                importInfoForComponent.importType as string
+              ]?.includes(name)
+            ) {
+              result.importInfo[importInfoForComponent.importPath][importInfoForComponent.importType as string]?.push(
+                name
+              );
             }
           }
         }
 
         // 提取 props
-        // TODO
+        const pNode = p.shift();
+
         q = q.concat(node.children || []);
         //
       } else {
@@ -225,5 +248,91 @@ export default class ReactCodeGenerator {
     }
     result.importPath = this.tsCodeGenerator.calculateImportPath(dependency, importRelativePath);
     return result;
+  }
+
+  analysisProps(componentPropsDict: DynamicObject, componentName: string, propsRefs: string[]) {
+    const propsStrArr: string[] = [];
+    const stateInfo: { [key: string]: IUseStateOptions } = {};
+    const memoInfo: { [key: string]: IUseMemoOptions } = {};
+    const callbackInfo: { [key: string]: IUseCallbackOptions } = {};
+    const effectInfo: { [key: string]: IUseEffectOptions } = {};
+    propsRefs.forEach(ref => {
+      const props = componentPropsDict[ref];
+      const { value, valueType, valueSource, isValue } = props;
+      const basicValueTypes = ['string', 'number', 'boolean'];
+      // 基础类型固定值走字面，其他情况走变量（常量、state、memo、callback）
+      if (valueSource === 'editorInput') {
+        if (basicValueTypes.includes(valueType)) {
+          propsStrArr.push(
+            this.generatePropsStrWithLiteral({
+              name: ref,
+              value,
+              variableType: valueType
+            })
+          );
+        } else {
+          // TODO: 待实现
+          const variableName = 'mockVariableName';
+          propsStrArr.push(
+            this.generatePropStrWithVariable({
+              name: ref,
+              variableName,
+              variableType: valueType
+            })
+          );
+        }
+      } else if (valueSource === 'handler') {
+        // TODO: 生成 useCallback
+        const variableName = this.generateVariableName();
+        callbackInfo[variableName] = {
+          dependencies: [],
+          handlerCallingSentence: `() => { console.log('useCallback ${variableName} works!'); }`
+        };
+      } else if (valueSource === 'computed') {
+        // TODO:  生成 useMemo
+        const variableName = this.generateVariableName();
+        memoInfo[variableName] = {
+          dependencies: [],
+          handlerCallingSentence: `() => { console.log('useMemo ${variableName} works!'); }`
+        };
+      } else {
+        // TODO: 待实现
+        const variableName = this.generateVariableName();
+        propsStrArr.push(
+          this.generatePropStrWithVariable({
+            name: ref,
+            variableName,
+            variableType: valueType
+          })
+        );
+        // 使用状态的变量
+        stateInfo[variableName] = {
+          name: variableName,
+          // TODO: 之后在开发初值生成方法
+          initialValueStr: 'null',
+          valueType
+        };
+      }
+
+      // 如果这个属性是 value，那么自动生成 useEffect
+      if (isValue) {
+        const variableName = this.generateVariableName();
+        effectInfo[variableName] = {
+          dependencies: [],
+          handlerCallingSentence: `() => { console.log('useMemo ${variableName} works!'); }`
+        };
+      }
+    });
+    return {
+      propsInfo: propsStrArr,
+      stateInfo,
+      callbackInfo,
+      memoInfo,
+      effectInfo
+    };
+  }
+
+  generateVariableName() {
+    return 'mockVariableName';
   }
 }

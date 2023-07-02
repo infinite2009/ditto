@@ -8,16 +8,21 @@ import ISchema from '@/types/schema';
 export default interface IPropsSchema extends ISchema {
   // 如果是值，那么该属性变更时，可以用 useEffect 监听并做出响应。目前来说，对于一个组件，值属性最多支持一个
   isValue?: boolean;
+  // 控制 UI 显隐性
+  isVisible: boolean;
   // 属性的名字
   name: string;
   // 属性值的类型
-  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object' | 'handler';
+  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object';
   /*
    * 这个值的来源
-   * fixed: 用户输入的常量，会指导代码生成器生成常量声明和赋值代码，存入 const
-   * dataSource: 从后端获取的数据，且没有经过计算转换的，经过转换存入 state
-   * calculation: 计算数据，主要是通过后端数据源算出来的，或者根据用户输入算出来的，用 useMemo 实现
+   * editorInput: 创建页面时编辑者输入的常量，会指导代码生成器生成常量声明和赋值代码，存入 const
+   * httpRequest: 从后端获取的数据，经过转换（或者直接）存入 state
+   * userInput: 用户输入，一般会赋值给 value
+   * state: 一般是控制组件显影的状态值
+   * computed: 计算数据，主要是通过后端数据源算出来的，或者根据用户输入算出来的，用 useMemo 实现
+   * handler: 事件处理器，当用户为事件配置了相应后，会产生这个值
    */
-  valueSource: 'fixed' | 'dataSource' | 'calculation',
+  valueSource: 'editorInput' | 'httpRequest' | 'state' | 'userInput' | 'computed' | 'handler';
   value: string | boolean | number | object | ((...params: any[]) => any);
 }

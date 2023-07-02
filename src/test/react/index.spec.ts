@@ -19,9 +19,9 @@ describe('react', () => {
       name: 'title',
       variableName: 'buttonTitle',
       variableType: 'string',
-      variableValueSource: 'fixed'
+      variableValueSource: 'editorInput'
     };
-    expect(react.generatePropStr(propsOpt)).toStrictEqual('title={buttonTitle}');
+    expect(react.generatePropStrWithVariable(propsOpt)).toStrictEqual('title={buttonTitle}');
   });
   test('should return template sentences array', () => {
     const tsx: ITSXOptions = {
@@ -142,38 +142,37 @@ describe('react', () => {
 describe('dsl analysis', () => {
   const react = new ReactCodeGenerator(dsl as unknown as IPageSchema, new TypeScriptCodeGenerator());
   test('extract import info', () => {
-    expect(react.analysisDsl()).toStrictEqual({
-      pageName: 'testPage',
-      importInfo: {
-        antd: {
-          object: ['Input', 'Select'],
-        },
-        'antd/es/Table': {
-          default: ['Table']
-        },
-        'antd/es/Tab': {
-          object: ['Tab']
-        }
+    expect(react.analysisDsl().importInfo).toStrictEqual({
+      antd: {
+        object: ['Input', 'Select']
+      },
+      'antd/es/Table': {
+        default: ['Table']
+      },
+      'antd/es/Tab': {
+        object: ['Tab']
       }
     });
   });
 
   test('import info to import sentences', () => {
-    const { importInfo  } = react.analysisDsl();
+    const { importInfo } = react.analysisDsl();
     let s: string[] = [];
-    Object.entries(importInfo).forEach(([ importPath, importObject ]) => {
-      Object.entries(importObject).forEach(([ importType, importNames ]) => {
-        s = s.concat(react.tsCodeGenerator.generateImportSentence({
-          importNames,
-          importType: importType as ImportType,
-          importPath,
-        }));
+    Object.entries(importInfo).forEach(([importPath, importObject]) => {
+      Object.entries(importObject).forEach(([importType, importNames]) => {
+        s = s.concat(
+          react.tsCodeGenerator.generateImportSentence({
+            importNames,
+            importType: importType as ImportType,
+            importPath
+          })
+        );
       });
     });
     expect(s).toStrictEqual([
-      'import { Tab } from \'antd/es/Tab\';',
-      'import Table from \'antd/es/Table\';',
-      'import { Input, Select } from \'antd\';'
+      "import { Tab } from 'antd/es/Tab';",
+      "import Table from 'antd/es/Table';",
+      "import { Input, Select } from 'antd';"
     ]);
   });
 });

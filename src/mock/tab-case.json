@@ -5,37 +5,37 @@
   "desc": "测试页面",
   "props": {
     "c5": {
-      "p10": {
-        "id": "p10",
+      "value": {
+        "id": "value",
         "schemaType": "props",
         "name": "value",
         "category": "basic",
         "value": "1",
         "valueType": "string",
-        "valueSource": "fixed"
+        "valueSource": "editorInput"
       },
-      "p13": {
+      "onSearch": {
         "name": "onSearch",
         "category": "event",
         "value": "h1",
         "valueType": "handler",
-        "valueSource": "fixed"
+        "valueSource": "editorInput"
       }
     },
     "c6": {
-      "p11": {
+      "value": {
         "name": "value",
         "category": "basic",
         "value": "2",
         "valueType": "string",
-        "valueSource": "fixed"
+        "valueSource": "editorInput"
       },
-      "p12": {
-        "name": "value",
+      "options": {
+        "name": "options",
         "category": "basic",
         "value": "[{ value: \"1\", \"label\": \"选项1\" }, { value: \"2\", \"label\": \"选项2\" }]",
         "valueType": "string",
-        "valueSource": "fixed"
+        "valueSource": "editorInput"
       }
     }
   },
@@ -56,7 +56,7 @@
             "dependency": "antd",
             "name": "Input",
             "propsRefs": [
-              "p10"
+              "value"
             ]
           },
           {
@@ -65,8 +65,8 @@
             "dependency": "antd",
             "name": "Select",
             "propsRefs": [
-              "p11",
-              "p12"
+              "value",
+              "value"
             ]
           }
         ]
