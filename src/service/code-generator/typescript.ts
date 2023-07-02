@@ -5,7 +5,7 @@ import { ImportType } from '@/types';
 export interface IImportOptions {
   importNames?: string[];
   importPath: string;
-  importType?: ImportType;
+  importType: ImportType;
   useSemicolon?: boolean;
 }
 
@@ -44,6 +44,7 @@ export default class TypeScriptCodeGenerator {
     if (useSemicolon) {
       importPathPart += ';';
     }
+    debugger;
 
     switch (importType) {
       case 'object':

@@ -8,10 +8,12 @@ import ReactCodeGenerator, {
   IUseStateOptions
 } from '@/service/code-generator/react';
 import IPageSchema from '@/types/page.schema';
-import dsl from '@/mock/tab-case.json';
+import * as dsl from '@/mock/tab-case.json';
+import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
+import { ImportType } from '@/types';
 
 describe('react', () => {
-  const react = new ReactCodeGenerator(dsl as unknown as IPageSchema);
+  const react = new ReactCodeGenerator(dsl as unknown as IPageSchema, new TypeScriptCodeGenerator());
   test('should return props string', () => {
     const propsOpt: IPropsOptions = {
       name: 'title',
@@ -65,7 +67,7 @@ describe('react', () => {
     expect(react.generateUseEffect(effectOpt)).toStrictEqual([
       'useEffect(() => {',
       'fetchData().then();',
-      '}, [value]);',
+      '}, [value]);'
     ]);
   });
   test('should return use effect hook sentence array with no dependencies', () => {
@@ -73,39 +75,41 @@ describe('react', () => {
       handlerCallingSentence: 'fetchData().then();',
       dependencies: []
     };
-    expect(react.generateUseEffect(effectOpt)).toStrictEqual([
-      'useEffect(() => {',
-      'fetchData().then();',
-      '}, []);',
-    ]);
+    expect(react.generateUseEffect(effectOpt)).toStrictEqual(['useEffect(() => {', 'fetchData().then();', '}, []);']);
   });
   test('should return use effect hook sentence array with no dependencies 2', () => {
     const effectOpt: IUseEffectOptions = {
-      handlerCallingSentence: 'fetchData().then();',
+      handlerCallingSentence: 'fetchData().then();'
     };
-    expect(react.generateUseEffect(effectOpt)).toStrictEqual([
-      'useEffect(() => {',
-      'fetchData().then();',
-      '});',
-    ]);
+    expect(react.generateUseEffect(effectOpt)).toStrictEqual(['useEffect(() => {', 'fetchData().then();', '});']);
   });
   test('test boolean', () => {
     const stateOpt: IUseStateOptions = {
-      initialValueStr: true, valueType: 'boolean', name: 'testValue'
+      initialValueStr: true,
+      valueType: 'boolean',
+      name: 'testValue'
     };
-    expect(react.generateUseState(stateOpt)).toStrictEqual('const [testValue, setTestValue] = useState<boolean>(true);');
+    expect(react.generateUseState(stateOpt)).toStrictEqual(
+      'const [testValue, setTestValue] = useState<boolean>(true);'
+    );
   });
   test('test number', () => {
     const stateOpt: IUseStateOptions = {
-      initialValueStr: 123, valueType: 'number', name: 'testValue'
+      initialValueStr: 123,
+      valueType: 'number',
+      name: 'testValue'
     };
     expect(react.generateUseState(stateOpt)).toStrictEqual('const [testValue, setTestValue] = useState<number>(123);');
   });
   test('test string', () => {
     const stateOpt: IUseStateOptions = {
-      initialValueStr: 'hello world', valueType: 'string', name: 'testValue'
+      initialValueStr: 'hello world',
+      valueType: 'string',
+      name: 'testValue'
     };
-    expect(react.generateUseState(stateOpt)).toStrictEqual('const [testValue, setTestValue] = useState<string>(\'hello world\');');
+    expect(react.generateUseState(stateOpt)).toStrictEqual(
+      "const [testValue, setTestValue] = useState<string>('hello world');"
+    );
   });
 
   test('test use memo with dependencies', () => {
@@ -129,8 +133,47 @@ describe('react', () => {
     const opt: IUseRefOptions = {
       initialValueStr: '1',
       valueType: 'string',
-      name: 'test',
+      name: 'test'
     };
-    expect(react.generateUseRef(opt)).toBe('const testRef = useRef<string>(\'1\');');
+    expect(react.generateUseRef(opt)).toBe("const testRef = useRef<string>('1');");
+  });
+});
+
+describe('dsl analysis', () => {
+  const react = new ReactCodeGenerator(dsl as unknown as IPageSchema, new TypeScriptCodeGenerator());
+  test('extract import info', () => {
+    expect(react.analysisDsl()).toStrictEqual({
+      pageName: 'testPage',
+      importInfo: {
+        antd: {
+          object: ['Input', 'Select'],
+        },
+        'antd/es/Table': {
+          default: ['Table']
+        },
+        'antd/es/Tab': {
+          object: ['Tab']
+        }
+      }
+    });
+  });
+
+  test('import info to import sentences', () => {
+    const { importInfo  } = react.analysisDsl();
+    let s: string[] = [];
+    Object.entries(importInfo).forEach(([ importPath, importObject ]) => {
+      Object.entries(importObject).forEach(([ importType, importNames ]) => {
+        s = s.concat(react.tsCodeGenerator.generateImportSentence({
+          importNames,
+          importType: importType as ImportType,
+          importPath,
+        }));
+      });
+    });
+    expect(s).toStrictEqual([
+      'import { Tab } from \'antd/es/Tab\';',
+      'import Table from \'antd/es/Table\';',
+      'import { Input, Select } from \'antd\';'
+    ]);
   });
 });

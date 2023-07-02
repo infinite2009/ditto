@@ -1,6 +1,8 @@
 import IPageSchema from '@/types/page.schema';
-import { toUpperCase, typeOf } from '@/util';
-import { s } from '@tauri-apps/api/path-f8d71c21';
+import { toUpperCase } from '@/util';
+import TypeScriptCodeGenerator, { IFunctionOptions, IImportOptions } from '@/service/code-generator/typescript';
+import IComponentSchema from '@/types/component.schema';
+import { ImportType } from '@/types';
 
 export interface ITSXOptions {
   componentName: string;
@@ -43,12 +45,40 @@ export interface IUseRefOptions {
   name: string;
 }
 
+export interface IDSLStatsInfo {
+  pageName: string;
+  importInfo: {
+    [importPath: string]: {
+      [importType: string]: string[];
+    };
+  };
+  stateInfo: {
+    [stateName: string]: IUseStateOptions | null;
+  };
+  memoInfo: {
+    [memoName: string]: IUseMemoOptions | null;
+  };
+  effectInfo: {
+    [effectName: string]: IUseEffectOptions | null;
+  };
+  handlerInfo: {
+    [handlerName: string]: IFunctionOptions | null;
+  };
+  actionInfo: {
+    [handlerName: string]: IFunctionOptions | null;
+  };
+  tsxInfo: ITSXOptions | null;
+}
+
 export default class ReactCodeGenerator {
-  constructor(dsl: IPageSchema) {
+  constructor(dsl: IPageSchema, tsCodeGenerator: TypeScriptCodeGenerator) {
     this.dsl = dsl;
+    this.tsCodeGenerator = tsCodeGenerator;
   }
 
   dsl: IPageSchema;
+
+  tsCodeGenerator: TypeScriptCodeGenerator;
 
   generateTSX(opt: ITSXOptions, spaces = 0, indent = 2, sentences: string[] = []): string[] {
     const { propsStrArr = [], componentName, children = [] } = opt;
@@ -125,5 +155,77 @@ export default class ReactCodeGenerator {
     return `const ${name}Ref = useRef<${valueType}>(${
       valueType === 'string' ? `'${initialValueStr}'` : initialValueStr
     });`;
+  }
+
+  analysisDsl(): IDSLStatsInfo {
+    const result: Partial<IDSLStatsInfo> = {
+      importInfo: {}
+    };
+    const { child, props, httpService, actions, handlers, name: pageName, desc: PageDesc } = this.dsl;
+    result.pageName = pageName;
+
+    // 广度遍历 components，获取其中的导入信息和 props
+    let q: IComponentSchema[] = [child];
+    while (q.length) {
+      // 弹出头部的节点
+      const node: IComponentSchema | undefined = q.shift();
+      if (node) {
+        const {
+          desc,
+          callingName,
+          importType,
+          dependency,
+          importRelativePath,
+          name,
+          propsRefs = [],
+          children = [],
+          id
+        } = node;
+        if (importType === undefined) {
+          debugger;
+        }
+        // 提取导入信息
+        if (dependency) {
+          const importInfoForComponent = this.extractImportInfo(dependency, importType, importRelativePath, name);
+          if (importInfoForComponent.importPath && result.importInfo) {
+            result.importInfo[importInfoForComponent.importPath] = result.importInfo[importInfoForComponent.importPath] || {
+              [importInfoForComponent.importType as string]: [],
+            };
+            if (!result.importInfo[importInfoForComponent.importPath][importInfoForComponent.importType as string]?.includes(name)) {
+              result.importInfo[importInfoForComponent.importPath][importInfoForComponent.importType as string]?.push(name);
+            }
+          }
+        }
+
+        // 提取 props
+        // TODO
+        q = q.concat(node.children || []);
+        //
+      } else {
+        result.tsxInfo = null;
+      }
+    }
+    return <IDSLStatsInfo>result;
+  }
+
+  extractImportInfo(
+    dependency: string,
+    importType: ImportType | undefined,
+    importRelativePath: string | undefined,
+    name: string
+  ): { importName: string; importPath?: string; importType?: ImportType } {
+    const result: { importName: string; importPath?: string; importType?: ImportType } = {
+      importName: name,
+      importType
+    };
+    if (importType === undefined) {
+      if (importRelativePath) {
+        result.importType = 'default';
+      } else {
+        result.importType = 'object';
+      }
+    }
+    result.importPath = this.tsCodeGenerator.calculateImportPath(dependency, importRelativePath);
+    return result;
   }
 }

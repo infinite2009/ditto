@@ -43,12 +43,10 @@
     "id": "c0",
     "schemaType": "component",
     "name": "div",
-    "dependency": "html",
     "children": [
       {
         "id": "c4",
         "schemaType": "component",
-        "dependency": "html",
         "name": "div",
         "children": [
           {
@@ -77,6 +75,8 @@
         "id": "c1",
         "schemaType": "component",
         "dependency": "antd",
+        "importRelativePath": "/es/Tab",
+        "importType": "object",
         "name": "Tab",
         "propsRefs": [
           "p7",
@@ -88,6 +88,7 @@
         "id": "c2",
         "schemaType": "component",
         "dependency": "antd",
+        "importRelativePath": "es/Table",
         "name": "Table",
         "propsRefs": [
           "p1",
@@ -98,6 +99,7 @@
       {
         "id": "c3",
         "dependency": "antd",
+        "importRelativePath": "es/Table",
         "name": "Table",
         "propsRefs": [
           "p4",
