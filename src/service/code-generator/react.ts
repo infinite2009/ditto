@@ -1,6 +1,6 @@
 import IPageSchema from '@/types/page.schema';
 import { toUpperCase } from '@/util';
-import TypeScriptCodeGenerator, { IFunctionOptions, IImportOptions } from '@/service/code-generator/typescript';
+import TypeScriptCodeGenerator, { IFunctionOptions } from '@/service/code-generator/typescript';
 import IComponentSchema from '@/types/component.schema';
 import { ImportType } from '@/types';
 
@@ -181,9 +181,7 @@ export default class ReactCodeGenerator {
           children = [],
           id
         } = node;
-        if (importType === undefined) {
-          debugger;
-        }
+
         // 提取导入信息
         if (dependency) {
           const importInfoForComponent = this.extractImportInfo(dependency, importType, importRelativePath, name);
