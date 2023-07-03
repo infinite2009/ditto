@@ -142,7 +142,9 @@ describe('react', () => {
 describe('dsl analysis', () => {
   const react = new ReactCodeGenerator(dsl as unknown as IPageSchema, new TypeScriptCodeGenerator());
   test('extract import info', () => {
-    expect(react.analysisDsl().importInfo).toStrictEqual({
+    const { importInfo, tsxInfo, stateInfo } = react.analysisDsl();
+    console.log('tsxInfo: ',  JSON.stringify(tsxInfo));
+    expect(importInfo).toStrictEqual({
       antd: {
         object: ['Input', 'Select']
       },

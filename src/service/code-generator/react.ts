@@ -182,6 +182,7 @@ export default class ReactCodeGenerator {
     };
     const { child, props, httpService, actions, handlers, name: pageName, desc: PageDesc } = this.dsl;
     result.pageName = pageName;
+    // 初始化 tsxInfo，后边在这个 children 里边去遍历填充子节点信息
     result.tsxInfo = {
       componentName: child.callingName || child.name,
       propsStrArr: [],
@@ -196,7 +197,6 @@ export default class ReactCodeGenerator {
       const node: IComponentSchema | undefined = q.shift();
       if (node) {
         const {
-          desc,
           callingName,
           importType,
           dependency,
@@ -231,19 +231,34 @@ export default class ReactCodeGenerator {
         // 提取 props
         const pNode = p.shift();
         if (pNode) {
-          const { propsStrArr, stateInfo, callbackInfo, memoInfo, effectInfo } = this.analysisProps(
-            this.dsl.props[id],
-            propsRefs
-          );
-          pNode.propsStrArr = propsStrArr;
-          // 将每个组件节点的 stateInfo 合并到 result 中，通过命名系统避免 state 重名，callback，memo，effect 亦然
-          Object.assign(result.stateInfo as object, stateInfo);
-          Object.assign(result.callbackInfo as object, callbackInfo);
-          Object.assign(result.memoInfo as object, memoInfo);
-          Object.assign(result.effectInfo as object, effectInfo);
+          pNode.componentName = callingName || name;
+          // 处理当前节点的 props
+          if (this.dsl.props[id]) {
+            const { propsStrArr, stateInfo, callbackInfo, memoInfo, effectInfo } = this.analysisProps(
+              this.dsl.props[id],
+              propsRefs
+            );
+            pNode.propsStrArr = propsStrArr;
+            // 将每个组件节点的 stateInfo 合并到 result 中，通过命名系统避免 state 重名，callback，memo，effect 亦然
+            Object.assign(result.stateInfo as object, stateInfo);
+            Object.assign(result.callbackInfo as object, callbackInfo);
+            Object.assign(result.memoInfo as object, memoInfo);
+            Object.assign(result.effectInfo as object, effectInfo);
+          }
+          // 初始化子节点
+          if (children) {
+            pNode.children = children.map(() => {
+              return {
+                componentName: '',
+                propsStrArr: [],
+                children: []
+              };
+            });
+            p = p.concat(pNode.children);
+          }
         }
 
-        q = q.concat(node.children || []);
+        q = q.concat(children || []);
         //
       } else {
         result.tsxInfo = null;
@@ -289,7 +304,14 @@ export default class ReactCodeGenerator {
     const callbackInfo: { [key: string]: IUseCallbackOptions } = {};
     const effectInfo: { [key: string]: IUseEffectOptions } = {};
     propsRefs.forEach(ref => {
+      if (!componentPropsDict) {
+        debugger;
+      }
       const props = componentPropsDict[ref];
+      // 找不到的 ref 跳过
+      if (!props) {
+        return;
+      }
       const { value, valueType, valueSource, isValue } = props;
       const basicValueTypes = ['string', 'number', 'boolean'];
       // 基础类型固定值走字面，其他情况走变量（常量、state、memo、callback）
