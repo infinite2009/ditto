@@ -304,9 +304,6 @@ export default class ReactCodeGenerator {
     const callbackInfo: { [key: string]: IUseCallbackOptions } = {};
     const effectInfo: { [key: string]: IUseEffectOptions } = {};
     propsRefs.forEach(ref => {
-      if (!componentPropsDict) {
-        debugger;
-      }
       const props = componentPropsDict[ref];
       // 找不到的 ref 跳过
       if (!props) {
