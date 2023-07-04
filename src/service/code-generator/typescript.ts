@@ -14,8 +14,7 @@ export interface IFunctionOptions {
   functionParams: string[];
   useArrow?: boolean;
   useAsync?: boolean;
-  bodyGeneratorParams?: any[];
-  bodyGenerator?: (...args: any[]) => string[];
+  body?: string[];
 }
 
 export interface IConstantOptions {
@@ -70,8 +69,7 @@ export default class TypeScriptCodeGenerator {
       functionName,
       useAsync = false,
       useArrow = false,
-      bodyGeneratorParams = [],
-      bodyGenerator = () => []
+      body = []
     } = data;
     let sentences = [];
     let signatureSentence = '';
@@ -89,8 +87,7 @@ export default class TypeScriptCodeGenerator {
       signatureSentence = `async ${signatureSentence}`;
     }
     sentences.push(signatureSentence);
-    const bodySentences = bodyGenerator(...bodyGeneratorParams);
-    sentences = sentences.concat(bodySentences);
+    sentences = sentences.concat(body);
 
     sentences.push('}');
     return sentences;

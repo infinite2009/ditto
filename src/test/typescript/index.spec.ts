@@ -58,11 +58,7 @@ describe('function test', () => {
       functionName: 'testF',
       functionParams: ['a1', 'a2', 'a3'],
       useArrow: false,
-      bodyGeneratorParams: [123],
-      bodyGenerator: (...args: any[]) => {
-        const [a1] = args;
-        return [`console.log(${a1})`];
-      }
+      body: ['console.log(123)']
     } as unknown as IFunctionOptions;
     expect(tsCodeGenerator.generateFunctionDefinition(data)).toStrictEqual([
       'function testF(a1, a2, a3) {',
