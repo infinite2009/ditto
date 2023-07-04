@@ -27,7 +27,7 @@ export interface IUseEffectOptions {
 
 export interface IUseStateOptions {
   // 初始值的字符串
-  initialValueStr: any;
+  initialValue: any;
   valueType: string;
   name: string;
 }
@@ -134,9 +134,9 @@ export default class ReactCodeGenerator {
   }
 
   generateUseState(opt: IUseStateOptions) {
-    const { initialValueStr, valueType, name } = opt;
+    const { initialValue, valueType, name } = opt;
     return `const [${name}, set${toUpperCase(name)}] = useState<${valueType}>(${
-      valueType === 'string' ? `'${initialValueStr}'` : initialValueStr
+      valueType === 'string' ? `'${initialValue}'` : initialValue
     });`;
   }
 
@@ -331,6 +331,12 @@ export default class ReactCodeGenerator {
               variableType: valueType
             })
           );
+          // 变量需要转为 state
+          stateInfo[variableName] = {
+            name: variableName,
+            initialValue: this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
+            valueType
+          };
         }
       } else if (valueSource === 'handler') {
         // TODO: 生成 useCallback
@@ -347,7 +353,6 @@ export default class ReactCodeGenerator {
           handlerCallingSentence: `() => { console.log('useMemo ${variableName} works!'); }`
         };
       } else {
-        // TODO: 待实现
         const variableName = this.generateVariableName();
         propsStrArr.push(
           this.generatePropStrWithVariable({
@@ -359,8 +364,7 @@ export default class ReactCodeGenerator {
         // 使用状态的变量
         stateInfo[variableName] = {
           name: variableName,
-          // TODO: 之后在开发初值生成方法
-          initialValueStr: 'null',
+          initialValue: this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
           valueType
         };
       }

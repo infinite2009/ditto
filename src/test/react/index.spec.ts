@@ -85,7 +85,7 @@ describe('react', () => {
   });
   test('test boolean', () => {
     const stateOpt: IUseStateOptions = {
-      initialValueStr: true,
+      initialValue: true,
       valueType: 'boolean',
       name: 'testValue'
     };
@@ -95,7 +95,7 @@ describe('react', () => {
   });
   test('test number', () => {
     const stateOpt: IUseStateOptions = {
-      initialValueStr: 123,
+      initialValue: 123,
       valueType: 'number',
       name: 'testValue'
     };
@@ -103,7 +103,7 @@ describe('react', () => {
   });
   test('test string', () => {
     const stateOpt: IUseStateOptions = {
-      initialValueStr: 'hello world',
+      initialValue: 'hello world',
       valueType: 'string',
       name: 'testValue'
     };
@@ -144,6 +144,7 @@ describe('dsl analysis', () => {
   test('extract import info', () => {
     const { importInfo, tsxInfo, stateInfo } = react.analysisDsl();
     console.log('tsxInfo: ',  JSON.stringify(tsxInfo));
+    console.log('stateInfo: ', JSON.stringify(stateInfo));
     expect(importInfo).toStrictEqual({
       antd: {
         object: ['Input', 'Select']

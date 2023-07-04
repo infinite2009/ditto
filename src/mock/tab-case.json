@@ -33,8 +33,17 @@
       "options": {
         "name": "options",
         "category": "basic",
-        "value": "[{ value: \"1\", \"label\": \"选项1\" }, { value: \"2\", \"label\": \"选项2\" }]",
-        "valueType": "string",
+        "value": [
+          {
+            "value": 1,
+            "label": "选项1"
+          },
+          {
+            "value": "2",
+            "label": "选项2"
+          }
+        ],
+        "valueType": "array",
         "valueSource": "editorInput"
       }
     }
@@ -66,7 +75,7 @@
             "name": "Select",
             "propsRefs": [
               "value",
-              "value"
+              "options"
             ]
           }
         ]
