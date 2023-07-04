@@ -56,25 +56,25 @@ export interface IDSLStatsInfo {
     };
   };
   stateInfo: {
-    [stateName: string]: IUseStateOptions | null;
+    [stateName: string]: IUseStateOptions;
   };
   memoInfo: {
-    [memoName: string]: IUseMemoOptions | null;
+    [memoName: string]: IUseMemoOptions;
   };
   effectInfo: {
-    [effectName: string]: IUseEffectOptions | null;
+    [effectName: string]: IUseEffectOptions;
   };
   callbackInfo: {
-    [callbackName: string]: IUseCallbackOptions | null;
+    [callbackName: string]: IUseCallbackOptions;
   };
   handlerInfo: {
-    [handlerName: string]: IFunctionOptions | null;
+    [handlerName: string]: IFunctionOptions;
   };
   actionInfo: {
-    [handlerName: string]: IFunctionOptions | null;
+    [handlerName: string]: IFunctionOptions;
   };
   constantInfo: {
-    [constantName: string]: IConstantOptions | null;
+    [constantName: string]: IConstantOptions;
   };
   tsxInfo: ITSXOptions | null;
 }
@@ -133,7 +133,7 @@ export default class ReactCodeGenerator {
     return result;
   }
 
-  generateUseState(opt: IUseStateOptions) {
+  generateUseState(opt: IUseStateOptions): string {
     const { initialValue, valueType, name } = opt;
     return `const [${name}, set${toUpperCase(name)}] = useState<${valueType}>(${
       valueType === 'string' ? `'${initialValue}'` : initialValue
@@ -373,7 +373,7 @@ export default class ReactCodeGenerator {
       if (isValue) {
         const variableName = this.generateVariableName();
         effectInfo[variableName] = {
-          dependencies: [],
+          dependencies: [ref],
           handlerCallingSentence: `() => { console.log('useEffect ${variableName} works!'); }`
         };
       }
@@ -389,5 +389,63 @@ export default class ReactCodeGenerator {
 
   generateVariableName() {
     return 'mockVariableName';
+  }
+
+  generatePageCode(): string[] {
+    let result: string[] = [];
+    const {
+      pageName = 'index',
+      stateInfo,
+      effectInfo,
+      callbackInfo,
+      memoInfo,
+      constantInfo,
+      importInfo,
+      tsxInfo
+    } = this.analysisDsl();
+
+    // 生成导入语句
+    Object.entries(importInfo).forEach(([importPath, item]) => {
+      Object.entries(item).forEach(([importType, importNames]) => {
+        result.push(
+          this.tsCodeGenerator.generateImportSentence({
+            importNames,
+            importPath,
+            importType: importType as ImportType
+          })
+        );
+      });
+    });
+
+    // 生成页面函数式组件的头
+    result.concat(
+      this.tsCodeGenerator.generateFunctionDefinition({
+        functionName: pageName,
+        functionParams: [],
+        useArrow: false,
+        useAsync: false,
+        body: [
+          ...Object.values(stateInfo).map(i => this.generateUseState(i)),
+          ...Object.values(effectInfo)
+            .map(i => this.generateUseEffect(i))
+            .flat(2),
+          ...Object.values(memoInfo)
+            .map(i => this.generateUseMemo(i))
+            .flat(2),
+          ...Object.values(callbackInfo)
+            .map(i => this.generateUseCallback(i))
+            .flat(2),
+        ]
+      })
+    );
+    if (tsxInfo === null) {
+      result.push(`return null;`);
+    } else {
+      result.push('return (');
+      result = result.concat(this.generateTSX(tsxInfo));
+      result.push(')');
+    }
+
+    return result;
   }
 }
