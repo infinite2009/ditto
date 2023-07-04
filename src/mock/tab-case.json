@@ -28,7 +28,8 @@
         "category": "basic",
         "value": "2",
         "valueType": "string",
-        "valueSource": "editorInput"
+        "valueSource": "userInput",
+        "isValue": true
       },
       "options": {
         "name": "options",
