@@ -374,7 +374,7 @@ export default class ReactCodeGenerator {
         const variableName = this.generateVariableName();
         effectInfo[variableName] = {
           dependencies: [],
-          handlerCallingSentence: `() => { console.log('useMemo ${variableName} works!'); }`
+          handlerCallingSentence: `() => { console.log('useEffect ${variableName} works!'); }`
         };
       }
     });
