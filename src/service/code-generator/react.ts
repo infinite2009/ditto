@@ -416,35 +416,32 @@ export default class ReactCodeGenerator {
         );
       });
     });
-
-    // 生成页面函数式组件的头
-    result.concat(
-      this.tsCodeGenerator.generateFunctionDefinition({
-        functionName: pageName,
-        functionParams: [],
-        useArrow: false,
-        useAsync: false,
-        body: [
-          ...Object.values(stateInfo).map(i => this.generateUseState(i)),
-          ...Object.values(effectInfo)
-            .map(i => this.generateUseEffect(i))
-            .flat(2),
-          ...Object.values(memoInfo)
-            .map(i => this.generateUseMemo(i))
-            .flat(2),
-          ...Object.values(callbackInfo)
-            .map(i => this.generateUseCallback(i))
-            .flat(2),
-        ]
-      })
-    );
+    const functionInfo = {
+      functionName: pageName,
+      functionParams: [],
+      useArrow: false,
+      useAsync: false,
+      body: [
+        ...Object.values(stateInfo).map(i => this.generateUseState(i)),
+        ...Object.values(effectInfo)
+          .map(i => this.generateUseEffect(i))
+          .flat(2),
+        ...Object.values(memoInfo)
+          .map(i => this.generateUseMemo(i))
+          .flat(2),
+        ...Object.values(callbackInfo)
+          .map(i => this.generateUseCallback(i))
+          .flat(2)
+      ]
+    };
     if (tsxInfo === null) {
-      result.push(`return null;`);
+      functionInfo.body.push(`return null;`);
     } else {
-      result.push('return (');
-      result = result.concat(this.generateTSX(tsxInfo));
-      result.push(')');
+      functionInfo.body.push('return (');
+      functionInfo.body = functionInfo.body.concat(this.generateTSX(tsxInfo));
+      functionInfo.body.push(');');
     }
+    result = result.concat(this.tsCodeGenerator.generateFunctionDefinition(functionInfo));
 
     return result;
   }

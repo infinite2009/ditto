@@ -143,10 +143,6 @@ describe('dsl analysis', () => {
   const react = new ReactCodeGenerator(dsl as unknown as IPageSchema, new TypeScriptCodeGenerator());
   test('extract import info', () => {
     const { importInfo, effectInfo, handlerInfo, tsxInfo, stateInfo } = react.analysisDsl();
-    console.log('tsxInfo: ',  JSON.stringify(tsxInfo));
-    console.log('stateInfo: ', JSON.stringify(stateInfo));
-    console.log('effectInfo: ', JSON.stringify(effectInfo));
-    console.log('handlerInfo: ', JSON.stringify(handlerInfo));
     expect(importInfo).toStrictEqual({
       antd: {
         object: ['Input', 'Select']
@@ -179,5 +175,14 @@ describe('dsl analysis', () => {
       "import Table from 'antd/es/Table';",
       "import { Input, Select } from 'antd';"
     ]);
+  });
+});
+
+describe('code generation cases', () => {
+  const react = new ReactCodeGenerator(dsl as unknown as IPageSchema, new TypeScriptCodeGenerator());
+  test('just view log', () => {
+    const testResult = react.generatePageCode();
+    console.log('test result: ', testResult);
+    expect(1).toBe(1);
   });
 });
