@@ -4,7 +4,6 @@ import TypeScriptCodeGenerator, { IConstantOptions, IFunctionOptions } from '@/s
 import IComponentSchema from '@/types/component.schema';
 import { ImportType } from '@/types';
 import DynamicObject from '@/types/dynamic-object';
-import { p } from '@tauri-apps/api/path-f8d71c21';
 
 export interface ITSXOptions {
   componentName: string;
@@ -89,21 +88,20 @@ export default class ReactCodeGenerator {
 
   tsCodeGenerator: TypeScriptCodeGenerator;
 
-  generateTSX(opt: ITSXOptions, spaces = 0, indent = 2, sentences: string[] = []): string[] {
+  generateTSX(opt: ITSXOptions, sentences: string[] = []): string[] {
     const { propsStrArr = [], componentName, children = [] } = opt;
     const startTagStr = `<${componentName}${propsStrArr?.length ? ' ' : ''}${propsStrArr.join(' ')} ${
       children?.length ? '' : '/'
     }>`;
-    const spacesPrefix = ''.padStart(spaces, ' ');
-    sentences.push(`${spacesPrefix}${startTagStr}`);
+    sentences.push(startTagStr);
     if (children?.length) {
       children?.forEach(child => {
-        this.generateTSX(child, spaces + indent, indent).forEach(item => {
+        this.generateTSX(child, ).forEach(item => {
           sentences.push(item);
         });
       });
       const closeTagStr = `</${componentName}>`;
-      sentences.push(`${spacesPrefix}${closeTagStr}`);
+      sentences.push(closeTagStr);
     }
     return sentences;
   }
@@ -438,7 +436,7 @@ export default class ReactCodeGenerator {
       });
     });
     const functionInfo = {
-      functionName: pageName,
+      functionName: toUpperCase(pageName),
       functionParams: [],
       useArrow: false,
       useAsync: false,

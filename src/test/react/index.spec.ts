@@ -53,12 +53,12 @@ describe('react', () => {
     };
     expect(react.generateTSX(tsx)).toStrictEqual([
       '<div >',
-      '  <Button title={buttonTitle} onClick={handleClicking} />',
-      '  <Input.Search value={inputValue} />',
-      '  <div >',
-      '    <div />',
-      '    <p />',
-      '  </div>',
+      '<Button title={buttonTitle} onClick={handleClicking} />',
+      '<Input.Search value={inputValue} />',
+      '<div >',
+      '<div />',
+      '<p />',
+      '</div>',
       '</div>'
     ]);
   });
