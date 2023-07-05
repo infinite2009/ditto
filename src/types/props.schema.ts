@@ -9,11 +9,11 @@ export default interface IPropsSchema extends ISchema {
   // 如果是值，那么该属性变更时，可以用 useEffect 监听并做出响应。目前来说，对于一个组件，值属性最多支持一个
   isValue?: boolean;
   // 控制 UI 显隐性
-  isVisible: boolean;
+  isVisible?: boolean;
   // 属性的名字
   name: string;
-  // 属性值的类型
-  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object';
+  // 属性值的类型, template 是自定义的属性，表示这个值是传入模板
+  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object' | 'template';
   /*
    * 这个值的来源
    * editorInput: 创建页面时编辑者输入的常量，会指导代码生成器生成常量声明和赋值代码，存入 const
