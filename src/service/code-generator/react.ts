@@ -340,8 +340,7 @@ export default class ReactCodeGenerator {
             })
           );
         } else {
-          // TODO: 待实现
-          const variableName = 'mockVariableName';
+          const variableName = this.generateVariableName();
           propsStrArr.push(
             this.generatePropStrWithVariable({
               name: ref,
