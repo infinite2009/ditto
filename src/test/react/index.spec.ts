@@ -152,13 +152,7 @@ describe('dsl analysis', () => {
         object: ['useEffect', 'useState']
       },
       antd: {
-        object: ['Input', 'Select']
-      },
-      'antd/es/Table': {
-        default: ['Table']
-      },
-      'antd/es/Tab': {
-        object: ['Tab']
+        object: ['Tabs', 'Table', 'Input', 'Select']
       }
     });
   });
@@ -180,9 +174,7 @@ describe('dsl analysis', () => {
     expect(s).toStrictEqual([
       "import React from 'react';",
       "import { useEffect, useState } from 'react';",
-      "import { Tab } from 'antd/es/Tab';",
-      "import Table from 'antd/es/Table';",
-      "import { Input, Select } from 'antd';"
+      "import { Tabs, Table, Input, Select } from 'antd';"
     ]);
   });
 });
