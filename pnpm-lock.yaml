@@ -46,6 +46,9 @@ devDependencies:
   '@types/node':
     specifier: ^18.16.18
     version: 18.16.18
+  '@types/prettier':
+    specifier: ^2.7.3
+    version: 2.7.3
   '@types/react':
     specifier: ^18.2.14
     version: 18.2.14
