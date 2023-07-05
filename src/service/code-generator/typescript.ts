@@ -12,6 +12,7 @@ export interface IImportOptions {
 export interface IFunctionOptions {
   functionName: string;
   functionParams: string[];
+  exportType?: 'default' | 'object';
   useArrow?: boolean;
   useAsync?: boolean;
   body?: string[];
@@ -69,6 +70,7 @@ export default class TypeScriptCodeGenerator {
       functionName,
       useAsync = false,
       useArrow = false,
+      exportType = 'null',
       body = []
     } = data;
     let sentences = [];
@@ -77,10 +79,16 @@ export default class TypeScriptCodeGenerator {
     if (useArrow) {
       signatureSentence = `(${functionParamsStr}) => {`;
     } else {
+      let prefix = '';
+      if (exportType === 'default') {
+        prefix = 'export default ';
+      } else if (exportType === 'object') {
+        prefix = 'export ';
+      }
       if (functionName) {
-        signatureSentence = `function ${functionName}(${functionParamsStr}) {`;
+        signatureSentence = `${prefix}function ${functionName}(${functionParamsStr}) {`;
       } else {
-        signatureSentence = `function (${functionParamsStr}) {`;
+        signatureSentence = `${prefix}function (${functionParamsStr}) {`;
       }
     }
     if (useAsync) {

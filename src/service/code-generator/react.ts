@@ -440,6 +440,7 @@ export default class ReactCodeGenerator {
       functionParams: [],
       useArrow: false,
       useAsync: false,
+      exportType: 'default',
       body: [
         ...Object.values(stateInfo).map(i => this.generateUseState(i)),
         ...Object.values(effectInfo)
@@ -460,7 +461,7 @@ export default class ReactCodeGenerator {
       functionInfo.body = functionInfo.body.concat(this.generateTSX(tsxInfo));
       functionInfo.body.push(');');
     }
-    result = result.concat(this.tsCodeGenerator.generateFunctionDefinition(functionInfo));
+    result = result.concat(this.tsCodeGenerator.generateFunctionDefinition(functionInfo as IFunctionOptions));
 
     return result;
   }
