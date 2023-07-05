@@ -135,7 +135,7 @@ export default class ReactCodeGenerator {
 
   generateUseState(opt: IUseStateOptions): string {
     const { initialValue, valueType, name } = opt;
-    return `const [${name}, set${toUpperCase(name)}] = useState<${valueType}>(${
+    return `const [${name}, set${toUpperCase(name)}] = useState<${valueType === 'array' ? 'any[]': valueType}>(${
       valueType === 'string' ? `'${initialValue}'` : initialValue
     });`;
   }
