@@ -11,6 +11,9 @@ import IPageSchema from '@/types/page.schema';
 import * as dsl from '@/mock/tab-case.json';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import { ImportType } from '@/types';
+import generateTsxFile from '@/service/code-generator';
+import * as path from 'path';
+import { existsSync, mkdirSync } from 'fs';
 
 describe('react', () => {
   const react = new ReactCodeGenerator(dsl as unknown as IPageSchema, new TypeScriptCodeGenerator());
@@ -144,6 +147,10 @@ describe('dsl analysis', () => {
   test('extract import info', () => {
     const { importInfo, effectInfo, handlerInfo, tsxInfo, stateInfo } = react.analysisDsl();
     expect(importInfo).toStrictEqual({
+      react: {
+        default: ['React'],
+        object: ['useEffect', 'useState']
+      },
       antd: {
         object: ['Input', 'Select']
       },
@@ -171,6 +178,8 @@ describe('dsl analysis', () => {
       });
     });
     expect(s).toStrictEqual([
+      "import React from 'react';",
+      "import { useEffect, useState } from 'react';",
       "import { Tab } from 'antd/es/Tab';",
       "import Table from 'antd/es/Table';",
       "import { Input, Select } from 'antd';"
@@ -184,5 +193,15 @@ describe('code generation cases', () => {
     const testResult = react.generatePageCode();
     console.log('test result: ', testResult);
     expect(1).toBe(1);
+  });
+
+  test('write file', async () => {
+    const generationDir = `${path.join(__dirname, '../../../generation')}`;
+    if (!existsSync(generationDir)) {
+      mkdirSync(`${generationDir}`);
+    }
+    generateTsxFile(generationDir).then(() => {
+      console.log('数据写入完成');
+    });
   });
 });

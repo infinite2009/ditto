@@ -173,7 +173,12 @@ export default class ReactCodeGenerator {
 
   analysisDsl(): IDSLStatsInfo {
     const result: Partial<IDSLStatsInfo> = {
-      importInfo: {},
+      importInfo: {
+        react: {
+          default: ['React'],
+          object: []
+        }
+      },
       stateInfo: {},
       memoInfo: {},
       callbackInfo: {},
@@ -244,6 +249,21 @@ export default class ReactCodeGenerator {
             Object.assign(result.callbackInfo as object, callbackInfo);
             Object.assign(result.memoInfo as object, memoInfo);
             Object.assign(result.effectInfo as object, effectInfo);
+            if (result.importInfo) {
+              const { object } = result.importInfo.react;
+              if (Object.entries(effectInfo).length && !object.includes('useEffect')) {
+                object.push('useEffect');
+              }
+              if (Object.entries(stateInfo).length && !object.includes('useState')) {
+                object.push('useState');
+              }
+              if (Object.entries(memoInfo).length && !object.includes('useMemo')) {
+                object.push('useMemo');
+              }
+              if (Object.entries(callbackInfo).length && !object.includes('useCallback')) {
+                object.push('useCallback');
+              }
+            }
           }
           // 初始化子节点
           if (children) {
@@ -372,9 +392,10 @@ export default class ReactCodeGenerator {
       // 如果这个属性是 value，那么自动生成 useEffect
       if (isValue) {
         const variableName = this.generateVariableName();
+        // 填充 effectInfo
         effectInfo[variableName] = {
-          dependencies: [ref],
-          handlerCallingSentence: `() => { console.log('useEffect ${variableName} works!'); }`
+          dependencies: [variableName],
+          handlerCallingSentence: `console.log('useEffect ${variableName} works!');`
         };
       }
     });
