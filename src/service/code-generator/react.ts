@@ -183,8 +183,8 @@ export default class ReactCodeGenerator {
       effectInfo: {},
       constantInfo: {}
     };
-    const { child, props, httpService, actions, handlers, name: pageName, desc: PageDesc } = this.dsl;
-    result.pageName = pageName;
+    const { child, props, httpService, actions, handlers, name, desc } = this.dsl;
+    result.pageName = name;
     // 初始化 tsxInfo，后边在这个 children 里边去遍历填充子节点信息
     result.tsxInfo = {
       componentName: child.callingName || child.name,
@@ -236,9 +236,9 @@ export default class ReactCodeGenerator {
         if (pNode) {
           pNode.componentName = callingName || name;
           // 处理当前节点的 props
-          if (this.dsl.props[id]) {
+          if (props[id]) {
             const { propsStrArr, stateInfo, callbackInfo, memoInfo, effectInfo } = this.analysisProps(
-              this.dsl.props[id],
+              props[id],
               propsRefs
             );
             pNode.propsStrArr = propsStrArr;
