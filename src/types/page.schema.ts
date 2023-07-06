@@ -7,7 +7,6 @@ import IActionSchema from '@/types/action.schema';
 import IEventSchema from '@/types/event.schema';
 import IHandlerSchema from '@/types/handler.schema';
 import { IHttpServiceSchema } from '@/types/http-service.schema';
-import IRenderSchema from '@/types/render.schema';
 
 export default interface IPageSchema extends ISchema {
   // 页面的总体介绍，用于写入代码文件的 desc 注释
@@ -36,7 +35,4 @@ export default interface IPageSchema extends ISchema {
   };
   // 事件处理器
   handlers: DynamicObject<IHandlerSchema>;
-  renders: {
-    [key: string]: IRenderSchema;
-  };
 }

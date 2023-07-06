@@ -10,10 +10,12 @@ export default interface IPropsSchema extends ISchema {
   isValue?: boolean;
   // 控制 UI 显隐性
   isVisible?: boolean;
+  // 是否是模板，这将影响 DSL 解析时，如果该值为真，value 的值应该是对象，
+  isTemplate?: boolean;
   // 属性的名字
   name: string;
-  // 属性值的类型, template 是自定义的属性，表示这个值是传入模板
-  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object' | 'render';
+  // 属性值的类型, 这个是组件要求的，它和 value 本身的类型不完全对等，比如 isTemplate 为真时，valueType 即便是 function，value 的值也是对象
+  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object';
   /*
    * 这个值的来源
    * editorInput: 创建页面时编辑者输入的常量，会指导代码生成器生成常量声明和赋值代码，存入 const
