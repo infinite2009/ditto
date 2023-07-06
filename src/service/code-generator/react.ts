@@ -4,6 +4,7 @@ import TypeScriptCodeGenerator, { IConstantOptions, IFunctionOptions } from '@/s
 import IComponentSchema from '@/types/component.schema';
 import { ImportType } from '@/types';
 import DynamicObject from '@/types/dynamic-object';
+import IPropsSchema from '@/types/props.schema';
 
 export interface ITSXOptions {
   componentName: string;
@@ -96,7 +97,7 @@ export default class ReactCodeGenerator {
     sentences.push(startTagStr);
     if (children?.length) {
       children?.forEach(child => {
-        this.generateTSX(child, ).forEach(item => {
+        this.generateTSX(child).forEach(item => {
           sentences.push(item);
         });
       });
@@ -133,7 +134,7 @@ export default class ReactCodeGenerator {
 
   generateUseState(opt: IUseStateOptions): string {
     const { initialValue, valueType, name } = opt;
-    return `const [${name}, set${toUpperCase(name)}] = useState<${valueType === 'array' ? 'any[]': valueType}>(${
+    return `const [${name}, set${toUpperCase(name)}] = useState<${valueType === 'array' ? 'any[]' : valueType}>(${
       valueType === 'string' ? `'${initialValue}'` : initialValue
     });`;
   }
@@ -239,7 +240,8 @@ export default class ReactCodeGenerator {
           if (props[id]) {
             const { propsStrArr, stateInfo, callbackInfo, memoInfo, effectInfo } = this.analysisProps(
               props[id],
-              propsRefs
+              propsRefs,
+              id,
             );
             pNode.propsStrArr = propsStrArr;
             // 将每个组件节点的 stateInfo 合并到 result 中，通过命名系统避免 state 重名，callback，memo，effect 亦然
@@ -308,7 +310,8 @@ export default class ReactCodeGenerator {
 
   analysisProps(
     componentPropsDict: DynamicObject,
-    propsRefs: string[]
+    propsRefs: string[],
+    componentId: string
   ): {
     propsStrArr: string[];
     stateInfo: { [stateName: string]: IUseStateOptions };
@@ -327,7 +330,7 @@ export default class ReactCodeGenerator {
       if (!props) {
         return;
       }
-      const { value, valueType, valueSource, isValue } = props;
+      const { value, valueType, valueSource, isValue, isTemplate, name } = props;
       const basicValueTypes = ['string', 'number', 'boolean'];
       // 基础类型固定值走字面，其他情况走变量（常量、state、memo、callback）
       if (valueSource === 'editorInput') {
@@ -340,7 +343,7 @@ export default class ReactCodeGenerator {
             })
           );
         } else {
-          const variableName = this.generateVariableName();
+          const variableName = this.generateVariableName(componentId, name, 'state');
           propsStrArr.push(
             this.generatePropStrWithVariable({
               name: ref,
@@ -357,20 +360,20 @@ export default class ReactCodeGenerator {
         }
       } else if (valueSource === 'handler') {
         // TODO: 生成 useCallback
-        const variableName = this.generateVariableName();
+        const variableName = this.generateVariableName(componentId, name, 'state');
         callbackInfo[variableName] = {
           dependencies: [],
           handlerCallingSentence: `() => { console.log('useCallback ${variableName} works!'); }`
         };
       } else if (valueSource === 'computed') {
         // TODO:  生成 useMemo
-        const variableName = this.generateVariableName();
+        const variableName = this.generateVariableName(componentId, name, 'state');
         memoInfo[variableName] = {
           dependencies: [],
           handlerCallingSentence: `() => { console.log('useMemo ${variableName} works!'); }`
         };
       } else {
-        const variableName = this.generateVariableName();
+        const variableName = this.generateVariableName(componentId, name, 'state');
         propsStrArr.push(
           this.generatePropStrWithVariable({
             name: ref,
@@ -381,20 +384,24 @@ export default class ReactCodeGenerator {
         // 使用状态的变量
         stateInfo[variableName] = {
           name: variableName,
-          initialValue: this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
+          initialValue: basicValueTypes.includes(valueType) ? value : this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
           valueType
         };
       }
 
       // 如果这个属性是 value，那么自动生成 useEffect
       if (isValue) {
-        const variableName = this.generateVariableName();
+        const variableName = this.generateVariableName(componentId, name, 'state');
         // 填充 effectInfo
         effectInfo[variableName] = {
           dependencies: [variableName],
           handlerCallingSentence: `console.log('useEffect ${variableName} works!');`
         };
       }
+
+      // if (isTemplate) {
+      //   const variableName = this.generateVariableName(componentId, id, 'constant');
+      // }
     });
     return {
       propsStrArr,
@@ -405,8 +412,8 @@ export default class ReactCodeGenerator {
     };
   }
 
-  generateVariableName() {
-    return 'mockVariableName';
+  generateVariableName(componentId: string, propsName: string, prefix: string): string {
+    return `${propsName}${toUpperCase(prefix)}Of${toUpperCase(componentId)}`;
   }
 
   generatePageCode(): string[] {
