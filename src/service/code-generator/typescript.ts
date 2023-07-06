@@ -108,39 +108,36 @@ export default class TypeScriptCodeGenerator {
 
   generateObjectStrArr(
     data: any,
-    spaces = 0,
-    indent = 2,
     key = '',
     useComma = true,
     sentences: string[] = []
   ): string[] {
     const type = typeOf(data);
-    const spacesPrefix = ''.padStart(spaces, ' ');
     switch (type) {
       case 'object':
-        sentences.push(`${spacesPrefix}${key}${key ? ': ' : ''}{`);
+        sentences.push(`${key}${key ? ': ' : ''}{`);
         Object.entries(data).forEach(([key, value]) => {
-          this.generateObjectStrArr(value, spaces + indent, indent, key).forEach(item => {
+          this.generateObjectStrArr(value, key).forEach(item => {
             sentences.push(item);
           });
         });
-        sentences.push(`${spacesPrefix}},`);
+        sentences.push(`},`);
         break;
       case 'array':
-        sentences.push(`${spacesPrefix}${key}${key ? ': ' : ''}[`);
+        sentences.push(`${key}${key ? ': ' : ''}[`);
         data.forEach((val: any) => {
-          this.generateObjectStrArr(val, spaces + indent, indent).forEach(item => {
+          this.generateObjectStrArr(val, ).forEach(item => {
             sentences.push(item);
           });
         });
-        sentences.push(`${spacesPrefix}],`);
+        sentences.push(`],`);
         break;
       case 'string':
-        sentences.push(spacesPrefix + (key ? `${key}: '${data}'` : `'${data}'`) + (useComma ? ',' : ''));
+        sentences.push((key ? `${key}: '${data}'` : `'${data}'`) + (useComma ? ',' : ''));
         break;
       default:
         // 这里假设变量都是驼峰命名，符合语法要求
-        sentences.push(spacesPrefix + (key ? `${key}: ${data}` : data) + (useComma ? ',' : ''));
+        sentences.push((key ? `${key}: ${data}` : data) + (useComma ? ',' : ''));
         break;
     }
     return sentences;
