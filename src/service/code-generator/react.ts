@@ -187,14 +187,48 @@ export default class ReactCodeGenerator {
     const { child, props, httpService, actions, handlers, name, desc } = this.dsl;
     result.pageName = name;
     // 初始化 tsxInfo，后边在这个 children 里边去遍历填充子节点信息
+    this.analysisTemplate(child, props, result);
+    return <IDSLStatsInfo>result;
+  }
+
+  extractImportInfo(
+    dependency: string,
+    importType: ImportType | undefined,
+    importRelativePath: string | undefined,
+    name: string
+  ): { importName: string; importPath?: string; importType?: ImportType } {
+    const result: { importName: string; importPath?: string; importType?: ImportType } = {
+      importName: name,
+      importType
+    };
+    if (importType === undefined) {
+      if (importRelativePath) {
+        result.importType = 'default';
+      } else {
+        result.importType = 'object';
+      }
+    }
+    result.importPath = this.tsCodeGenerator.calculateImportPath(dependency, importRelativePath);
+    return result;
+  }
+
+  analysisTemplate(
+    template: IComponentSchema,
+    props: {
+      [key: string]: { [key: string]: IPropsSchema };
+    },
+    statsInfo: Partial<IDSLStatsInfo>,
+  ) {
+    const result = statsInfo;
+    // 初始化 tsxInfo，后边在这个 children 里边去遍历填充子节点信息
     result.tsxInfo = {
-      componentName: child.callingName || child.name,
+      componentName: template.callingName || template.name,
       propsStrArr: [],
       children: []
     };
 
     // 广度遍历 components，获取其中的导入信息和 props
-    let q: IComponentSchema[] = [child];
+    let q: IComponentSchema[] = [template];
     let p: ITSXOptions[] = [result.tsxInfo];
     while (q.length) {
       // 弹出头部的节点
@@ -242,6 +276,7 @@ export default class ReactCodeGenerator {
               props[id],
               propsRefs,
               id,
+              result
             );
             pNode.propsStrArr = propsStrArr;
             // 将每个组件节点的 stateInfo 合并到 result 中，通过命名系统避免 state 重名，callback，memo，effect 亦然
@@ -284,34 +319,14 @@ export default class ReactCodeGenerator {
         result.tsxInfo = null;
       }
     }
-    return <IDSLStatsInfo>result;
-  }
-
-  extractImportInfo(
-    dependency: string,
-    importType: ImportType | undefined,
-    importRelativePath: string | undefined,
-    name: string
-  ): { importName: string; importPath?: string; importType?: ImportType } {
-    const result: { importName: string; importPath?: string; importType?: ImportType } = {
-      importName: name,
-      importType
-    };
-    if (importType === undefined) {
-      if (importRelativePath) {
-        result.importType = 'default';
-      } else {
-        result.importType = 'object';
-      }
-    }
-    result.importPath = this.tsCodeGenerator.calculateImportPath(dependency, importRelativePath);
     return result;
   }
 
   analysisProps(
     componentPropsDict: DynamicObject,
     propsRefs: string[],
-    componentId: string
+    componentId: string,
+    statsInfo: Partial<IDSLStatsInfo>
   ): {
     propsStrArr: string[];
     stateInfo: { [stateName: string]: IUseStateOptions };
@@ -384,7 +399,9 @@ export default class ReactCodeGenerator {
         // 使用状态的变量
         stateInfo[variableName] = {
           name: variableName,
-          initialValue: basicValueTypes.includes(valueType) ? value : this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
+          initialValue: basicValueTypes.includes(valueType)
+            ? value
+            : this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
           valueType
         };
       }
@@ -399,9 +416,19 @@ export default class ReactCodeGenerator {
         };
       }
 
-      // if (isTemplate) {
-      //   const variableName = this.generateVariableName(componentId, id, 'constant');
-      // }
+      if (isTemplate) {
+        const { tsxInfo } = this.analysisTemplate(props.value as IComponentSchema, componentPropsDict, statsInfo);
+        if (tsxInfo) {
+          const variableName = this.generateVariableName(componentId, name, 'constant');
+          const variableValue = this.generateTSX(tsxInfo);
+          if (valueType === 'object' && statsInfo.constantInfo) {
+            statsInfo.constantInfo[variableName] = {
+              name: variableName,
+              value: variableValue
+            };
+          }
+        }
+      }
     });
     return {
       propsStrArr,
@@ -457,7 +484,11 @@ export default class ReactCodeGenerator {
           .flat(2),
         ...Object.values(callbackInfo)
           .map(i => this.generateUseCallback(i))
-          .flat(2)
+          .flat(2),
+        ...Object.values(constantInfo).map(i => this.tsCodeGenerator.generateAssignment({
+          variableName: i.name,
+          expressions: i.value
+        })).flat(2)
       ]
     };
     if (tsxInfo === null) {

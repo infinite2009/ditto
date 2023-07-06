@@ -19,7 +19,7 @@ export interface IFunctionOptions {
 }
 
 export interface IConstantOptions {
-  constName: string;
+  name: string;
   value: string[];
 }
 
