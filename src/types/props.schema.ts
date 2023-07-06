@@ -13,7 +13,7 @@ export default interface IPropsSchema extends ISchema {
   // 属性的名字
   name: string;
   // 属性值的类型, template 是自定义的属性，表示这个值是传入模板
-  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object' | 'template';
+  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object' | 'render';
   /*
    * 这个值的来源
    * editorInput: 创建页面时编辑者输入的常量，会指导代码生成器生成常量声明和赋值代码，存入 const
@@ -24,5 +24,6 @@ export default interface IPropsSchema extends ISchema {
    * handler: 事件处理器，当用户为事件配置了相应后，会产生这个值
    */
   valueSource: 'editorInput' | 'httpRequest' | 'state' | 'userInput' | 'computed' | 'handler';
+  // 这里的类型不要和 valueType 混淆，比如 valueType 为 render 时，value 的值仍旧是对象，但是它内部的字段是特定的。
   value: string | boolean | number | object | ((...params: any[]) => any);
 }
