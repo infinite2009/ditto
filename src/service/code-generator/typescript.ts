@@ -109,7 +109,6 @@ export default class TypeScriptCodeGenerator {
   generateObjectStrArr(
     data: any,
     key = '',
-    useComma = true,
     sentences: string[] = []
   ): string[] {
     const type = typeOf(data);
@@ -133,11 +132,11 @@ export default class TypeScriptCodeGenerator {
         sentences.push(`],`);
         break;
       case 'string':
-        sentences.push((key ? `${key}: '${data}'` : `'${data}'`) + (useComma ? ',' : ''));
+        sentences.push((key ? `${key}: '${data}'` : `'${data}'`) + ',');
         break;
       default:
         // 这里假设变量都是驼峰命名，符合语法要求
-        sentences.push((key ? `${key}: ${data}` : data) + (useComma ? ',' : ''));
+        sentences.push((key ? `${key}: ${data}` : data) + ',');
         break;
     }
     return sentences;
