@@ -106,17 +106,35 @@ export default class TypeScriptCodeGenerator {
     return `${name}(${args.join(', ')})`;
   }
 
+  /**
+   * 这个妥协的设计，keyPaths 表示需要调用 callback 特殊处理的函数，如果处理过程中产生副作用，
+   * 需要 callback 接受参数来收集这些副作用信息
+   * 同时，callback 需要返回生成的代码字符串数组，相当于这部分由 callback 完成接管，生成函数只负责数组拼接
+   *
+   * @param data
+   * @param keyPaths
+   * @param callback
+   * @param currentKeyPath
+   * @param key
+   * @param sentences
+   */
   generateObjectStrArr(
     data: any,
+    keyPaths: string[] = [],
+    callback: (data: any) => string[] = () => [],
+    currentKeyPath = '',
     key = '',
     sentences: string[] = []
   ): string[] {
+    if (keyPaths.length && keyPaths.includes(currentKeyPath) && !!callback) {
+      sentences = sentences.concat(callback(data));
+    }
     const type = typeOf(data);
     switch (type) {
       case 'object':
         sentences.push(`${key}${key ? ': ' : ''}{`);
         Object.entries(data).forEach(([key, value]) => {
-          this.generateObjectStrArr(value, key).forEach(item => {
+          this.generateObjectStrArr(value, keyPaths, callback, currentKeyPath, key).forEach(item => {
             sentences.push(item);
           });
         });
@@ -125,7 +143,7 @@ export default class TypeScriptCodeGenerator {
       case 'array':
         sentences.push(`${key}${key ? ': ' : ''}[`);
         data.forEach((val: any) => {
-          this.generateObjectStrArr(val, ).forEach(item => {
+          this.generateObjectStrArr(val, keyPaths, callback, currentKeyPath).forEach(item => {
             sentences.push(item);
           });
         });
@@ -149,7 +167,7 @@ export default class TypeScriptCodeGenerator {
     return cp;
   }
 
-  calculateImportPath(packageName: string, importRelativePath = '' ): string {
+  calculateImportPath(packageName: string, importRelativePath = ''): string {
     let result = `${packageName}`;
     if (importRelativePath && !importRelativePath.startsWith('/')) {
       result += '/';

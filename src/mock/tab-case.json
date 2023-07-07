@@ -4,6 +4,43 @@
   "name": "testPage",
   "desc": "测试页面",
   "props": {
+    "c1": {
+      "items": {
+        "id": "items",
+        "schemaType": "props",
+        "name": "items",
+        "category": "basic",
+        "valueType": "array",
+        "valueSource": "editorInput",
+        "isTemplate": true,
+        "value": [
+          {
+            "key": "1",
+            "label": "Tab 1",
+            "children": [
+              {
+                "id": "c7",
+                "schemaType": "component",
+                "dependency": "antd",
+                "name": "Button",
+                "propsRefs": [
+                  "title"
+                ]
+              },
+              {
+                "id": "c8",
+                "schemaType": "component",
+                "dependency": "antd",
+                "name": "Button",
+                "propsRefs": [
+                  "title"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
     "c5": {
       "value": {
         "id": "value",
@@ -47,6 +84,28 @@
         "valueType": "array",
         "valueSource": "editorInput"
       }
+    },
+    "c7": {
+      "title": {
+        "id": "value",
+        "schemaType": "props",
+        "name": "value",
+        "category": "basic",
+        "valueType": "string",
+        "valueSource": "editorInput",
+        "value": "测试按钮1"
+      }
+    },
+    "c8": {
+      "title": {
+        "id": "value",
+        "schemaType": "props",
+        "name": "value",
+        "category": "basic",
+        "valueType": "string",
+        "valueSource": "editorInput",
+        "value": "测试按钮2"
+      }
     }
   },
   "child": {
@@ -87,9 +146,7 @@
         "dependency": "antd",
         "name": "Tabs",
         "propsRefs": [
-          "p7",
-          "p8",
-          "p9"
+
         ]
       },
       {

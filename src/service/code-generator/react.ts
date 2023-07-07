@@ -49,6 +49,8 @@ export interface IUseRefOptions {
 }
 
 export interface IDSLStatsInfo {
+  [key: string]: any;
+
   pageName: string;
   importInfo: {
     [importPath: string]: {
@@ -217,7 +219,7 @@ export default class ReactCodeGenerator {
     props: {
       [key: string]: { [key: string]: IPropsSchema };
     },
-    statsInfo: Partial<IDSLStatsInfo>,
+    statsInfo: Partial<IDSLStatsInfo>
   ) {
     const result = statsInfo;
     // 初始化 tsxInfo，后边在这个 children 里边去遍历填充子节点信息
@@ -333,12 +335,14 @@ export default class ReactCodeGenerator {
     callbackInfo: { [callbackName: string]: IUseCallbackOptions };
     memoInfo: { [memoName: string]: IUseMemoOptions };
     effectInfo: { [effectName: string]: IUseEffectOptions };
+    constantInfo: { [constantName: string]: IConstantOptions };
   } {
     const propsStrArr: string[] = [];
     const stateInfo: { [key: string]: IUseStateOptions } = {};
     const memoInfo: { [key: string]: IUseMemoOptions } = {};
     const callbackInfo: { [key: string]: IUseCallbackOptions } = {};
     const effectInfo: { [key: string]: IUseEffectOptions } = {};
+    const constantInfo: { [key: string]: IConstantOptions } = {};
     propsRefs.forEach(ref => {
       const props = componentPropsDict[ref];
       // 找不到的 ref 跳过
@@ -358,20 +362,65 @@ export default class ReactCodeGenerator {
             })
           );
         } else {
-          const variableName = this.generateVariableName(componentId, name, 'state');
-          propsStrArr.push(
-            this.generatePropStrWithVariable({
-              name: ref,
-              variableName,
-              variableType: valueType
-            })
-          );
-          // 变量需要转为 state
-          stateInfo[variableName] = {
-            name: variableName,
-            initialValue: this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
-            valueType
-          };
+          if (isTemplate) {
+            const statsInfo2: Partial<IDSLStatsInfo> = {
+              importInfo: {},
+              stateInfo: {},
+              memoInfo: {},
+              callbackInfo: {},
+              effectInfo: {},
+              constantInfo: {}
+            };
+            const variableName = this.generateVariableName(componentId, name, 'const');
+            propsStrArr.push(
+              this.generatePropStrWithVariable({
+                name: ref,
+                variableName,
+                variableType: valueType
+              })
+            );
+
+            // 模板使用嵌套
+            constantInfo[variableName] = {
+              name: variableName,
+              value: this.tsCodeGenerator.generateObjectStrArr(value, props.keyPaths, (val: any) => {
+                // TODO: 抽象为 callback
+                const { tsxInfo } = this.analysisTemplate(
+                  props.value as IComponentSchema,
+                  componentPropsDict,
+                  statsInfo2
+                );
+                this.mergeStatsInfoWithoutTsxInfo(statsInfo, statsInfo2);
+                if (tsxInfo) {
+                  const variableName = this.generateVariableName(componentId, name, 'constant');
+                  const variableValue = this.generateTSX(tsxInfo);
+                  if (valueType === 'object' && statsInfo.constantInfo) {
+                    statsInfo.constantInfo[variableName] = {
+                      name: variableName,
+                      value: variableValue
+                    };
+                  }
+                }
+                // TODO 待实现
+                return [];
+              })
+            };
+          } else {
+            const variableName = this.generateVariableName(componentId, name, 'state');
+            propsStrArr.push(
+              this.generatePropStrWithVariable({
+                name: ref,
+                variableName,
+                variableType: valueType
+              })
+            );
+            // 变量需要转为 state
+            stateInfo[variableName] = {
+              name: variableName,
+              initialValue: this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
+              valueType
+            };
+          }
         }
       } else if (valueSource === 'handler') {
         // TODO: 生成 useCallback
@@ -415,27 +464,14 @@ export default class ReactCodeGenerator {
           handlerCallingSentence: `console.log('useEffect ${variableName} works!');`
         };
       }
-
-      if (isTemplate) {
-        const { tsxInfo } = this.analysisTemplate(props.value as IComponentSchema, componentPropsDict, statsInfo);
-        if (tsxInfo) {
-          const variableName = this.generateVariableName(componentId, name, 'constant');
-          const variableValue = this.generateTSX(tsxInfo);
-          if (valueType === 'object' && statsInfo.constantInfo) {
-            statsInfo.constantInfo[variableName] = {
-              name: variableName,
-              value: variableValue
-            };
-          }
-        }
-      }
     });
     return {
       propsStrArr,
       stateInfo,
       callbackInfo,
       memoInfo,
-      effectInfo
+      effectInfo,
+      constantInfo
     };
   }
 
@@ -485,10 +521,14 @@ export default class ReactCodeGenerator {
         ...Object.values(callbackInfo)
           .map(i => this.generateUseCallback(i))
           .flat(2),
-        ...Object.values(constantInfo).map(i => this.tsCodeGenerator.generateAssignment({
-          variableName: i.name,
-          expressions: i.value
-        })).flat(2)
+        ...Object.values(constantInfo)
+          .map(i =>
+            this.tsCodeGenerator.generateAssignment({
+              variableName: i.name,
+              expressions: i.value
+            })
+          )
+          .flat(2)
       ]
     };
     if (tsxInfo === null) {
@@ -501,5 +541,14 @@ export default class ReactCodeGenerator {
     result = result.concat(this.tsCodeGenerator.generateFunctionDefinition(functionInfo as IFunctionOptions));
 
     return result;
+  }
+
+  mergeStatsInfoWithoutTsxInfo(source: Partial<IDSLStatsInfo>, target: Partial<IDSLStatsInfo>) {
+    Object.keys(target).forEach((key: string) => {
+      if (key !== 'tsxInfo' && key !== 'pageName') {
+        Object.assign(source[key], target[key]);
+      }
+    });
+    return source;
   }
 }

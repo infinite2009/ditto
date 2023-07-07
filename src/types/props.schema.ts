@@ -10,7 +10,12 @@ export default interface IPropsSchema extends ISchema {
   isValue?: boolean;
   // 控制 UI 显隐性
   isVisible?: boolean;
-  // 是否是模板，这将影响 DSL 解析时，如果该值为真，value 的值应该是对象，
+  /**
+   * 模板字段路径，如果是空字符串，表明属性本身是就是模板对象
+   * 如果字段路径中，存在数组的情况，用 [i] 表示，例如：'[i].children'，表示 props.value 是一个数组， props.value[i].children 是一个模板
+   */
+  templateKeyPath?: string;
+  // 是否是模板，这将影响 DSL 解析，如果该值为真，value 的值应该是对象，
   isTemplate?: boolean;
   // 属性的名字
   name: string;
