@@ -7,6 +7,8 @@ import IActionSchema from '@/types/action.schema';
 import IEventSchema from '@/types/event.schema';
 import IHandlerSchema from '@/types/handler.schema';
 import { IHttpServiceSchema } from '@/types/http-service.schema';
+import { Simulate } from 'react-dom/test-utils';
+import keyDown = Simulate.keyDown;
 
 export default interface IPageSchema extends ISchema {
   // 页面的总体介绍，用于写入代码文件的 desc 注释
@@ -35,4 +37,11 @@ export default interface IPageSchema extends ISchema {
   };
   // 事件处理器
   handlers: DynamicObject<IHandlerSchema>;
+  templates: {
+    [componentId: string]: {
+      [propsId: string]: {
+        [keyPath: string]: IComponentSchema;
+      };
+    };
+  };
 }

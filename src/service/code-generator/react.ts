@@ -349,7 +349,7 @@ export default class ReactCodeGenerator {
       if (!props) {
         return;
       }
-      const { value, valueType, valueSource, isValue, isTemplate, name } = props;
+      const { value, valueType, valueSource, isValue, hasTemplate, name } = props;
       const basicValueTypes = ['string', 'number', 'boolean'];
       // 基础类型固定值走字面，其他情况走变量（常量、state、memo、callback）
       if (valueSource === 'editorInput') {
@@ -362,7 +362,7 @@ export default class ReactCodeGenerator {
             })
           );
         } else {
-          if (isTemplate) {
+          if (hasTemplate) {
             const statsInfo2: Partial<IDSLStatsInfo> = {
               importInfo: {},
               stateInfo: {},

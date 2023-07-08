@@ -16,10 +16,10 @@ export default interface IPropsSchema extends ISchema {
    */
   templateKeyPath?: string;
   // 是否是模板，这将影响 DSL 解析，如果该值为真，value 的值应该是对象，
-  isTemplate?: boolean;
+  hasTemplate?: boolean;
   // 属性的名字
   name: string;
-  // 属性值的类型, 这个是组件要求的，它和 value 本身的类型不完全对等，比如 isTemplate 为真时，valueType 即便是 function，value 的值也是对象
+  // 属性值的类型, 这个是组件要求的，它和 value 本身的类型不完全对等，比如 hasTemplate 为真时，valueType 即便是 function，value 的值也是对象
   valueType: 'string' | 'boolean' | 'number' | 'function' | 'object';
   /*
    * 这个值的来源
@@ -31,6 +31,6 @@ export default interface IPropsSchema extends ISchema {
    * handler: 事件处理器，当用户为事件配置了相应后，会产生这个值
    */
   valueSource: 'editorInput' | 'httpRequest' | 'state' | 'userInput' | 'computed' | 'handler';
-  // 这里的类型不要和 valueType 混淆，比如 valueType 为 render 时，value 的值仍旧是对象，但是它内部的字段是特定的。
+  // 如果存在 keyPath，里边的对应值会变成 template 的引用
   value: string | boolean | number | object | ((...params: any[]) => any);
 }

@@ -12,7 +12,7 @@
         "category": "basic",
         "valueType": "array",
         "valueSource": "editorInput",
-        "isTemplate": true,
+        "hasTemplate": true,
         "value": [
           {
             "key": "1",
