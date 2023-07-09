@@ -1,10 +1,14 @@
 import IPageSchema from '@/types/page.schema';
 import { toUpperCase } from '@/util';
-import TypeScriptCodeGenerator, { IConstantOptions, IFunctionOptions } from '@/service/code-generator/typescript';
+import TypeScriptCodeGenerator, {
+  IConstantOptions,
+  IFunctionOptions,
+  IImportOptions
+} from '@/service/code-generator/typescript';
 import IComponentSchema from '@/types/component.schema';
 import { ImportType } from '@/types';
-import DynamicObject from '@/types/dynamic-object';
 import IPropsSchema from '@/types/props.schema';
+import { merge } from 'lodash/fp';
 
 export interface ITSXOptions {
   componentName: string;
@@ -117,7 +121,7 @@ export default class ReactCodeGenerator {
     return `${name}={${value}}`;
   }
 
-  generatePropStrWithVariable(opt: IPropsOptions): string {
+  generatePropAssignmentExpWithVariable(opt: IPropsOptions): string {
     const { name, variableName } = opt;
     return `${name}={${variableName}}`;
   }
@@ -173,23 +177,10 @@ export default class ReactCodeGenerator {
   }
 
   analysisDsl(): IDSLStatsInfo {
-    const result: Partial<IDSLStatsInfo> = {
-      importInfo: {
-        react: {
-          default: ['React'],
-          object: []
-        }
-      },
-      stateInfo: {},
-      memoInfo: {},
-      callbackInfo: {},
-      effectInfo: {},
-      constantInfo: {}
-    };
     const { child, props, httpService, actions, handlers, name, desc } = this.dsl;
-    result.pageName = name;
     // 初始化 tsxInfo，后边在这个 children 里边去遍历填充子节点信息
-    this.analysisTemplate(child, props, result);
+    const result = this.analysisTemplate(child, props);
+    result.pageName = name;
     return <IDSLStatsInfo>result;
   }
 
@@ -216,22 +207,33 @@ export default class ReactCodeGenerator {
 
   analysisTemplate(
     template: IComponentSchema,
-    props: {
+    propsDict: {
       [key: string]: { [key: string]: IPropsSchema };
-    },
-    statsInfo: Partial<IDSLStatsInfo>
+    }
   ) {
-    const result = statsInfo;
-    // 初始化 tsxInfo，后边在这个 children 里边去遍历填充子节点信息
-    result.tsxInfo = {
-      componentName: template.callingName || template.name,
-      propsStrArr: [],
-      children: []
+    const result: Partial<IDSLStatsInfo> = {
+      importInfo: {
+        react: {
+          default: ['React'],
+          object: []
+        }
+      },
+      stateInfo: {},
+      memoInfo: {},
+      callbackInfo: {},
+      effectInfo: {},
+      constantInfo: {},
+      tsxInfo: {
+        componentName: template.callingName || template.name,
+        propsStrArr: [],
+        children: []
+      }
     };
+    // 初始化 tsxInfo，后边在这个 children 里边去遍历填充子节点信息
 
     // 广度遍历 components，获取其中的导入信息和 props
     let q: IComponentSchema[] = [template];
-    let p: ITSXOptions[] = [result.tsxInfo];
+    let p: ITSXOptions[] = [result.tsxInfo as ITSXOptions];
     while (q.length) {
       // 弹出头部的节点
       const node: IComponentSchema | undefined = q.shift();
@@ -273,19 +275,16 @@ export default class ReactCodeGenerator {
         if (pNode) {
           pNode.componentName = callingName || name;
           // 处理当前节点的 props
-          if (props[id]) {
-            const { propsStrArr, stateInfo, callbackInfo, memoInfo, effectInfo } = this.analysisProps(
-              props[id],
-              propsRefs,
-              id,
-              result
-            );
+          if (propsDict[id]) {
+            const { importInfo, propsStrArr, stateInfo, callbackInfo, memoInfo, effectInfo, constantInfo } =
+              this.analysisProps(propsDict, propsRefs, id);
             pNode.propsStrArr = propsStrArr;
             // 将每个组件节点的 stateInfo 合并到 result 中，通过命名系统避免 state 重名，callback，memo，effect 亦然
             Object.assign(result.stateInfo as object, stateInfo);
             Object.assign(result.callbackInfo as object, callbackInfo);
             Object.assign(result.memoInfo as object, memoInfo);
             Object.assign(result.effectInfo as object, effectInfo);
+            Object.assign(result.constantInfo as object, constantInfo);
             if (result.importInfo) {
               const { object } = result.importInfo.react;
               if (Object.entries(effectInfo).length && !object.includes('useEffect')) {
@@ -300,6 +299,25 @@ export default class ReactCodeGenerator {
               if (Object.entries(callbackInfo).length && !object.includes('useCallback')) {
                 object.push('useCallback');
               }
+              // 合并到瑞信息
+              Object.entries(importInfo).forEach(([importPath, importInfo]: [string, { [key: string]: string[] }]) => {
+                debugger;
+                importInfo?.default?.forEach(item => {
+                  if (!(result.importInfo?.[importPath]?.default || []).includes(item)) {
+                    result.importInfo?.[importPath]?.default.push(item);
+                  }
+                });
+                importInfo?.object?.forEach(item => {
+                  if (!(result.importInfo?.[importPath]?.object || []).includes(item)) {
+                    result.importInfo?.[importPath]?.object.push(item);
+                  }
+                });
+                importInfo?.['*']?.forEach(item => {
+                  if (!(result.importInfo?.[importPath]?.['*'] || []).includes(item)) {
+                    result.importInfo?.[importPath]?.['*'].push(item);
+                  }
+                });
+              });
             }
           }
           // 初始化子节点
@@ -325,11 +343,15 @@ export default class ReactCodeGenerator {
   }
 
   analysisProps(
-    componentPropsDict: DynamicObject,
+    propsDict: { [key: string]: { [key: string]: IPropsSchema } },
     propsRefs: string[],
-    componentId: string,
-    statsInfo: Partial<IDSLStatsInfo>
+    componentId: string
   ): {
+    importInfo: {
+      [importPath: string]: {
+        [importType: string]: string[];
+      };
+    };
     propsStrArr: string[];
     stateInfo: { [stateName: string]: IUseStateOptions };
     callbackInfo: { [callbackName: string]: IUseCallbackOptions };
@@ -337,43 +359,42 @@ export default class ReactCodeGenerator {
     effectInfo: { [effectName: string]: IUseEffectOptions };
     constantInfo: { [constantName: string]: IConstantOptions };
   } {
-    const propsStrArr: string[] = [];
-    const stateInfo: { [key: string]: IUseStateOptions } = {};
-    const memoInfo: { [key: string]: IUseMemoOptions } = {};
-    const callbackInfo: { [key: string]: IUseCallbackOptions } = {};
-    const effectInfo: { [key: string]: IUseEffectOptions } = {};
-    const constantInfo: { [key: string]: IConstantOptions } = {};
+    // TODO 暂时改为 any，跑通后再修改为真实类型
+    const result: any = {
+      importInfo: {},
+      propsStrArr: [],
+      stateInfo: {},
+      memoInfo: {},
+      callbackInfo: {},
+      effectInfo: {},
+      constantInfo: {}
+    };
+
+    const componentPropsDict = propsDict[componentId];
+
     propsRefs.forEach(ref => {
       const props = componentPropsDict[ref];
       // 找不到的 ref 跳过
       if (!props) {
         return;
       }
-      const { value, valueType, valueSource, isValue, hasTemplate, name } = props;
+      const { value, valueType, valueSource, isValue, templateKeyPaths = [], name } = props;
       const basicValueTypes = ['string', 'number', 'boolean'];
       // 基础类型固定值走字面，其他情况走变量（常量、state、memo、callback）
       if (valueSource === 'editorInput') {
         if (basicValueTypes.includes(valueType)) {
-          propsStrArr.push(
+          result.propsStrArr.push(
             this.generatePropsStrWithLiteral({
               name: ref,
-              value,
+              value: value.toString(),
               variableType: valueType
             })
           );
         } else {
-          if (hasTemplate) {
-            const statsInfo2: Partial<IDSLStatsInfo> = {
-              importInfo: {},
-              stateInfo: {},
-              memoInfo: {},
-              callbackInfo: {},
-              effectInfo: {},
-              constantInfo: {}
-            };
+          if (templateKeyPaths.length) {
             const variableName = this.generateVariableName(componentId, name, 'const');
-            propsStrArr.push(
-              this.generatePropStrWithVariable({
+            result.propsStrArr.push(
+              this.generatePropAssignmentExpWithVariable({
                 name: ref,
                 variableName,
                 variableType: valueType
@@ -381,98 +402,122 @@ export default class ReactCodeGenerator {
             );
 
             // 模板使用嵌套
-            constantInfo[variableName] = {
-              name: variableName,
-              value: this.tsCodeGenerator.generateObjectStrArr(value, props.keyPaths, (val: any) => {
-                // TODO: 抽象为 callback
-                const { tsxInfo } = this.analysisTemplate(
-                  props.value as IComponentSchema,
-                  componentPropsDict,
-                  statsInfo2
-                );
-                this.mergeStatsInfoWithoutTsxInfo(statsInfo, statsInfo2);
-                if (tsxInfo) {
-                  const variableName = this.generateVariableName(componentId, name, 'constant');
-                  const variableValue = this.generateTSX(tsxInfo);
-                  if (valueType === 'object' && statsInfo.constantInfo) {
-                    statsInfo.constantInfo[variableName] = {
-                      name: variableName,
-                      value: variableValue
-                    };
+            if (result.constantInfo) {
+              result.constantInfo[variableName] = {
+                name: variableName,
+                value: this.tsCodeGenerator.generateObjectStrArr(value, templateKeyPaths, (val: any) => {
+                  const { tsxInfo, importInfo, effectInfo, constantInfo, memoInfo, callbackInfo, stateInfo } =
+                    this.analysisTemplate(val as IComponentSchema, propsDict);
+                  // 合并统计分析
+                  Object.assign(result.stateInfo as object, stateInfo);
+                  Object.assign(result.callbackInfo as object, callbackInfo);
+                  Object.assign(result.memoInfo as object, memoInfo);
+                  Object.assign(result.effectInfo as object, effectInfo);
+                  Object.assign(result.constantInfo as object, constantInfo);
+                  if (importInfo) {
+                    // 合并 hooks
+                    const { object } = importInfo.react;
+                    if (
+                      result.effectInfo &&
+                      Object.entries(result.effectInfo).length &&
+                      !object.includes('useEffect')
+                    ) {
+                      object.push('useEffect');
+                    }
+                    if (result.stateInfo && Object.entries(result.stateInfo).length && !object.includes('useState')) {
+                      object.push('useState');
+                    }
+                    if (result.memoInfo && Object.entries(result.memoInfo).length && !object.includes('useMemo')) {
+                      object.push('useMemo');
+                    }
+                    if (
+                      result.callbackInfo &&
+                      Object.entries(result.callbackInfo).length &&
+                      !object.includes('useCallback')
+                    ) {
+                      object.push('useCallback');
+                    }
+                    Object.assign(result.importInfo, importInfo);
                   }
-                }
-                // TODO 待实现
-                return [];
-              })
-            };
+
+                  if (tsxInfo) {
+                    return this.generateTSX(tsxInfo);
+                  }
+                  return [];
+                })
+              };
+            }
           } else {
             const variableName = this.generateVariableName(componentId, name, 'state');
-            propsStrArr.push(
-              this.generatePropStrWithVariable({
+            result.propsStrArr.push(
+              this.generatePropAssignmentExpWithVariable({
                 name: ref,
                 variableName,
                 variableType: valueType
               })
             );
             // 变量需要转为 state
-            stateInfo[variableName] = {
-              name: variableName,
-              initialValue: this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
-              valueType
-            };
+            if (result.stateInfo) {
+              result.stateInfo[variableName] = {
+                name: variableName,
+                initialValue: this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
+                valueType
+              };
+            }
           }
         }
       } else if (valueSource === 'handler') {
         // TODO: 生成 useCallback
         const variableName = this.generateVariableName(componentId, name, 'state');
-        callbackInfo[variableName] = {
-          dependencies: [],
-          handlerCallingSentence: `() => { console.log('useCallback ${variableName} works!'); }`
-        };
+        if (result.callbackInfo) {
+          result.callbackInfo[variableName] = {
+            dependencies: [],
+            handlerCallingSentence: `() => { console.log('useCallback ${variableName} works!'); }`
+          };
+        }
       } else if (valueSource === 'computed') {
         // TODO:  生成 useMemo
         const variableName = this.generateVariableName(componentId, name, 'state');
-        memoInfo[variableName] = {
-          dependencies: [],
-          handlerCallingSentence: `() => { console.log('useMemo ${variableName} works!'); }`
-        };
+        if (result.memoInfo) {
+          result.memoInfo[variableName] = {
+            dependencies: [],
+            handlerCallingSentence: `() => { console.log('useMemo ${variableName} works!'); }`
+          };
+        }
       } else {
         const variableName = this.generateVariableName(componentId, name, 'state');
-        propsStrArr.push(
-          this.generatePropStrWithVariable({
+        result.propsStrArr.push(
+          this.generatePropAssignmentExpWithVariable({
             name: ref,
             variableName,
             variableType: valueType
           })
         );
         // 使用状态的变量
-        stateInfo[variableName] = {
-          name: variableName,
-          initialValue: basicValueTypes.includes(valueType)
-            ? value
-            : this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
-          valueType
-        };
+        if (result.stateInfo) {
+          result.stateInfo[variableName] = {
+            name: variableName,
+            initialValue: basicValueTypes.includes(valueType)
+              ? value
+              : this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
+            valueType
+          };
+        }
       }
 
       // 如果这个属性是 value，那么自动生成 useEffect
       if (isValue) {
         const variableName = this.generateVariableName(componentId, name, 'state');
         // 填充 effectInfo
-        effectInfo[variableName] = {
-          dependencies: [variableName],
-          handlerCallingSentence: `console.log('useEffect ${variableName} works!');`
-        };
+        if (result.effectInfo) {
+          result.effectInfo[variableName] = {
+            dependencies: [variableName],
+            handlerCallingSentence: `console.log('useEffect ${variableName} works!');`
+          };
+        }
       }
     });
-    return {
-      propsStrArr,
-      stateInfo,
-      callbackInfo,
-      memoInfo,
-      effectInfo,
-      constantInfo
-    };
+    return result;
   }
 
   generateVariableName(componentId: string, propsName: string, prefix: string): string {
@@ -541,14 +586,5 @@ export default class ReactCodeGenerator {
     result = result.concat(this.tsCodeGenerator.generateFunctionDefinition(functionInfo as IFunctionOptions));
 
     return result;
-  }
-
-  mergeStatsInfoWithoutTsxInfo(source: Partial<IDSLStatsInfo>, target: Partial<IDSLStatsInfo>) {
-    Object.keys(target).forEach((key: string) => {
-      if (key !== 'tsxInfo' && key !== 'pageName') {
-        Object.assign(source[key], target[key]);
-      }
-    });
-    return source;
   }
 }

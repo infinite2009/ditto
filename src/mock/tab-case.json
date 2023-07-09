@@ -12,31 +12,36 @@
         "category": "basic",
         "valueType": "array",
         "valueSource": "editorInput",
-        "hasTemplate": true,
+        "templateKeyPaths": [
+          "[0].children",
+          "[1].children"
+        ],
         "value": [
           {
             "key": "1",
             "label": "Tab 1",
-            "children": [
-              {
-                "id": "c7",
-                "schemaType": "component",
-                "dependency": "antd",
-                "name": "Button",
-                "propsRefs": [
-                  "title"
-                ]
-              },
-              {
-                "id": "c8",
-                "schemaType": "component",
-                "dependency": "antd",
-                "name": "Button",
-                "propsRefs": [
-                  "title"
-                ]
-              }
-            ]
+            "children": {
+              "id": "c7",
+              "schemaType": "component",
+              "dependency": "antd",
+              "name": "Button",
+              "propsRefs": [
+                "title"
+              ]
+            }
+          },
+          {
+            "key": "2",
+            "label": "Tab 2",
+            "children": {
+              "id": "c8",
+              "schemaType": "component",
+              "dependency": "antd",
+              "name": "Button",
+              "propsRefs": [
+                "title"
+              ]
+            }
           }
         ]
       }
@@ -146,7 +151,7 @@
         "dependency": "antd",
         "name": "Tabs",
         "propsRefs": [
-
+          "items"
         ]
       },
       {

@@ -24,7 +24,7 @@ describe('react', () => {
       variableType: 'string',
       variableValueSource: 'editorInput'
     };
-    expect(react.generatePropStrWithVariable(propsOpt)).toStrictEqual('title={buttonTitle}');
+    expect(react.generatePropAssignmentExpWithVariable(propsOpt)).toStrictEqual('title={buttonTitle}');
   });
   test('should return template sentences array', () => {
     const tsx: ITSXOptions = {
@@ -152,7 +152,7 @@ describe('dsl analysis', () => {
         object: ['useEffect', 'useState']
       },
       antd: {
-        object: ['Tabs', 'Table', 'Input', 'Select']
+        object: ['Tabs', "Button", 'Table', 'Input', 'Select']
       }
     });
   });
@@ -174,7 +174,7 @@ describe('dsl analysis', () => {
     expect(s).toStrictEqual([
       "import React from 'react';",
       "import { useEffect, useState } from 'react';",
-      "import { Tabs, Table, Input, Select } from 'antd';"
+      "import { Tabs, Button, Table, Input, Select } from 'antd';"
     ]);
   });
 });

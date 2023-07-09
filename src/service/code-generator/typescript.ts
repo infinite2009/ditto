@@ -126,24 +126,32 @@ export default class TypeScriptCodeGenerator {
     key = '',
     sentences: string[] = []
   ): string[] {
-    if (keyPaths.length && keyPaths.includes(currentKeyPath) && !!callback) {
-      sentences = sentences.concat(callback(data));
-    }
     const type = typeOf(data);
     switch (type) {
       case 'object':
-        sentences.push(`${key}${key ? ': ' : ''}{`);
-        Object.entries(data).forEach(([key, value]) => {
-          this.generateObjectStrArr(value, keyPaths, callback, currentKeyPath, key).forEach(item => {
-            sentences.push(item);
+        if (keyPaths.length && keyPaths.includes(currentKeyPath) && !!callback) {
+          const tsxSentences = callback(data);
+          sentences.push(`${key}${key ? ': ' : ''}(`);
+          if (tsxSentences.length) {
+            sentences = sentences.concat(tsxSentences);
+          } else {
+            sentences.push('null');
+          }
+          sentences.push(`),`);
+        } else {
+          sentences.push(`${key}${key ? ': ' : ''}{`);
+          Object.entries(data).forEach(([key, value]) => {
+            this.generateObjectStrArr(value, keyPaths, callback, `${currentKeyPath}.${key}`, key).forEach(item => {
+              sentences.push(item);
+            });
           });
-        });
-        sentences.push(`},`);
+          sentences.push(`},`);
+        }
         break;
       case 'array':
         sentences.push(`${key}${key ? ': ' : ''}[`);
-        data.forEach((val: any) => {
-          this.generateObjectStrArr(val, keyPaths, callback, currentKeyPath).forEach(item => {
+        data.forEach((val: any, index: number) => {
+          this.generateObjectStrArr(val, keyPaths, callback, `${currentKeyPath}[${index}]`).forEach(item => {
             sentences.push(item);
           });
         });
@@ -161,6 +169,7 @@ export default class TypeScriptCodeGenerator {
   }
 
   generateAssignment(opt: IAssignmentOptions): string[] {
+    debugger;
     const { variableName, expressions, useLet = false } = opt;
     const cp = [...expressions];
     cp[0] = `${useLet ? 'let' : 'const'} ${variableName} = ${cp[0]}`;
