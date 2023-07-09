@@ -1,6 +1,10 @@
 import IPageSchema from '@/types/page.schema';
 import { toUpperCase, typeOf } from '@/util';
-import TypeScriptCodeGenerator, { IConstantOptions, IFunctionOptions } from '@/service/code-generator/typescript';
+import TypeScriptCodeGenerator, {
+  IConstantOptions,
+  IFunctionOptions,
+  IImportOptions
+} from '@/service/code-generator/typescript';
 import IComponentSchema from '@/types/component.schema';
 import { ImportType } from '@/types';
 import IPropsSchema from '@/types/props.schema';
@@ -48,15 +52,17 @@ export interface IUseRefOptions {
   name: string;
 }
 
+export interface IImportInfo {
+  [importPath: string]: {
+    [importType: string]: string[];
+  };
+}
+
 export interface IDSLStatsInfo {
   [key: string]: any;
 
   pageName: string;
-  importInfo: {
-    [importPath: string]: {
-      [importType: string]: string[];
-    };
-  };
+  importInfo: IImportInfo;
   stateInfo: {
     [stateName: string]: IUseStateOptions;
   };
@@ -306,31 +312,8 @@ export default class ReactCodeGenerator {
                 if (Object.entries(callbackInfo).length && !object.includes('useCallback')) {
                   object.push('useCallback');
                 }
-                // 合并到瑞信息
-                Object.entries(importInfo).forEach(
-                  ([importPath, importInfo]: [
-                    string,
-                    {
-                      [key: string]: string[];
-                    }
-                  ]) => {
-                    importInfo?.default?.forEach(item => {
-                      if (!(result.importInfo?.[importPath]?.default || []).includes(item)) {
-                        result.importInfo?.[importPath]?.default.push(item);
-                      }
-                    });
-                    importInfo?.object?.forEach(item => {
-                      if (!(result.importInfo?.[importPath]?.object || []).includes(item)) {
-                        result.importInfo?.[importPath]?.object.push(item);
-                      }
-                    });
-                    importInfo?.['*']?.forEach(item => {
-                      if (!(result.importInfo?.[importPath]?.['*'] || []).includes(item)) {
-                        result.importInfo?.[importPath]?.['*'].push(item);
-                      }
-                    });
-                  }
-                );
+                // 合并导入信息
+                this.mergeImportInfo(result.importInfo, importInfo);
               }
             }
             // 初始化子节点
@@ -450,7 +433,7 @@ export default class ReactCodeGenerator {
                     ) {
                       object.push('useCallback');
                     }
-                    Object.assign(result.importInfo, importInfo);
+                    this.mergeImportInfo(result.importInfo, importInfo);
                   }
 
                   if (tsxInfo) {
@@ -530,6 +513,7 @@ export default class ReactCodeGenerator {
         }
       }
     });
+    debugger
     return result;
   }
 
@@ -599,5 +583,49 @@ export default class ReactCodeGenerator {
     result = result.concat(this.tsCodeGenerator.generateFunctionDefinition(functionInfo as IFunctionOptions));
 
     return result;
+  }
+
+  private mergeImportInfo(source: IImportInfo, target: IImportInfo) {
+    console.log('target: ', target);
+    console.log('before merge: ', source);
+    Object.entries(target).forEach(
+      ([importPath, importInfo]: [
+        string,
+        {
+          [key: string]: string[];
+        }
+      ]) => {
+        if (!source[importPath]) {
+          source[importPath] = {};
+        }
+        if (!source[importPath].default) {
+          source[importPath].default = [];
+        }
+        importInfo?.default?.forEach(item => {
+          if (!(source?.[importPath]?.default || []).includes(item)) {
+            source?.[importPath]?.default.push(item);
+          }
+        });
+
+        if (!source[importPath].object) {
+          source[importPath].object = [];
+        }
+        importInfo?.object?.forEach(item => {
+          if (!(source?.[importPath]?.object || []).includes(item)) {
+            source?.[importPath]?.object.push(item);
+          }
+        });
+
+        if (!source[importPath]['*']) {
+          source[importPath]['*'] = [];
+        }
+        importInfo?.['*']?.forEach(item => {
+          if (!(source?.[importPath]?.['*'] || []).includes(item)) {
+            source?.[importPath]?.['*'].push(item);
+          }
+        });
+      }
+    );
+    console.log('after merge: ', source);
   }
 }

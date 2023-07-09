@@ -34,28 +34,12 @@
             "key": "2",
             "label": "Tab 2",
             "children": {
-              "id": "c12",
-              "name": "div",
+              "id": "c8",
+              "schemaType": "component",
+              "dependency": "antd",
+              "name": "Button",
               "children": [
-                {
-                  "id": "c3",
-                  "dependency": "antd",
-                  "name": "Table",
-                  "propsRefs": [
-                    "p4",
-                    "p5",
-                    "p6"
-                  ]
-                },
-                {
-                  "id": "c8",
-                  "schemaType": "component",
-                  "dependency": "antd",
-                  "name": "Button",
-                  "children": [
-                    "测试按钮3"
-                  ]
-                }
+                "测试按钮3"
               ]
             }
           }
@@ -158,12 +142,22 @@
               "name": "div",
               "children": [
                 {
+                  "id": "c3",
+                  "dependency": "antd",
+                  "name": "Table",
+                  "propsRefs": [
+                    "p4",
+                    "p5",
+                    "p6"
+                  ]
+                },
+                {
                   "id": "c10",
                   "schemaType": "component",
                   "dependency": "antd",
                   "name": "Button",
                   "children": [
-                    "测试按钮1"
+                    "测试按钮3"
                   ]
                 }
               ]
