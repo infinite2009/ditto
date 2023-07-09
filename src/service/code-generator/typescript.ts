@@ -169,7 +169,6 @@ export default class TypeScriptCodeGenerator {
   }
 
   generateAssignment(opt: IAssignmentOptions): string[] {
-    debugger;
     const { variableName, expressions, useLet = false } = opt;
     const cp = [...expressions];
     cp[0] = `${useLet ? 'let' : 'const'} ${variableName} = ${cp[0]}`;

@@ -257,9 +257,6 @@ export default class ReactCodeGenerator {
             id
           } = node as IComponentSchema;
 
-          if (id === 'c9') {
-            debugger;
-          }
           // 提取导入信息
           if (dependency) {
             const importInfoForComponent = this.extractImportInfo(dependency, importType, importRelativePath, name);
