@@ -37,11 +37,4 @@ export default interface IPageSchema extends ISchema {
   };
   // 事件处理器
   handlers: DynamicObject<IHandlerSchema>;
-  templates: {
-    [componentId: string]: {
-      [propsId: string]: {
-        [keyPath: string]: IComponentSchema;
-      };
-    };
-  };
 }
