@@ -1,17 +1,13 @@
 import IPageSchema from '@/types/page.schema';
-import { toUpperCase } from '@/util';
-import TypeScriptCodeGenerator, {
-  IConstantOptions,
-  IFunctionOptions,
-  IImportOptions
-} from '@/service/code-generator/typescript';
+import { toUpperCase, typeOf } from '@/util';
+import TypeScriptCodeGenerator, { IConstantOptions, IFunctionOptions } from '@/service/code-generator/typescript';
 import IComponentSchema from '@/types/component.schema';
 import { ImportType } from '@/types';
 import IPropsSchema from '@/types/props.schema';
-import { merge } from 'lodash/fp';
 
 export interface ITSXOptions {
-  componentName: string;
+  text?: string;
+  componentName?: string;
   propsStrArr?: string[];
   children?: ITSXOptions[];
 }
@@ -96,7 +92,11 @@ export default class ReactCodeGenerator {
   tsCodeGenerator: TypeScriptCodeGenerator;
 
   generateTSX(opt: ITSXOptions, sentences: string[] = []): string[] {
-    const { propsStrArr = [], componentName, children = [] } = opt;
+    // 如果 text 字段是真值，说明这个节点本身是纯文本
+    if (opt.text) {
+      return [opt.text];
+    }
+    const { propsStrArr = [], componentName, children = [] } = opt as unknown as ITSXOptions;
     const startTagStr = `<${componentName}${propsStrArr?.length ? ' ' : ''}${propsStrArr.join(' ')} ${
       children?.length ? '' : '/'
     }>`;
@@ -179,7 +179,7 @@ export default class ReactCodeGenerator {
   analysisDsl(): IDSLStatsInfo {
     const { child, props, httpService, actions, handlers, name, desc } = this.dsl;
     // 初始化 tsxInfo，后边在这个 children 里边去遍历填充子节点信息
-    const result = this.analysisTemplate(child, props);
+    const result = this.analysisTemplate(child as unknown as IComponentSchema, props);
     result.pageName = name;
     return <IDSLStatsInfo>result;
   }
@@ -232,109 +232,125 @@ export default class ReactCodeGenerator {
     // 初始化 tsxInfo，后边在这个 children 里边去遍历填充子节点信息
 
     // 广度遍历 components，获取其中的导入信息和 props
-    let q: IComponentSchema[] = [template];
+    let q: (IComponentSchema | string)[] = [template];
     let p: ITSXOptions[] = [result.tsxInfo as ITSXOptions];
     while (q.length) {
       // 弹出头部的节点
-      const node: IComponentSchema | undefined = q.shift();
+      const node: IComponentSchema | string | undefined = q.shift();
       if (node) {
-        const {
-          callingName,
-          importType,
-          dependency,
-          importRelativePath,
-          name,
-          propsRefs = [],
-          children = [],
-          id
-        } = node;
-
-        // 提取导入信息
-        if (dependency) {
-          const importInfoForComponent = this.extractImportInfo(dependency, importType, importRelativePath, name);
-          if (importInfoForComponent.importPath && result.importInfo) {
-            result.importInfo[importInfoForComponent.importPath] = result.importInfo[
-              importInfoForComponent.importPath
-            ] || {
-              [importInfoForComponent.importType as string]: []
-            };
-            if (
-              !result.importInfo[importInfoForComponent.importPath][
-                importInfoForComponent.importType as string
-              ]?.includes(name)
-            ) {
-              result.importInfo[importInfoForComponent.importPath][importInfoForComponent.importType as string]?.push(
-                name
-              );
-            }
-          }
-        }
-
-        // 提取 props
         const pNode = p.shift();
-        if (pNode) {
-          pNode.componentName = callingName || name;
-          // 处理当前节点的 props
-          if (propsDict[id]) {
-            const { importInfo, propsStrArr, stateInfo, callbackInfo, memoInfo, effectInfo, constantInfo } =
-              this.analysisProps(propsDict, propsRefs, id);
-            pNode.propsStrArr = propsStrArr;
-            // 将每个组件节点的 stateInfo 合并到 result 中，通过命名系统避免 state 重名，callback，memo，effect 亦然
-            Object.assign(result.stateInfo as object, stateInfo);
-            Object.assign(result.callbackInfo as object, callbackInfo);
-            Object.assign(result.memoInfo as object, memoInfo);
-            Object.assign(result.effectInfo as object, effectInfo);
-            Object.assign(result.constantInfo as object, constantInfo);
-            if (result.importInfo) {
-              const { object } = result.importInfo.react;
-              if (Object.entries(effectInfo).length && !object.includes('useEffect')) {
-                object.push('useEffect');
+
+        const nodeType = typeOf(node);
+        if (nodeType === 'string') {
+          if (pNode) {
+            pNode.text = node as string;
+          }
+        } else {
+          const {
+            callingName,
+            importType,
+            dependency,
+            importRelativePath,
+            name,
+            propsRefs = [],
+            children = [],
+            id
+          } = node as IComponentSchema;
+
+          if (id === 'c9') {
+            debugger;
+          }
+          // 提取导入信息
+          if (dependency) {
+            const importInfoForComponent = this.extractImportInfo(dependency, importType, importRelativePath, name);
+            if (importInfoForComponent.importPath && result.importInfo) {
+              result.importInfo[importInfoForComponent.importPath] = result.importInfo[
+                importInfoForComponent.importPath
+              ] || {
+                [importInfoForComponent.importType as string]: []
+              };
+              if (
+                !result.importInfo[importInfoForComponent.importPath][
+                  importInfoForComponent.importType as string
+                ]?.includes(name)
+              ) {
+                result.importInfo[importInfoForComponent.importPath][importInfoForComponent.importType as string]?.push(
+                  name
+                );
               }
-              if (Object.entries(stateInfo).length && !object.includes('useState')) {
-                object.push('useState');
-              }
-              if (Object.entries(memoInfo).length && !object.includes('useMemo')) {
-                object.push('useMemo');
-              }
-              if (Object.entries(callbackInfo).length && !object.includes('useCallback')) {
-                object.push('useCallback');
-              }
-              // 合并到瑞信息
-              Object.entries(importInfo).forEach(([importPath, importInfo]: [string, { [key: string]: string[] }]) => {
-                debugger;
-                importInfo?.default?.forEach(item => {
-                  if (!(result.importInfo?.[importPath]?.default || []).includes(item)) {
-                    result.importInfo?.[importPath]?.default.push(item);
-                  }
-                });
-                importInfo?.object?.forEach(item => {
-                  if (!(result.importInfo?.[importPath]?.object || []).includes(item)) {
-                    result.importInfo?.[importPath]?.object.push(item);
-                  }
-                });
-                importInfo?.['*']?.forEach(item => {
-                  if (!(result.importInfo?.[importPath]?.['*'] || []).includes(item)) {
-                    result.importInfo?.[importPath]?.['*'].push(item);
-                  }
-                });
-              });
             }
           }
-          // 初始化子节点
-          if (children) {
-            pNode.children = children.map(() => {
-              return {
-                componentName: '',
-                propsStrArr: [],
-                children: []
-              };
-            });
-            p = p.concat(pNode.children);
-          }
-        }
 
-        q = q.concat(children || []);
-        //
+          // 提取 props
+          if (pNode) {
+            pNode.componentName = callingName || name;
+            // 处理当前节点的 props
+            if (propsDict[id]) {
+              const { importInfo, propsStrArr, stateInfo, callbackInfo, memoInfo, effectInfo, constantInfo } =
+                this.analysisProps(propsDict, propsRefs, id);
+              pNode.propsStrArr = propsStrArr;
+              // 将每个组件节点的 stateInfo 合并到 result 中，通过命名系统避免 state 重名，callback，memo，effect 亦然
+              Object.assign(result.stateInfo as object, stateInfo);
+              Object.assign(result.callbackInfo as object, callbackInfo);
+              Object.assign(result.memoInfo as object, memoInfo);
+              Object.assign(result.effectInfo as object, effectInfo);
+              Object.assign(result.constantInfo as object, constantInfo);
+              if (result.importInfo) {
+                const { object } = result.importInfo.react;
+                if (Object.entries(effectInfo).length && !object.includes('useEffect')) {
+                  object.push('useEffect');
+                }
+                if (Object.entries(stateInfo).length && !object.includes('useState')) {
+                  object.push('useState');
+                }
+                if (Object.entries(memoInfo).length && !object.includes('useMemo')) {
+                  object.push('useMemo');
+                }
+                if (Object.entries(callbackInfo).length && !object.includes('useCallback')) {
+                  object.push('useCallback');
+                }
+                // 合并到瑞信息
+                Object.entries(importInfo).forEach(
+                  ([importPath, importInfo]: [
+                    string,
+                    {
+                      [key: string]: string[];
+                    }
+                  ]) => {
+                    importInfo?.default?.forEach(item => {
+                      if (!(result.importInfo?.[importPath]?.default || []).includes(item)) {
+                        result.importInfo?.[importPath]?.default.push(item);
+                      }
+                    });
+                    importInfo?.object?.forEach(item => {
+                      if (!(result.importInfo?.[importPath]?.object || []).includes(item)) {
+                        result.importInfo?.[importPath]?.object.push(item);
+                      }
+                    });
+                    importInfo?.['*']?.forEach(item => {
+                      if (!(result.importInfo?.[importPath]?.['*'] || []).includes(item)) {
+                        result.importInfo?.[importPath]?.['*'].push(item);
+                      }
+                    });
+                  }
+                );
+              }
+            }
+            // 初始化子节点
+            if (children) {
+              pNode.children = children.map(() => {
+                return {
+                  componentName: '',
+                  propsStrArr: [],
+                  children: []
+                };
+              });
+              p = p.concat(pNode.children);
+            }
+          }
+
+          q = q.concat(children || []);
+        }
       } else {
         result.tsxInfo = null;
       }
