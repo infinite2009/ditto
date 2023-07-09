@@ -24,9 +24,9 @@
               "id": "c7",
               "schemaType": "component",
               "dependency": "antd",
-              "name": "Button",
+              "name": "Tabs",
               "propsRefs": [
-                "title"
+                "items"
               ]
             }
           },
@@ -91,25 +91,78 @@
       }
     },
     "c7": {
-      "title": {
-        "id": "value",
+      "items": {
+        "id": "items",
         "schemaType": "props",
-        "name": "value",
+        "name": "items",
+        "category": "basic",
+        "valueType": "object",
+        "valueSource": "editorInput",
+        "templateKeyPaths": [
+          "[0].children",
+          "[1].children"
+        ],
+        "value": [
+          {
+            "key": "1",
+            "label": "测试 Tab 1",
+            "children": {
+              "id": "c9",
+              "schemaType": "component",
+              "dependency": "antd",
+              "name": "Button",
+              "propsRefs": [
+                "title"
+              ]
+            }
+          },
+          {
+            "key": "2",
+            "label": "测试 Tab 2",
+            "children": {
+              "id": "c10",
+              "schemaType": "component",
+              "dependency": "antd",
+              "name": "Button",
+              "propsRefs": [
+                "title"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "c8": {
+      "title": {
+        "id": "title",
+        "schemaType": "props",
+        "name": "title",
         "category": "basic",
         "valueType": "string",
         "valueSource": "editorInput",
         "value": "测试按钮1"
       }
     },
-    "c8": {
+    "c9": {
       "title": {
-        "id": "value",
+        "id": "title",
         "schemaType": "props",
-        "name": "value",
+        "name": "title",
         "category": "basic",
         "valueType": "string",
         "valueSource": "editorInput",
         "value": "测试按钮2"
+      }
+    },
+    "c10": {
+      "title": {
+        "id": "title",
+        "schemaType": "props",
+        "name": "title",
+        "category": "basic",
+        "valueType": "string",
+        "valueSource": "editorInput",
+        "value": "测试按钮3"
       }
     }
   },
