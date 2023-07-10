@@ -50,18 +50,17 @@ export default class TypeScriptCodeGenerator {
       importPathPart += ';';
     }
 
-    switch (importType) {
-      case 'object':
-        // 无论是字符串还是数组，都可以被检查到
-        if (!importNames?.length) {
-          throw new Error('no dependencies error');
-        }
-        return `import { ${importNames.join(', ')} } ${importPathPart}`;
-      case '*':
-        return `import * as ${importNames} ${importPathPart}`;
-      default:
-        return `import ${importNames} ${importPathPart}`;
+    if (importNames?.length) {
+      switch (importType) {
+        case 'object':
+          return `import { ${importNames.join(', ')} } ${importPathPart}`;
+        case '*':
+          return `import * as ${importNames[0]} ${importPathPart}`;
+        default:
+          return `import ${importNames[0]} ${importPathPart}`;
+      }
     }
+    return '';
   }
 
   generateFunctionDefinition(data: IFunctionOptions) {

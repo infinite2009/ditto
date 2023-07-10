@@ -513,7 +513,6 @@ export default class ReactCodeGenerator {
         }
       }
     });
-    debugger
     return result;
   }
 
@@ -537,13 +536,14 @@ export default class ReactCodeGenerator {
     // 生成导入语句
     Object.entries(importInfo).forEach(([importPath, item]) => {
       Object.entries(item).forEach(([importType, importNames]) => {
-        result.push(
-          this.tsCodeGenerator.generateImportSentence({
-            importNames,
-            importPath,
-            importType: importType as ImportType
-          })
-        );
+        const importSentence = this.tsCodeGenerator.generateImportSentence({
+          importNames,
+          importPath,
+          importType: importType as ImportType
+        });
+        if (importSentence) {
+          result.push(importSentence);
+        }
       });
     });
     const functionInfo = {
@@ -586,8 +586,6 @@ export default class ReactCodeGenerator {
   }
 
   private mergeImportInfo(source: IImportInfo, target: IImportInfo) {
-    console.log('target: ', target);
-    console.log('before merge: ', source);
     Object.entries(target).forEach(
       ([importPath, importInfo]: [
         string,
@@ -626,6 +624,5 @@ export default class ReactCodeGenerator {
         });
       }
     );
-    console.log('after merge: ', source);
   }
 }
