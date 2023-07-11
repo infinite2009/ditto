@@ -12,7 +12,7 @@
         "category": "basic",
         "valueType": "array",
         "valueSource": "editorInput",
-        "templateKeyPaths": [
+        "templateKeyRegPaths": [
           "[0].children",
           "[1].children"
         ],
@@ -98,7 +98,7 @@
         "category": "basic",
         "valueType": "object",
         "valueSource": "editorInput",
-        "templateKeyPaths": [
+        "templateKeyRegPaths": [
           "[0].children",
           "[1].children"
         ],

@@ -14,7 +14,7 @@ export default interface IPropsSchema extends ISchema {
    * 模板字段路径，如果是空字符串，表明属性本身是就是模板对象
    * 如果字段路径中，存在数组的情况，用 [i] 表示，例如：'[i].children'，表示 props.value 是一个数组， props.value[i]
    */
-  templateKeyPaths?: string[];
+  templateKeyRegPaths?: string[];
 
   // 属性的名字
   name: string;
