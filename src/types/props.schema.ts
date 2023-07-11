@@ -16,11 +16,6 @@ export default interface IPropsSchema extends ISchema {
    */
   templateKeyPaths?: string[];
 
-  /**
-   * 渲染器字段路径，和模板字段路径相似，差别是这个是函数
-   */
-  renderKeyPaths?: string[];
-
   // 属性的名字
   name: string;
   // 属性值的类型, 这个是组件要求的，它和 value 本身的类型不完全对等，比如 hasTemplate 为真时，valueType 即便是 function，value 的值也是对象
