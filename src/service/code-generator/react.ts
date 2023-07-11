@@ -401,46 +401,60 @@ export default class ReactCodeGenerator {
             if (result.constantInfo) {
               result.constantInfo[variableName] = {
                 name: variableName,
-                value: this.tsCodeGenerator.generateObjectStrArr(value, templateKeyPaths, (val: any) => {
-                  const { tsxInfo, importInfo, effectInfo, constantInfo, memoInfo, callbackInfo, stateInfo } =
-                    this.analysisTemplate(val as IComponentSchema, propsDict);
-                  // 合并统计分析
-                  Object.assign(result.stateInfo as object, stateInfo);
-                  Object.assign(result.callbackInfo as object, callbackInfo);
-                  Object.assign(result.memoInfo as object, memoInfo);
-                  Object.assign(result.effectInfo as object, effectInfo);
-                  Object.assign(result.constantInfo as object, constantInfo);
-                  if (importInfo) {
-                    // 合并 hooks
-                    const { object } = importInfo.react;
-                    if (
-                      result.effectInfo &&
-                      Object.entries(result.effectInfo).length &&
-                      !object.includes('useEffect')
-                    ) {
-                      object.push('useEffect');
+                value: this.tsCodeGenerator.generateObjectStrArr(
+                  value,
+                  templateKeyPaths,
+                  (val: any, wrapper: string[] = []) => {
+                    const { tsxInfo, importInfo, effectInfo, constantInfo, memoInfo, callbackInfo, stateInfo } =
+                      this.analysisTemplate(val as IComponentSchema, propsDict);
+                    // 合并统计分析
+                    Object.assign(result.stateInfo as object, stateInfo);
+                    Object.assign(result.callbackInfo as object, callbackInfo);
+                    Object.assign(result.memoInfo as object, memoInfo);
+                    Object.assign(result.effectInfo as object, effectInfo);
+                    Object.assign(result.constantInfo as object, constantInfo);
+                    if (importInfo) {
+                      // 合并 hooks
+                      const { object } = importInfo.react;
+                      if (
+                        result.effectInfo &&
+                        Object.entries(result.effectInfo).length &&
+                        !object.includes('useEffect')
+                      ) {
+                        object.push('useEffect');
+                      }
+                      if (result.stateInfo && Object.entries(result.stateInfo).length && !object.includes('useState')) {
+                        object.push('useState');
+                      }
+                      if (result.memoInfo && Object.entries(result.memoInfo).length && !object.includes('useMemo')) {
+                        object.push('useMemo');
+                      }
+                      if (
+                        result.callbackInfo &&
+                        Object.entries(result.callbackInfo).length &&
+                        !object.includes('useCallback')
+                      ) {
+                        object.push('useCallback');
+                      }
+                      this.mergeImportInfo(result.importInfo, importInfo);
                     }
-                    if (result.stateInfo && Object.entries(result.stateInfo).length && !object.includes('useState')) {
-                      object.push('useState');
-                    }
-                    if (result.memoInfo && Object.entries(result.memoInfo).length && !object.includes('useMemo')) {
-                      object.push('useMemo');
-                    }
-                    if (
-                      result.callbackInfo &&
-                      Object.entries(result.callbackInfo).length &&
-                      !object.includes('useCallback')
-                    ) {
-                      object.push('useCallback');
-                    }
-                    this.mergeImportInfo(result.importInfo, importInfo);
-                  }
 
-                  if (tsxInfo) {
-                    return this.generateTSX(tsxInfo);
+                    if (tsxInfo) {
+                      const tsxSentences = this.generateTSX(tsxInfo);
+                      if (valueType === 'object') {
+                        if (wrapper.length) {
+                          return tsxSentences.splice(1, 0, ...tsxSentences);
+                        }
+                        return tsxSentences;
+                      } else if (valueType === 'function') {
+                        const renderSentences = ['() => {', '};'];
+                        renderSentences
+                        return renderSentences.splice(1, 0, ...renderSentences);
+                      }
+                    }
+                    return [];
                   }
-                  return [];
-                })
+                )
               };
             }
           } else {
