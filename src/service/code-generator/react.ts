@@ -443,13 +443,16 @@ export default class ReactCodeGenerator {
                       const tsxSentences = this.generateTSX(tsxInfo);
                       if (valueType === 'object') {
                         if (wrapper.length) {
-                          return tsxSentences.splice(1, 0, ...tsxSentences);
+                          const cp = [...wrapper];
+                          cp.splice(1, 0, ...tsxSentences);
+                          return cp;
                         }
                         return tsxSentences;
                       } else if (valueType === 'function') {
-                        const renderSentences = ['() => {', '};'];
-                        renderSentences
-                        return renderSentences.splice(1, 0, ...renderSentences);
+                        let renderSentences = ['() => {', 'return ('];
+                        renderSentences = renderSentences.concat(tsxSentences);
+                        renderSentences = renderSentences.concat([');', '},']);
+                        return renderSentences;
                       }
                     }
                     return [];
