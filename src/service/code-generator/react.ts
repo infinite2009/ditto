@@ -404,7 +404,7 @@ export default class ReactCodeGenerator {
                 value: this.tsCodeGenerator.generateObjectStrArr(
                   value,
                   templateKeyRegPaths,
-                  (val: any, wrapper: string[] = []) => {
+                  (val: any, wrapper: string[] = [], templateType: 'object' | 'function') => {
                     const { tsxInfo, importInfo, effectInfo, constantInfo, memoInfo, callbackInfo, stateInfo } =
                       this.analysisTemplate(val as IComponentSchema, propsDict);
                     // 合并统计分析
@@ -441,19 +441,19 @@ export default class ReactCodeGenerator {
 
                     if (tsxInfo) {
                       const tsxSentences = this.generateTSX(tsxInfo);
-                      if (valueType === 'object') {
+                      // 这里默认不是模板对象，就是模板函数
+                      if (templateType === 'object') {
                         if (wrapper.length) {
                           const cp = [...wrapper];
                           cp.splice(1, 0, ...tsxSentences);
                           return cp;
                         }
                         return tsxSentences;
-                      } else if (valueType === 'function') {
-                        let renderSentences = ['() => {', 'return ('];
-                        renderSentences = renderSentences.concat(tsxSentences);
-                        renderSentences = renderSentences.concat([');', '},']);
-                        return renderSentences;
                       }
+                      let renderSentences = ['() => {', 'return ('];
+                      renderSentences = renderSentences.concat(tsxSentences);
+                      renderSentences = renderSentences.concat([');', '},']);
+                      return renderSentences;
                     }
                     return [];
                   }

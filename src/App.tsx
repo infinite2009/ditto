@@ -30,7 +30,8 @@ function App() {
       label: '测试 Tab 2',
       children: (
         <div>
-          <Button>测试按钮1</Button>
+          <Table />
+          <Button>测试按钮3</Button>
         </div>
       )
     }
@@ -44,12 +45,7 @@ function App() {
     {
       key: '2',
       label: 'Tab 2',
-      children: (
-        <div>
-          <Table />
-          <Button>测试按钮3</Button>
-        </div>
-      )
+      children: <Button>测试按钮3</Button>
     }
   ];
   return (

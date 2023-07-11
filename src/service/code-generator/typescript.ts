@@ -119,17 +119,20 @@ export default class TypeScriptCodeGenerator {
    */
   generateObjectStrArr(
     data: any,
-    keyPaths: string[] = [],
-    callback: (data: any, wrapper: string[]) => string[] = () => [],
+    keyPaths: { path: string; type: 'object' | 'function' }[] = [],
+    callback: (data: any, wrapper: string[], templateType: 'object' | 'function') => string[] = () => [],
     currentKeyPath = '',
     key = '',
     sentences: string[] = []
   ): string[] {
     const type = typeOf(data);
+    const keyPathMatchResult = keyPaths.length && keyPaths.find(pathObj => {
+      return new RegExp(pathObj.path).test(currentKeyPath);
+    });
     switch (type) {
       case 'object':
-        if (keyPaths.length && keyPaths.includes(currentKeyPath) && !!callback) {
-          const customSentences = callback(data, [`${key}${key ? ': ' : ''}(`, '),']);
+        if (keyPathMatchResult && !!callback) {
+          const customSentences = callback(data, [`${key}${key ? ': ' : ''}(`, '),'], keyPathMatchResult.type);
           sentences = sentences.concat(customSentences);
         } else {
           sentences.push(`${key}${key ? ': ' : ''}{`);

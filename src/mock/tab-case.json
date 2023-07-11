@@ -13,8 +13,14 @@
         "valueType": "array",
         "valueSource": "editorInput",
         "templateKeyRegPaths": [
-          "[0].children",
-          "[1].children"
+          {
+            "type": "object",
+            "path":  "\\[0\\]\\.children"
+          },
+          {
+            "type": "object",
+            "path":  "\\[1\\]\\.children"
+          }
         ],
         "value": [
           {
@@ -99,8 +105,14 @@
         "valueType": "object",
         "valueSource": "editorInput",
         "templateKeyRegPaths": [
-          "[0].children",
-          "[1].children"
+          {
+            "type": "object",
+            "path":  "\\[0\\]\\.children"
+          },
+          {
+            "type": "object",
+            "path":  "\\[1\\]\\.children"
+          }
         ],
         "value": [
           {
@@ -117,9 +129,6 @@
                   "dependency": "antd",
                   "name": "Table",
                   "propsRefs": [
-                    "p1",
-                    "p2",
-                    "p3"
                   ]
                 },
                 {
