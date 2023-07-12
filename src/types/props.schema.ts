@@ -14,7 +14,7 @@ export default interface IPropsSchema extends ISchema {
    * 模板字段路径，如果是空字符串，表明属性本身是就是模板对象
    * path 字段是正则表达式，即便是采用穷举的方式，也要使用正则表达式进行填充
    */
-  templateKeyRegPaths?: { path: string; type: 'object' | 'function' }[];
+  templateKeyPathsReg?: { path: string; type: 'object' | 'function' }[];
 
   // 属性的名字
   name: string;

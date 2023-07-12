@@ -374,7 +374,7 @@ export default class ReactCodeGenerator {
       if (!props) {
         return;
       }
-      const { value, valueType, valueSource, isValue, templateKeyRegPaths = [], name } = props;
+      const { value, valueType, valueSource, isValue, templateKeyPathsReg = [], name } = props;
       const basicValueTypes = ['string', 'number', 'boolean'];
       // 基础类型固定值走字面，其他情况走变量（常量、state、memo、callback）
       if (valueSource === 'editorInput') {
@@ -387,7 +387,7 @@ export default class ReactCodeGenerator {
             })
           );
         } else {
-          if (templateKeyRegPaths.length) {
+          if (templateKeyPathsReg.length) {
             const variableName = this.generateVariableName(componentId, name, 'const');
             result.propsStrArr.push(
               this.generatePropAssignmentExpWithVariable({
@@ -403,7 +403,7 @@ export default class ReactCodeGenerator {
                 name: variableName,
                 value: this.tsCodeGenerator.generateObjectStrArr(
                   value,
-                  templateKeyRegPaths,
+                  templateKeyPathsReg,
                   (val: any, wrapper: string[] = [], templateType: 'object' | 'function') => {
                     const { tsxInfo, importInfo, effectInfo, constantInfo, memoInfo, callbackInfo, stateInfo } =
                       this.analysisTemplate(val as IComponentSchema, propsDict);
