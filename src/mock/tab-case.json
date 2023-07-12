@@ -12,7 +12,7 @@
         "category": "basic",
         "valueType": "array",
         "valueSource": "editorInput",
-        "templateKeyRegPaths": [
+        "templateKeyPathsReg": [
           {
             "type": "object",
             "path":  "\\[0\\]\\.children"
@@ -48,6 +48,97 @@
                 "测试按钮3"
               ]
             }
+          }
+        ]
+      }
+    },
+    "c2": {
+      "columns":  {
+        "id": "columns",
+        "schemaType": "props",
+        "name": "columns",
+        "category": "basic",
+        "valueType": "array",
+        "valueSource": "editorInput",
+        "templateKeyPathsReg": [{
+          "path": "\\[\\d+\\]\\.render",
+          "type": "function"
+        }],
+        "value": [
+          {
+            "title": "Name",
+            "dataIndex": "name",
+            "key": "name",
+            "render": {
+              "id": "c13",
+              "schemaType": "component",
+              "name": "a",
+              "children": ["text"]
+            }
+          },
+          {
+            "title": "Age",
+            "dataIndex": "age",
+            "key": "age"
+          },
+          {
+            "title": "Action",
+            "key": "action",
+            "render": {
+              "id": "c14",
+              "schemaType": "component",
+              "dependency": "antd",
+              "name": "Space",
+              "propsRefs": ["size"],
+              "children": [
+                {
+                  "id": "c15",
+                  "schemaType": "component",
+                  "name": "a",
+                  "children": ["Invite Lida"]
+                },
+                {
+                  "id": "c16",
+                  "schemaType": "component",
+                  "name": "a",
+                  "children": ["Delete"]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "dataSource": {
+        "id": "dataSource",
+        "schemaType": "props",
+        "name": "dataSource",
+        "category": "basic",
+        "valueType": "array",
+        "valueSource": "editorInput",
+        "value": [
+          {
+            "key": "1",
+            "firstName": "John",
+            "lastName": "Brown",
+            "age": 32,
+            "address": "New York No. 1 Lake Park",
+            "tags": ["nice", "developer"]
+          },
+          {
+            "key": "2",
+            "name": "Jim",
+            "lastName": "Green",
+            "age": 42,
+            "address": "London No. 1 Lake Park",
+            "tags": ["loser"]
+          },
+          {
+            "key": "3",
+            "name": "Joe",
+            "lastName": "Black",
+            "age": 32,
+            "address": "Sydney No. 1 Lake Park",
+            "tags": ["cool", "teacher"]
           }
         ]
       }
@@ -104,7 +195,7 @@
         "category": "basic",
         "valueType": "object",
         "valueSource": "editorInput",
-        "templateKeyRegPaths": [
+        "templateKeyPathsReg": [
           {
             "type": "object",
             "path":  "\\[0\\]\\.children"
@@ -129,6 +220,8 @@
                   "dependency": "antd",
                   "name": "Table",
                   "propsRefs": [
+                    "columns",
+                    "dataSource"
                   ]
                 },
                 {

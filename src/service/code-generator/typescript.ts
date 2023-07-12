@@ -120,7 +120,7 @@ export default class TypeScriptCodeGenerator {
   generateObjectStrArr(
     data: any,
     keyPaths: { path: string; type: 'object' | 'function' }[] = [],
-    callback: (data: any, wrapper: string[], templateType: 'object' | 'function') => string[] = () => [],
+    callback: (data: any, wrapper: string[], insertIndex: number) => string[] = () => [],
     currentKeyPath = '',
     key = '',
     sentences: string[] = []
@@ -132,7 +132,11 @@ export default class TypeScriptCodeGenerator {
     switch (type) {
       case 'object':
         if (keyPathMatchResult && !!callback) {
-          const customSentences = callback(data, [`${key}${key ? ': ' : ''}(`, '),'], keyPathMatchResult.type);
+          let wrapper = [`${key}${key ? ': ' : ''}(`, '),'];
+          if (keyPathMatchResult.type === 'function') {
+            wrapper = [`${key}${key ? ': ' : ''}() => {`, 'return (', ');', '}'];
+          }
+          const customSentences = callback(data, wrapper, keyPathMatchResult.type === 'object' ? 1 : 2);
           sentences = sentences.concat(customSentences);
         } else {
           sentences.push(`${key}${key ? ': ' : ''}{`);

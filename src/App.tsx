@@ -1,11 +1,21 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import { invoke } from '@tauri-apps/api/tauri';
 import './App.css';
-import { Button, Input, Select, Table, Tabs } from 'antd';
+import { Tabs, Table, Space, Button, Input, Select } from 'antd';
 
 function App() {
+  const [dataSourceStateOfC2, setDataSourceStateOfC2] = useState<any[]>([
+    {
+      key: '1',
+      firstName: 'John',
+      lastName: 'Brown',
+      age: 32,
+      address: 'New York No. 1 Lake Park',
+      tags: ['nice', 'developer']
+    },
+    { key: '2', name: 'Jim', lastName: 'Green', age: 42, address: 'London No. 1 Lake Park', tags: ['loser'] },
+    { key: '3', name: 'Joe', lastName: 'Black', age: 32, address: 'Sydney No. 1 Lake Park', tags: ['cool', 'teacher'] }
+  ]);
   const [valueStateOfC6, setValueStateOfC6] = useState<string>('2');
   const [optionsStateOfC6, setOptionsStateOfC6] = useState<any[]>([
     { value: 1, label: '选项1' },
@@ -14,13 +24,40 @@ function App() {
   useEffect(() => {
     console.log('useEffect valueStateOfC6 works!');
   }, [valueStateOfC6]);
+  const columnsConstOfC2 = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      render: () => {
+        return <a>text</a>;
+      }
+    },
+    {
+      title: 'Age',
+      dataIndex: 'age',
+      key: 'age'
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: () => {
+        return (
+          <Space>
+            <a>Invite Lida</a>
+            <a>Delete</a>
+          </Space>
+        );
+      }
+    }
+  ];
   const itemsConstOfC7 = [
     {
       key: '1',
       label: '测试 Tab 1',
       children: (
         <div>
-          <Table />
+          <Table columns={columnsConstOfC2} dataSource={dataSourceStateOfC2} />
           <Button>测试按钮2</Button>
         </div>
       )

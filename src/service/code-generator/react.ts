@@ -399,12 +399,15 @@ export default class ReactCodeGenerator {
 
             // 模板使用嵌套
             if (result.constantInfo) {
+              if (ref === 'columns') {
+                debugger;
+              }
               result.constantInfo[variableName] = {
                 name: variableName,
                 value: this.tsCodeGenerator.generateObjectStrArr(
                   value,
                   templateKeyPathsReg,
-                  (val: any, wrapper: string[] = [], templateType: 'object' | 'function') => {
+                  (val: any, wrapper: string[] = [], insertIndex = 0) => {
                     const { tsxInfo, importInfo, effectInfo, constantInfo, memoInfo, callbackInfo, stateInfo } =
                       this.analysisTemplate(val as IComponentSchema, propsDict);
                     // 合并统计分析
@@ -442,18 +445,13 @@ export default class ReactCodeGenerator {
                     if (tsxInfo) {
                       const tsxSentences = this.generateTSX(tsxInfo);
                       // 这里默认不是模板对象，就是模板函数
-                      if (templateType === 'object') {
-                        if (wrapper.length) {
-                          const cp = [...wrapper];
-                          cp.splice(1, 0, ...tsxSentences);
-                          return cp;
-                        }
-                        return tsxSentences;
+                      if (wrapper.length) {
+                        debugger;
+                        const cp = [...wrapper];
+                        cp.splice(insertIndex, 0, ...tsxSentences);
+                        return cp;
                       }
-                      let renderSentences = ['() => {', 'return ('];
-                      renderSentences = renderSentences.concat(tsxSentences);
-                      renderSentences = renderSentences.concat([');', '},']);
-                      return renderSentences;
+                      return tsxSentences;
                     }
                     return [];
                   }
