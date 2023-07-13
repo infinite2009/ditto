@@ -399,9 +399,6 @@ export default class ReactCodeGenerator {
 
             // 模板使用嵌套
             if (result.constantInfo) {
-              if (ref === 'columns') {
-                debugger;
-              }
               result.constantInfo[variableName] = {
                 name: variableName,
                 value: this.tsCodeGenerator.generateObjectStrArr(
@@ -444,9 +441,8 @@ export default class ReactCodeGenerator {
 
                     if (tsxInfo) {
                       const tsxSentences = this.generateTSX(tsxInfo);
-                      // 这里默认不是模板对象，就是模板函数
+                      // 这里如果存在 wrapper ，则按照插入索引的位置，插入 tsx 代码
                       if (wrapper.length) {
-                        debugger;
                         const cp = [...wrapper];
                         cp.splice(insertIndex, 0, ...tsxSentences);
                         return cp;
