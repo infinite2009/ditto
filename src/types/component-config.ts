@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 export default interface IComponentConfig {
-  component: React.Component;
+  component: FC;
   title: string;
-  icon: React.Component;
+  icon: React.Component | null;
   category: 'basic' | 'layer';
   propsConfig: {
     [key: string]: {

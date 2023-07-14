@@ -52,21 +52,25 @@ import {
   Upload
 } from 'antd';
 import IComponentConfig from '@/types/component-config';
+import React, { FC } from 'react';
 
-export default {
+const componentConfig: { [key: string]: IComponentConfig} = {
   Button: {
     component: Button,
+    category: 'basic',
     title: '按钮',
     icon: null,
     propsConfig: {
       type: {
         name: 'type',
+        category: 'basic',
         initialValue: 'primary'
       }
     }
   },
   Divider: {
     component: Divider,
+    category: 'basic',
     title: '分割线',
     icon: null,
     propsConfig: {
@@ -75,6 +79,7 @@ export default {
   },
   Space: {
     component: Space,
+    category: 'basic',
     title: '间距',
     icon: null,
     propsConfig: {
@@ -82,6 +87,7 @@ export default {
   },
   Anchor: {
     component: Anchor,
+    category: 'basic',
     title: '锚点',
     icon: null,
     propsConfig: {
@@ -89,6 +95,7 @@ export default {
   },
   Breadcrumb: {
     component: Breadcrumb,
+    category: 'basic',
     title: '面包屑',
     icon: null,
     propsConfig: {
@@ -96,6 +103,7 @@ export default {
   },
   Dropdown: {
     component: Dropdown,
+    category: 'basic',
     title: '下拉菜单',
     icon: null,
     propsConfig: {
@@ -103,6 +111,7 @@ export default {
   },
   Menu: {
     component: Menu,
+    category: 'basic',
     title: '菜单导航',
     icon: null,
     propsConfig: {
@@ -110,6 +119,7 @@ export default {
   },
   Pagination: {
     component: Pagination,
+    category: 'basic',
     title: '分页',
     icon: null,
     propsConfig: {
@@ -117,6 +127,7 @@ export default {
   },
   Steps: {
     component: Steps,
+    category: 'basic',
     title: '步骤条',
     icon: null,
     propsConfig: {
@@ -125,6 +136,7 @@ export default {
   },
   Cascader: {
     component: Cascader,
+    category: 'basic',
     title: '级联选择',
     icon: null,
     propsConfig: {
@@ -133,6 +145,7 @@ export default {
   },
   Checkbox: {
     component: Checkbox,
+    category: 'basic',
     title: '多选框',
     icon: null,
     propsConfig: {
@@ -141,6 +154,7 @@ export default {
   },
   ColorPicker: {
     component: ColorPicker,
+    category: 'basic',
     title: '颜色选择器',
     icon: null,
     propsConfig: {
@@ -148,7 +162,8 @@ export default {
     }
   },
   DatePicker: {
-    component: DatePicker,
+    component: DatePicker as unknown as FC,
+    category: 'basic',
     title: '日期选择器',
     icon: null,
     propsConfig: {
@@ -157,6 +172,7 @@ export default {
   },
   Form: {
     component: Form,
+    category: 'basic',
     title: '表单',
     icon: null,
     propsConfig: {
@@ -165,6 +181,7 @@ export default {
   },
   'Input.Search': {
     component: Input.Search,
+    category: 'basic',
     title: '搜索框',
     icon: null,
     propsConfig: {
@@ -172,6 +189,7 @@ export default {
   },
   'Input.TextArea': {
     component: Input.TextArea,
+    category: 'basic',
     title: '多行文本',
     icon: null,
     propsConfig: {
@@ -179,6 +197,7 @@ export default {
   },
   InputNumber: {
     component: InputNumber,
+    category: 'basic',
     title: '数字输入框',
     icon: null,
     propsConfig: {
@@ -186,6 +205,7 @@ export default {
   },
   Mentions: {
     component: Mentions,
+    category: 'basic',
     title: '提及',
     icon: null,
     propsConfig: {
@@ -194,6 +214,7 @@ export default {
   },
   Radio: {
     component: Radio,
+    category: 'basic',
     title: '单选框',
     icon: null,
     propsConfig: {
@@ -202,6 +223,7 @@ export default {
   },
   Rate: {
     component: Rate,
+    category: 'basic',
     title: '评分',
     icon: null,
     propsConfig: {
@@ -210,6 +232,7 @@ export default {
   },
   Select: {
     component: Select,
+    category: 'basic',
     title: '选择器',
     icon: null,
     propsConfig: {
@@ -218,6 +241,7 @@ export default {
   },
   Slider: {
     component: Slider,
+    category: 'basic',
     title: '滑动输入条',
     icon: null,
     propsConfig: {
@@ -226,6 +250,7 @@ export default {
   },
   Switch: {
     component: Switch,
+    category: 'basic',
     title: '开关',
     icon: null,
     propsConfig: {
@@ -234,6 +259,7 @@ export default {
   },
   TimePicker: {
     component: TimePicker,
+    category: 'basic',
     title: '时间选择器',
     icon: null,
     propsConfig: {
@@ -241,6 +267,7 @@ export default {
   },
   Transfer: {
     component: Transfer,
+    category: 'basic',
     title: '穿梭框',
     icon: null,
     propsConfig: {
@@ -248,6 +275,7 @@ export default {
   },
   TreeSelect: {
     component: TreeSelect,
+    category: 'basic',
     title: '树选择',
     icon: null,
     propsConfig: {
@@ -255,6 +283,7 @@ export default {
   },
   Upload: {
     component: Upload,
+    category: 'basic',
     title: '上传',
     icon: null,
     propsConfig: {
@@ -262,6 +291,7 @@ export default {
   },
   Avatar: {
     component: Avatar,
+    category: 'basic',
     title: '头像',
     icon: null,
     propsConfig: {
@@ -270,182 +300,192 @@ export default {
   // TODO:
   Badge: {
     component: Badge,
-    title: '按钮',
+    category: 'basic',
+    title: '徽标数',
     icon: null,
     propsConfig: {
     },
   },
   Calendar: {
     component: Calendar,
-    title: '按钮',
+    category: 'basic',
+    title: '日历',
     icon: null,
     propsConfig: {
     },
   },
   Card: {
     component: Card,
-    title: '按钮',
+    category: 'basic',
+    title: '卡片',
     icon: null,
     propsConfig: {
     },
   },
   Carousel: {
     component: Carousel,
-    title: '按钮',
+    category: 'basic',
+    title: '走马灯',
     icon: null,
     propsConfig: {
     },
   },
   Collapse: {
     component: Collapse,
-    title: '按钮',
+    category: 'basic',
+    title: '折叠面板',
     icon: null,
     propsConfig: {
     },
   },
   Descriptions: {
     component: Descriptions,
-    title: '按钮',
+    category: 'basic',
+    title: '描述列表',
     icon: null,
     propsConfig: {
     },
   },
   Empty: {
     component: Empty,
-    title: '按钮',
+    category: 'basic',
+    title: '空状态',
     icon: null,
     propsConfig: {
     },
   },
   Image: {
-    component: Image,
-    title: '按钮',
+    component: Image as unknown as FC,
+    category: 'basic',
+    title: '图片',
     icon: null,
     propsConfig: {
     },
   },
   List: {
     component: List,
-    title: '按钮',
+    category: 'basic',
+    title: '列表',
     icon: null,
     propsConfig: {
     },
   },
   Popover: {
     component: Popover,
-    title: '按钮',
+    category: 'basic',
+    title: '气泡卡片',
     icon: null,
     propsConfig: {
     },
   },
   Statistic: {
     component: Statistic,
-    title: '按钮',
+    category: 'basic',
+    title: '统计数值',
     icon: null,
     propsConfig: {
     },
   },
   Table: {
     component: Table,
-    title: '按钮',
+    category: 'basic',
+    title: '表格',
     icon: null,
     propsConfig: {
     },
   },
   Tabs: {
     component: Tabs,
-    title: '按钮',
+    category: 'basic',
+    title: '标签页',
     icon: null,
     propsConfig: {
     },
   },
   Tag: {
     component: Tag,
-    title: '按钮',
+    category: 'basic',
+    title: '标签',
     icon: null,
     propsConfig: {
     },
   },
   Tooltip: {
     component: Tooltip,
-    title: '按钮',
+    category: 'basic',
+    title: '文字提示',
     icon: null,
     propsConfig: {
     },
   },
   Tree: {
-    component: Button,
-    title: '按钮',
+    component: Tree,
+    category: 'basic',
+    title: '树形控件',
     icon: null,
     propsConfig: {
     },
   },
   Alert: {
-    component: Button,
-    title: '按钮',
+    component: Alert,
+    category: 'basic',
+    title: '警告提示',
     icon: null,
     propsConfig: {
     },
   },
   Drawer: {
-    component: Button,
-    title: '按钮',
+    component: Drawer,
+    category: 'basic',
+    title: '抽屉',
     icon: null,
     propsConfig: {
     },
   },
   Modal: {
-    component: Button,
-    title: '按钮',
+    component: Modal,
+    category: 'basic',
+    title: '模态框',
     icon: null,
     propsConfig: {
     },
   },
   Notification: {
-    component: Button,
-    title: '按钮',
+    component: Notification as unknown as FC,
+    category: 'basic',
+    title: '通知提醒框',
     icon: null,
     propsConfig: {
     },
   },
   Popconfirm: {
-    component: Button,
-    title: '按钮',
+    component: Popconfirm as unknown as FC,
+    category: 'basic',
+    title: '气泡确认框',
     icon: null,
     propsConfig: {
     },
   },
   Result: {
-    component: Button,
-    title: '按钮',
-    icon: null,
-    propsConfig: {
-    },
-  },
-  Skeleton: {
-    component: Button,
-    title: '按钮',
-    icon: null,
-    propsConfig: {
-    },
-  },
-  Spin: {
-    component: Button,
-    title: '按钮',
+    component:  Result,
+    category: 'basic',
+    title: '结果',
     icon: null,
     propsConfig: {
     },
   },
   Affix: {
-    component: Button,
-    title: '按钮',
+    component: Affix as unknown as FC,
+    category: 'basic',
+    title: '固定',
     icon: null,
     propsConfig: {
     },
   },
   FloatButton: {
-    component: Button,
-    title: '按钮',
+    component: FloatButton as unknown as FC,
+    category: 'basic',
+    title: '浮动按钮',
     icon: null,
     propsConfig: {
     },
