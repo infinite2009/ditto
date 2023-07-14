@@ -2,6 +2,10 @@ export interface IPageRendererProps {
   dsl: string;
 }
 
-export default function PageRenderer(props: IPageRendererProps) {
-  return <div></div>;
+export default function PageRenderer({ dsl }: IPageRendererProps) {
+
+
+  return <div>
+
+  </div>;
 }
