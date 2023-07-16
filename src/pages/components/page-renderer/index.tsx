@@ -4,12 +4,18 @@ import componentConfig from '@/data/component-dict';
 import IPropsSchema from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { typeOf } from '@/util';
+import cloneDeep from 'lodash/cloneDeep';
 
 export interface IPageRendererProps {
   dsl: IPageSchema;
 }
 
-export default function PageRenderer({ dsl }: IPageRendererProps) {
+export default function PageRenderer(props: IPageRendererProps) {
+  if (!props) {
+    return null;
+  }
+  const { dsl } = props;
+
   function fetchComponent(name: string, dependency: string) {
     if (!dependency) {
       return name;
@@ -17,8 +23,76 @@ export default function PageRenderer({ dsl }: IPageRendererProps) {
     return componentConfig[dependency][name].component;
   }
 
-  function extractProps(propsRefs: string[]) {
-    return {};
+  function extractProps(propsDict: { [key: string]: IPropsSchema }, propsRefs: string[]) {
+    const result: { [key: string]: any } = {};
+    propsRefs.forEach(ref => {
+      const propsSchema = propsDict[ref];
+      if (propsSchema) {
+        result[ref] = extractSingleProp(propsSchema);
+      }
+      console.log('props ', ref, result[ref]);
+    });
+    return result;
+  }
+
+  function extractSingleProp(propsSchema: IPropsSchema): any {
+    const { templateKeyPathsReg, name, valueType, value, valueSource } = propsSchema;
+    // 未防止 dsl props 部分被修改，导致渲染出问题，这里选择深拷贝
+    const cp = cloneDeep(value);
+    const wrapper = { cp };
+    if (valueSource === 'editorInput') {
+      if (templateKeyPathsReg?.length) {
+        convertTemplateInfo(cp, templateKeyPathsReg, wrapper, 'cp');
+      }
+    }
+    return wrapper.cp;
+  }
+
+  /*
+   * 把模板信息转换为 tsx
+   */
+  function convertTemplateInfo(
+    data: any,
+    keyPathRegs: {
+      path: string;
+      type: 'object' | 'function';
+    }[] = [],
+    parent: any,
+    key = '',
+    currentKeyPath = ''
+  ) {
+    const keyPathMatchResult =
+      keyPathRegs.length &&
+      keyPathRegs.find(pathObj => {
+        return new RegExp(pathObj.path).test(currentKeyPath);
+      });
+    // 如果当前 keyPath 命中正则表达式
+    if (keyPathMatchResult) {
+      if (keyPathMatchResult.type === 'object') {
+        parent[key] = recursivelyRenderTemplate(data);
+      } else {
+        parent[key] = () => {
+          return recursivelyRenderTemplate(data);
+        };
+      }
+    } else {
+      const type = typeOf(data);
+      if (type === 'object') {
+        Object.entries(data).forEach(([key, val]) => {
+          convertTemplateInfo(
+            val,
+            keyPathRegs,
+            data,
+            key,
+            `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`
+          );
+        });
+      } else if (type === 'array') {
+        data.forEach((item: any, index: number) => {
+          convertTemplateInfo(item, keyPathRegs, data, index.toString(), `${currentKeyPath}[${index}]`);
+        });
+      }
+    }
   }
 
   function recursivelyRenderTemplate(node: IComponentSchema | string) {
@@ -30,15 +104,20 @@ export default function PageRenderer({ dsl }: IPageRendererProps) {
     }
 
     // 处理组件
-    const { callingName, name, dependency, children = [], propsRefs = [] } = node as IComponentSchema;
+    const { props } = dsl;
+    const { callingName, name, dependency, children = [], propsRefs = [], id } = node as IComponentSchema;
     const Component = fetchComponent(callingName || name, dependency);
-    const componentProps = extractProps(propsRefs);
+    const componentProps = props[id] ? extractProps(props[id], propsRefs) : {};
     let childrenTemplate = null;
     if (children.length) {
       childrenTemplate = children.map(c => recursivelyRenderTemplate(c));
     }
-    return <Component {...(componentProps as any)}>{childrenTemplate}</Component>;
+    return (
+      <Component key={id} {...(componentProps as any)}>
+        {childrenTemplate}
+      </Component>
+    );
   }
 
-  return <div>{recursivelyRenderTemplate(dsl.child)}</div>;
+  return dsl ? <div>{recursivelyRenderTemplate(dsl.child)}</div> : null;
 }
