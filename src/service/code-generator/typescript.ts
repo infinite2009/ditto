@@ -141,7 +141,7 @@ export default class TypeScriptCodeGenerator {
         } else {
           sentences.push(`${key}${key ? ': ' : ''}{`);
           Object.entries(data).forEach(([key, value]) => {
-            this.generateObjectStrArr(value, keyPaths, callback, `${currentKeyPath}.${key}`, key).forEach(item => {
+            this.generateObjectStrArr(value, keyPaths, callback, `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`, key).forEach(item => {
               sentences.push(item);
             });
           });
