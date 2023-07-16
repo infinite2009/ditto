@@ -6,6 +6,7 @@
   "scripts": {
     "start": "tauri dev",
     "build": "tsc && vite build",
+    "build:app": "tauri build",
     "dev": "vite",
     "prepare": "husky install",
     "preview": "vite preview",
