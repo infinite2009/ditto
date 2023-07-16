@@ -30,7 +30,6 @@ export default function PageRenderer(props: IPageRendererProps) {
       if (propsSchema) {
         result[ref] = extractSingleProp(propsSchema);
       }
-      console.log('props ', ref, result[ref]);
     });
     return result;
   }
