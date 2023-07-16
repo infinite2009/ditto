@@ -1,9 +1,27 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
+import * as dsl from '@/mock/tab-case.json';
+import IPageSchema from '@/types/page.schema';
+
 import './App.css';
-import { Tabs, Table, Space, Button, Input, Select } from 'antd';
+import PageRenderer from '@/pages/components/page-renderer';
+import { Button, Input, Select, Space, Table, Tabs } from 'antd';
 
 function App() {
+  const [dslState, setDslState] = useState<IPageSchema>();
+
+  useEffect(() => {
+    fetchDSL().then(data => {
+      setDslState(data);
+    });
+  }, []);
+
+  async function fetchDSL(): Promise<IPageSchema> {
+    return new Promise<IPageSchema>(resolve => {
+      resolve(dsl as unknown as IPageSchema);
+    });
+  }
+
   const [dataSourceStateOfC2, setDataSourceStateOfC2] = useState<any[]>([
     {
       key: '1',
@@ -85,13 +103,18 @@ function App() {
       children: <Button>测试按钮3</Button>
     }
   ];
+
   return (
     <div>
+      {dslState ? <PageRenderer dsl={dslState} /> : null}
+      <div>+++++++++++++++++++++++++++++++++分割线++++++++++++++++++++++++++++++++++++++++++++++++</div>
       <div>
-        <Input.Search value="1" />
-        <Select value={valueStateOfC6} options={optionsStateOfC6} />
+        <div>
+          <Input.Search value="1" />
+          <Select value={valueStateOfC6} options={optionsStateOfC6} />
+        </div>
+        <Tabs items={itemsConstOfC1} />
       </div>
-      <Tabs items={itemsConstOfC1} />
     </div>
   );
 }
