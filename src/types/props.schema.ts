@@ -19,7 +19,7 @@ export default interface IPropsSchema extends ISchema {
   // 属性的名字
   name: string;
   // 属性值的类型, 这个是组件要求的，它和 value 本身的类型不完全对等，比如 hasTemplate 为真时，valueType 即便是 function，value 的值也是对象
-  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object';
+  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object' | 'array';
   /*
    * 这个值的来源
    * editorInput: 创建页面时编辑者输入的常量，会指导代码生成器生成常量声明和赋值代码，存入 const
