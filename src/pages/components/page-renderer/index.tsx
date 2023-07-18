@@ -8,13 +8,14 @@ import cloneDeep from 'lodash/cloneDeep';
 
 export interface IPageRendererProps {
   dsl: IPageSchema;
+  mode?: 'edit' | 'preview';
 }
 
 export default function PageRenderer(props: IPageRendererProps) {
   if (!props) {
     return null;
   }
-  const { dsl } = props;
+  const { dsl, mode = 'preview' } = props;
 
   function fetchComponent(name: string, dependency: string) {
     if (!dependency) {
@@ -112,7 +113,7 @@ export default function PageRenderer(props: IPageRendererProps) {
       childrenTemplate = children.map(c => recursivelyRenderTemplate(c));
     }
     return (
-      <Component key={id} {...(componentProps as any)}>
+      <Component key={id} {...(componentProps as any)} cmEditable={mode === 'edit'}>
         {childrenTemplate}
       </Component>
     );
