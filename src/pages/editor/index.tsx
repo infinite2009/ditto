@@ -1,3 +1,5 @@
 export default function Editor() {
-  return <div>editor works!</div>;
+  return <div>
+    <div>工具栏</div>
+  </div>;
 }
