@@ -1,5 +1,8 @@
 .main {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   border-bottom: 1px solid #dbdbdb;
+  padding: 0 10px;
+  height: 60px;
 }
