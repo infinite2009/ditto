@@ -28,6 +28,7 @@
     },
     "windows": [
       {
+        "maximized": true,
         "fullscreen": false,
         "resizable": true,
         "title": "coding-man",
