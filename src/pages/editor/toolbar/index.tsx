@@ -1,4 +1,4 @@
-import styles from './index.module.css';
+import styles from './index.module.less';
 import { Button } from 'antd';
 
 export default function Toolbar() {
