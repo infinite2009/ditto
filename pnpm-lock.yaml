@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@ant-design/icons':
+    specifier: ^5.1.4
+    version: 5.1.4(react-dom@18.2.0)(react@18.2.0)
   '@tauri-apps/api':
     specifier: 2.0.0-alpha.5
     version: 2.0.0-alpha.5
@@ -152,6 +155,10 @@ packages:
       stylis: 4.3.0
     dev: false
 
+  /@ant-design/icons-svg@4.2.1:
+    resolution: {integrity: sha512-EB0iwlKDGpG93hW8f85CTJTs4SvMX7tt5ceupvhALp1IF44SeUFOMhKUOYqpsoYWQKAOuTRDMqn75rEaKDp0Xw==}
+    dev: false
+
   /@ant-design/icons@5.1.4(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-YHKL7Jx3bM12OxvtiYDon04BsBT/6LGitYEqar3GljzWaAyMOAD8i/uF1Rsi5Us/YNdWWXBGSvZV2OZWMpJlcA==}
     engines: {node: '>=8'}
@@ -160,7 +167,7 @@ packages:
       react-dom: '>=16.0.0'
     dependencies:
       '@ant-design/colors': 7.0.0
-      '@ant-design/icons-svg': r2.cnpmjs.org/@ant-design/icons-svg@4.2.1
+      '@ant-design/icons-svg': 4.2.1
       '@babel/runtime': 7.22.6
       classnames: 2.3.2
       rc-util: 5.34.1(react-dom@18.2.0)(react@18.2.0)
@@ -5944,7 +5951,7 @@ packages:
       '@babel/runtime': 7.22.6
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-is: r2.cnpmjs.org/react-is@16.13.1
+      react-is: 16.13.1
     dev: false
 
   /rc-virtual-list@3.5.2(react-dom@18.2.0)(react@18.2.0):
@@ -5974,7 +5981,6 @@ packages:
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-    dev: true
 
   /react-is@18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
@@ -7013,12 +7019,6 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  r2.cnpmjs.org/@ant-design/icons-svg@4.2.1:
-    resolution: {integrity: sha512-EB0iwlKDGpG93hW8f85CTJTs4SvMX7tt5ceupvhALp1IF44SeUFOMhKUOYqpsoYWQKAOuTRDMqn75rEaKDp0Xw==, registry: https://registry.npmmirror.com/, tarball: https://r2.cnpmjs.org/@ant-design/icons-svg/-/icons-svg-4.2.1.tgz}
-    name: '@ant-design/icons-svg'
-    version: 4.2.1
-    dev: false
-
   r2.cnpmjs.org/@emotion/hash@0.8.0:
     resolution: {integrity: sha512-kBJtf7PH6aWwZ6fka3zQ0p6SBYzx4fl1LoZXE2RrnYST9Xljm7WfKJrU4g/Xr3Beg72MLrp1AWNUmuYJTL7Cow==, registry: https://registry.npmmirror.com/, tarball: https://r2.cnpmjs.org/@emotion/hash/-/hash-0.8.0.tgz}
     name: '@emotion/hash'
@@ -7063,12 +7063,6 @@ packages:
     dependencies:
       semver: 6.3.0
     dev: true
-
-  r2.cnpmjs.org/react-is@16.13.1:
-    resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==, registry: https://registry.npmmirror.com/, tarball: https://r2.cnpmjs.org/react-is/-/react-is-16.13.1.tgz}
-    name: react-is
-    version: 16.13.1
-    dev: false
 
   r2.cnpmjs.org/resize-observer-polyfill@1.5.1:
     resolution: {integrity: sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==, registry: https://registry.npmmirror.com/, tarball: https://r2.cnpmjs.org/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz}
