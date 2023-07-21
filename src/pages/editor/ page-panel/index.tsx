@@ -1,9 +1,38 @@
-export default function PagePanel() {
+import { useEffect, useState } from 'react';
+import { Menu, Tree } from 'antd';
+import { FileOutlined, FolderOutlined } from '@ant-design/icons';
 
-  
+export default function PagePanel() {
+  const [pages, setPages] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchPages();
+  }, []);
+
+  function fetchPages() {
+    setPages([{
+      key: '123',
+      label: '文件夹1',
+      icon: <FolderOutlined />,
+      children: [{
+        key: '456',
+        label: '页面1',
+        icon: <FileOutlined />
+      }]
+    }]);
+  }
+
+
+
   return (
     <div>
-      这里加入一个 menu 组件表示页面
+      <Tree.DirectoryTree
+        multiple
+        defaultExpandAll
+        onSelect={onSelect}
+        onExpand={onExpand}
+        treeData={treeData}
+      />
     </div>
   );
 }
