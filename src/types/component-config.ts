@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 export default interface IComponentConfig {
   component: FC;
   title: string;
-  icon: React.Component | null;
+  icon: React.ForwardRefExoticComponent<any> | null;
   category: 'basic' | 'layer';
   propsConfig: {
     [key: string]: {

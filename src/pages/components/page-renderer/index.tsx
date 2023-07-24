@@ -113,7 +113,7 @@ export default function PageRenderer(props: IPageRendererProps) {
       childrenTemplate = children.map(c => recursivelyRenderTemplate(c));
     }
     return (
-      <Component key={id} {...(componentProps as any)} cmEditable={mode === 'edit'}>
+      <Component key={id} {...(componentProps as any)}>
         {childrenTemplate}
       </Component>
     );

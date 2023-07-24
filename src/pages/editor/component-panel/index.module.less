@@ -1,0 +1,30 @@
+@import "../../../styles/index.module.less";
+
+.componentList {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  width: 250px;
+  height: calc(100vh - 474px);
+  overflow: auto;
+  .scroll();
+}
+
+.componentItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 4px;
+  padding: 10px;
+  width: 80px;
+  transition: all 0.3s ease-in-out;
+  &:hover {
+    background-color: #e0f0fa;
+    transition: all 0.3s ease-in-out;
+  }
+}
+
+.componentTitle {
+  margin: 10px 0;
+  cursor: default;
+}
