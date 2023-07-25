@@ -1,4 +1,3 @@
-
 import Toolbar from '@/pages/editor/toolbar';
 
 import { Tabs } from 'antd';
@@ -14,7 +13,6 @@ import IPageSchema from '@/types/page.schema';
 import * as dsl from '@/mock/tab-case.json';
 
 export default function Editor() {
-
   const [dslState, setDslState] = useState<IPageSchema>();
 
   useEffect(() => {
@@ -42,10 +40,11 @@ export default function Editor() {
     }
   ];
 
-  return <div className={styles.main}>
-    <Toolbar />
-    <div className={styles.editArea}>
-      <div className={styles.draggableArea}>
+  return (
+    <div className={styles.main}>
+      <Toolbar />
+      <div className={styles.editArea}>
+        {/*<div className={styles.draggableArea}>*/}
         <div className={styles.panel}>
           <div className={styles.pagePanel}>
             <PagePanel />
@@ -56,13 +55,14 @@ export default function Editor() {
         </div>
         <div className={styles.canvas}>
           <div className={styles.canvasInner}>
-            { dslState ? <PageRenderer dsl={dslState} /> : <div>未获得有效的DSL</div> }
+            {dslState ? <PageRenderer dsl={dslState} /> : <div>未获得有效的DSL</div>}
           </div>
         </div>
-      </div>
-      <div className={styles.formPanel}>
-        <FormPanel />
+        {/*</div>*/}
+        <div className={styles.formPanel}>
+          <FormPanel />
+        </div>
       </div>
     </div>
-  </div>;
+  );
 }
