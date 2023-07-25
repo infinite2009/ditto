@@ -22,12 +22,12 @@ export default function Toolbar() {
     <div className={styles.main}>
       <div></div>
       <div>
-        <Button onClick={handleUndo}>撤销</Button>
-        <Button onClick={handleRedo}>重做</Button>
+        <Button className={styles.btn} onClick={handleUndo}>撤销</Button>
+        <Button className={styles.btn} onClick={handleRedo}>重做</Button>
       </div>
       <div className={styles.right}>
-        <Button onClick={handlePreview}>预览</Button>
-        <Button onClick={handleDownloadingCode}>下载代码</Button>
+        <Button className={styles.btn} onClick={handlePreview}>预览</Button>
+        <Button className={styles.btn} onClick={handleDownloadingCode}>下载代码</Button>
       </div>
     </div>
   );
