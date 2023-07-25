@@ -380,21 +380,21 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   },
   Drawer: {
     component: Drawer,
-    category: 'basic',
+    category: 'layer',
     title: '抽屉',
     icon: CodeSandboxOutlined,
     propsConfig: {}
   },
   Modal: {
     component: Modal,
-    category: 'basic',
+    category: 'layer',
     title: '模态框',
     icon: CodeSandboxOutlined,
     propsConfig: {}
   },
   Notification: {
     component: Notification as unknown as FC,
-    category: 'basic',
+    category: 'layer',
     title: '通知提醒框',
     icon: CodeSandboxOutlined,
     propsConfig: {}
