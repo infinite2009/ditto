@@ -50,21 +50,21 @@ export default function Editor() {
     <div className={styles.main}>
       <Toolbar />
       <div className={styles.editArea}>
-        {/*<div className={styles.draggableArea}>*/}
-        <div className={styles.panel}>
-          <div className={styles.pagePanel}>
-            <PagePanel />
+        <div className={styles.draggableArea}>
+          <div className={styles.panel}>
+            <div className={styles.pagePanel}>
+              <PagePanel />
+            </div>
+            <div className={styles.componentPanel}>
+              <Tabs items={tabsItems} />
+            </div>
           </div>
-          <div className={styles.componentPanel}>
-            <Tabs items={tabsItems} />
+          <div className={styles.canvas}>
+            <div className={styles.canvasInner}>
+              {dslState ? <PageRenderer dsl={dslState} /> : <div>未获得有效的DSL</div>}
+            </div>
           </div>
         </div>
-        <div className={styles.canvas}>
-          <div className={styles.canvasInner}>
-            {dslState ? <PageRenderer dsl={dslState} /> : <div>未获得有效的DSL</div>}
-          </div>
-        </div>
-        {/*</div>*/}
         <div className={styles.formPanel}>
           <FormPanel />
         </div>
