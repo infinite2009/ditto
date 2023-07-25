@@ -32,6 +32,8 @@
         "fullscreen": false,
         "resizable": true,
         "title": "coding-man",
+        "minWidth": 800,
+        "minHeight": 600,
         "width": 800,
         "height": 600
       }
