@@ -4,6 +4,10 @@ import { FC, ForwardedRef, useEffect, useState } from 'react';
 
 import styles from './index.module.less';
 
+interface IComponentIconProps {
+  className: string;
+}
+
 interface IComponentInfo {
   key: string;
   title: string;
@@ -35,10 +39,10 @@ export default function ComponentPanel() {
 
   function renderComponentList() {
     const tpl = componentList.map(item => {
-      const ComponentIcon = item.icon as FC;
+      const ComponentIcon = item.icon as FC<IComponentIconProps>;
       return (
         <div className={styles.componentItem} key={item.key}>
-          <ComponentIcon />
+          <ComponentIcon className={styles.componentIcon} />
           <p className={styles.componentTitle}>{item.title}</p>
         </div>
       );
