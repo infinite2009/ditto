@@ -1,55 +1,8 @@
 import {
-  Affix,
-  Alert,
-  Anchor,
-  Avatar,
-  Badge,
-  Breadcrumb,
-  Button,
-  Calendar,
-  Card,
-  Carousel,
-  Cascader,
-  Checkbox,
-  Collapse,
-  ColorPicker,
-  DatePicker,
-  Descriptions,
-  Divider,
-  Drawer,
-  Dropdown,
-  Empty,
-  FloatButton,
-  Form,
-  Input,
-  InputNumber,
-  List,
-  Mentions,
-  Menu,
-  Modal,
-  Pagination,
-  Popconfirm,
-  Popover,
-  Radio,
-  Rate,
-  Result,
-  Select,
-  Skeleton,
-  Slider,
-  Space,
-  Spin,
-  Statistic,
-  Steps,
-  Switch,
-  Table,
-  Tabs,
-  Tag,
-  TimePicker,
-  Tooltip,
-  Transfer,
-  Tree,
-  TreeSelect,
-  Upload
+  Affix, Alert, Anchor, Avatar, Badge, Breadcrumb, Button, Calendar, Card, Carousel, Cascader, Checkbox, Collapse,
+  ColorPicker, DatePicker, Descriptions, Divider, Drawer, Dropdown, Empty, FloatButton, Form, Input, InputNumber, List,
+  Mentions, Menu, Modal, Pagination, Popconfirm, Popover, Radio, Rate, Result, Select, Slider, Space, Statistic, Steps,
+  Switch, Table, Tabs, Tag, TimePicker, Tooltip, Transfer, Tree, TreeSelect, Upload
 } from 'antd';
 import IComponentConfig from '@/types/component-config';
 import { CodeSandboxOutlined } from '@ant-design/icons';
@@ -57,19 +10,15 @@ import { FC } from 'react';
 
 const antdComponentConfig: { [key: string]: IComponentConfig } = {
   Button: {
+    name: 'Button',
     component: Button,
     category: 'basic',
     title: '按钮',
     icon: CodeSandboxOutlined,
-    propsConfig: {
-      type: {
-        name: 'type',
-        category: 'basic',
-        initialValue: 'primary'
-      }
-    }
+    propsConfig: { type: { name: 'type', category: 'basic', initialValue: 'primary' } }
   },
   Divider: {
+    name: 'Divider',
     component: Divider,
     category: 'basic',
     title: '分割线',
@@ -77,6 +26,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Space: {
+    name: 'Space',
     component: Space,
     category: 'basic',
     title: '间距',
@@ -84,6 +34,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Anchor: {
+    name: 'Anchor',
     component: Anchor,
     category: 'basic',
     title: '锚点',
@@ -91,6 +42,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Breadcrumb: {
+    name: 'Breadcrumb',
     component: Breadcrumb,
     category: 'basic',
     title: '面包屑',
@@ -98,6 +50,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Dropdown: {
+    name: 'Dropdown',
     component: Dropdown,
     category: 'basic',
     title: '下拉菜单',
@@ -105,6 +58,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Menu: {
+    name: 'Menu',
     component: Menu,
     category: 'basic',
     title: '菜单导航',
@@ -112,6 +66,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Pagination: {
+    name: 'Pagination',
     component: Pagination,
     category: 'basic',
     title: '分页',
@@ -119,6 +74,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Steps: {
+    name: 'Steps',
     component: Steps,
     category: 'basic',
     title: '步骤条',
@@ -126,6 +82,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Cascader: {
+    name: 'Cascader',
     component: Cascader,
     category: 'basic',
     title: '级联选择',
@@ -133,6 +90,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Checkbox: {
+    name: 'Checkbox',
     component: Checkbox,
     category: 'basic',
     title: '多选框',
@@ -140,6 +98,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   ColorPicker: {
+    name: 'ColorPicker',
     component: ColorPicker,
     category: 'basic',
     title: '颜色选择器',
@@ -147,20 +106,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   DatePicker: {
+    name: 'DatePicker',
     component: DatePicker as unknown as FC,
     category: 'basic',
     title: '日期选择器',
     icon: CodeSandboxOutlined,
     propsConfig: {}
   },
-  Form: {
-    component: Form,
-    category: 'basic',
-    title: '表单',
-    icon: CodeSandboxOutlined,
-    propsConfig: {}
-  },
+  Form: { name: 'Form', component: Form, category: 'basic', title: '表单', icon: CodeSandboxOutlined, propsConfig: {} },
   'Input.Search': {
+    name: 'Input.Search',
     component: Input.Search,
     category: 'basic',
     title: '搜索框',
@@ -168,6 +123,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   'Input.TextArea': {
+    name: 'Input.TextArea',
     component: Input.TextArea,
     category: 'basic',
     title: '多行文本',
@@ -175,6 +131,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   InputNumber: {
+    name: 'InputNumber',
     component: InputNumber,
     category: 'basic',
     title: '数字输入框',
@@ -182,6 +139,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Mentions: {
+    name: 'Mentions',
     component: Mentions,
     category: 'basic',
     title: '提及',
@@ -189,20 +147,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Radio: {
+    name: 'Radio',
     component: Radio,
     category: 'basic',
     title: '单选框',
     icon: CodeSandboxOutlined,
     propsConfig: {}
   },
-  Rate: {
-    component: Rate,
-    category: 'basic',
-    title: '评分',
-    icon: CodeSandboxOutlined,
-    propsConfig: {}
-  },
+  Rate: { name: 'Rate', component: Rate, category: 'basic', title: '评分', icon: CodeSandboxOutlined, propsConfig: {} },
   Select: {
+    name: 'Select',
     component: Select,
     category: 'basic',
     title: '选择器',
@@ -210,6 +164,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Slider: {
+    name: 'Slider',
     component: Slider,
     category: 'basic',
     title: '滑动输入条',
@@ -217,6 +172,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Switch: {
+    name: 'Switch',
     component: Switch,
     category: 'basic',
     title: '开关',
@@ -224,6 +180,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   TimePicker: {
+    name: 'TimePicker',
     component: TimePicker,
     category: 'basic',
     title: '时间选择器',
@@ -231,6 +188,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Transfer: {
+    name: 'Transfer',
     component: Transfer,
     category: 'basic',
     title: '穿梭框',
@@ -238,6 +196,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   TreeSelect: {
+    name: 'TreeSelect',
     component: TreeSelect,
     category: 'basic',
     title: '树选择',
@@ -245,6 +204,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Upload: {
+    name: 'Upload',
     component: Upload,
     category: 'basic',
     title: '上传',
@@ -252,6 +212,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Avatar: {
+    name: 'Avatar',
     component: Avatar,
     category: 'basic',
     title: '头像',
@@ -260,6 +221,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   },
   // TODO:
   Badge: {
+    name: 'Badge',
     component: Badge,
     category: 'basic',
     title: '徽标数',
@@ -267,20 +229,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Calendar: {
+    name: 'Calendar',
     component: Calendar,
     category: 'basic',
     title: '日历',
     icon: CodeSandboxOutlined,
     propsConfig: {}
   },
-  Card: {
-    component: Card,
-    category: 'basic',
-    title: '卡片',
-    icon: CodeSandboxOutlined,
-    propsConfig: {}
-  },
+  Card: { name: 'Card', component: Card, category: 'basic', title: '卡片', icon: CodeSandboxOutlined, propsConfig: {} },
   Carousel: {
+    name: 'Carousel',
     component: Carousel,
     category: 'basic',
     title: '走马灯',
@@ -288,6 +246,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Collapse: {
+    name: 'Collapse',
     component: Collapse,
     category: 'basic',
     title: '折叠面板',
@@ -295,6 +254,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Descriptions: {
+    name: 'Descriptions',
     component: Descriptions,
     category: 'basic',
     title: '描述列表',
@@ -302,6 +262,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Empty: {
+    name: 'Empty',
     component: Empty,
     category: 'basic',
     title: '空状态',
@@ -309,20 +270,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Image: {
+    name: 'Image',
     component: Image as unknown as FC,
     category: 'basic',
     title: '图片',
     icon: CodeSandboxOutlined,
     propsConfig: {}
   },
-  List: {
-    component: List,
-    category: 'basic',
-    title: '列表',
-    icon: CodeSandboxOutlined,
-    propsConfig: {}
-  },
+  List: { name: 'List', component: List, category: 'basic', title: '列表', icon: CodeSandboxOutlined, propsConfig: {} },
   Popover: {
+    name: 'Popover',
     component: Popover,
     category: 'basic',
     title: '气泡卡片',
@@ -330,6 +287,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Statistic: {
+    name: 'Statistic',
     component: Statistic,
     category: 'basic',
     title: '统计数值',
@@ -337,6 +295,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Table: {
+    name: 'Table',
     component: Table,
     category: 'basic',
     title: '表格',
@@ -344,20 +303,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Tabs: {
+    name: 'Tabs',
     component: Tabs,
     category: 'basic',
     title: '标签页',
     icon: CodeSandboxOutlined,
     propsConfig: {}
   },
-  Tag: {
-    component: Tag,
-    category: 'basic',
-    title: '标签',
-    icon: CodeSandboxOutlined,
-    propsConfig: {}
-  },
+  Tag: { name: 'Tag', component: Tag, category: 'basic', title: '标签', icon: CodeSandboxOutlined, propsConfig: {} },
   Tooltip: {
+    name: 'Tooltip',
     component: Tooltip,
     category: 'basic',
     title: '文字提示',
@@ -365,6 +320,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Tree: {
+    name: 'Tree',
     component: Tree,
     category: 'basic',
     title: '树形控件',
@@ -372,6 +328,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Alert: {
+    name: 'Alert',
     component: Alert,
     category: 'basic',
     title: '警告提示',
@@ -379,6 +336,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Drawer: {
+    name: 'Drawer',
     component: Drawer,
     category: 'layer',
     title: '抽屉',
@@ -386,6 +344,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Modal: {
+    name: 'Modal',
     component: Modal,
     category: 'layer',
     title: '模态框',
@@ -393,6 +352,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Notification: {
+    name: 'Notification',
     component: Notification as unknown as FC,
     category: 'layer',
     title: '通知提醒框',
@@ -400,6 +360,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Popconfirm: {
+    name: 'Popconfirm',
     component: Popconfirm as unknown as FC,
     category: 'basic',
     title: '气泡确认框',
@@ -407,6 +368,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Result: {
+    name: 'Result',
     component: Result,
     category: 'basic',
     title: '结果',
@@ -414,6 +376,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Affix: {
+    name: 'Affix',
     component: Affix as unknown as FC,
     category: 'basic',
     title: '固定',
@@ -421,6 +384,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   FloatButton: {
+    name: 'FloatButton',
     component: FloatButton as unknown as FC,
     category: 'basic',
     title: '浮动按钮',
@@ -428,7 +392,4 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   }
 };
-
-export default {
-  antd: antdComponentConfig
-} as { [key: string]: { [key: string]: IComponentConfig } };
+export default { antd: antdComponentConfig } as { [key: string]: { [key: string]: IComponentConfig } };

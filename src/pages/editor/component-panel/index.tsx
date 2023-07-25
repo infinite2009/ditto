@@ -3,6 +3,7 @@ import { Input } from 'antd';
 import { FC, ForwardedRef, useEffect, useState } from 'react';
 
 import styles from './index.module.less';
+import DraggableComponent from '@/pages/editor/edit-wrapper';
 
 interface IComponentIconProps {
   className: string;
@@ -11,6 +12,7 @@ interface IComponentIconProps {
 interface IComponentInfo {
   key: string;
   title: string;
+  name: string;
   icon: ForwardedRef<any>;
 }
 
@@ -33,7 +35,8 @@ export default function ComponentPanel() {
         return {
           key,
           title: val.title,
-          icon: val.icon
+          icon: val.icon,
+          name: val.name,
         } as unknown as IComponentInfo;
       });
     setComponentList(result);
@@ -43,10 +46,12 @@ export default function ComponentPanel() {
     const tpl = componentList.map(item => {
       const ComponentIcon = item.icon as FC<IComponentIconProps>;
       return (
-        <div className={styles.componentItem} key={item.key}>
-          <ComponentIcon className={styles.componentIcon} />
-          <p className={styles.componentTitle}>{item.title}</p>
-        </div>
+        <DraggableComponent key={item.name} name={item.title}>
+          <div className={styles.componentItem} key={item.key}>
+            <ComponentIcon className={styles.componentIcon} />
+            <p className={styles.componentTitle}>{item.title}</p>
+          </div>
+        </DraggableComponent>
       );
     });
     return <div className={styles.componentList}>{tpl}</div>;
