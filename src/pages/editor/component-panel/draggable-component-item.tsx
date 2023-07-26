@@ -20,11 +20,10 @@ export default function DraggableComponentItem({ name, children }: IDraggableCom
       item: { name },
       end(item, monitor) {
         const dropResult = monitor.getDropResult() as DropResult;
-        // if (item && dropResult) {
         debugger;
-        console.log('end: ', item);
-        message.success(`拖入组件: ${name} 成功！`);
-        // }
+        if (item && dropResult) {
+          message.success(`拖入组件: ${name} 至 ${dropResult.name}成功！`);
+        }
       },
       collect: (monitor: DragSourceMonitor) => ({
         opacity: monitor.isDragging() ? 0.4 : 1

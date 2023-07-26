@@ -18,17 +18,17 @@ export default function EditWrapper({ name, children }: IEditorWrapper) {
   const divRef = useRef(null);
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: 'component',
-    drop: () => {
-      debugger;
-      return {
-        name
-      };
-    },
-    hover: () => {
-      console.log('hover');
+    drop: (_item, monitor) => {
+      const didDrop = monitor.didDrop();
+      if (!didDrop) {
+        message.success('dsl 插入中');
+        return {
+          name
+        };
+      }
     },
     collect: (monitor: any) => ({
-      isOver: monitor.isOver(),
+      isOver: monitor.isOver({ shallow: true }),
       canDrop: monitor.canDrop()
     })
   }));
@@ -59,14 +59,14 @@ export default function EditWrapper({ name, children }: IEditorWrapper) {
 
   // drop(divRef);
 
-  return (
+  return children ? (
     <div
       ref={drop}
       className={styles.main}
       onClick={handleClicking}
-      style={{ background: isOver ? '#f0f' : '#0ff' }}
+      style={{ background: isOver ? '#0ff' : 'initial' }}
     >
-      <div style={{ height: 100, width: 100, background: '#0f0'}}></div>
+      {children}
     </div>
-  );
+  ) : <div>无效的组件</div>;
 }
