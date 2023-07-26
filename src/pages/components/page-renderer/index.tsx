@@ -5,6 +5,7 @@ import IPropsSchema from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { typeOf } from '@/util';
 import cloneDeep from 'lodash/cloneDeep';
+import EditWrapper from '@/pages/editor/edit-wrapper';
 
 export interface IPageRendererProps {
   dsl: IPageSchema;
@@ -112,11 +113,12 @@ export default function PageRenderer(props: IPageRendererProps) {
     if (children.length) {
       childrenTemplate = children.map(c => recursivelyRenderTemplate(c));
     }
-    return (
-      <Component key={id} {...(componentProps)}>
+    const tpl = (
+      <Component key={id} {...componentProps}>
         {childrenTemplate}
       </Component>
     );
+    return mode === 'edit' ? <EditWrapper name={name}>{tpl}</EditWrapper> : tpl;
   }
 
   return dsl ? <div>{recursivelyRenderTemplate(dsl.child)}</div> : null;

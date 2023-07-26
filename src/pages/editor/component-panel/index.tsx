@@ -3,7 +3,7 @@ import { Input } from 'antd';
 import { FC, ForwardedRef, useEffect, useState } from 'react';
 
 import styles from './index.module.less';
-import DraggableComponent from '@/pages/editor/edit-wrapper';
+import DraggableComponent from '@/pages/editor/component-panel/draggable-component-item';
 
 interface IComponentIconProps {
   className: string;

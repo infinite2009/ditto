@@ -1,11 +1,10 @@
 import { message } from 'antd';
 import styles from './index.module.less';
-import { ReactNode } from 'react';
-import { useDrag } from 'react-dnd';
+import { ReactNode, useEffect, useRef } from 'react';
+import { useDrag, useDrop } from 'react-dnd';
 import IComponentConfig from '@/types/component-config';
 
 interface DropResult {
-  allowedDropEffect: string;
   dropEffect: string;
   name: string;
 }
@@ -15,40 +14,59 @@ export interface IEditorWrapper {
   children: ReactNode;
 }
 
-export default function DraggableComponent({ name, children }: IEditorWrapper) {
-  const [{ opacity }, drag] = useDrag<any, any, any>(() => {
-    return {
-      type: 'component',
-      item: { name },
-      end(item, monitor) {
-        const dropResult = monitor.getDropResult() as DropResult;
-        if (item && dropResult) {
-          let alertMessage = '';
-          const isDropAllowed =
-            dropResult.allowedDropEffect === 'any' || dropResult.allowedDropEffect === dropResult.dropEffect;
+export default function EditWrapper({ name, children }: IEditorWrapper) {
+  const divRef = useRef(null);
+  const [{ canDrop, isOver }, drop] = useDrop(() => ({
+    accept: 'component',
+    drop: () => {
+      debugger;
+      return {
+        name
+      };
+    },
+    hover: () => {
+      console.log('hover');
+    },
+    collect: (monitor: any) => ({
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop()
+    })
+  }));
 
-          if (isDropAllowed) {
-            const isCopyAction = dropResult.dropEffect === 'copy';
-            const actionName = isCopyAction ? 'copied' : 'moved';
-            alertMessage = `You ${actionName} ${item.name} into ${dropResult.name}!`;
-          } else {
-            alertMessage = `You cannot ${dropResult.dropEffect} an item into the ${dropResult.name}`;
+  useEffect(() => {
+    if (divRef.current) {
+      const config = { childList: true };
+      const ob = new MutationObserver((mutationList, observer) => {
+        for (const mutation of mutationList) {
+          if (mutation.type === 'childList') {
+            console.log('A child node has been added or removed.');
+          } else if (mutation.type === 'attributes') {
+            console.log(`The ${mutation.attributeName} attribute was modified.`);
           }
-          alert(alertMessage);
         }
-      }
-    };
-  }, [name]);
+      });
+      ob.observe(divRef.current, config);
+      return () => {
+        ob.disconnect();
+      };
+    }
+  }, []);
 
-  function handleClicking() {
-    message.success('点击编辑器');
+  function handleClicking(e: { stopPropagation: () => void }) {
+    e.stopPropagation();
+    message.success(`点击编辑器：${name}`);
   }
 
-  return children ? (
-    <div className={styles.main} ref={drag} onClick={handleClicking} style={{ opacity }}>
-      {children}
+  // drop(divRef);
+
+  return (
+    <div
+      ref={drop}
+      className={styles.main}
+      onClick={handleClicking}
+      style={{ background: isOver ? '#f0f' : '#0ff' }}
+    >
+      <div style={{ height: 100, width: 100, background: '#0f0'}}></div>
     </div>
-  ) : (
-    <div>无效的组件信息</div>
   );
 }

@@ -64,7 +64,7 @@ export default function Editor() {
             </div>
             <div className={styles.canvas}>
               <div className={styles.canvasInner}>
-                {dslState ? <PageRenderer dsl={dslState} /> : <div>未获得有效的DSL</div>}
+                {dslState ? <PageRenderer dsl={dslState} mode="edit" /> : <div>未获得有效的DSL</div>}
               </div>
             </div>
           </div>
