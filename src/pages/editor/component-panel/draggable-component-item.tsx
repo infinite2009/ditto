@@ -20,7 +20,6 @@ export default function DraggableComponentItem({ name, children }: IDraggableCom
       item: { name },
       end(item, monitor) {
         const dropResult = monitor.getDropResult() as DropResult;
-        debugger;
         if (item && dropResult) {
           message.success(`拖入组件: ${name} 至 ${dropResult.name}成功！`);
         }
