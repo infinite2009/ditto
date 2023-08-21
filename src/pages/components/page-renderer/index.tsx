@@ -118,7 +118,7 @@ export default function PageRenderer(props: IPageRendererProps) {
         {childrenTemplate}
       </Component>
     );
-    return mode === 'edit' ? <EditWrapper id={id} >{tpl}</EditWrapper> : tpl;
+    return mode === 'edit' ? <EditWrapper key={id} id={id} >{tpl}</EditWrapper> : tpl;
   }
 
   return dsl ? <div>{recursivelyRenderTemplate(dsl.child)}</div> : null;
