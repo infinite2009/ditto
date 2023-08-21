@@ -28,7 +28,7 @@
     },
     "windows": [
       {
-        "fileDropEnabled": false,
+        "fileDropEnabled": true,
         "maximized": true,
         "fullscreen": false,
         "resizable": true,
