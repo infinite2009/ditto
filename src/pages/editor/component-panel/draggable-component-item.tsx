@@ -1,22 +1,31 @@
-import { ReactNode } from 'react';
-import { message } from 'antd';
+import { CSSProperties, ReactNode } from 'react';
+import { useDraggable } from '@dnd-kit/core';
 
 export interface IDraggableComponentItemProps {
   name: string;
   children: ReactNode;
 }
 
-interface DropResult {
-  allowedDropEffect: string;
-  dropEffect: string;
-  name: string;
-}
-
 export default function DraggableComponentItem({ name, children }: IDraggableComponentItemProps) {
+  const {attributes, isDragging, listeners, setNodeRef, transform} =
+    useDraggable({
+      id: name,
+      data: {
+        type: 'insert',
+        name,
+      },
+    });
 
+  const style: CSSProperties = {
+    // transform: CSS.Transform.toString(transform),
+    cursor: 'grab',
+    opacity: isDragging ? 0.5 : 1,
+    transition: 'border 0.5s ease-in-out',
+    boxSizing: 'border-box',
+  };
 
   return children ? (
-    <div>
+    <div ref={setNodeRef} {...listeners} {...attributes} style={style}>
       {children}
     </div>
   ) : null;
