@@ -26,7 +26,7 @@ import LayerComponentPanel from '@/pages/editor/layer-component-panel';
 import styles from './index.module.less';
 import { createPortal } from 'react-dom';
 import DropAnchor from '@/pages/editor/drop-anchor';
-import { ClientRect, DragEndEvent } from '@dnd-kit/core/dist/types';
+import { ClientRect, DragCancelEvent, DragEndEvent } from '@dnd-kit/core/dist/types';
 import { Modifiers } from '@dnd-kit/core/dist/modifiers';
 import { Active, Over } from '@dnd-kit/core/dist/store';
 import { snapCenterToCursor } from '@dnd-kit/modifiers';
@@ -91,22 +91,29 @@ export default function Editor() {
     setHeight(obj.height);
   }
 
+  function hideAnchor() {
+    setWidth(0);
+    setHeight(0);
+  }
+
   function handleDraggingStart({ active }: DragStartEvent) {
     setActiveId(active.id as string);
   }
 
-  function handleDraggingOver({ over }: DragOverEvent) {
-    console.log("I'm over on: ", over?.id);
+  function handleDraggingOver({ active, over }: DragOverEvent) {
+    hideAnchor();
   }
 
   function handleDraggingEnd({ active, over }: DragEndEvent) {
+    hideAnchor();
     console.log('active: ', active);
     console.log('over: ', over);
   }
 
-  function handleDraggingCancel() {
+  function handleDraggingCancel({active, over}: DragCancelEvent) {
     // 重置插入索引
     insertIndexRef.current = 0;
+    hideAnchor();
   }
 
   async function fetchDSL(): Promise<IPageSchema> {
