@@ -1,37 +1,31 @@
-import { DragSourceMonitor, useDrag } from 'react-dnd';
-import { ReactNode } from 'react';
-import { message } from 'antd';
+import { CSSProperties, ReactNode } from 'react';
+import { useDraggable } from '@dnd-kit/core';
 
 export interface IDraggableComponentItemProps {
   name: string;
   children: ReactNode;
 }
 
-interface DropResult {
-  allowedDropEffect: string;
-  dropEffect: string;
-  name: string;
-}
-
 export default function DraggableComponentItem({ name, children }: IDraggableComponentItemProps) {
-  const [{ opacity }, drag] = useDrag(
-    () => ({
-      type: 'component',
-      item: { name },
-      end(item, monitor) {
-        const dropResult = monitor.getDropResult() as DropResult;
-        if (item && dropResult) {
-          message.success(`拖入组件: ${name} 至 ${dropResult.name}成功！`);
-        }
+  const {attributes, isDragging, listeners, setNodeRef, transform} =
+    useDraggable({
+      id: name,
+      data: {
+        type: 'insert',
+        name,
       },
-      collect: (monitor: DragSourceMonitor) => ({
-        opacity: monitor.isDragging() ? 0.4 : 1
-      })
-    })
-  );
+    });
+
+  const style: CSSProperties = {
+    // transform: CSS.Transform.toString(transform),
+    cursor: 'grab',
+    opacity: isDragging ? 0.5 : 1,
+    transition: 'border 0.5s ease-in-out',
+    boxSizing: 'border-box',
+  };
 
   return children ? (
-    <div draggable={true} ref={drag} style={{ opacity }}>
+    <div ref={setNodeRef} {...listeners} {...attributes} style={style}>
       {children}
     </div>
   ) : null;

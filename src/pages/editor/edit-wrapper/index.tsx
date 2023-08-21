@@ -1,72 +1,55 @@
-import { message } from 'antd';
-import styles from './index.module.less';
-import { ReactNode, useEffect, useRef } from 'react';
-import { useDrag, useDrop } from 'react-dnd';
-import IComponentConfig from '@/types/component-config';
+import {useCombinedRefs} from '@dnd-kit/utilities';
+import React, {CSSProperties} from 'react';
+import {useDraggable, useDroppable} from '@dnd-kit/core';
 
-interface DropResult {
-  dropEffect: string;
-  name: string;
+export interface IEditorProps {
+  id: string;
+  childrenId?: string[];
+  children: React.ReactNode;
+  direction?: 'row' | 'column';
 }
 
-export interface IEditorWrapper {
-  name: string;
-  children: ReactNode;
-}
-
-export default function EditWrapper({ name, children }: IEditorWrapper) {
-  const divRef = useRef(null);
-  const [{ canDrop, isOver }, drop] = useDrop(() => ({
-    accept: 'component',
-    drop: (_item, monitor) => {
-      const didDrop = monitor.didDrop();
-      if (!didDrop) {
-        message.success('dsl 插入中');
-        return {
-          name
-        };
-      }
+export default function EditWrapper({
+  id,
+  childrenId,
+  children,
+  direction = 'column',
+}: IEditorProps) {
+  const {isOver, setNodeRef: setDroppableNodeRef} = useDroppable({
+    id,
+    data: {
+      childrenId,
+      direction: direction || 'column',
     },
-    collect: (monitor: any) => ({
-      isOver: monitor.isOver({ shallow: true }),
-      canDrop: monitor.canDrop()
-    })
-  }));
+  });
+  const {
+    attributes,
+    setNodeRef: setDraggableNodeRef,
+    listeners,
+    isDragging,
+  } = useDraggable({
+    id,
+    data: {
+      childrenId,
+    },
+  });
+  const setNodeRef = useCombinedRefs(setDroppableNodeRef, setDraggableNodeRef);
 
-  useEffect(() => {
-    if (divRef.current) {
-      const config = { childList: true };
-      const ob = new MutationObserver((mutationList, observer) => {
-        for (const mutation of mutationList) {
-          if (mutation.type === 'childList') {
-            console.log('A child node has been added or removed.');
-          } else if (mutation.type === 'attributes') {
-            console.log(`The ${mutation.attributeName} attribute was modified.`);
-          }
-        }
-      });
-      ob.observe(divRef.current, config);
-      return () => {
-        ob.disconnect();
-      };
-    }
-  }, []);
+  const style: CSSProperties = {
+    // transform: CSS.Transform.toString(transform),
+    cursor: 'grab',
+    opacity: isDragging ? 0.5 : 1,
+    outline: isOver ? '2px solid #7193f1' : undefined,
+    transition: 'border 0.5s ease-in-out',
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: direction || 'column',
+    margin: 10
+  };
 
-  function handleClicking(e: { stopPropagation: () => void }) {
-    e.stopPropagation();
-    message.success(`点击编辑器：${name}`);
-  }
-
-  // drop(divRef);
-
-  return children ? (
-    <div
-      ref={drop}
-      className={styles.main}
-      onClick={handleClicking}
-      style={{ background: isOver ? '#0ff' : 'initial' }}
-    >
+  return (
+    <div ref={setNodeRef} {...listeners} {...attributes} style={style}>
       {children}
     </div>
-  ) : <div>无效的组件</div>;
+  );
 }
