@@ -37,7 +37,7 @@ export default function EditWrapper({
 
   const style: CSSProperties = {
     // transform: CSS.Transform.toString(transform),
-    cursor: 'grab',
+    // cursor: 'grab',
     opacity: isDragging ? 0.5 : 1,
     outline: isOver ? '2px solid #7193f1' : undefined,
     transition: 'border 0.5s ease-in-out',

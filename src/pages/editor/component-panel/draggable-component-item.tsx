@@ -18,7 +18,7 @@ export default function DraggableComponentItem({ name, children }: IDraggableCom
 
   const style: CSSProperties = {
     // transform: CSS.Transform.toString(transform),
-    cursor: 'grab',
+    // cursor: 'grab',
     opacity: isDragging ? 0.5 : 1,
     transition: 'border 0.5s ease-in-out',
     boxSizing: 'border-box',
