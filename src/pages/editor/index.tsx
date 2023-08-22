@@ -8,7 +8,7 @@ import {
   DragStartEvent,
   DropAnimation,
   DroppableContainer,
-  MeasuringStrategy
+  MeasuringStrategy, MouseSensor, useSensor, useSensors
 } from '@dnd-kit/core';
 import { getEventCoordinates, Transform } from '@dnd-kit/utilities';
 import { Tabs } from 'antd';
@@ -77,6 +77,16 @@ export default function Editor() {
   const [height, setHeight] = useState<number>(2);
 
   const insertIndexRef = useRef<number>(0);
+
+  const mouseSensor = useSensor(MouseSensor, {
+    // Require the mouse to move by 10 pixels before activating
+    activationConstraint: {
+      delay: 250,
+      tolerance: 10,
+    },
+  });
+
+  const sensors = useSensors(mouseSensor);
 
   useEffect(() => {
     fetchDSL().then(data => {
@@ -354,6 +364,7 @@ export default function Editor() {
       <div className={styles.editArea}>
         <DndContext
           collisionDetection={customDetection}
+          sensors={sensors}
           measuring={{
             droppable: {
               strategy: MeasuringStrategy.Always

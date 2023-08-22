@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC, PropsWithChildren } from 'react';
 import IPageSchema from '@/types/page.schema';
 import componentConfig from '@/data/component-dict';
 import IPropsSchema from '@/types/props.schema';
@@ -18,11 +18,8 @@ export default function PageRenderer(props: IPageRendererProps) {
   }
   const { dsl, mode = 'preview' } = props;
 
-  function fetchComponent(name: string, dependency: string) {
-    if (!dependency) {
-      return name;
-    }
-    return componentConfig[dependency][name].component;
+  function fetchComponentConfig(name: string, dependency: string) {
+    return componentConfig[dependency][name];
   }
 
   function extractProps(propsDict: { [key: string]: IPropsSchema }, propsRefs: string[]) {
@@ -107,12 +104,20 @@ export default function PageRenderer(props: IPageRendererProps) {
     // 处理组件
     const { props } = dsl;
     const { callingName, name, dependency, children = [], propsRefs = [], id } = node as IComponentSchema;
-    const Component = fetchComponent(callingName || name, dependency);
+    let Component: string | FC<PropsWithChildren<any>> = callingName || name;
+    let componentConfig;
+    if (dependency) {
+      componentConfig = fetchComponentConfig(callingName || name, dependency);
+    }
+    if (componentConfig) {
+      Component = componentConfig.component;
+    }
     const componentProps = props[id] ? extractProps(props[id], propsRefs) : {};
     let childrenTemplate = null;
     if (children.length) {
       childrenTemplate = children.map(c => recursivelyRenderTemplate(c));
     }
+    console.log('component config: ', componentConfig?.feature);
     const tpl = (
       <Component key={id} {...componentProps}>
         {childrenTemplate}
