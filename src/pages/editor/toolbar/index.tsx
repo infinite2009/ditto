@@ -1,5 +1,6 @@
 import styles from './index.module.less';
 import { Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
 export default function Toolbar() {
   function handleUndo() {
@@ -18,9 +19,15 @@ export default function Toolbar() {
     console.log('handleDownloadingCode works!');
   }
 
+  function handleCreatingNewPage() {
+    // TODO: 增加新页面
+  }
+
   return (
     <div className={styles.main}>
-      <div></div>
+      <div>
+        <Button type="primary" onClick={handleCreatingNewPage}><PlusOutlined />新建页面</Button>
+      </div>
       <div>
         <Button className={styles.btn} onClick={handleUndo}>撤销</Button>
         <Button className={styles.btn} onClick={handleRedo}>重做</Button>
