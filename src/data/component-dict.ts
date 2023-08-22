@@ -4,11 +4,31 @@ import {
   Mentions, Menu, Modal, Pagination, Popconfirm, Popover, Radio, Rate, Result, Select, Slider, Space, Statistic, Steps,
   Switch, Table, Tabs, Tag, TimePicker, Tooltip, Transfer, Tree, TreeSelect, Upload
 } from 'antd';
-import IComponentConfig from '@/types/component-config';
 import { CodeSandboxOutlined } from '@ant-design/icons';
 import { FC } from 'react';
+import RowContainer from '@/components/row-container';
+import ColumnContainer from '@/components/column-container';
+import IComponentConfig from '@/types/component-config';
 
 const antdComponentConfig: { [key: string]: IComponentConfig } = {
+  RowContainer: {
+    name: 'Row',
+    feature: 'slot',
+    category: 'basic',
+    title: '行容器',
+    icon: CodeSandboxOutlined,
+    component: RowContainer,
+    propsConfig: {},
+  },
+  ColumnContainer: {
+    name: 'Column',
+    feature: 'slot',
+    category: 'basic',
+    title: '列容器',
+    component: ColumnContainer,
+    icon: CodeSandboxOutlined,
+    propsConfig: {},
+  },
   Button: {
     name: 'Button',
     component: Button,
