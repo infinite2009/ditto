@@ -1,39 +1,46 @@
-import {useCombinedRefs} from '@dnd-kit/utilities';
-import React, {CSSProperties} from 'react';
-import {useDraggable, useDroppable} from '@dnd-kit/core';
+import { useCombinedRefs } from '@dnd-kit/utilities';
+import React, { CSSProperties } from 'react';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
 
 export interface IEditorProps {
   id: string;
   childrenId?: string[];
   children: React.ReactNode;
   direction?: 'row' | 'column';
+  type?: 'slot' | 'solid' | 'container';
 }
 
-export default function EditWrapper({
-  id,
-  childrenId,
-  children,
-  direction = 'column',
-}: IEditorProps) {
-  const {isOver, setNodeRef: setDroppableNodeRef} = useDroppable({
+export default function EditWrapper({ id, childrenId, children, direction = 'column', type = 'solid' }: IEditorProps) {
+  const { isOver, setNodeRef: setDroppableNodeRef } = useDroppable({
     id,
     data: {
       childrenId,
-      direction: direction || 'column',
-    },
+      direction: direction || 'column'
+    }
   });
   const {
     attributes,
     setNodeRef: setDraggableNodeRef,
     listeners,
-    isDragging,
+    isDragging
   } = useDraggable({
     id,
     data: {
-      childrenId,
-    },
+      childrenId
+    }
   });
-  const setNodeRef = useCombinedRefs(setDroppableNodeRef, setDraggableNodeRef);
+  let setNodeRef;
+  switch (type) {
+    case 'slot':
+      setNodeRef = setDroppableNodeRef;
+      break;
+    case 'container':
+      setNodeRef = useCombinedRefs(setDroppableNodeRef, setDraggableNodeRef);
+      break;
+    default:
+      setNodeRef = setDraggableNodeRef;
+      break;
+  }
 
   const style: CSSProperties = {
     // transform: CSS.Transform.toString(transform),
