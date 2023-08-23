@@ -6,17 +6,24 @@ import IComponentSchema from '@/types/component.schema';
 import { typeOf } from '@/util';
 import cloneDeep from 'lodash/cloneDeep';
 import EditWrapper from '@/pages/editor/edit-wrapper';
+import { observer, useLocalObservable } from 'mobx-react-lite';
+import { insertComponent } from '@/service/dsl-process';
 
 export interface IPageRendererProps {
   dsl: IPageSchema;
   mode?: 'edit' | 'preview';
 }
 
-export default function PageRenderer(props: IPageRendererProps) {
+export default observer((props: IPageRendererProps) => {
   if (!props) {
     return null;
   }
   const { dsl, mode = 'preview' } = props;
+
+  const dslProcessor = useLocalObservable(() => ({
+    dsl,
+    insertComponent: insertComponent.bind(this),
+  }));
 
   function fetchComponentConfig(name: string, dependency: string) {
     return componentConfig[dependency][name];
@@ -102,7 +109,7 @@ export default function PageRenderer(props: IPageRendererProps) {
     }
 
     // 处理组件
-    const { props } = dsl;
+    const { props } = dslProcessor.dsl;
     const { callingName, name, dependency, children = [], propsRefs = [], id } = node as IComponentSchema;
     let Component: string | FC<PropsWithChildren<any>> = callingName || name;
     let componentConfig;
@@ -126,5 +133,5 @@ export default function PageRenderer(props: IPageRendererProps) {
     return mode === 'edit' ? <EditWrapper key={id} id={id} type={componentConfig?.feature || 'solid'}>{tpl}</EditWrapper> : tpl;
   }
 
-  return dsl ? <div>{recursivelyRenderTemplate(dsl.child)}</div> : null;
-}
+  return dslProcessor.dsl ? <div>{recursivelyRenderTemplate(dslProcessor.dsl.child)}</div> : null;
+});
