@@ -10,7 +10,6 @@ import {
   DroppableContainer,
   MeasuringStrategy, MouseSensor, useSensor, useSensors
 } from '@dnd-kit/core';
-import { getEventCoordinates, Transform } from '@dnd-kit/utilities';
 import { Tabs } from 'antd';
 
 import Toolbar from '@/pages/editor/toolbar';
@@ -26,9 +25,7 @@ import LayerComponentPanel from '@/pages/editor/layer-component-panel';
 import styles from './index.module.less';
 import { createPortal } from 'react-dom';
 import DropAnchor from '@/pages/editor/drop-anchor';
-import { ClientRect, DragCancelEvent, DragEndEvent } from '@dnd-kit/core/dist/types';
-import { Modifiers } from '@dnd-kit/core/dist/modifiers';
-import { Active, Over } from '@dnd-kit/core/dist/store';
+import { DragCancelEvent, DragEndEvent } from '@dnd-kit/core/dist/types';
 import { snapCenterToCursor } from '@dnd-kit/modifiers';
 
 interface IAnchorCoordinates {
