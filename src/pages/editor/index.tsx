@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useRef, useState } from 'react';
 import {
-  CollisionDescriptor, CollisionDetection,
+  CollisionDescriptor,
+  CollisionDetection,
   defaultDropAnimationSideEffects,
   DndContext,
   DragOverEvent,
@@ -8,9 +9,11 @@ import {
   DragStartEvent,
   DropAnimation,
   DroppableContainer,
-  MeasuringStrategy, MouseSensor, useSensor, useSensors
+  MeasuringStrategy,
+  MouseSensor,
+  useSensor,
+  useSensors
 } from '@dnd-kit/core';
-import { getEventCoordinates, Transform } from '@dnd-kit/utilities';
 import { Tabs } from 'antd';
 
 import Toolbar from '@/pages/editor/toolbar';
@@ -26,10 +29,10 @@ import LayerComponentPanel from '@/pages/editor/layer-component-panel';
 import styles from './index.module.less';
 import { createPortal } from 'react-dom';
 import DropAnchor from '@/pages/editor/drop-anchor';
-import { ClientRect, DragCancelEvent, DragEndEvent } from '@dnd-kit/core/dist/types';
-import { Modifiers } from '@dnd-kit/core/dist/modifiers';
-import { Active, Over } from '@dnd-kit/core/dist/store';
+import { DragCancelEvent, DragEndEvent } from '@dnd-kit/core/dist/types';
 import { snapCenterToCursor } from '@dnd-kit/modifiers';
+import DslProcessor from '@/service/dsl-process';
+import DSLContext from '@/hooks/dsl-ctx';
 
 interface IAnchorCoordinates {
   top: number;
@@ -359,50 +362,52 @@ export default function Editor() {
   );
 
   return (
-    <div className={styles.main}>
-      <Toolbar />
-      <div className={styles.editArea}>
-        <DndContext
-          collisionDetection={customDetection}
-          sensors={sensors}
-          measuring={{
-            droppable: {
-              strategy: MeasuringStrategy.Always
-            }
-          }}
-          modifiers={[snapCenterToCursor]}
-          onDragStart={handleDraggingStart}
-          onDragOver={handleDraggingOver}
-          onDragEnd={handleDraggingEnd}
-          onDragCancel={handleDraggingCancel}
-        >
-          <div className={styles.draggableArea}>
-            <div className={styles.panel}>
-              <div className={styles.pagePanel}>
-                <PagePanel />
+    <DSLContext.Provider value={new DslProcessor(dslState)}>
+      <div className={styles.main}>
+        <Toolbar />
+        <div className={styles.editArea}>
+          <DndContext
+            collisionDetection={customDetection}
+            sensors={sensors}
+            measuring={{
+              droppable: {
+                strategy: MeasuringStrategy.Always
+              }
+            }}
+            modifiers={[snapCenterToCursor]}
+            onDragStart={handleDraggingStart}
+            onDragOver={handleDraggingOver}
+            onDragEnd={handleDraggingEnd}
+            onDragCancel={handleDraggingCancel}
+          >
+            <div className={styles.draggableArea}>
+              <div className={styles.panel}>
+                <div className={styles.pagePanel}>
+                  <PagePanel />
+                </div>
+                <div className={styles.componentPanel}>
+                  <Tabs items={tabsItems} />
+                </div>
               </div>
-              <div className={styles.componentPanel}>
-                <Tabs items={tabsItems} />
+              <div className={styles.canvas}>
+                <div className={styles.canvasInner}>
+                  {dslState ? <PageRenderer mode="edit" /> : <div>未获得有效的DSL</div>}
+                </div>
               </div>
             </div>
-            <div className={styles.canvas}>
-              <div className={styles.canvasInner}>
-                {dslState ? <PageRenderer dsl={dslState} mode="edit" /> : <div>未获得有效的DSL</div>}
-              </div>
-            </div>
+            {createPortal(
+              <DragOverlay dropAnimation={dropAnimation}>
+                <div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>
+              </DragOverlay>,
+              document.body
+            )}
+            {createPortal(<DropAnchor top={top} left={left} width={width} height={height} />, document.body)}
+          </DndContext>
+          <div className={styles.formPanel}>
+            <FormPanel />
           </div>
-          {createPortal(
-            <DragOverlay dropAnimation={dropAnimation}>
-              <div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>
-            </DragOverlay>,
-            document.body
-          )}
-          {createPortal(<DropAnchor top={top} left={left} width={width} height={height} />, document.body)}
-        </DndContext>
-        <div className={styles.formPanel}>
-          <FormPanel />
         </div>
       </div>
-    </div>
+    </DSLContext.Provider>
   );
 }

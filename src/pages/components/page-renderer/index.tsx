@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren } from 'react';
+import React, { FC, PropsWithChildren, useContext } from 'react';
 import IPageSchema from '@/types/page.schema';
 import componentConfig from '@/data/component-dict';
 import IPropsSchema from '@/types/props.schema';
@@ -6,11 +6,10 @@ import IComponentSchema from '@/types/component.schema';
 import { typeOf } from '@/util';
 import cloneDeep from 'lodash/cloneDeep';
 import EditWrapper from '@/pages/editor/edit-wrapper';
-import { observer, useLocalObservable } from 'mobx-react-lite';
-import { insertComponent } from '@/service/dsl-process';
+import { observer } from 'mobx-react-lite';
+import DSLContext from '@/hooks/dsl-ctx';
 
 export interface IPageRendererProps {
-  dsl: IPageSchema;
   mode?: 'edit' | 'preview';
 }
 
@@ -18,12 +17,13 @@ export default observer((props: IPageRendererProps) => {
   if (!props) {
     return null;
   }
-  const { dsl, mode = 'preview' } = props;
 
-  const dslProcessor = useLocalObservable(() => ({
-    dsl,
-    insertComponent: insertComponent.bind(this),
-  }));
+  const dslProcessor = useContext(DSLContext);
+
+  console.log('dslProcess: ', dslProcessor);
+
+  const { mode = 'preview' } = props;
+
 
   function fetchComponentConfig(name: string, dependency: string) {
     return componentConfig[dependency][name];
@@ -124,7 +124,7 @@ export default observer((props: IPageRendererProps) => {
     if (children.length) {
       childrenTemplate = children.map(c => recursivelyRenderTemplate(c));
     }
-    console.log('component config: ', componentConfig?.feature);
+
     const tpl = (
       <Component key={id} {...componentProps}>
         {childrenTemplate}

@@ -5,7 +5,7 @@ import IComponentSchema from '@/types/component.schema';
 export default class DslProcessor {
   dsl: IPageSchema;
 
-  constructor(dsl: IPageSchema) {
+  constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
     if (dsl) {
       this.dsl = dsl;
@@ -15,6 +15,7 @@ export default class DslProcessor {
   }
 
   initDSL() {
+    // TODO: 待实现
     console.log('insert component works');
     const a = {};
     this.dsl = a as IPageSchema;
