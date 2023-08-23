@@ -14,7 +14,7 @@ import { getEventCoordinates, Transform } from '@dnd-kit/utilities';
 import { Tabs } from 'antd';
 
 import Toolbar from '@/pages/editor/toolbar';
-import PagePanel from '@/pages/editor/ page-panel';
+import PagePanel from '@/pages/editor/page-panel';
 import ComponentPanel from '@/pages/editor/component-panel';
 import TemplatePanel from '@/pages/editor/template-panel';
 import FormPanel from '@/pages/editor/form-panel';
