@@ -12,7 +12,7 @@ import IComponentConfig from '@/types/component-config';
 const antdComponentConfig: { [key: string]: IComponentConfig } = {
   Row: {
     name: 'Row',
-    feature: 'slot',
+    isContainer: true,
     category: 'basic',
     title: '行容器',
     icon: CodeSandboxOutlined,
@@ -21,7 +21,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   },
   Col: {
     name: 'Column',
-    feature: 'slot',
+    isContainer: true,
     category: 'basic',
     title: '列容器',
     component: Col,

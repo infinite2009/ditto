@@ -8,6 +8,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import EditWrapper from '@/pages/editor/edit-wrapper';
 import { observer } from 'mobx-react-lite';
 import DSLContext from '@/hooks/dsl-ctx';
+import ComponentFeature from '@/types/component-feature';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -74,10 +75,10 @@ export default observer((props: IPageRendererProps) => {
     // 如果当前 keyPath 命中正则表达式
     if (keyPathMatchResult) {
       if (keyPathMatchResult.type === 'object') {
-        parent[key] = recursivelyRenderTemplate(data);
+        parent[key] = recursivelyRenderTemplate(data, true);
       } else {
         parent[key] = () => {
-          return recursivelyRenderTemplate(data);
+          return recursivelyRenderTemplate(data, true);
         };
       }
     } else {
@@ -100,7 +101,12 @@ export default observer((props: IPageRendererProps) => {
     }
   }
 
-  function recursivelyRenderTemplate(node: IComponentSchema | string) {
+  /**
+   *
+   * @param node
+   * @param isSlot 当前组件是否是一个插槽
+   */
+  function recursivelyRenderTemplate(node: IComponentSchema | string, isSlot = false) {
     // 判断节点的类型
     const nodeType = typeOf(node);
     // 如果是字符串类型，直接返回，它不会有子节点了
@@ -130,7 +136,13 @@ export default observer((props: IPageRendererProps) => {
         {childrenTemplate}
       </Component>
     );
-    return mode === 'edit' ? <EditWrapper key={id} id={id} type={componentConfig?.feature || 'solid'}>{tpl}</EditWrapper> : tpl;
+    let feature = ComponentFeature.solid;
+    if (isSlot) {
+      feature = ComponentFeature.slot;
+    } else if (componentConfig?.isContainer) {
+      feature = ComponentFeature.container;
+    }
+    return mode === 'edit' ? <EditWrapper key={id} id={id} type={feature}>{tpl}</EditWrapper> : tpl;
   }
 
   return dslProcessor.dsl ? <div>{recursivelyRenderTemplate(dslProcessor.dsl.child)}</div> : null;

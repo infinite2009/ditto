@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 export default interface IComponentConfig {
   name: string;
   component: FC<any>;
-  feature?: 'slot' | 'solid';
+  isContainer?: boolean;
   title: string;
   icon: React.ForwardRefExoticComponent<any> | null;
   category: 'basic' | 'layer';
