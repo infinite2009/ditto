@@ -41,7 +41,7 @@ interface IAnchorCoordinates {
   height: number;
 }
 
-const collisionOffset = 10;
+const collisionOffset = 4;
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
