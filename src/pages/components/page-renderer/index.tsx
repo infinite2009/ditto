@@ -144,8 +144,6 @@ export default observer((props: IPageRendererProps) => {
       feature = ComponentFeature.container;
     }
 
-    console.log('component name: ', componentConfig?.name);
-
     const childId = children?.map(c => c.id);
     return mode === 'edit' ? <EditWrapper key={id} id={id} childrenId={childId} type={feature}>{tpl}</EditWrapper> : tpl;
   }
