@@ -9,6 +9,7 @@ import EditWrapper from '@/pages/editor/edit-wrapper';
 import { observer } from 'mobx-react-lite';
 import DSLContext from '@/hooks/dsl-ctx';
 import ComponentFeature from '@/types/component-feature';
+import { Col } from 'antd';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -142,8 +143,12 @@ export default observer((props: IPageRendererProps) => {
     } else if (componentConfig?.isContainer) {
       feature = ComponentFeature.container;
     }
-    return mode === 'edit' ? <EditWrapper key={id} id={id} type={feature}>{tpl}</EditWrapper> : tpl;
+
+    console.log('component name: ', componentConfig?.name);
+
+    const childId = children?.map(c => c.id);
+    return mode === 'edit' ? <EditWrapper key={id} id={id} childrenId={childId} type={feature}>{tpl}</EditWrapper> : tpl;
   }
 
-  return dslProcessor.dsl ? <div>{recursivelyRenderTemplate(dslProcessor.dsl.child)}</div> : null;
+  return dslProcessor.dsl ? <div>{recursivelyRenderTemplate(dslProcessor.dsl.child, true)}</div> : null;
 });

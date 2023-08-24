@@ -61,7 +61,7 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
   }
 
   return (
-    <div className={styles.main} ref={setNodeRef} {...listeners} {...attributes} style={style}>
+    <div id={id} className={styles.main} ref={setNodeRef} {...listeners} {...attributes} style={style}>
       {children}
     </div>
   );

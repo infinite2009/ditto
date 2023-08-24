@@ -20,7 +20,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {},
   },
   Col: {
-    name: 'Column',
+    name: 'Col',
     isContainer: true,
     category: 'basic',
     title: '列容器',

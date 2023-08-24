@@ -294,12 +294,14 @@
   "child": {
     "id": "c0",
     "schemaType": "component",
-    "name": "div",
+    "name": "Col",
+    "dependency": "antd",
     "children": [
       {
         "id": "c4",
         "schemaType": "component",
-        "name": "div",
+        "name": "Col",
+        "dependency": "antd",
         "children": [
           {
             "id": "c5",
