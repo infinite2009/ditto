@@ -1,26 +1,56 @@
 import styles from './index.module.less';
 import { Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import PageAction from '@/types/page-action';
 
-export default function Toolbar() {
+export interface PageActionEvent {
+  type: PageAction;
+  payload?: { [key: string]: any };
+}
+
+interface IToolbarProps {
+  onDo: (e: PageActionEvent) => void;
+}
+
+export default function Toolbar({ onDo }: IToolbarProps) {
   function handleUndo() {
-    console.log('handleUndo works!');
+    if (onDo) {
+      onDo({
+        type: PageAction.undo
+      });
+    }
   }
 
   function handleRedo() {
-    console.log('handleRedo works!');
+    if (onDo) {
+      onDo({
+        type: PageAction.redo
+      });
+    }
   }
 
   function handlePreview() {
-    console.log('handlePreview works!');
+    if (onDo) {
+      onDo({
+        type: PageAction.preview
+      });
+    }
   }
 
-  function handleDownloadingCode() {
-    console.log('handleDownloadingCode works!');
+  function handleExportingCode() {
+    if (onDo) {
+      onDo({
+        type: PageAction.exportCode
+      });
+    }
   }
 
   function handleCreatingNewPage() {
-    // TODO: 增加新页面
+    if (onDo) {
+      onDo({
+        type: PageAction.createPage
+      });
+    }
   }
 
   return (
@@ -34,7 +64,7 @@ export default function Toolbar() {
       </div>
       <div className={styles.right}>
         <Button className={styles.btn} onClick={handlePreview}>预览</Button>
-        <Button className={styles.btn} onClick={handleDownloadingCode}>下载代码</Button>
+        <Button className={styles.btn} onClick={handleExportingCode}>下载代码</Button>
       </div>
     </div>
   );
