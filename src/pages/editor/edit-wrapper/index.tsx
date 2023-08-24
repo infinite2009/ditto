@@ -2,16 +2,17 @@ import { useCombinedRefs } from '@dnd-kit/utilities';
 import React, { CSSProperties } from 'react';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import styles from './index.module.less';
+import ComponentFeature from '@/types/component-feature';
 
 export interface IEditorProps {
   id: string;
   childrenId?: string[];
   children: React.ReactNode;
   direction?: 'row' | 'column';
-  type?: 'slot' | 'solid' | 'container';
+  type?: ComponentFeature;
 }
 
-export default function EditWrapper({ id, childrenId, children, direction = 'column', type = 'solid' }: IEditorProps) {
+export default function EditWrapper({ id, childrenId, children, direction = 'column', type = ComponentFeature.solid }: IEditorProps) {
   const { isOver, setNodeRef: setDroppableNodeRef } = useDroppable({
     id,
     data: {
@@ -30,18 +31,6 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
       childrenId
     }
   });
-  let setNodeRef;
-  switch (type) {
-    case 'slot':
-      setNodeRef = setDroppableNodeRef;
-      break;
-    case 'container':
-      setNodeRef = useCombinedRefs(setDroppableNodeRef, setDraggableNodeRef);
-      break;
-    default:
-      setNodeRef = setDraggableNodeRef;
-      break;
-  }
 
   const style: CSSProperties = {
     // transform: CSS.Transform.toString(transform),
@@ -54,6 +43,22 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
     flexDirection: direction || 'column',
     margin: 10
   };
+
+  let setNodeRef;
+  switch (type) {
+    case ComponentFeature.slot:
+      setNodeRef = setDroppableNodeRef;
+      style.backgroundColor = '#4f0';
+      break;
+    case ComponentFeature.container:
+      setNodeRef = useCombinedRefs(setDroppableNodeRef, setDraggableNodeRef);
+      style.backgroundColor = '#fa0';
+      break;
+    default:
+      setNodeRef = setDraggableNodeRef;
+      style.backgroundColor = '#0ff';
+      break;
+  }
 
   return (
     <div className={styles.main} ref={setNodeRef} {...listeners} {...attributes} style={style}>
