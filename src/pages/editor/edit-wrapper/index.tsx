@@ -1,7 +1,6 @@
 import { useCombinedRefs } from '@dnd-kit/utilities';
 import React, { CSSProperties } from 'react';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
-import styles from './index.module.less';
 import ComponentFeature from '@/types/component-feature';
 
 export interface IEditorProps {
@@ -61,7 +60,7 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
   }
 
   return (
-    <div id={id} className={styles.main} ref={setNodeRef} {...listeners} {...attributes} style={style}>
+    <div id={id} ref={setNodeRef} {...listeners} {...attributes} style={style}>
       {children}
     </div>
   );
