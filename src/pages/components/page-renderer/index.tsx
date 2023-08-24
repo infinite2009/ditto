@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren } from 'react';
+import React, { FC, PropsWithChildren, useContext } from 'react';
 import IPageSchema from '@/types/page.schema';
 import componentConfig from '@/data/component-dict';
 import IPropsSchema from '@/types/props.schema';
@@ -6,17 +6,24 @@ import IComponentSchema from '@/types/component.schema';
 import { typeOf } from '@/util';
 import cloneDeep from 'lodash/cloneDeep';
 import EditWrapper from '@/pages/editor/edit-wrapper';
+import { observer } from 'mobx-react-lite';
+import DSLContext from '@/hooks/dsl-ctx';
 
 export interface IPageRendererProps {
-  dsl: IPageSchema;
   mode?: 'edit' | 'preview';
 }
 
-export default function PageRenderer(props: IPageRendererProps) {
+export default observer((props: IPageRendererProps) => {
   if (!props) {
     return null;
   }
-  const { dsl, mode = 'preview' } = props;
+
+  const dslProcessor = useContext(DSLContext);
+
+  console.log('dslProcess: ', dslProcessor);
+
+  const { mode = 'preview' } = props;
+
 
   function fetchComponentConfig(name: string, dependency: string) {
     return componentConfig[dependency][name];
@@ -102,7 +109,7 @@ export default function PageRenderer(props: IPageRendererProps) {
     }
 
     // 处理组件
-    const { props } = dsl;
+    const { props } = dslProcessor.dsl;
     const { callingName, name, dependency, children = [], propsRefs = [], id } = node as IComponentSchema;
     let Component: string | FC<PropsWithChildren<any>> = callingName || name;
     let componentConfig;
@@ -117,7 +124,7 @@ export default function PageRenderer(props: IPageRendererProps) {
     if (children.length) {
       childrenTemplate = children.map(c => recursivelyRenderTemplate(c));
     }
-    console.log('component config: ', componentConfig?.feature);
+
     const tpl = (
       <Component key={id} {...componentProps}>
         {childrenTemplate}
@@ -126,5 +133,5 @@ export default function PageRenderer(props: IPageRendererProps) {
     return mode === 'edit' ? <EditWrapper key={id} id={id} type={componentConfig?.feature || 'solid'}>{tpl}</EditWrapper> : tpl;
   }
 
-  return dsl ? <div>{recursivelyRenderTemplate(dsl.child)}</div> : null;
-}
+  return dslProcessor.dsl ? <div>{recursivelyRenderTemplate(dslProcessor.dsl.child)}</div> : null;
+});
