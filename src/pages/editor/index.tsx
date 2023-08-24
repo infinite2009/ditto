@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   CollisionDescriptor,
   CollisionDetection,
@@ -14,9 +14,9 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core';
-import { Tabs } from 'antd';
+import { Form, Input, Modal, Tabs } from 'antd';
 
-import Toolbar from '@/pages/editor/toolbar';
+import Toolbar, { PageActionEvent } from '@/pages/editor/toolbar';
 import PagePanel from '@/pages/editor/page-panel';
 import ComponentPanel from '@/pages/editor/component-panel';
 import TemplatePanel from '@/pages/editor/template-panel';
@@ -33,6 +33,8 @@ import { DragCancelEvent, DragEndEvent } from '@dnd-kit/core/dist/types';
 import { snapCenterToCursor } from '@dnd-kit/modifiers';
 import DslProcessor from '@/service/dsl-process';
 import DSLContext from '@/hooks/dsl-ctx';
+import PageAction from '@/types/page-action';
+import { useForm } from 'antd/es/form/Form';
 
 interface IAnchorCoordinates {
   top: number;
@@ -79,6 +81,10 @@ export default function Editor() {
   const [width, setWidth] = useState<number>(100);
   const [height, setHeight] = useState<number>(2);
 
+  const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
+
+  const [form] = useForm();
+
   const insertIndexRef = useRef<number>(0);
 
   const mouseSensor = useSensor(MouseSensor, {
@@ -123,7 +129,7 @@ export default function Editor() {
     console.log('over: ', over);
   }
 
-  function handleDraggingCancel({active, over}: DragCancelEvent) {
+  function handleDraggingCancel({ active, over }: DragCancelEvent) {
     // 重置插入索引
     insertIndexRef.current = 0;
     hideAnchor();
@@ -187,8 +193,8 @@ export default function Editor() {
   }
 
   function sortCollisionsDesc(
-    {data: {value: a}}: CollisionDescriptor,
-    {data: {value: b}}: CollisionDescriptor
+    { data: { value: a } }: CollisionDescriptor,
+    { data: { value: b } }: CollisionDescriptor
   ) {
     return b - a;
   }
@@ -199,12 +205,7 @@ export default function Editor() {
    * droppableContainers: 所有可以放入的矩形的节点信息，包括 id，data 等
    */
   const customDetection: CollisionDetection = useCallback(
-    ({
-      active,
-      collisionRect,
-      droppableRects,
-      droppableContainers
-    }) => {
+    ({ active, collisionRect, droppableRects, droppableContainers }) => {
       const collisions: CollisionDescriptor[] = [];
 
       const parentDict: { [key: string]: string } = {};
@@ -263,10 +264,7 @@ export default function Editor() {
 
           for (let i = 0, l = childrenRects.length; i < l; i++) {
             const { top, right, bottom, left, height, width } = childrenRects[i];
-            const {
-              top: collisionTop,
-              left: collisionLeft
-            } = collisionRect;
+            const { top: collisionTop, left: collisionLeft } = collisionRect;
             // 判断碰撞左上角和这些矩形的位置关系，落在两者之间的，设下一个 index 为插入位置
             if (direction === 'row') {
               // 如果在当前矩形同行
@@ -333,7 +331,7 @@ export default function Editor() {
           setAnchor(style);
         } else {
           const rect = droppableRects.get(result[0].id);
-          if  (rect) {
+          if (rect) {
             let style;
             if (direction === 'row') {
               style = {
@@ -361,10 +359,39 @@ export default function Editor() {
     []
   );
 
+  function openPageCreationModal() {
+    setPageCreationVisible(true);
+  }
+
+  function closePageCreationModal() {
+    setPageCreationVisible(false);
+  }
+
+  function handleOnDo(e: PageActionEvent) {
+    switch (e.type) {
+      case PageAction.createPage:
+        openPageCreationModal();
+        break;
+      case PageAction.redo:
+        break;
+      case PageAction.undo:
+        break;
+      case PageAction.exportCode:
+        break;
+      case PageAction.preview:
+        break;
+    }
+  }
+  function createBlankPage() {
+    // TODO: 创建空白页面
+    console.log('form data: ', form.getFieldsValue());
+    closePageCreationModal();
+  }
+
   return (
-    <DSLContext.Provider value={new DslProcessor(dslState)}>
-      <div className={styles.main}>
-        <Toolbar />
+    <div className={styles.main}>
+      <Toolbar onDo={handleOnDo} />
+      <DSLContext.Provider value={new DslProcessor(dslState)}>
         <div className={styles.editArea}>
           <DndContext
             collisionDetection={customDetection}
@@ -407,7 +434,17 @@ export default function Editor() {
             <FormPanel />
           </div>
         </div>
-      </div>
-    </DSLContext.Provider>
+      </DSLContext.Provider>
+      <Modal title="创建页面" open={pageCreationVisible} onOk={createBlankPage} onCancel={closePageCreationModal} okText="确定" cancelText="取消">
+        <Form form={form} >
+          <Form.Item label="页面名称" name="name">
+            <Input />
+          </Form.Item>
+          <Form.Item label="描述" name="desc">
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div>
   );
 }
