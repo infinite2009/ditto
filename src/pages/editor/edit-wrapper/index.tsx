@@ -39,8 +39,7 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
     transition: 'border 0.5s ease-in-out',
     boxSizing: 'border-box',
     display: 'flex',
-    flexDirection: direction || 'column',
-    margin: 10
+    flexDirection: direction || 'column'
   };
 
   let setNodeRef;
