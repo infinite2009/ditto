@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
+import { generateId } from '@/util';
 
 export default class DslProcessor {
   dsl: IPageSchema;
@@ -9,16 +10,23 @@ export default class DslProcessor {
     makeAutoObservable(this);
     if (dsl) {
       this.dsl = dsl;
-    } else {
-      this.initDSL();
     }
   }
 
-  initDSL() {
-    // TODO: 待实现
-    console.log('insert component works');
-    const a = {};
-    this.dsl = a as IPageSchema;
+  initDSL(dsl: IPageSchema) {
+    if (dsl) {
+      this.dsl = dsl;
+    }
+  }
+
+  createEmptyPage(name: string, desc: string, child: IComponentSchema): IPageSchema {
+    return {
+      id: generateId(),
+      schemaType: 'page',
+      name,
+      desc,
+      child,
+    };
   }
 
   /**

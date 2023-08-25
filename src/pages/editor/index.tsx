@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import {
   CollisionDescriptor,
   CollisionDetection,
@@ -35,6 +35,10 @@ import DslProcessor from '@/service/dsl-process';
 import DSLContext from '@/hooks/dsl-ctx';
 import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
+import { nanoid } from 'nanoid';
+import IComponentSchema from '@/types/component.schema';
+import { generateId } from '@/util';
+import { observer } from 'mobx-react-lite';
 
 interface IAnchorCoordinates {
   top: number;
@@ -73,9 +77,8 @@ const tabsItems = [
   }
 ];
 
-export default function Editor() {
+export default observer(() => {
   const [, setActiveId] = useState<string>('');
-  const [dslState, setDslState] = useState<IPageSchema>();
   const [top, setTop] = useState<number>(200);
   const [left, setLeft] = useState<number>(600);
   const [width, setWidth] = useState<number>(100);
@@ -87,19 +90,21 @@ export default function Editor() {
 
   const insertIndexRef = useRef<number>(0);
 
+  const dslProcessor = useContext(DSLContext);
+
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
     activationConstraint: {
       delay: 250,
-      tolerance: 10,
-    },
+      tolerance: 10
+    }
   });
 
   const sensors = useSensors(mouseSensor);
 
   useEffect(() => {
     fetchDSL().then(data => {
-      setDslState(data);
+      dslProcessor.initDSL(data);
     });
   }, []);
 
@@ -382,61 +387,77 @@ export default function Editor() {
         break;
     }
   }
+
+  function initialAntdRootComponent(): IComponentSchema {
+    return {
+      id: nanoid(),
+      schemaType: 'component',
+      name: 'Col',
+      dependency: 'antd',
+      children: []
+    };
+  }
+
   function createBlankPage() {
-    // TODO: 创建空白页面
-    console.log('form data: ', form.getFieldsValue());
+    const { name, desc } = form.getFieldsValue();
+    dslProcessor.createEmptyPage(name, desc, initialAntdRootComponent());
     closePageCreationModal();
   }
 
   return (
     <div className={styles.main}>
       <Toolbar onDo={handleOnDo} />
-      <DSLContext.Provider value={new DslProcessor(dslState)}>
-        <div className={styles.editArea}>
-          <DndContext
-            collisionDetection={customDetection}
-            sensors={sensors}
-            measuring={{
-              droppable: {
-                strategy: MeasuringStrategy.Always
-              }
-            }}
-            modifiers={[snapCenterToCursor]}
-            onDragStart={handleDraggingStart}
-            onDragOver={handleDraggingOver}
-            onDragEnd={handleDraggingEnd}
-            onDragCancel={handleDraggingCancel}
-          >
-            <div className={styles.draggableArea}>
-              <div className={styles.panel}>
-                <div className={styles.pagePanel}>
-                  <PagePanel />
-                </div>
-                <div className={styles.componentPanel}>
-                  <Tabs items={tabsItems} />
-                </div>
+      <div className={styles.editArea}>
+        <DndContext
+          collisionDetection={customDetection}
+          sensors={sensors}
+          measuring={{
+            droppable: {
+              strategy: MeasuringStrategy.Always
+            }
+          }}
+          modifiers={[snapCenterToCursor]}
+          onDragStart={handleDraggingStart}
+          onDragOver={handleDraggingOver}
+          onDragEnd={handleDraggingEnd}
+          onDragCancel={handleDraggingCancel}
+        >
+          <div className={styles.draggableArea}>
+            <div className={styles.panel}>
+              <div className={styles.pagePanel}>
+                <PagePanel />
               </div>
-              <div className={styles.canvas}>
-                <div className={styles.canvasInner}>
-                  {dslState ? <PageRenderer mode="edit" /> : <div>未获得有效的DSL</div>}
-                </div>
+              <div className={styles.componentPanel}>
+                <Tabs items={tabsItems} />
               </div>
             </div>
-            {createPortal(
-              <DragOverlay dropAnimation={dropAnimation}>
-                <div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>
-              </DragOverlay>,
-              document.body
-            )}
-            {createPortal(<DropAnchor top={top} left={left} width={width} height={height} />, document.body)}
-          </DndContext>
-          <div className={styles.formPanel}>
-            <FormPanel />
+            <div className={styles.canvas}>
+              <div className={styles.canvasInner}>
+                {dslProcessor.dsl ? <PageRenderer mode="edit" /> : <div>未获得有效的DSL</div>}
+              </div>
+            </div>
           </div>
+          {createPortal(
+            <DragOverlay dropAnimation={dropAnimation}>
+              <div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>
+            </DragOverlay>,
+            document.body
+          )}
+          {createPortal(<DropAnchor top={top} left={left} width={width} height={height} />, document.body)}
+        </DndContext>
+        <div className={styles.formPanel}>
+          <FormPanel />
         </div>
-      </DSLContext.Provider>
-      <Modal title="创建页面" open={pageCreationVisible} onOk={createBlankPage} onCancel={closePageCreationModal} okText="确定" cancelText="取消">
-        <Form form={form} >
+      </div>
+      <Modal
+        title="创建页面"
+        open={pageCreationVisible}
+        onOk={createBlankPage}
+        onCancel={closePageCreationModal}
+        okText="确定"
+        cancelText="取消"
+      >
+        <Form form={form}>
           <Form.Item label="页面名称" name="name">
             <Input />
           </Form.Item>
@@ -447,4 +468,4 @@ export default function Editor() {
       </Modal>
     </div>
   );
-}
+});
