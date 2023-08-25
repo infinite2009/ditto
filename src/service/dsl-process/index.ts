@@ -19,8 +19,8 @@ export default class DslProcessor {
     }
   }
 
-  createEmptyPage(name: string, desc: string, child: IComponentSchema): IPageSchema {
-    return {
+  createEmptyPage(name: string, desc: string, child: IComponentSchema) {
+    this.dsl = {
       id: generateId(),
       schemaType: 'page',
       name,
