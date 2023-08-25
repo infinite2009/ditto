@@ -19,8 +19,6 @@ export default observer((props: IPageRendererProps) => {
 
   const dslProcessor = useContext(DSLContext);
 
-  console.log('dslProcess: ', dslProcessor);
-
   const { mode = 'preview' } = props;
 
   function extractProps(propsDict: { [key: string]: IPropsSchema }, propsRefs: string[]) {
