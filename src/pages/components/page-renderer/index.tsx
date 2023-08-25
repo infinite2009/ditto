@@ -1,5 +1,4 @@
 import React, { FC, PropsWithChildren, useContext } from 'react';
-import componentConfig from '@/data/component-dict';
 import IPropsSchema from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, typeOf } from '@/util';

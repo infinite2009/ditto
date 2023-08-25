@@ -34,8 +34,6 @@ import { snapCenterToCursor } from '@dnd-kit/modifiers';
 import DSLContext from '@/hooks/dsl-ctx';
 import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
-import { nanoid } from 'nanoid';
-import IComponentSchema from '@/types/component.schema';
 import { observer } from 'mobx-react-lite';
 
 interface IAnchorCoordinates {
