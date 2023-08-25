@@ -1,3 +1,5 @@
+import { nanoid } from 'nanoid';
+
 export function toUpperCase(str: string): string  {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
@@ -9,4 +11,8 @@ export function typeOf(value: any): string {
     return match[1].toLowerCase();
   }
   throw new Error(`unknown type: ${typeStr}`);
+}
+
+export function generateId() {
+  return nanoid();
 }
