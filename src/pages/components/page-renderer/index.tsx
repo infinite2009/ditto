@@ -116,7 +116,7 @@ export default observer((props: IPageRendererProps) => {
     }
 
     // 处理组件
-    const { props } = dslProcessor.dsl;
+    const { props = {} } = dslProcessor.dsl;
     const { callingName, name, dependency, children = [], propsRefs = [], id } = node as IComponentSchema;
     let Component: string | FC<PropsWithChildren<any>> = callingName || name;
     let componentConfig;
