@@ -2,7 +2,7 @@ import React, { FC, PropsWithChildren, useContext } from 'react';
 import componentConfig from '@/data/component-dict';
 import IPropsSchema from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
-import { typeOf } from '@/util';
+import { fetchComponentConfig, typeOf } from '@/util';
 import cloneDeep from 'lodash/cloneDeep';
 import EditWrapper from '@/pages/editor/edit-wrapper';
 import { observer } from 'mobx-react-lite';
@@ -23,11 +23,6 @@ export default observer((props: IPageRendererProps) => {
   console.log('dslProcess: ', dslProcessor);
 
   const { mode = 'preview' } = props;
-
-
-  function fetchComponentConfig(name: string, dependency: string) {
-    return componentConfig[dependency][name];
-  }
 
   function extractProps(propsDict: { [key: string]: IPropsSchema }, propsRefs: string[]) {
     const result: { [key: string]: any } = {};

@@ -1,7 +1,9 @@
 import { makeAutoObservable } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
-import { generateId } from '@/util';
+import { fetchComponentConfig, generateId } from '@/util';
+import { nanoid } from 'nanoid';
+import IComponentConfig from '@/types/component-config';
 
 export default class DslProcessor {
   dsl: IPageSchema;
@@ -19,14 +21,42 @@ export default class DslProcessor {
     }
   }
 
-  createEmptyPage(name: string, desc: string, child: IComponentSchema) {
+  createEmptyPage(name: string, desc: string) {
     this.dsl = {
       id: generateId(),
       schemaType: 'page',
       name,
       desc,
-      child,
+      child: this.initialAntdRootComponent(),
     };
+  }
+
+  initialAntdRootComponent(): IComponentSchema {
+    const rootId = generateId();
+
+    return {
+      id: rootId,
+      schemaType: 'component',
+      name: 'Row',
+      dependency: 'antd',
+      children: [
+        this.createComponent('Col', 'antd')
+      ]
+    };
+  }
+
+  createComponent(name: string, dependency: string): IComponentSchema {
+    const componentConfig = fetchComponentConfig(name, dependency);
+    const componentSchema: IComponentSchema = {
+      id: generateId(),
+      schemaType: 'component',
+      name: componentConfig.name,
+      dependency: componentConfig.dependency,
+    };
+    if (componentConfig.propsConfig.children) {
+      componentSchema.children = [];
+    }
+    return componentSchema;
   }
 
   /**

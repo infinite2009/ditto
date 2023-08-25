@@ -383,19 +383,9 @@ export default observer(() => {
     }
   }
 
-  function initialAntdRootComponent(): IComponentSchema {
-    return {
-      id: nanoid(),
-      schemaType: 'component',
-      name: 'Col',
-      dependency: 'antd',
-      children: []
-    };
-  }
-
   function createBlankPage() {
     const { name, desc } = form.getFieldsValue();
-    dslProcessor.createEmptyPage(name, desc, initialAntdRootComponent());
+    dslProcessor.createEmptyPage(name, desc);
     closePageCreationModal();
   }
 

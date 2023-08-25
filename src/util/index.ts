@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import componentConfig from '@/data/component-dict';
 
 export function toUpperCase(str: string): string  {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -15,4 +16,8 @@ export function typeOf(value: any): string {
 
 export function generateId() {
   return nanoid();
+}
+
+export function fetchComponentConfig(name: string, dependency: string) {
+  return componentConfig[dependency][name];
 }
