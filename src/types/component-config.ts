@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 export default interface IComponentConfig {
   name: string;
   component: FC<any>;
+  dependency: string;
   isContainer?: boolean;
   title: string;
   icon: React.ForwardRefExoticComponent<any> | null;
