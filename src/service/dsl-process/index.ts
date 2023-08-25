@@ -2,8 +2,6 @@ import { makeAutoObservable } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateId } from '@/util';
-import { nanoid } from 'nanoid';
-import IComponentConfig from '@/types/component-config';
 
 export default class DslProcessor {
   dsl: IPageSchema;
