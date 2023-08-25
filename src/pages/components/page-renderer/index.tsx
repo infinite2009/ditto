@@ -1,5 +1,4 @@
 import React, { FC, PropsWithChildren, useContext } from 'react';
-import IPageSchema from '@/types/page.schema';
 import componentConfig from '@/data/component-dict';
 import IPropsSchema from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
@@ -9,7 +8,6 @@ import EditWrapper from '@/pages/editor/edit-wrapper';
 import { observer } from 'mobx-react-lite';
 import DSLContext from '@/hooks/dsl-ctx';
 import ComponentFeature from '@/types/component-feature';
-import { Col } from 'antd';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
