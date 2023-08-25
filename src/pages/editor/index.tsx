@@ -31,13 +31,11 @@ import { createPortal } from 'react-dom';
 import DropAnchor from '@/pages/editor/drop-anchor';
 import { DragCancelEvent, DragEndEvent } from '@dnd-kit/core/dist/types';
 import { snapCenterToCursor } from '@dnd-kit/modifiers';
-import DslProcessor from '@/service/dsl-process';
 import DSLContext from '@/hooks/dsl-ctx';
 import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
 import { nanoid } from 'nanoid';
 import IComponentSchema from '@/types/component.schema';
-import { generateId } from '@/util';
 import { observer } from 'mobx-react-lite';
 
 interface IAnchorCoordinates {
@@ -79,10 +77,12 @@ const tabsItems = [
 
 export default observer(() => {
   const [, setActiveId] = useState<string>('');
-  const [top, setTop] = useState<number>(200);
-  const [left, setLeft] = useState<number>(600);
-  const [width, setWidth] = useState<number>(100);
-  const [height, setHeight] = useState<number>(2);
+  const [{ top, left, width, height }, setAnchor] = useState<IAnchorCoordinates>({
+    top: 0,
+    left: 0,
+    width: 0,
+    height: 0
+  });
 
   const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
 
@@ -108,16 +108,13 @@ export default observer(() => {
     });
   }, []);
 
-  function setAnchor(obj: IAnchorCoordinates) {
-    setTop(obj.top);
-    setLeft(obj.left);
-    setWidth(obj.width);
-    setHeight(obj.height);
-  }
-
   function hideAnchor() {
-    setWidth(0);
-    setHeight(0);
+    setAnchor({
+      top: 0,
+      left: 0,
+      height: 0,
+      width: 0
+    });
   }
 
   function handleDraggingStart({ active }: DragStartEvent) {
@@ -130,8 +127,6 @@ export default observer(() => {
 
   function handleDraggingEnd({ active, over }: DragEndEvent) {
     hideAnchor();
-    console.log('active: ', active);
-    console.log('over: ', over);
   }
 
   function handleDraggingCancel({ active, over }: DragCancelEvent) {
