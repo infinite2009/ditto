@@ -1,9 +1,56 @@
 import { FC } from 'react';
 import {
-  Affix, Alert, Anchor, Avatar, Badge, Breadcrumb, Button, Calendar, Card, Carousel, Cascader, Checkbox, Col, Collapse,
-  ColorPicker, DatePicker, Descriptions, Divider, Drawer, Dropdown, Empty, FloatButton, Form, Input, InputNumber, List,
-  Mentions, Menu, Modal, Pagination, Popconfirm, Popover, Radio, Rate, Result, Row, Select, Slider, Space, Statistic,
-  Steps, Switch, Table, Tabs, Tag, TimePicker, Tooltip, Transfer, Tree, TreeSelect, Upload
+  Affix,
+  Alert,
+  Anchor,
+  Avatar,
+  Badge,
+  Breadcrumb,
+  Button,
+  Calendar,
+  Card,
+  Carousel,
+  Cascader,
+  Checkbox,
+  Col,
+  Collapse,
+  ColorPicker,
+  DatePicker,
+  Descriptions,
+  Divider,
+  Drawer,
+  Dropdown,
+  Empty,
+  FloatButton,
+  Form,
+  Input,
+  InputNumber,
+  List,
+  Mentions,
+  Menu,
+  Modal,
+  Pagination,
+  Popconfirm,
+  Popover,
+  Radio,
+  Rate,
+  Result,
+  Row,
+  Select,
+  Slider,
+  Space,
+  Statistic,
+  Steps,
+  Switch,
+  Table,
+  Tabs,
+  Tag,
+  TimePicker,
+  Tooltip,
+  Transfer,
+  Tree,
+  TreeSelect,
+  Upload
 } from 'antd';
 import { CodeSandboxOutlined } from '@ant-design/icons';
 import IComponentConfig from '@/types/component-config';
@@ -22,7 +69,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'align',
         initialValue: 'middle',
         category: 'style'
-      },
+      }
     }
   },
   Col: {
@@ -53,7 +100,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'paddingLeft',
         initialValue: 8,
         category: 'style'
-      },
+      }
     }
   },
   Button: {
