@@ -526,4 +526,91 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   }
 };
-export default { antd: antdComponentConfig } as { [key: string]: { [key: string]: IComponentConfig } };
+
+const htmlComponentConfig: { [key: string]: IComponentConfig } = {
+  div: {
+    name: 'div',
+    dependency: 'html',
+    component: 'div',
+    category: 'basic',
+    title: '智能容器',
+    icon: CodeSandboxOutlined,
+    propsConfig: {
+      display: {
+        name: 'display',
+        initialValue: 'flex',
+        category: 'style',
+        disabled: true
+      },
+      direction: {
+        name: 'direction',
+        initialValue: 'col',
+        category: 'style'
+      },
+      flexGrow: {
+        name: 'flexGrow',
+        initialValue: 0,
+        category: 'style'
+      },
+      flexShrink: {
+        name: 'flexShrink',
+        initialValue: 0,
+        category: 'style'
+      },
+      alignItems: {
+        name: 'alignItems',
+        initialValue: 'center',
+        category: 'style'
+      },
+      justifyContent: {
+        name: 'justifyContent',
+        initialValue: 'flex-start',
+        category: 'style'
+      },
+      marginTop: {
+        name: 'marginTop',
+        initialValue: 4,
+        category: 'basic'
+      },
+      marginRight: {
+        name: 'marginRight',
+        initialValue: 4,
+        category: 'basic'
+      },
+      marginBottom: {
+        name: 'marginBottom',
+        initialValue: 4,
+        category: 'basic'
+      },
+      marginLeft: {
+        name: 'marginLeft',
+        initialValue: 4,
+        category: 'basic'
+      },
+      paddingTop: {
+        name: 'paddingTop',
+        initialValue: 4,
+        category: 'basic'
+      },
+      paddingRight: {
+        name: 'paddingRight',
+        initialValue: 4,
+        category: 'basic'
+      },
+      paddingBottom: {
+        name: 'paddingBottom',
+        initialValue: 4,
+        category: 'basic'
+      },
+      paddingLeft: {
+        name: 'paddingLeft',
+        initialValue: 4,
+        category: 'basic'
+      }
+    }
+  }
+};
+
+export default { antd: antdComponentConfig, html: htmlComponentConfig } as {
+  [key: string]: { [key: string]: IComponentConfig };
+};
