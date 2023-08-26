@@ -28,15 +28,15 @@ export default function ComponentPanel() {
   }
 
   function fetchComponentList() {
-    // TODO 这里写死了，后期组件库多了之后，需要修改
-    const result = Object.entries(componentConfig.antd)
-      .filter(([, val]) => val.category === 'basic')
-      .map(([key, val]) => {
+    const components = Object.values(componentConfig).map(item => Object.values(item));
+    const result = components.flat(1)
+      .filter(item => item.category === 'basic')
+      .map(item => {
         return {
-          key,
-          title: val.title,
-          icon: val.icon,
-          name: val.name,
+          key: item.name,
+          title: item.title,
+          icon: item.icon,
+          name: item.name,
         } as unknown as IComponentInfo;
       });
     setComponentList(result);
