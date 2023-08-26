@@ -13,6 +13,7 @@ export default interface IComponentConfig {
       name: string;
       initialValue?: any;
       category: 'basic' | 'style' | 'interaction';
+      disabled?: boolean;
     };
   };
 }
