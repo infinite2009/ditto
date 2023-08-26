@@ -1,20 +1,15 @@
 import React, {CSSProperties} from 'react';
+import IAnchorCoordinates from '@/types/anchor-coordinate';
 
 export interface IDropAnchorProps {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
+  coordinate: IAnchorCoordinates;
 }
 
-export default function DropAnchor({top, left, width, height}: IDropAnchorProps) {
+export default function DropAnchor({coordinate}: IDropAnchorProps) {
   const style: CSSProperties = {
     position: 'fixed',
     zIndex: 99,
-    top,
-    left,
-    width,
-    height,
+    ...coordinate,
     backgroundColor: '#f00',
   };
   return <div style={style} />;

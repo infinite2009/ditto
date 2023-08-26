@@ -2,9 +2,12 @@ import { makeAutoObservable } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateId } from '@/util';
+import IAnchorCoordinates from '@/types/anchor-coordinate';
 
 export default class DslProcessor {
   dsl: IPageSchema;
+
+  anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
 
   constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
@@ -19,13 +22,17 @@ export default class DslProcessor {
     }
   }
 
+  setAnchor(anchor: IAnchorCoordinates) {
+    this.anchor = anchor;
+  }
+
   createEmptyPage(name: string, desc: string) {
     this.dsl = {
       id: generateId(),
       schemaType: 'page',
       name,
       desc,
-      child: this.initialAntdRootComponent(),
+      child: this.initialAntdRootComponent()
     };
   }
 
@@ -37,9 +44,7 @@ export default class DslProcessor {
       schemaType: 'component',
       name: 'Row',
       dependency: 'antd',
-      children: [
-        this.createComponent('Col', 'antd')
-      ]
+      children: [this.createComponent('Col', 'antd')]
     };
   }
 
@@ -49,7 +54,7 @@ export default class DslProcessor {
       id: generateId(),
       schemaType: 'component',
       name: componentConfig.name,
-      dependency: componentConfig.dependency,
+      dependency: componentConfig.dependency
     };
     if (componentConfig.propsConfig.children) {
       componentSchema.children = [];

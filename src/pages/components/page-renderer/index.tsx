@@ -4,12 +4,13 @@ import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, typeOf } from '@/util';
 import cloneDeep from 'lodash/cloneDeep';
 import EditWrapper from '@/pages/editor/edit-wrapper';
-import { observer } from 'mobx-react-lite';
-import DSLContext from '@/hooks/dsl-ctx';
 import ComponentFeature from '@/types/component-feature';
+import DslProcessor from '@/service/dsl-process';
+import { observer } from 'mobx-react-lite';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
+  dslStore: DslProcessor;
 }
 
 export default observer((props: IPageRendererProps) => {
@@ -17,9 +18,7 @@ export default observer((props: IPageRendererProps) => {
     return null;
   }
 
-  const dslProcessor = useContext(DSLContext);
-
-  const { mode = 'preview' } = props;
+  const { mode = 'preview', dslStore } = props;
 
   function extractProps(propsDict: { [key: string]: IPropsSchema }, propsRefs: string[]) {
     const result: { [key: string]: any } = {};
@@ -106,7 +105,7 @@ export default observer((props: IPageRendererProps) => {
     }
 
     // 处理组件
-    const { props = {} } = dslProcessor.dsl;
+    const { props = {} } = dslStore.dsl;
     const { callingName, name, dependency, children = [], propsRefs = [], id } = node as IComponentSchema;
     let Component: string | FC<PropsWithChildren<any>> = callingName || name;
     let componentConfig;
@@ -138,5 +137,5 @@ export default observer((props: IPageRendererProps) => {
     return mode === 'edit' ? <EditWrapper key={id} id={id} childrenId={childId} type={feature}>{tpl}</EditWrapper> : tpl;
   }
 
-  return dslProcessor.dsl ? <div>{recursivelyRenderTemplate(dslProcessor.dsl.child, true)}</div> : null;
+  return dslStore.dsl ? <div>{recursivelyRenderTemplate(dslStore.dsl.child, true)}</div> : <div>未获得有效的DSL</div>;
 });

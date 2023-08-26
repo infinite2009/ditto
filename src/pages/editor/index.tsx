@@ -34,14 +34,9 @@ import { snapCenterToCursor } from '@dnd-kit/modifiers';
 import DSLContext from '@/hooks/dsl-ctx';
 import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
-import { observer } from 'mobx-react-lite';
-
-interface IAnchorCoordinates {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-}
+import { observer, useObserver } from 'mobx-react-lite';
+import IAnchorCoordinates from '@/types/anchor-coordinate';
+import DslProcessor from '@/service/dsl-process';
 
 const collisionOffset = 4;
 
@@ -73,22 +68,16 @@ const tabsItems = [
   }
 ];
 
-export default observer(() => {
+const dslProcessor = new DslProcessor();
+
+export default function Editor() {
   const [, setActiveId] = useState<string>('');
-  const [{ top, left, width, height }, setAnchor] = useState<IAnchorCoordinates>({
-    top: 0,
-    left: 0,
-    width: 0,
-    height: 0
-  });
 
   const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
 
   const [form] = useForm();
 
   const insertIndexRef = useRef<number>(0);
-
-  const dslProcessor = useContext(DSLContext);
 
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
@@ -107,7 +96,10 @@ export default observer(() => {
   }, []);
 
   function hideAnchor() {
-    setAnchor({
+    if (!dslProcessor) {
+      return;
+    }
+    dslProcessor.setAnchor({
       top: 0,
       left: 0,
       height: 0,
@@ -195,6 +187,10 @@ export default observer(() => {
     { data: { value: b } }: CollisionDescriptor
   ) {
     return b - a;
+  }
+
+  function setAnchor(anchor: IAnchorCoordinates) {
+    dslProcessor.setAnchor(anchor);
   }
 
   /**
@@ -354,7 +350,7 @@ export default observer(() => {
       }
       return [];
     },
-    []
+    [dslProcessor]
   );
 
   function openPageCreationModal() {
@@ -416,7 +412,7 @@ export default observer(() => {
             </div>
             <div className={styles.canvas}>
               <div className={styles.canvasInner}>
-                {dslProcessor.dsl ? <PageRenderer mode="edit" /> : <div>未获得有效的DSL</div>}
+                <PageRenderer mode="edit" dslStore={dslProcessor}/>
               </div>
             </div>
           </div>
@@ -426,7 +422,7 @@ export default observer(() => {
             </DragOverlay>,
             document.body
           )}
-          {createPortal(<DropAnchor top={top} left={left} width={width} height={height} />, document.body)}
+          {createPortal(<DropAnchor coordinate={dslProcessor.anchor} />, document.body)}
         </DndContext>
         <div className={styles.formPanel}>
           <FormPanel />
@@ -451,4 +447,4 @@ export default observer(() => {
       </Modal>
     </div>
   );
-});
+}
