@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 export default interface IComponentConfig {
   name: string;
-  component: FC<any>;
+  component: FC<any> | string;
   dependency: string;
   isContainer?: boolean;
   title: string;
