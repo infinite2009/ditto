@@ -17,7 +17,13 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     title: '行容器',
     icon: CodeSandboxOutlined,
     component: Row,
-    propsConfig: {}
+    propsConfig: {
+      align: {
+        name: 'align',
+        initialValue: 'middle',
+        category: 'style'
+      },
+    }
   },
   Col: {
     name: 'Col',
@@ -27,7 +33,28 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     title: '列容器',
     component: Col,
     icon: CodeSandboxOutlined,
-    propsConfig: {}
+    propsConfig: {
+      paddingTop: {
+        name: 'paddingTop',
+        initialValue: 8,
+        category: 'style'
+      },
+      paddingRight: {
+        name: 'paddingRight',
+        initialValue: 8,
+        category: 'style'
+      },
+      paddingBottom: {
+        name: 'paddingBottom',
+        initialValue: 8,
+        category: 'style'
+      },
+      paddingLeft: {
+        name: 'paddingLeft',
+        initialValue: 8,
+        category: 'style'
+      },
+    }
   },
   Button: {
     name: 'Button',
