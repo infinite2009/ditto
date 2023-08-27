@@ -583,12 +583,6 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
     title: '智能容器',
     icon: CodeSandboxOutlined,
     propsConfig: {
-      display: {
-        name: 'display',
-        initialValue: 'flex',
-        category: 'style',
-        disabled: true
-      },
       direction: {
         name: 'direction',
         initialValue: 'col',
