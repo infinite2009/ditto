@@ -54,6 +54,9 @@ import {
 } from 'antd';
 import { CodeSandboxOutlined } from '@ant-design/icons';
 import IComponentConfig from '@/types/component-config';
+import Link from '@/components/link';
+import EditableText from '@/components/editable-text';
+import Container from '@/components/container';
 
 const antdComponentConfig: { [key: string]: IComponentConfig } = {
   Row: {
@@ -578,7 +581,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
   div: {
     name: 'div',
     dependency: 'html',
-    component: 'div',
+    component: Container,
     category: 'basic',
     title: '智能容器',
     icon: CodeSandboxOutlined,
@@ -673,7 +676,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
   p: {
     name: 'p',
     dependency: 'html',
-    component: 'p',
+    component: EditableText,
     category: 'basic',
     title: '文字',
     icon: CodeSandboxOutlined,
@@ -703,7 +706,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
   a: {
     name: 'a',
     dependency: 'html',
-    component: 'a',
+    component: Link,
     category: 'basic',
     title: '超链接',
     icon: CodeSandboxOutlined,
