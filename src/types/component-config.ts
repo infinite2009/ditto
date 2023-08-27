@@ -12,7 +12,7 @@ export default interface IComponentConfig {
     [key: string]: {
       name: string;
       initialValue?: any;
-      category: 'basic' | 'style' | 'interaction';
+      category: 'basic' | 'style' | 'interaction' | 'children';
       disabled?: boolean;
     };
   };
