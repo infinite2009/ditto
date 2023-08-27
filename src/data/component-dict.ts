@@ -588,7 +588,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {
       direction: {
         name: 'direction',
-        initialValue: 'col',
+        initialValue: 'column',
         category: 'style'
       },
       flexBasis: {
