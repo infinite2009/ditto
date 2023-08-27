@@ -22,6 +22,6 @@ export default interface IComponentSchema extends ISchema {
   // 组件名，用于代码生成的导入和调用环节
   name: string;
   // 组件属性
-  propsRefs?: PropsId[];
+  propsRefs: PropsId[];
   children?: (IComponentSchema)[];
 }
