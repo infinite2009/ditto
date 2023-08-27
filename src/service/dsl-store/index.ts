@@ -32,9 +32,17 @@ export default class DSLStore {
       schemaType: 'page',
       name,
       desc,
-      child: this.createComponent('div', 'html'),
-      props: {}
+      props: {},
+      // 由于类型设计问题，这里需要初始化一个无效节点
+      child: {
+        id: '',
+        name: '',
+        dependency: '',
+        schemaType: 'component',
+        propsRefs: [],
+      },
     };
+    this.dsl.child = this.createComponent('div', 'html');
   }
 
   createComponent(name: string, dependency: string): IComponentSchema {
@@ -61,7 +69,6 @@ export default class DSLStore {
         valueSource: 'editorInput',
         value: initialValue
       };
-      console.log('this.dsl.props[componentId]: ', toJS(this.dsl.props[componentId]));
       componentSchema.propsRefs.push(name);
     });
     return componentSchema;
