@@ -247,11 +247,7 @@
                   "id": "c3",
                   "dependency": "antd",
                   "name": "Table",
-                  "propsRefs": [
-                    "p4",
-                    "p5",
-                    "p6"
-                  ]
+                  "propsRefs": []
                 },
                 {
                   "id": "c10",
