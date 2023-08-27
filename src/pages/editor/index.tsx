@@ -31,10 +31,8 @@ import { createPortal } from 'react-dom';
 import DropAnchor from '@/pages/editor/drop-anchor';
 import { DragCancelEvent, DragEndEvent } from '@dnd-kit/core/dist/types';
 import { snapCenterToCursor } from '@dnd-kit/modifiers';
-import DSLContext from '@/hooks/dsl-ctx';
 import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
-import { observer, useObserver } from 'mobx-react-lite';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 import DslProcessor from '@/service/dsl-process';
 
