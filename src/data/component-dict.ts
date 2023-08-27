@@ -719,6 +719,11 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
         initialValue: '',
         category: 'basic'
       },
+      newTab: {
+        name: 'newTab',
+        initialValue: true,
+        category: 'basic'
+      },
       fontSize: {
         name: 'fontSize',
         initialValue: 14,
