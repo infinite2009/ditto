@@ -671,6 +671,11 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
         initialValue: 'transparent',
         category: 'style',
       },
+      children: {
+        name: 'children',
+        initialValue: [],
+        category: 'children'
+      }
     }
   },
   p: {
