@@ -1,7 +1,7 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, toJS } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
-import { fetchComponentConfig, generateId } from '@/util';
+import { fetchComponentConfig, generateId, typeOf } from '@/util';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 
 export default class DSLStore {
@@ -32,33 +32,38 @@ export default class DSLStore {
       schemaType: 'page',
       name,
       desc,
-      child: this.initialAntdRootComponent()
-    };
-  }
-
-  initialAntdRootComponent(): IComponentSchema {
-    const rootId = generateId();
-
-    return {
-      id: rootId,
-      schemaType: 'component',
-      name: 'Row',
-      dependency: 'antd',
-      children: [this.createComponent('Col', 'antd')]
+      child: this.createComponent('div', 'html'),
+      props: {}
     };
   }
 
   createComponent(name: string, dependency: string): IComponentSchema {
+    const componentId = generateId();
     const componentConfig = fetchComponentConfig(name, dependency);
     const componentSchema: IComponentSchema = {
-      id: generateId(),
+      id: componentId,
       schemaType: 'component',
       name: componentConfig.name,
-      dependency: componentConfig.dependency
+      dependency: componentConfig.dependency,
+      propsRefs: [],
+      children: componentConfig.propsConfig.children ? [] : undefined
     };
-    if (componentConfig.propsConfig.children) {
-      componentSchema.children = [];
-    }
+    const { propsConfig } = componentConfig;
+    this.dsl.props[componentId] = {};
+    const props = this.dsl.props[componentId];
+    Object.values(propsConfig).forEach(item => {
+      const { name, initialValue } = item;
+      props[name] = {
+        id: name,
+        schemaType: 'props',
+        name: name,
+        valueType: typeOf(initialValue) as 'string' | 'number' | 'boolean' | 'object' | 'function' | 'array',
+        valueSource: 'editorInput',
+        value: initialValue
+      };
+      console.log('this.dsl.props[componentId]: ', toJS(this.dsl.props[componentId]));
+      componentSchema.propsRefs.push(name);
+    });
     return componentSchema;
   }
 
