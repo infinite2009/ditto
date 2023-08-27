@@ -2,7 +2,7 @@ import ISchema from './schema';
 import IComponentSchema from './component.schema';
 import DynamicObject from '@/types/dynamic-object';
 import IPropsSchema from '@/types/props.schema';
-import { ComponentId } from '@/types/index';
+import { ComponentId, PropsId } from '@/types/index';
 import IActionSchema from '@/types/action.schema';
 import IEventSchema from '@/types/event.schema';
 import IHandlerSchema from '@/types/handler.schema';
@@ -16,7 +16,7 @@ export default interface IPageSchema extends ISchema {
   // 页面名
   name: string;
   // 组件的属性
-  props?: {
+  props: {
     [key: ComponentId]: DynamicObject<IPropsSchema>;
   };
   // 页面的模板
