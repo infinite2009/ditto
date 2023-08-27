@@ -368,6 +368,7 @@ export default class ReactCodeGenerator {
 
     const componentPropsDict = propsDict[componentId];
 
+    // TODO: 这里要对 html 元素进行定开，后边改
     propsRefs.forEach(ref => {
       const props = componentPropsDict[ref];
       // 找不到的 ref 跳过
