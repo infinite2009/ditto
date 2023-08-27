@@ -594,6 +594,21 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
         initialValue: 'col',
         category: 'style'
       },
+      flexBasis: {
+        name: 'flexBasis',
+        initialValue: 'auto',
+        category: 'style',
+      },
+      height: {
+        name: 'height',
+        initialValue: 'auto',
+        category: 'style',
+      },
+      width: {
+        name: 'width',
+        initialValue: 'auto',
+        category: 'style',
+      },
       flexGrow: {
         name: 'flexGrow',
         initialValue: 0,
@@ -606,7 +621,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
       },
       alignItems: {
         name: 'alignItems',
-        initialValue: 'center',
+        initialValue: 'stretch',
         category: 'style'
       },
       justifyContent: {
