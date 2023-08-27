@@ -5,12 +5,12 @@ import { fetchComponentConfig, typeOf } from '@/util';
 import cloneDeep from 'lodash/cloneDeep';
 import EditWrapper from '@/pages/editor/edit-wrapper';
 import ComponentFeature from '@/types/component-feature';
-import DslProcessor from '@/service/dsl-process';
+import DSLStore from '../../../service/dsl-store';
 import { observer } from 'mobx-react-lite';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
-  dslStore: DslProcessor;
+  dslStore: DSLStore;
 }
 
 export default observer((props: IPageRendererProps) => {

@@ -34,7 +34,7 @@ import { snapCenterToCursor } from '@dnd-kit/modifiers';
 import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
-import DslProcessor from '@/service/dsl-process';
+import DSLStore from '../../service/dsl-store';
 
 const collisionOffset = 4;
 
@@ -66,7 +66,7 @@ const tabsItems = [
   }
 ];
 
-const dslProcessor = new DslProcessor();
+const dslStore = new DSLStore();
 
 export default function Editor() {
   const [, setActiveId] = useState<string>('');
@@ -89,15 +89,15 @@ export default function Editor() {
 
   useEffect(() => {
     fetchDSL().then(data => {
-      dslProcessor.initDSL(data);
+      dslStore.initDSL(data);
     });
   }, []);
 
   function hideAnchor() {
-    if (!dslProcessor) {
+    if (!dslStore) {
       return;
     }
-    dslProcessor.setAnchor({
+    dslStore.setAnchor({
       top: 0,
       left: 0,
       height: 0,
@@ -188,7 +188,7 @@ export default function Editor() {
   }
 
   function setAnchor(anchor: IAnchorCoordinates) {
-    dslProcessor.setAnchor(anchor);
+    dslStore.setAnchor(anchor);
   }
 
   /**
@@ -348,7 +348,7 @@ export default function Editor() {
       }
       return [];
     },
-    [dslProcessor]
+    [dslStore]
   );
 
   function openPageCreationModal() {
@@ -377,7 +377,7 @@ export default function Editor() {
 
   function createBlankPage() {
     const { name, desc } = form.getFieldsValue();
-    dslProcessor.createEmptyPage(name, desc);
+    dslStore.createEmptyPage(name, desc);
     closePageCreationModal();
   }
 
@@ -410,7 +410,7 @@ export default function Editor() {
             </div>
             <div className={styles.canvas}>
               <div className={styles.canvasInner}>
-                <PageRenderer mode="edit" dslStore={dslProcessor}/>
+                <PageRenderer mode="edit" dslStore={dslStore}/>
               </div>
             </div>
           </div>
@@ -420,7 +420,7 @@ export default function Editor() {
             </DragOverlay>,
             document.body
           )}
-          {createPortal(<DropAnchor coordinate={dslProcessor.anchor} />, document.body)}
+          {createPortal(<DropAnchor coordinate={dslStore.anchor} />, document.body)}
         </DndContext>
         <div className={styles.formPanel}>
           <FormPanel />
