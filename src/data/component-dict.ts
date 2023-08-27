@@ -661,8 +661,13 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
       paddingLeft: {
         name: 'paddingLeft',
         initialValue: 4,
-      }
         category: 'style'
+      },
+      backgroundColor: {
+        name: 'backgroundColor',
+        initialValue: 'transparent',
+        category: 'style',
+      },
     }
   },
   p: {
