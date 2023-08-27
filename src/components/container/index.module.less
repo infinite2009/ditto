@@ -1,7 +1,23 @@
+@height: 60px;
+
+.center {
+  line-height: @height;
+  text-align: center;
+  color: #2f2f2f;
+}
+
+.backgroundColorWithoutChildren {
+  background-color: #eee;
+}
+
 .rowWithoutChildren {
-  min-height: 30px;
+  min-height: @height;
+  .center();
+  .backgroundColorWithoutChildren();
 }
 
 .columnWithoutChildren {
   min-width: 100px;
+  .center();
+  .backgroundColorWithoutChildren();
 }

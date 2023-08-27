@@ -42,7 +42,7 @@ export default function Container({
   paddingRight,
   paddingBottom,
   paddingLeft,
-  backgroundColor,
+  backgroundColor
 }: IContainerProps) {
   const inlineStyle: CSSProperties = useMemo(() => {
     return {
@@ -62,7 +62,7 @@ export default function Container({
       paddingRight,
       paddingBottom,
       paddingLeft,
-      backgroundColor,
+      backgroundColor
     };
   }, [
     direction,
@@ -81,13 +81,22 @@ export default function Container({
     paddingRight,
     paddingBottom,
     paddingLeft,
-    backgroundColor,
+    backgroundColor
   ]);
 
-  const classes = useMemo(() => classNames({
-    [style.minWidth]: direction as string === 'column',
-    [style.minHeight]: direction as string === 'row',
-  }), [children]);
+  const classes = useMemo(() => {
+    return classNames({
+      [style.rowWithoutChildren]: direction as string === 'column',
+      [style.columnWithoutChildren]: direction as string === 'row'
+    });
+  }, [children]);
 
-  return <div className={classes} style={inlineStyle}>{children}</div>;
+  function renderChildren() {
+    if (children) {
+      return children;
+    }
+    return <div className={classes}>请拖入任意元素</div>;
+  }
+
+  return <div style={inlineStyle}>{renderChildren()}</div>;
 }
