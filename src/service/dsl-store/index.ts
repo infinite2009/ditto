@@ -77,8 +77,21 @@ export default class DSLStore {
   /**
    * 插入一个新的组件
    */
-  insertComponent(parentId: string, componentNode: IComponentSchema) {
+  insertComponent(parentId: string, name: string, dependency: string, insertIndex = undefined) {
     console.log('insert component works');
+    const newComponentNode = this.createComponent(name, dependency);
+    const parentNode = this.fetchComponentInDSL(parentId);
+    if (parentNode) {
+      // 如果没有 children，初始化一个，如果需要初始化，说明初始化父节点的代码有 bug
+      parentNode.children = parentNode.children || [];
+      if (insertIndex === undefined) {
+        parentNode.children.push(newComponentNode);
+      } else {
+        parentNode.children.splice(insertIndex, 0, newComponentNode);
+      }
+    } else {
+      throw new Error(`未找到有效的父节点：${parentId}`);
+    }
   }
 
   deleteComponent(id: string) {
@@ -95,5 +108,22 @@ export default class DSLStore {
 
   exportAsTemplate(id: string) {
     console.log('export as template works');
+  }
+
+  fetchComponentInDSL(id: string) {
+    // TODO: 广度遍历
+    let q: IComponentSchema[] = [this.dsl.child];
+    while(q.length) {
+      const node = q.shift();
+      if (node) {
+        if (node.id === id) {
+          return node;
+        }
+        if (node.children?.length) {
+          q = q.concat(node.children);
+        }
+      }
+    }
+    return null;
   }
 }

@@ -14,7 +14,7 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core';
-import { Form, Input, Modal, Tabs } from 'antd';
+import { Form, Input, message, Modal, Tabs } from 'antd';
 
 import Toolbar, { PageActionEvent } from '@/pages/editor/toolbar';
 import PagePanel from '@/pages/editor/page-panel';
@@ -125,7 +125,18 @@ export default function Editor() {
   }
 
   function handleDraggingEnd({ active, over }: DragEndEvent) {
-    // 这里插入组件
+    if (over && active.data.current) {
+      const { type, name, dependency } = active.data.current;
+      if (type === 'insert') {
+        try {
+          dslStore.insertComponent(over.id as string, name, dependency);
+        } catch (e) {
+          message.error((e as any).toString()).then();
+        }
+      } else {
+        // TODO: 移动节点
+      }
+    }
     resetInsertIndexRef();
     hideAnchor();
   }
