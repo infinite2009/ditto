@@ -36,6 +36,7 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
     // cursor: 'grab',
     opacity: isDragging ? 0.5 : 1,
     outline: isOver ? '2px solid #7193f1' : undefined,
+    outlineOffset: isOver ? 2 : undefined,
     transition: 'border 0.5s ease-in-out',
     boxSizing: 'border-box',
     display: 'flex',
