@@ -106,6 +106,10 @@ export default function Editor() {
     dslStore.setAnchorCoordinates(anchorCoordinatesRef.current);
   }
 
+  function resetInsertIndexRef() {
+    insertIndexRef.current = 0;
+  }
+
   function handleDraggingStart({ active }: DragStartEvent) {
     setActiveId(active.id as string);
   }
@@ -127,7 +131,7 @@ export default function Editor() {
 
   function handleDraggingCancel({ active, over }: DragCancelEvent) {
     // 重置插入索引
-    insertIndexRef.current = 0;
+    resetInsertIndexRef();
     hideAnchor();
   }
 
