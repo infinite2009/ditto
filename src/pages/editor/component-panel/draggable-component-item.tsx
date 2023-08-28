@@ -9,7 +9,7 @@ export interface IDraggableComponentItemProps {
 }
 
 export default function DraggableComponentItem({ name, title, dependency, children }: IDraggableComponentItemProps) {
-  const { attributes, isDragging, listeners, setNodeRef, transform } = useDraggable({
+  const { attributes, isDragging, listeners, setNodeRef } = useDraggable({
     id: name,
     data: {
       type: 'insert',
