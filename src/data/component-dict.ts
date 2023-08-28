@@ -629,42 +629,42 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
       },
       marginTop: {
         name: 'marginTop',
-        initialValue: 4,
+        initialValue: 0,
         category: 'style'
       },
       marginRight: {
         name: 'marginRight',
-        initialValue: 4,
+        initialValue: 0,
         category: 'style'
       },
       marginBottom: {
         name: 'marginBottom',
-        initialValue: 4,
+        initialValue: 0,
         category: 'style'
       },
       marginLeft: {
         name: 'marginLeft',
-        initialValue: 4,
+        initialValue: 0,
         category: 'style'
       },
       paddingTop: {
         name: 'paddingTop',
-        initialValue: 4,
+        initialValue: 8,
         category: 'style'
       },
       paddingRight: {
         name: 'paddingRight',
-        initialValue: 4,
+        initialValue: 8,
         category: 'style'
       },
       paddingBottom: {
         name: 'paddingBottom',
-        initialValue: 4,
+        initialValue: 8,
         category: 'style'
       },
       paddingLeft: {
         name: 'paddingLeft',
-        initialValue: 4,
+        initialValue: 8,
         category: 'style'
       },
       backgroundColor: {
