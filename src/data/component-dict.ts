@@ -581,6 +581,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
   div: {
     name: 'div',
     dependency: 'html',
+    isContainer: true,
     component: Container,
     category: 'basic',
     title: '智能容器',
