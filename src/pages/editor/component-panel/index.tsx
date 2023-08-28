@@ -14,6 +14,7 @@ interface IComponentInfo {
   title: string;
   name: string;
   icon: ForwardedRef<any>;
+  dependency: string;
 }
 
 export default function ComponentPanel() {
@@ -37,6 +38,7 @@ export default function ComponentPanel() {
           title: item.title,
           icon: item.icon,
           name: item.name,
+          dependency: item.dependency,
         } as unknown as IComponentInfo;
       });
     setComponentList(result);
@@ -46,7 +48,7 @@ export default function ComponentPanel() {
     const tpl = componentList.map(item => {
       const ComponentIcon = item.icon as FC<IComponentIconProps>;
       return (
-        <DraggableComponent key={item.name} name={item.title}>
+        <DraggableComponent key={item.name} name={item.name} dependency={item.dependency} title={item.title}>
           <div className={styles.componentItem} key={item.key}>
             <ComponentIcon className={styles.componentIcon} />
             <p className={styles.componentTitle}>{item.title}</p>
