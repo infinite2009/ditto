@@ -86,8 +86,8 @@ export default function Container({
 
   const classes = useMemo(() => {
     return classNames({
-      [style.rowWithoutChildren]: direction as string === 'column',
-      [style.columnWithoutChildren]: direction as string === 'row'
+      [style.rowWithoutChildren]: (direction as string) === 'column',
+      [style.columnWithoutChildren]: (direction as string) === 'row'
     });
   }, [children]);
 
