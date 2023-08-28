@@ -133,7 +133,7 @@ export default observer((props: IPageRendererProps) => {
       feature = ComponentFeature.container;
     }
 
-    const childId = children?.map(c => c.id);
+    const childId = children?.map(c => c.id) || [];
     return mode === 'edit' ? <EditWrapper key={id} id={id} childrenId={childId} type={feature}>{tpl}</EditWrapper> : tpl;
   }
 
