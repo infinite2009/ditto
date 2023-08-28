@@ -198,7 +198,7 @@ export default function Editor() {
     return b - a;
   }
 
-  function setAnchor(anchor: IAnchorCoordinates) {
+  function setAnchorCoordinates(anchor: IAnchorCoordinates) {
     anchorCoordinatesRef.current = anchor;
   }
 
@@ -331,7 +331,7 @@ export default function Editor() {
               }
             }
           }
-          setAnchor(style);
+          setAnchorCoordinates(style);
         } else {
           const rect = droppableRects.get(result[0].id);
           if (rect) {
@@ -351,7 +351,7 @@ export default function Editor() {
                 left: rect.left
               };
             }
-            setAnchor(style);
+            setAnchorCoordinates(style);
             insertIndexRef.current = 0;
           }
         }
