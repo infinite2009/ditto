@@ -62,7 +62,7 @@ export default function Container({
       paddingRight,
       paddingBottom,
       paddingLeft,
-      backgroundColor
+      backgroundColor: children ? backgroundColor : '#eee'
     };
   }, [
     direction,
