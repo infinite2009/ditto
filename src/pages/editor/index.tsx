@@ -75,6 +75,7 @@ export default function Editor() {
   const [form] = useForm();
 
   const insertIndexRef = useRef<number>(0);
+  const anchorCoordinatesRef = useRef<IAnchorCoordinates>();
 
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
@@ -96,23 +97,34 @@ export default function Editor() {
     if (!dslStore) {
       return;
     }
-    dslStore.setAnchor({
+    anchorCoordinatesRef.current = {
       top: 0,
       left: 0,
       height: 0,
       width: 0
-    });
+    };
+    dslStore.setAnchorCoordinates(anchorCoordinatesRef.current);
   }
 
   function handleDraggingStart({ active }: DragStartEvent) {
     setActiveId(active.id as string);
   }
 
+  function handleDraggingMove({ over }: DragOverEvent) {
+    if (over) {
+      if (anchorCoordinatesRef.current) {
+        dslStore.setAnchorCoordinates(anchorCoordinatesRef.current);
+      }
+    } else {
+      hideAnchor();
+    }
+  }
   function handleDraggingOver({ active, over }: DragOverEvent) {
-    hideAnchor();
+    // hideAnchor();
   }
 
   function handleDraggingEnd({ active, over }: DragEndEvent) {
+    // 这里插入组件
     hideAnchor();
   }
 
@@ -187,7 +199,7 @@ export default function Editor() {
   }
 
   function setAnchor(anchor: IAnchorCoordinates) {
-    dslStore.setAnchor(anchor);
+    anchorCoordinatesRef.current = anchor;
   }
 
   /**
@@ -347,7 +359,7 @@ export default function Editor() {
       }
       return [];
     },
-    [dslStore]
+    []
   );
 
   function openPageCreationModal() {
@@ -394,6 +406,7 @@ export default function Editor() {
           }}
           modifiers={[snapCenterToCursor]}
           onDragStart={handleDraggingStart}
+          onDragMove={handleDraggingMove}
           onDragOver={handleDraggingOver}
           onDragEnd={handleDraggingEnd}
           onDragCancel={handleDraggingCancel}

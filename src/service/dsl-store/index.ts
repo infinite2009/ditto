@@ -22,7 +22,7 @@ export default class DSLStore {
     }
   }
 
-  setAnchor(anchor: IAnchorCoordinates) {
+  setAnchorCoordinates(anchor: IAnchorCoordinates) {
     this.anchor = anchor;
   }
 
