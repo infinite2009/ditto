@@ -1,4 +1,4 @@
-import { makeAutoObservable, toJS } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateId, typeOf } from '@/util';
@@ -39,8 +39,8 @@ export default class DSLStore {
         name: '',
         dependency: '',
         schemaType: 'component',
-        propsRefs: [],
-      },
+        propsRefs: []
+      }
     };
     this.dsl.child = this.createComponent('div', 'html');
   }
