@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   CollisionDescriptor,
   CollisionDetection,
@@ -70,7 +70,6 @@ const dslStore = new DSLStore();
 
 export default function Editor() {
   const [, setActiveId] = useState<string>('');
-
   const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
 
   const [form] = useForm();
