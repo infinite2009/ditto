@@ -126,6 +126,7 @@ export default function Editor() {
 
   function handleDraggingEnd({ active, over }: DragEndEvent) {
     // 这里插入组件
+    resetInsertIndexRef();
     hideAnchor();
   }
 
