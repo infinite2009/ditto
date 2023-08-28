@@ -1,16 +1,17 @@
-import React, {CSSProperties} from 'react';
-import IAnchorCoordinates from '@/types/anchor-coordinate';
+import React, { CSSProperties } from 'react';
+import { observer } from 'mobx-react-lite';
+import DSLStore from '@/service/dsl-store';
 
 export interface IDropAnchorProps {
-  coordinate: IAnchorCoordinates;
+  store: DSLStore;
 }
 
-export default function DropAnchor({coordinate}: IDropAnchorProps) {
+export default observer(({ store }: IDropAnchorProps) => {
   const style: CSSProperties = {
     position: 'fixed',
     zIndex: 99,
-    ...coordinate,
-    backgroundColor: '#f00',
+    ...store.anchor,
+    backgroundColor: '#f00'
   };
   return <div style={style} />;
-}
+});

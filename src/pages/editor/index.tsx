@@ -420,7 +420,6 @@ export default function Editor() {
             </DragOverlay>,
             document.body
           )}
-          {createPortal(<DropAnchor coordinate={dslStore.anchor} />, document.body)}
         </DndContext>
         <div className={styles.formPanel}>
           <FormPanel />
@@ -443,6 +442,7 @@ export default function Editor() {
           </Form.Item>
         </Form>
       </Modal>
+      <DropAnchor store={dslStore} />
     </div>
   );
 }
