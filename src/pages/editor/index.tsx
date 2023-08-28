@@ -119,9 +119,6 @@ export default function Editor() {
       hideAnchor();
     }
   }
-  function handleDraggingOver({ active, over }: DragOverEvent) {
-    // hideAnchor();
-  }
 
   function handleDraggingEnd({ active, over }: DragEndEvent) {
     // 这里插入组件
@@ -407,7 +404,6 @@ export default function Editor() {
           modifiers={[snapCenterToCursor]}
           onDragStart={handleDraggingStart}
           onDragMove={handleDraggingMove}
-          onDragOver={handleDraggingOver}
           onDragEnd={handleDraggingEnd}
           onDragCancel={handleDraggingCancel}
         >
