@@ -34,7 +34,7 @@ import { snapCenterToCursor } from '@dnd-kit/modifiers';
 import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
-import DSLStore from '../../service/dsl-store';
+import dslStore from '@/service/dsl-store';
 import { saveFile } from '@/util';
 import { toJS } from 'mobx';
 import { save } from '@tauri-apps/api/dialog';
@@ -69,8 +69,6 @@ const tabsItems = [
     children: <TemplatePanel />
   }
 ];
-
-const dslStore = new DSLStore();
 
 export default function Editor() {
   const [, setActiveId] = useState<string>('');

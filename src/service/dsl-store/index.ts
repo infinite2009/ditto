@@ -4,7 +4,7 @@ import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateId, typeOf } from '@/util';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 
-export default class DSLStore {
+class DSLStore {
   dsl: IPageSchema;
 
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
@@ -127,3 +127,5 @@ export default class DSLStore {
     return null;
   }
 }
+
+export default new DSLStore();

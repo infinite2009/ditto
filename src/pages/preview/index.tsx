@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import IPageSchema from '@/types/page.schema';
 import * as dsl from '@/mock/tab-case.json';
 import PageRenderer from '@/pages/components/page-renderer';
+import dslStore from '@/service/dsl-store';
 
 export default function Preview() {
   const [dslState, setDslState] = useState<IPageSchema>();
@@ -18,5 +19,5 @@ export default function Preview() {
     });
   }
 
-  return dslState ? <PageRenderer dsl={dslState} /> : <div>未获得有效的DSL</div>;
+  return dslState ? <PageRenderer dslStore={dslStore} /> : <div>未获得有效的DSL</div>;
 }
