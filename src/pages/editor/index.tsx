@@ -1,7 +1,18 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  CollisionDescriptor, CollisionDetection, defaultDropAnimationSideEffects, DndContext, DragOverEvent, DragOverlay,
-  DragStartEvent, DropAnimation, DroppableContainer, MeasuringStrategy, MouseSensor, useSensor, useSensors
+  CollisionDescriptor,
+  CollisionDetection,
+  defaultDropAnimationSideEffects,
+  DndContext,
+  DragOverEvent,
+  DragOverlay,
+  DragStartEvent,
+  DropAnimation,
+  DroppableContainer,
+  MeasuringStrategy,
+  MouseSensor,
+  useSensor,
+  useSensors
 } from '@dnd-kit/core';
 import { Form, Input, message, Modal, Tabs } from 'antd';
 
@@ -24,6 +35,10 @@ import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 import DSLStore from '../../service/dsl-store';
+import { saveFile } from '@/util';
+import { toJS } from 'mobx';
+import { save } from '@tauri-apps/api/dialog';
+import { path } from '@tauri-apps/api';
 
 const collisionOffset = 4;
 
@@ -65,6 +80,7 @@ export default function Editor() {
 
   const insertIndexRef = useRef<number>(0);
   const anchorCoordinatesRef = useRef<IAnchorCoordinates>();
+  const defaultPathRef = useRef<string>();
   const filePathRef = useRef<string>();
 
   const mouseSensor = useSensor(MouseSensor, {
@@ -80,6 +96,9 @@ export default function Editor() {
   useEffect(() => {
     fetchDSL().then(data => {
       dslStore.initDSL(data);
+    });
+    path.documentDir().then(p => {
+      defaultPathRef.current = p;
     });
   }, []);
 
@@ -373,8 +392,25 @@ export default function Editor() {
     setPageCreationVisible(false);
   }
 
-  function saveFile() {
-
+  async function saveOrCreateFile() {
+    // TODO: 这块逻辑需要重构，有问题
+    if (filePathRef.current) {
+      await saveFile(filePathRef.current, toJS(dslStore.dsl));
+    } else {
+      const selectedFile = await save({
+        title: '新建页面',
+        defaultPath: defaultPathRef.current,
+        filters: [
+          {
+            name: 'JSON文件',
+            extensions: ['json']
+          }
+        ],
+      });
+      if (selectedFile) {
+        await saveFile(selectedFile, toJS(dslStore.dsl));
+      }
+    }
   }
 
   function handleOnDo(e: PageActionEvent) {
@@ -391,7 +427,7 @@ export default function Editor() {
       case PageAction.preview:
         break;
       case PageAction.saveFile:
-        saveFile();
+        saveOrCreateFile();
         break;
     }
   }
@@ -431,7 +467,7 @@ export default function Editor() {
             </div>
             <div className={styles.canvas}>
               <div className={styles.canvasInner}>
-                <PageRenderer mode="edit" dslStore={dslStore}/>
+                <PageRenderer mode="edit" dslStore={dslStore} />
               </div>
             </div>
           </div>
