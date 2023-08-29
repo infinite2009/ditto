@@ -4,16 +4,23 @@ import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateId, typeOf } from '@/util';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 
-class DSLStore {
+export default class DSLStore {
+  private static instance = new DSLStore();
   dsl: IPageSchema;
-
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
 
-  constructor(dsl: IPageSchema | undefined = undefined) {
+  private constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
     if (dsl) {
       this.dsl = dsl;
     }
+  }
+
+  static createInstance(dsl: IPageSchema | undefined = undefined) {
+    if (dsl) {
+      DSLStore.instance.initDSL(dsl);
+    }
+    return DSLStore.instance;
   }
 
   initDSL(dsl: IPageSchema) {
@@ -113,7 +120,7 @@ class DSLStore {
   fetchComponentInDSL(id: string) {
     // TODO: 广度遍历
     let q: IComponentSchema[] = [this.dsl.child];
-    while(q.length) {
+    while (q.length) {
       const node = q.shift();
       if (node) {
         if (node.id === id) {
@@ -127,5 +134,3 @@ class DSLStore {
     return null;
   }
 }
-
-export default new DSLStore();

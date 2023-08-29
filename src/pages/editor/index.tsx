@@ -34,7 +34,7 @@ import { snapCenterToCursor } from '@dnd-kit/modifiers';
 import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
-import dslStore from '@/service/dsl-store';
+import DSLStore from '@/service/dsl-store';
 import { saveFile } from '@/util';
 import { toJS } from 'mobx';
 import { save } from '@tauri-apps/api/dialog';
@@ -90,6 +90,8 @@ export default function Editor() {
   });
 
   const sensors = useSensors(mouseSensor);
+
+  const dslStore = DSLStore.createInstance();
 
   useEffect(() => {
     fetchDSL().then(data => {
@@ -403,7 +405,7 @@ export default function Editor() {
             name: 'JSON文件',
             extensions: ['json']
           }
-        ],
+        ]
       });
       if (selectedFile) {
         await saveFile(selectedFile, toJS(dslStore.dsl));
