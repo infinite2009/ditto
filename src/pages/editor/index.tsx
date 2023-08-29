@@ -1,18 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  CollisionDescriptor,
-  CollisionDetection,
-  defaultDropAnimationSideEffects,
-  DndContext,
-  DragOverEvent,
-  DragOverlay,
-  DragStartEvent,
-  DropAnimation,
-  DroppableContainer,
-  MeasuringStrategy,
-  MouseSensor,
-  useSensor,
-  useSensors
+  CollisionDescriptor, CollisionDetection, defaultDropAnimationSideEffects, DndContext, DragOverEvent, DragOverlay,
+  DragStartEvent, DropAnimation, DroppableContainer, MeasuringStrategy, MouseSensor, useSensor, useSensors
 } from '@dnd-kit/core';
 import { Form, Input, message, Modal, Tabs } from 'antd';
 
@@ -76,6 +65,7 @@ export default function Editor() {
 
   const insertIndexRef = useRef<number>(0);
   const anchorCoordinatesRef = useRef<IAnchorCoordinates>();
+  const filePathRef = useRef<string>();
 
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
@@ -383,6 +373,10 @@ export default function Editor() {
     setPageCreationVisible(false);
   }
 
+  function saveFile() {
+
+  }
+
   function handleOnDo(e: PageActionEvent) {
     switch (e.type) {
       case PageAction.createPage:
@@ -395,6 +389,9 @@ export default function Editor() {
       case PageAction.exportCode:
         break;
       case PageAction.preview:
+        break;
+      case PageAction.saveFile:
+        saveFile();
         break;
     }
   }

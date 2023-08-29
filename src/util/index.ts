@@ -1,7 +1,9 @@
 import { nanoid } from 'nanoid';
+import { writeTextFile, BaseDirectory } from '@tauri-apps/api/fs';
 import componentConfig from '@/data/component-dict';
+import IPageSchema from '@/types/page.schema';
 
-export function toUpperCase(str: string): string  {
+export function toUpperCase(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
@@ -20,4 +22,13 @@ export function generateId() {
 
 export function fetchComponentConfig(name: string, dependency: string) {
   return componentConfig[dependency][name];
+}
+
+export async function saveFile(filePath: string, dsl: IPageSchema) {
+  if (filePath === undefined) {
+    // TODO: 创建一个新文件
+    await writeTextFile(filePath, JSON.stringify(dsl), { dir: BaseDirectory.Document } );
+  } else {
+    // TODO: 保存一个已有文件
+  }
 }
