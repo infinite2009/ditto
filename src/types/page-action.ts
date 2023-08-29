@@ -3,7 +3,8 @@ enum PageAction {
   undo,
   redo,
   preview,
-  exportCode
+  exportCode,
+  saveFile
 }
 
 export default PageAction;

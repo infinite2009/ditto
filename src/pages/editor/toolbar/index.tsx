@@ -53,10 +53,19 @@ export default function Toolbar({ onDo }: IToolbarProps) {
     }
   }
 
+  function handleSavingFile() {
+    if (onDo) {
+      onDo({
+        type: PageAction.saveFile
+      });
+    }
+  }
+
   return (
     <div className={styles.main}>
       <div>
         <Button type="primary" onClick={handleCreatingNewPage}><PlusOutlined />新建页面</Button>
+        <Button onClick={handleSavingFile}>保存页面</Button>
       </div>
       <div>
         <Button className={styles.btn} onClick={handleUndo}>撤销</Button>
