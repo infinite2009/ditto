@@ -4,25 +4,30 @@
     "beforeBuildCommand": "pnpm build",
     "devPath": "http://localhost:1420",
     "distDir": "../dist",
-    "withGlobalTauri": true
+    "withGlobalTauri": false
   },
   "package": {
-    "productName": "coding-man",
+    "productName": "ditto",
     "version": "0.0.0"
   },
   "tauri": {
     "allowlist": {
+      "all": false,
       "fs": {
         "all": true
       },
       "dialog": {
         "all": true
+      },
+      "shell": {
+        "all": false,
+        "open": true
       }
     },
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.ldy.dev",
+      "identifier": "com.ditto.dev",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -40,17 +45,10 @@
         "maximized": true,
         "fullscreen": false,
         "resizable": true,
-        "title": "coding-man",
-        "minWidth": 800,
-        "minHeight": 600,
+        "title": "Ditto",
         "width": 800,
         "height": 600
       }
     ]
-  },
-  "plugins": {
-    "shell": {
-      "open": true
-    }
   }
 }
