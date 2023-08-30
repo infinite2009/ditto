@@ -264,7 +264,7 @@ export default class ReactCodeGenerator {
           } = node as IComponentSchema;
 
           // 提取导入信息
-          if (dependency) {
+          if (dependency && dependency !== 'html') {
             const importInfoForComponent = this.extractImportInfo(dependency, importType, importRelativePath, name);
             if (importInfoForComponent.importPath && result.importInfo) {
               result.importInfo[importInfoForComponent.importPath] = result.importInfo[
