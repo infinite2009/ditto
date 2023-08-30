@@ -32,7 +32,7 @@ export function createAsyncTask(task: () => string) {
   return Promise.resolve(task).then(res => res());
 }
 
-export async function saveFile(filePath: string, dsl: IPageSchema) {
+export async function savePageDSLFile(filePath: string, dsl: IPageSchema) {
   const formattedContent = await createAsyncTask(() => prettier.format(JSON.stringify(dsl), {
     ...prettierConfig,
     parser: 'json',

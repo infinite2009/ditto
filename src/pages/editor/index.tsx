@@ -35,7 +35,7 @@ import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 import DSLStore from '@/service/dsl-store';
-import { saveFile } from '@/util';
+import { savePageDSLFile } from '@/util';
 import { toJS } from 'mobx';
 import { save } from '@tauri-apps/api/dialog';
 import { path } from '@tauri-apps/api';
@@ -395,7 +395,7 @@ export default function Editor() {
   async function saveOrCreateFile() {
     // TODO: 这块逻辑需要重构，有问题
     if (filePathRef.current) {
-      await saveFile(filePathRef.current, toJS(dslStore.dsl));
+      await savePageDSLFile(filePathRef.current, toJS(dslStore.dsl));
     } else {
       const selectedFile = await save({
         title: '新建页面',
@@ -408,7 +408,7 @@ export default function Editor() {
         ]
       });
       if (selectedFile) {
-        await saveFile(selectedFile, toJS(dslStore.dsl));
+        await savePageDSLFile(selectedFile, toJS(dslStore.dsl));
       }
     }
   }
