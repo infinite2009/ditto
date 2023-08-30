@@ -508,6 +508,7 @@ export default function Editor() {
         onCancel={closePageCreationModal}
         okText="确定"
         cancelText="取消"
+        maskClosable={false}
       >
         <Form form={form}>
           <Form.Item label="页面名称" name="name">
