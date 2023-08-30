@@ -28,7 +28,7 @@ export function fetchComponentConfig(name: string, dependency: string) {
   return componentConfig[dependency][name];
 }
 
-export function createAsyncTask(task: () => string) {
+export function createAsyncTask(task: (...args: any[]) => string) {
   return Promise.resolve(task).then(res => res());
 }
 
