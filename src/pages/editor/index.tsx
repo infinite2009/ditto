@@ -398,9 +398,10 @@ export default function Editor() {
     if (filePathRef.current) {
       await savePageDSLFile(filePathRef.current, toJS(dslStore.dsl));
     } else {
+      const defaultPath = await join(defaultPathRef.current as string, 'index.json');
       const selectedFile = await save({
         title: '新建页面',
-        defaultPath: defaultPathRef.current,
+        defaultPath,
         filters: [
           {
             name: 'JSON文件',
