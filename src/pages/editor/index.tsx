@@ -35,10 +35,11 @@ import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 import DSLStore from '@/service/dsl-store';
-import { savePageDSLFile } from '@/util';
+import { exportReactPageCodeFile, savePageDSLFile } from '@/util';
 import { toJS } from 'mobx';
 import { save } from '@tauri-apps/api/dialog';
 import { path } from '@tauri-apps/api';
+import { join } from '@tauri-apps/api/path';
 
 const collisionOffset = 4;
 
@@ -413,6 +414,23 @@ export default function Editor() {
     }
   }
 
+  async function handleExportingReactPageCodeFile() {
+    const defaultPath = await join(defaultPathRef.current as string, 'index.tsx');
+    const selectedFile = await save({
+      title: '导出代码',
+      defaultPath,
+      filters: [
+        {
+          name: 'tsx文件',
+          extensions: ['tsx']
+        }
+      ]
+    });
+    if (selectedFile) {
+      await exportReactPageCodeFile(selectedFile, toJS(dslStore.dsl));
+    }
+  }
+
   function handleOnDo(e: PageActionEvent) {
     switch (e.type) {
       case PageAction.createPage:
@@ -423,6 +441,7 @@ export default function Editor() {
       case PageAction.undo:
         break;
       case PageAction.exportCode:
+        handleExportingReactPageCodeFile();
         break;
       case PageAction.preview:
         break;
