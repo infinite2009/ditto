@@ -7,6 +7,7 @@ import IAnchorCoordinates from '@/types/anchor-coordinate';
 export default class DSLStore {
   private static instance = new DSLStore();
   dsl: IPageSchema;
+  componentStats: {[key: string]: number} = {};
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
 
   private constructor(dsl: IPageSchema | undefined = undefined) {
@@ -53,7 +54,12 @@ export default class DSLStore {
   }
 
   createComponent(name: string, dependency: string): IComponentSchema {
-    const componentId = generateId();
+    if (this.componentStats[name] === undefined) {
+      this.componentStats[name] = 0;
+    } else {
+      this.componentStats[name]++;
+    }
+    const componentId = `${name}${this.componentStats[name]}`;
     const componentConfig = fetchComponentConfig(name, dependency);
     const componentSchema: IComponentSchema = {
       id: componentId,
@@ -66,7 +72,7 @@ export default class DSLStore {
     const { propsConfig } = componentConfig;
     this.dsl.props[componentId] = {};
     const props = this.dsl.props[componentId];
-    Object.values(propsConfig).forEach(item => {
+    Object.values(propsConfig).filter(item => item.name !== 'children').forEach(item => {
       const { name, initialValue } = item;
       props[name] = {
         id: name,
