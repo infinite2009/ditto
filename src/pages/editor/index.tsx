@@ -40,6 +40,7 @@ import { toJS } from 'mobx';
 import { save } from '@tauri-apps/api/dialog';
 import { path } from '@tauri-apps/api';
 import { join } from '@tauri-apps/api/path';
+import ComponentFeature from '@/types/component-feature';
 
 const collisionOffset = 4;
 
@@ -214,6 +215,21 @@ export default function Editor() {
     return false;
   }
 
+  // 计算当前节点的深度
+  function calculateDepth(id: string, parentDict: { [key: string]: string}) {
+    let depth = 0;
+    let parentId = id;
+    while (parentId) {
+      if (parentDict[parentId]) {
+        depth++;
+        parentId = parentDict[parentId];
+      } else {
+        break;
+      }
+    }
+    return depth;
+  }
+
   function sortCollisionsDesc(
     { data: { value: a } }: CollisionDescriptor,
     { data: { value: b } }: CollisionDescriptor
@@ -250,7 +266,12 @@ export default function Editor() {
         const rect = droppableRects.get(id);
 
         // 既不是自身，也不是自己的后代节点
-        if (rect && active.id !== id && !isDescendant(id as string, active.id as string, parentDict)) {
+        if (
+          rect &&
+          active.id !== id &&
+          droppableContainer.data.current?.type !== ComponentFeature.solid &&
+          !isDescendant(id as string, active.id as string, parentDict)
+        ) {
           // 这里的 collisionRect 就是移动的矩形
           const intersectionType = calcIntersectionType(rect, collisionRect);
           if (intersectionType === 2) {
@@ -258,7 +279,7 @@ export default function Editor() {
               id,
               data: {
                 droppableContainer,
-                value: intersectionType,
+                value: calculateDepth(id as string, parentDict),
                 ...droppableContainer.data.current
               }
             });

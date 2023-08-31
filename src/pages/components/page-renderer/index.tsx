@@ -126,11 +126,14 @@ export default observer((props: IPageRendererProps) => {
         {childrenTemplate}
       </Component>
     );
-    let feature = ComponentFeature.solid;
+    let feature ;
     if (isSlot) {
       feature = ComponentFeature.slot;
     } else if (componentConfig?.isContainer) {
+      debugger;
       feature = ComponentFeature.container;
+    } else {
+      debugger;
     }
 
     const childId = children?.map(c => c.id) || [];

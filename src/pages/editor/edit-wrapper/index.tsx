@@ -11,14 +11,18 @@ export interface IEditorProps {
   type?: ComponentFeature;
 }
 
-export default function EditWrapper({ id, childrenId, children, direction = 'column', type = ComponentFeature.solid }: IEditorProps) {
+export default function EditWrapper({ id, childrenId, children, direction = 'column', type }: IEditorProps) {
   const { isOver, setNodeRef: setDroppableNodeRef } = useDroppable({
     id,
     data: {
       childrenId,
-      direction: direction || 'column'
+      direction: direction || 'column',
+      type: type || ComponentFeature.solid
     }
   });
+
+  console.log('editor type: ', type);
+
   const {
     attributes,
     setNodeRef: setDraggableNodeRef,
@@ -33,7 +37,8 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
 
   const style: CSSProperties = {
     opacity: isDragging ? 0.5 : 1,
-    outline: isOver ? '2px solid #7193f1' : undefined,
+    // outline: isOver ? '2px solid #7193f1' : undefined,
+    outline: '2px solid #00f',
     outlineOffset: isOver ? -2 : undefined,
     transition: 'border 0.5s ease-in-out',
     boxSizing: 'border-box',
@@ -50,7 +55,8 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
       style.backgroundColor = '#fa0';
       break;
     default:
-      setNodeRef = setDraggableNodeRef;
+      // 为了让 dnd-kit 可以测量这个元素的尺寸，需要设置为 droppable
+      setNodeRef = useCombinedRefs(setDroppableNodeRef, setDraggableNodeRef);
       style.backgroundColor = '#0ff';
       break;
   }

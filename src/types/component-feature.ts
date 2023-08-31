@@ -1,7 +1,7 @@
 enum ComponentFeature {
-  container = 0,
-  slot = 1,
-  solid = 2,
+  container = 'container',
+  slot = 'slot',
+  solid = 'solid',
 }
 
 export default ComponentFeature;
