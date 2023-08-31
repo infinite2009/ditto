@@ -619,7 +619,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
       },
       alignItems: {
         name: 'alignItems',
-        initialValue: 'stretch',
+        initialValue: 'flex-start',
         category: 'style'
       },
       justifyContent: {
