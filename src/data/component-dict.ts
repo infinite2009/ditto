@@ -708,51 +708,6 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
         category: 'style'
       },
     }
-  },
-  a: {
-    name: 'a',
-    dependency: 'html',
-    component: Link,
-    category: 'basic',
-    title: '超链接',
-    icon: CodeSandboxOutlined,
-    propsConfig: {
-      title: {
-        name: 'title',
-        initialValue: '默认链接标题',
-        category: 'basic',
-      },
-      link: {
-        name: 'link',
-        initialValue: '',
-        category: 'basic'
-      },
-      newTab: {
-        name: 'newTab',
-        initialValue: true,
-        category: 'basic'
-      },
-      fontSize: {
-        name: 'fontSize',
-        initialValue: 14,
-        category: 'style',
-      },
-      fontWeight: {
-        name: 'fontWeight',
-        initialValue: 500,
-        category: 'style',
-      },
-      lineHeight: {
-        name: 'lineHeight',
-        initialValue: 14,
-        category: 'style',
-      },
-      color: {
-        name: 'color',
-        initialValue: '#000',
-        category: 'style'
-      },
-    }
   }
 };
 
