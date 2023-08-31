@@ -20,9 +20,6 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
       type: type || ComponentFeature.solid
     }
   });
-
-  console.log('editor type: ', type);
-
   const {
     attributes,
     setNodeRef: setDraggableNodeRef,
@@ -37,8 +34,7 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
 
   const style: CSSProperties = {
     opacity: isDragging ? 0.5 : 1,
-    // outline: isOver ? '2px solid #7193f1' : undefined,
-    outline: '2px solid #00f',
+    outline: isOver ? '2px solid #7193f1' : undefined,
     outlineOffset: isOver ? -2 : undefined,
     transition: 'border 0.5s ease-in-out',
     boxSizing: 'border-box',
