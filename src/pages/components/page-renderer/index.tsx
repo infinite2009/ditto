@@ -130,10 +130,7 @@ export default observer((props: IPageRendererProps) => {
     if (isSlot) {
       feature = ComponentFeature.slot;
     } else if (componentConfig?.isContainer) {
-      debugger;
       feature = ComponentFeature.container;
-    } else {
-      debugger;
     }
 
     const childId = children?.map(c => c.id) || [];
