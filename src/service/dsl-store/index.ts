@@ -85,7 +85,7 @@ export default class DSLStore {
     const { propsConfig } = componentConfig;
     this.dsl.props[componentId] = {};
     const props = this.dsl.props[componentId];
-    Object.values(propsConfig).filter(item => item.name !== 'children').forEach(item => {
+    Object.values(propsConfig).forEach(item => {
       const { name, initialValue } = item;
       props[name] = {
         id: name,
