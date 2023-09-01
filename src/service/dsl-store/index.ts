@@ -111,7 +111,7 @@ export default class DSLStore {
     console.log('delete component works');
   }
 
-  moveComponent(targetId: string, sourceId: string) {
+  moveComponent(parentId: string, childId: string, insertIndex = undefined) {
     console.log('move component works');
   }
 
