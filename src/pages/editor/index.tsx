@@ -39,7 +39,7 @@ import { exportReactPageCodeFile, savePageDSLFile } from '@/util';
 import { toJS } from 'mobx';
 import { save } from '@tauri-apps/api/dialog';
 import { path } from '@tauri-apps/api';
-import { join } from '@tauri-apps/api/path';
+import { dirname, join } from '@tauri-apps/api/path';
 import ComponentFeature from '@/types/component-feature';
 
 const collisionOffset = 4;
@@ -415,28 +415,25 @@ export default function Editor() {
   }
 
   async function saveOrCreateFile() {
-    if (filePathRef.current) {
-      await savePageDSLFile(filePathRef.current, toJS(dslStore.dsl));
-    } else {
-      const defaultPath = await join(defaultPathRef.current as string, 'index.json');
-      const selectedFile = await save({
-        title: '新建页面',
-        defaultPath,
-        filters: [
-          {
-            name: 'JSON文件',
-            extensions: ['json']
-          }
-        ]
-      });
-      if (selectedFile) {
-        await savePageDSLFile(selectedFile, toJS(dslStore.dsl));
-      }
+    const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, 'index.json');
+    const selectedFile = await save({
+      title: '新建页面',
+      defaultPath,
+      filters: [
+        {
+          name: 'JSON文件',
+          extensions: ['json']
+        }
+      ]
+    });
+    if (selectedFile) {
+      filePathRef.current = await dirname(selectedFile);
+      await savePageDSLFile(selectedFile, toJS(dslStore.dsl));
     }
   }
 
   async function handleExportingReactPageCodeFile() {
-    const defaultPath = await join(defaultPathRef.current as string, 'index.tsx');
+    const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, 'index.tsx');
     const selectedFile = await save({
       title: '导出代码',
       defaultPath,
@@ -448,6 +445,7 @@ export default function Editor() {
       ]
     });
     if (selectedFile) {
+      filePathRef.current = await dirname(selectedFile);
       await exportReactPageCodeFile(selectedFile, toJS(dslStore.dsl));
     }
   }
