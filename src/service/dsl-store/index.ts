@@ -61,13 +61,26 @@ export default class DSLStore {
     }
     const componentId = `${name}${this.componentStats[name]}`;
     const componentConfig = fetchComponentConfig(name, dependency);
+    let children;
+    if (componentConfig.isContainer) {
+      children = [];
+    } else if(componentConfig.propsConfig.children) {
+      const { initialValue } = componentConfig.propsConfig.children;
+      const typeOfChildren = typeOf(initialValue);
+      if (typeOfChildren === 'array') {
+        children = [this.createEmptyContainer()];
+      } else {
+        children = initialValue;
+      }
+    }
+
     const componentSchema: IComponentSchema = {
       id: componentId,
       schemaType: 'component',
       name: componentConfig.name,
       dependency: componentConfig.dependency,
       propsRefs: [],
-      children: componentConfig.propsConfig.children ? [] : undefined
+      children
     };
     const { propsConfig } = componentConfig;
     this.dsl.props[componentId] = {};
@@ -98,9 +111,9 @@ export default class DSLStore {
       // 如果没有 children，初始化一个，如果需要初始化，说明初始化父节点的代码有 bug
       parentNode.children = parentNode.children || [];
       if (insertIndex === undefined) {
-        parentNode.children.push(newComponentNode);
+        (parentNode.children as IComponentSchema[]).push(newComponentNode);
       } else {
-        parentNode.children.splice(insertIndex, 0, newComponentNode);
+        (parentNode.children as IComponentSchema[]).splice(insertIndex, 0, newComponentNode);
       }
     } else {
       throw new Error(`未找到有效的父节点：${parentId}`);
@@ -124,7 +137,6 @@ export default class DSLStore {
   }
 
   fetchComponentInDSL(id: string) {
-    // TODO: 广度遍历
     let q: IComponentSchema[] = [this.dsl.child];
     while (q.length) {
       const node = q.shift();
@@ -132,8 +144,8 @@ export default class DSLStore {
         if (node.id === id) {
           return node;
         }
-        if (node.children?.length) {
-          q = q.concat(node.children);
+        if (typeOf(node.children) === 'array' && node.children?.length) {
+          q = q.concat(node.children as IComponentSchema[]);
         }
       }
     }

@@ -113,7 +113,14 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     category: 'basic',
     title: '按钮',
     icon: CodeSandboxOutlined,
-    propsConfig: { type: { name: 'type', category: 'basic', initialValue: 'primary' } }
+    propsConfig: {
+      type: { name: 'type', category: 'basic', initialValue: 'primary' },
+      children: {
+        name: 'children',
+        initialValue: '按钮',
+        category: 'children'
+      }
+    }
   },
   Divider: {
     name: 'Divider',
@@ -671,12 +678,12 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'backgroundColor',
         initialValue: 'transparent',
         category: 'style',
-      },
-      children: {
-        name: 'children',
-        initialValue: [],
-        category: 'children'
       }
+    },
+    children: {
+      name: 'children',
+      initialValue: [],
+      category: 'children'
     }
   },
   p: {
@@ -707,6 +714,11 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
         initialValue: '#000',
         category: 'style'
       },
+      children: {
+        name: 'children',
+        initialValue: '默认文字',
+        category: 'basic'
+      }
     }
   }
 };

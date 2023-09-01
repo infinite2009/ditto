@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import IComponentSchema from '@/types/component.schema';
 
 export default interface IComponentConfig {
   name: string;
@@ -15,5 +16,11 @@ export default interface IComponentConfig {
       category: 'basic' | 'style' | 'interaction' | 'children';
       disabled?: boolean;
     };
+  };
+  children?: {
+    name: string;
+    initialValue: IComponentSchema[] | string;
+    category: 'basic' | 'style' | 'interaction' | 'children';
+    disabled?: boolean;
   };
 }

@@ -23,5 +23,5 @@ export default interface IComponentSchema extends ISchema {
   name: string;
   // 组件属性
   propsRefs: PropsId[];
-  children?: (IComponentSchema)[];
+  children?: IComponentSchema[] | string;
 }

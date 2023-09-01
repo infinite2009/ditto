@@ -118,8 +118,13 @@ export default observer((props: IPageRendererProps) => {
     }
     const componentProps = props[id] ? extractProps(props[id], propsRefs) : {};
     let childrenTemplate = null;
-    if (children.length) {
-      childrenTemplate = children.map(c => recursivelyRenderTemplate(c, !(componentConfig?.isContainer)));
+
+    const typeOfChildren = typeOf(children);
+
+    if (typeOfChildren === 'array' && children.length) {
+      childrenTemplate = (children as IComponentSchema[]).map(c => recursivelyRenderTemplate(c, !(componentConfig?.isContainer)));
+    } else if (typeOfChildren === 'string') {
+      childrenTemplate = children;
     }
 
     const tpl = (
@@ -136,7 +141,7 @@ export default observer((props: IPageRendererProps) => {
       feature = ComponentFeature.solid;
     }
 
-    const childId = children?.map(c => c.id) || [];
+    const childId = typeOfChildren === 'array' ? ((children as IComponentSchema[])?.map(c => c.id) || []) : undefined;
     return mode === 'edit' ? <EditWrapper key={id} id={id} childrenId={childId} type={feature}>{tpl}</EditWrapper> : tpl;
   }
 
