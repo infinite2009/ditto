@@ -50,7 +50,7 @@ export default class DSLStore {
         propsRefs: []
       }
     };
-    this.dsl.child = this.createComponent('div', 'html');
+    this.dsl.child = this.createEmptyContainer();
   }
 
   createComponent(name: string, dependency: string): IComponentSchema {
@@ -138,5 +138,9 @@ export default class DSLStore {
       }
     }
     return null;
+  }
+
+  createEmptyContainer() {
+    return this.createComponent('div', 'html');
   }
 }
