@@ -7,6 +7,7 @@ import EditWrapper from '@/pages/editor/edit-wrapper';
 import ComponentFeature from '@/types/component-feature';
 import DSLStore from '../../../service/dsl-store';
 import { observer } from 'mobx-react-lite';
+import IComponentConfig from '@/types/component-config';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -108,7 +109,7 @@ export default observer((props: IPageRendererProps) => {
     const { props = {} } = dslStore.dsl;
     const { callingName, name, dependency, children = [], propsRefs = [], id } = node as IComponentSchema;
     let Component: string | FC<PropsWithChildren<any>> = callingName || name;
-    let componentConfig;
+    let componentConfig: IComponentConfig | undefined;
     if (dependency) {
       componentConfig = fetchComponentConfig(callingName || name, dependency);
     }
@@ -118,7 +119,7 @@ export default observer((props: IPageRendererProps) => {
     const componentProps = props[id] ? extractProps(props[id], propsRefs) : {};
     let childrenTemplate = null;
     if (children.length) {
-      childrenTemplate = children.map(c => recursivelyRenderTemplate(c));
+      childrenTemplate = children.map(c => recursivelyRenderTemplate(c, !(componentConfig?.isContainer)));
     }
 
     const tpl = (
@@ -126,11 +127,13 @@ export default observer((props: IPageRendererProps) => {
         {childrenTemplate}
       </Component>
     );
-    let feature ;
+    let feature;
     if (isSlot) {
       feature = ComponentFeature.slot;
     } else if (componentConfig?.isContainer) {
       feature = ComponentFeature.container;
+    } else {
+      feature = ComponentFeature.solid;
     }
 
     const childId = children?.map(c => c.id) || [];
