@@ -147,10 +147,11 @@ export default class DSLStore {
         } else {
           (parentNode.children as IComponentSchema[]).splice(insertIndex, 0, childComponent);
         }
+        this.deleteComponent(childId);
       }
-      this.deleteComponent(childId);
+    } else {
+      throw new Error(`未找到有效的父节点：${parentId}`);
     }
-    throw new Error(`未找到有效的父节点：${parentId}`);
   }
 
   updateComponentProps(id: string, propsPartial: { [key: string]: any }) {
