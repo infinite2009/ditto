@@ -594,8 +594,8 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
     title: '智能容器',
     icon: CodeSandboxOutlined,
     propsConfig: {
-      direction: {
-        name: 'direction',
+      flexDirection: {
+        name: 'flexDirection',
         initialValue: 'column',
         category: 'style'
       },
@@ -636,22 +636,22 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
       },
       marginTop: {
         name: 'marginTop',
-        initialValue: 0,
+        initialValue: 10,
         category: 'style'
       },
       marginRight: {
         name: 'marginRight',
-        initialValue: 0,
+        initialValue: 10,
         category: 'style'
       },
       marginBottom: {
         name: 'marginBottom',
-        initialValue: 0,
+        initialValue: 10,
         category: 'style'
       },
       marginLeft: {
         name: 'marginLeft',
-        initialValue: 0,
+        initialValue: 10,
         category: 'style'
       },
       paddingTop: {
@@ -706,7 +706,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
       },
       lineHeight: {
         name: 'lineHeight',
-        initialValue: 14,
+        initialValue: 30,
         category: 'style',
       },
       color: {

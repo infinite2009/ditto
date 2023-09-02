@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import style from './index.module.less';
 
 export interface IContainerProps {
-  direction: CSSProperties['direction'];
+  flexDirection: CSSProperties['flexDirection'];
   flexBasis: number;
   height: number;
   width: number;
@@ -26,7 +26,7 @@ export interface IContainerProps {
 
 export default function Container({
   children,
-  direction,
+  flexDirection,
   flexBasis,
   height,
   width,
@@ -46,7 +46,8 @@ export default function Container({
 }: IContainerProps) {
   const inlineStyle: CSSProperties = useMemo(() => {
     return {
-      direction,
+      display: 'flex',
+      flexDirection,
       flexBasis,
       height,
       width,
@@ -65,7 +66,7 @@ export default function Container({
       backgroundColor: children ? backgroundColor : '#eee'
     };
   }, [
-    direction,
+    flexDirection,
     flexBasis,
     height,
     width,
@@ -86,8 +87,8 @@ export default function Container({
 
   const classes = useMemo(() => {
     return classNames({
-      [style.rowWithoutChildren]: (direction as string) === 'column',
-      [style.columnWithoutChildren]: (direction as string) === 'row'
+      [style.rowWithoutChildren]: (flexDirection as string) === 'column',
+      [style.columnWithoutChildren]: (flexDirection as string) === 'row'
     });
   }, [children]);
 
