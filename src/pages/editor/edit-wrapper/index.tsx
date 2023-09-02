@@ -8,16 +8,17 @@ export interface IEditorProps {
   childrenId?: string[];
   children: React.ReactNode;
   direction?: 'row' | 'column';
-  type?: ComponentFeature;
+  feature?: ComponentFeature;
 }
 
-export default function EditWrapper({ id, childrenId, children, direction = 'column', type }: IEditorProps) {
+export default function EditWrapper({ id, childrenId, children, direction = 'column', feature }: IEditorProps) {
   const { isOver, setNodeRef: setDroppableNodeRef } = useDroppable({
     id,
     data: {
       childrenId,
       direction: direction || 'column',
-      type: type || ComponentFeature.solid
+      feature: feature || ComponentFeature.solid,
+      dndType: 'move'
     }
   });
   const {
@@ -73,7 +74,7 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
 
   const style: CSSProperties = useMemo(() => {
     let backgroundColor;
-    switch (type) {
+    switch (feature) {
       case ComponentFeature.slot:
         backgroundColor = '#4f0';
         break;
@@ -92,10 +93,10 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
       boxSizing: 'border-box',
       backgroundColor
     };
-  }, [type]);
+  }, [feature]);
 
   let setNodeRef: React.LegacyRef<HTMLDivElement> | undefined;
-  switch (type) {
+  switch (feature) {
     case ComponentFeature.slot:
       setNodeRef = setDroppableNodeRef;
       break;

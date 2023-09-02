@@ -12,7 +12,7 @@ export default function DraggableComponentItem({ name, title, dependency, childr
   const { attributes, isDragging, listeners, setNodeRef } = useDraggable({
     id: name,
     data: {
-      type: 'insert',
+      dndType: 'insert',
       name,
       title,
       dependency

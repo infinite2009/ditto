@@ -127,27 +127,41 @@ export default class DSLStore {
         if (typeOf(node.children) === 'array' && node.children?.length) {
           const index = (node.children as IComponentSchema[]).findIndex(item => item.id === id);
           if (index > -1) {
-            (node.children as IComponentSchema[]).splice(index, 1);
-            return;
+            return (node.children as IComponentSchema[]).splice(index, 1)[0];
           }
           q = q.concat(node.children as IComponentSchema[]);
         }
       }
     }
-    return;
+    return null;
   }
 
   moveComponent(parentId: string, childId: string, insertIndex = -1) {
     const parentNode = this.fetchComponentInDSL(parentId);
     if (parentNode) {
-      const childComponent = this.fetchComponentInDSL(childId);
-      if (childComponent) {
-        if (insertIndex === -1) {
-          (parentNode.children as IComponentSchema[]).push(childComponent);
+      if (typeOf(parentNode.children) !== 'array') {
+        return;
+      }
+      const children = parentNode.children as IComponentSchema[];
+      const childIndex = children.length ? children.findIndex(item => item.id === childId) : -1;
+      if (childIndex > -1) {
+        const [child] = children.splice(childIndex, 1);
+        if (insertIndex > childIndex) {
+          // 向后移动
+          children.splice(insertIndex - 1, 0, child);
         } else {
-          (parentNode.children as IComponentSchema[]).splice(insertIndex, 0, childComponent);
+          // 向前移动
+          children.splice(insertIndex, 0, child);
         }
-        this.deleteComponent(childId);
+      } else {
+        const childComponent = this.deleteComponent(childId);
+        if (childComponent) {
+          if (insertIndex === -1) {
+            (parentNode.children as IComponentSchema[]).push(childComponent);
+          } else {
+            (parentNode.children as IComponentSchema[]).splice(insertIndex, 0, childComponent);
+          }
+        }
       }
     } else {
       throw new Error(`未找到有效的父节点：${parentId}`);

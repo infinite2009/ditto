@@ -137,15 +137,15 @@ export default function Editor() {
 
   function handleDraggingEnd({ active, over }: DragEndEvent) {
     if (over && active.data.current) {
-      const { type, name, dependency } = active.data.current;
-      if (type === 'insert') {
+      const { dndType, name, dependency } = active.data.current;
+      if (dndType === 'insert') {
         try {
           dslStore.insertComponent(over.id as string, name, dependency, insertIndexRef.current);
         } catch (e) {
           message.error((e as any).toString()).then();
         }
       } else {
-        // TODO: 移动节点
+        dslStore.moveComponent(over.id as string, active.id as string, insertIndexRef.current);
       }
     }
     resetInsertIndexRef();
@@ -216,7 +216,7 @@ export default function Editor() {
   }
 
   // 计算当前节点的深度
-  function calculateDepth(id: string, parentDict: { [key: string]: string}) {
+  function calculateDepth(id: string, parentDict: { [key: string]: string }) {
     let depth = 0;
     let parentId = id;
     while (parentId) {
@@ -269,7 +269,7 @@ export default function Editor() {
         if (
           rect &&
           active.id !== id &&
-          droppableContainer.data.current?.type !== ComponentFeature.solid &&
+          droppableContainer.data.current?.feature !== ComponentFeature.solid &&
           !isDescendant(id as string, active.id as string, parentDict)
         ) {
           // 这里的 collisionRect 就是移动的矩形

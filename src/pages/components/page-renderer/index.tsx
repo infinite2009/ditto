@@ -122,7 +122,9 @@ export default observer((props: IPageRendererProps) => {
     const typeOfChildren = typeOf(children);
 
     if (typeOfChildren === 'array' && children.length) {
-      childrenTemplate = (children as IComponentSchema[]).map(c => recursivelyRenderTemplate(c, !(componentConfig?.isContainer)));
+      childrenTemplate = (children as IComponentSchema[]).map(c =>
+        recursivelyRenderTemplate(c, !componentConfig?.isContainer)
+      );
     } else if (typeOfChildren === 'string') {
       childrenTemplate = children;
     }
@@ -141,8 +143,14 @@ export default observer((props: IPageRendererProps) => {
       feature = ComponentFeature.solid;
     }
 
-    const childId = typeOfChildren === 'array' ? ((children as IComponentSchema[])?.map(c => c.id) || []) : undefined;
-    return mode === 'edit' ? <EditWrapper key={id} id={id} childrenId={childId} type={feature}>{tpl}</EditWrapper> : tpl;
+    const childId = typeOfChildren === 'array' ? (children as IComponentSchema[])?.map(c => c.id) || [] : undefined;
+    return mode === 'edit' ? (
+      <EditWrapper key={id} id={id} childrenId={childId} feature={feature}>
+        {tpl}
+      </EditWrapper>
+    ) : (
+      tpl
+    );
   }
 
   return dslStore.dsl ? <div>{recursivelyRenderTemplate(dslStore.dsl.child, true)}</div> : <div>未获得有效的DSL</div>;
