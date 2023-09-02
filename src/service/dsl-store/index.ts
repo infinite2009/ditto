@@ -103,14 +103,14 @@ export default class DSLStore {
   /**
    * 插入一个新的组件
    */
-  insertComponent(parentId: string, name: string, dependency: string, insertIndex = undefined) {
+  insertComponent(parentId: string, name: string, dependency: string, insertIndex = -1) {
     console.log('insert component works');
     const newComponentNode = this.createComponent(name, dependency);
     const parentNode = this.fetchComponentInDSL(parentId);
     if (parentNode) {
       // 如果没有 children，初始化一个，如果需要初始化，说明初始化父节点的代码有 bug
       parentNode.children = parentNode.children || [];
-      if (insertIndex === undefined) {
+      if (insertIndex === -1) {
         (parentNode.children as IComponentSchema[]).push(newComponentNode);
       } else {
         (parentNode.children as IComponentSchema[]).splice(insertIndex, 0, newComponentNode);

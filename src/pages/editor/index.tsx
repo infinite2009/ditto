@@ -78,7 +78,7 @@ export default function Editor() {
 
   const [form] = useForm();
 
-  const insertIndexRef = useRef<number>(0);
+  const insertIndexRef = useRef<number>(-1);
   const anchorCoordinatesRef = useRef<IAnchorCoordinates>();
   const defaultPathRef = useRef<string>();
   const filePathRef = useRef<string>();
@@ -140,7 +140,7 @@ export default function Editor() {
       const { type, name, dependency } = active.data.current;
       if (type === 'insert') {
         try {
-          dslStore.insertComponent(over.id as string, name, dependency);
+          dslStore.insertComponent(over.id as string, name, dependency, insertIndexRef.current);
         } catch (e) {
           message.error((e as any).toString()).then();
         }
