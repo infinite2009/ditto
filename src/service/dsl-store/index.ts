@@ -7,7 +7,7 @@ import IAnchorCoordinates from '@/types/anchor-coordinate';
 export default class DSLStore {
   private static instance = new DSLStore();
   dsl: IPageSchema;
-  componentStats: {[key: string]: number} = {};
+  componentStats: { [key: string]: number } = {};
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
 
   private constructor(dsl: IPageSchema | undefined = undefined) {
@@ -64,7 +64,7 @@ export default class DSLStore {
     let children;
     if (componentConfig.isContainer) {
       children = [];
-    } else if(componentConfig.propsConfig.children) {
+    } else if (componentConfig.propsConfig.children) {
       const { initialValue } = componentConfig.propsConfig.children;
       const typeOfChildren = typeOf(initialValue);
       if (typeOfChildren === 'array') {
@@ -120,11 +120,37 @@ export default class DSLStore {
   }
 
   deleteComponent(id: string) {
-    console.log('delete component works');
+    let q: IComponentSchema[] = [this.dsl.child];
+    while (q.length) {
+      const node = q.shift();
+      if (node) {
+        if (typeOf(node.children) === 'array' && node.children?.length) {
+          const index = (node.children as IComponentSchema[]).findIndex(item => item.id === id);
+          if (index > -1) {
+            (node.children as IComponentSchema[]).splice(index, 1);
+            return;
+          }
+          q = q.concat(node.children as IComponentSchema[]);
+        }
+      }
+    }
+    return;
   }
 
-  moveComponent(parentId: string, childId: string, insertIndex = undefined) {
-    console.log('move component works');
+  moveComponent(parentId: string, childId: string, insertIndex = -1) {
+    const parentNode = this.fetchComponentInDSL(parentId);
+    if (parentNode) {
+      const childComponent = this.fetchComponentInDSL(childId);
+      if (childComponent) {
+        if (insertIndex === -1) {
+          (parentNode.children as IComponentSchema[]).push(childComponent);
+        } else {
+          (parentNode.children as IComponentSchema[]).splice(insertIndex, 0, childComponent);
+        }
+      }
+      this.deleteComponent(childId);
+    }
+    throw new Error(`未找到有效的父节点：${parentId}`);
   }
 
   updateComponentProps(id: string, propsPartial: { [key: string]: any }) {
