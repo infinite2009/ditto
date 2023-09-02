@@ -12,8 +12,6 @@ export interface IEditorProps {
 }
 
 export default function EditWrapper({ id, childrenId, children, direction = 'column', type }: IEditorProps) {
-  const [stylePartial, setStylePartial] = useState<CSSProperties>({});
-  const displayProcessed = useRef<boolean>(false);
   const { isOver, setNodeRef: setDroppableNodeRef } = useDroppable({
     id,
     data: {
@@ -44,37 +42,32 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
   }, []);
 
   function processBFC(targetElement: HTMLElement, childElement: HTMLElement) {
-    if (displayProcessed.current) {
-      return;
-    } else {
-      displayProcessed.current = true;
-      const display = childElement.style.display;
-      const width = childElement.style.width;
-      const flexBasis = childElement.style.flexBasis;
-      const floatReg = /^-?\d+(\.\d+)?$/;
-      switch (display) {
-        case 'block':
-          // 如果有具体宽度
-          if (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && floatReg.test(width)) {
-            targetElement.style.display = 'inline-block';
-          } else {
-            targetElement.style.display = 'block';
-          }
-          break;
-        case 'flex':
-          if (
-            (flexBasis.indexOf('px') !== -1 && flexBasis.indexOf('%') !== -1 && floatReg.test(flexBasis)) ||
-            (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && floatReg.test(width))
-          ) {
-            targetElement.style.display = 'inline-block';
-          } else {
-            targetElement.style.display = 'block';
-          }
-          break;
-        default:
-          targetElement.style.display = 'inline';
-          break;
-      }
+    const display = childElement.style.display;
+    const width = childElement.style.width;
+    const flexBasis = childElement.style.flexBasis;
+    const floatReg = /^-?\d+(\.\d+)?$/;
+    switch (display) {
+      case 'block':
+        // 如果有具体宽度
+        if (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && floatReg.test(width)) {
+          targetElement.style.display = 'inline-block';
+        } else {
+          targetElement.style.display = 'block';
+        }
+        break;
+      case 'flex':
+        if (
+          (flexBasis.indexOf('px') !== -1 && flexBasis.indexOf('%') !== -1 && floatReg.test(flexBasis)) ||
+          (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && floatReg.test(width))
+        ) {
+          targetElement.style.display = 'inline-block';
+        } else {
+          targetElement.style.display = 'block';
+        }
+        break;
+      default:
+        targetElement.style.display = 'inline';
+        break;
     }
   }
 
@@ -97,10 +90,9 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
       outlineOffset: isOver ? -2 : undefined,
       transition: 'border 0.5s ease-in-out',
       boxSizing: 'border-box',
-      backgroundColor,
-      ...stylePartial
+      backgroundColor
     };
-  }, [type, stylePartial]);
+  }, [type]);
 
   let setNodeRef: React.LegacyRef<HTMLDivElement> | undefined;
   switch (type) {
