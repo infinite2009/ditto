@@ -82,7 +82,8 @@ export default function Container({
     paddingRight,
     paddingBottom,
     paddingLeft,
-    backgroundColor
+    backgroundColor,
+    children
   ]);
 
   const classes = useMemo(() => {
