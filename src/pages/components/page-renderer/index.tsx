@@ -36,6 +36,7 @@ export default observer((props: IPageRendererProps) => {
     const { templateKeyPathsReg, name, valueType, value, valueSource } = propsSchema;
     // 未防止 dsl props 部分被修改，导致渲染出问题，这里选择深拷贝
     const cp = cloneDeep(value);
+    // 使用 wrapper 的原因是要能够拿到 cp 的引用，cp 可能会被完全替换为一个新对象，而 convertTemplateInfo 不能反悔新对象。
     const wrapper = { cp };
     if (valueSource === 'editorInput') {
       if (templateKeyPathsReg?.length) {
