@@ -317,8 +317,8 @@ export default class ReactCodeGenerator {
               }
             }
             // 初始化子节点
-            if (children) {
-              pNode.children = children.map(() => {
+            if (children && typeOf(children) === 'array') {
+              pNode.children = (children as IComponentSchema[]).map(() => {
                 return {
                   componentName: '',
                   propsStrArr: [],
