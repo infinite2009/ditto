@@ -708,7 +708,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'alignItems',
         valueSource: 'editorInput',
         valueType: 'string',
-        value: 'flex-start',
+        value: 'stretch',
         category: 'style'
       },
       justifyContent: {
