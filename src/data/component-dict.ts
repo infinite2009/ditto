@@ -646,7 +646,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
     isContainer: true,
     component: Container,
     category: 'basic',
-    title: '智能容器',
+    title: '列容器',
     icon: CodeSandboxOutlined,
     propsConfig: {
       style: {
@@ -684,7 +684,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
     isContainer: true,
     component: Container,
     category: 'basic',
-    title: '智能容器',
+    title: '行容器',
     icon: CodeSandboxOutlined,
     propsConfig: {
       style: {
