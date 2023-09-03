@@ -84,6 +84,13 @@ export default class DSLStore {
       propsRefs: [],
       children
     };
+    if (componentConfig.importName) {
+      componentSchema.importName;
+    }
+    if (componentConfig.callingName) {
+      componentSchema.callingName;
+    }
+
     const { propsConfig } = componentConfig;
     this.dsl.props[componentId] = {};
     const props = this.dsl.props[componentId];
