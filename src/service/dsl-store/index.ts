@@ -79,7 +79,7 @@ export default class DSLStore {
     const componentSchema: IComponentSchema = {
       id: componentId,
       schemaType: 'component',
-      name: componentConfig.name,
+      name: this.calculateComponentName(componentConfig),
       dependency: componentConfig.dependency,
       propsRefs: [],
       children

@@ -8,7 +8,11 @@ export interface IPropsConfigItem extends IPropsSchema {
 }
 
 export default interface IComponentConfig {
-  name: string;
+  configName: string;
+  // 此等优先级
+  importName?: string;
+  // 最高优先级
+  callingName?: string;
   component: FC<any> | string;
   dependency: string;
   isContainer?: boolean;

@@ -59,7 +59,7 @@ import Container from '@/components/container';
 
 const antdComponentConfig: { [key: string]: IComponentConfig } = {
   Row: {
-    name: 'Row',
+    configName: 'Row',
     dependency: 'antd',
     isContainer: true,
     category: 'basic',
@@ -79,7 +79,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     }
   },
   Col: {
-    name: 'Col',
+    configName: 'Col',
     dependency: 'antd',
     isContainer: true,
     category: 'basic',
@@ -126,7 +126,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     }
   },
   Button: {
-    name: 'Button',
+    configName: 'Button',
     dependency: 'antd',
     component: Button,
     category: 'basic',
@@ -150,7 +150,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     }
   },
   Divider: {
-    name: 'Divider',
+    configName: 'Divider',
     dependency: 'antd',
     component: Divider,
     category: 'basic',
@@ -159,7 +159,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Space: {
-    name: 'Space',
+    configName: 'Space',
     dependency: 'antd',
     component: Space,
     category: 'basic',
@@ -168,7 +168,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Anchor: {
-    name: 'Anchor',
+    configName: 'Anchor',
     dependency: 'antd',
     component: Anchor,
     category: 'basic',
@@ -177,7 +177,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Breadcrumb: {
-    name: 'Breadcrumb',
+    configName: 'Breadcrumb',
     dependency: 'antd',
     component: Breadcrumb,
     category: 'basic',
@@ -186,7 +186,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Dropdown: {
-    name: 'Dropdown',
+    configName: 'Dropdown',
     dependency: 'antd',
     component: Dropdown,
     category: 'basic',
@@ -195,7 +195,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Menu: {
-    name: 'Menu',
+    configName: 'Menu',
     dependency: 'antd',
     component: Menu,
     category: 'basic',
@@ -204,7 +204,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Pagination: {
-    name: 'Pagination',
+    configName: 'Pagination',
     dependency: 'antd',
     component: Pagination,
     category: 'basic',
@@ -213,7 +213,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Steps: {
-    name: 'Steps',
+    configName: 'Steps',
     dependency: 'antd',
     component: Steps,
     category: 'basic',
@@ -222,7 +222,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Cascader: {
-    name: 'Cascader',
+    configName: 'Cascader',
     dependency: 'antd',
     component: Cascader,
     category: 'basic',
@@ -231,7 +231,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Checkbox: {
-    name: 'Checkbox',
+    configName: 'Checkbox',
     dependency: 'antd',
     component: Checkbox,
     category: 'basic',
@@ -240,7 +240,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   ColorPicker: {
-    name: 'ColorPicker',
+    configName: 'ColorPicker',
     dependency: 'antd',
     component: ColorPicker,
     category: 'basic',
@@ -249,7 +249,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   DatePicker: {
-    name: 'DatePicker',
+    configName: 'DatePicker',
     dependency: 'antd',
     component: DatePicker as unknown as FC,
     category: 'basic',
@@ -258,7 +258,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Form: {
-    name: 'Form',
+    configName: 'Form',
     component: Form,
     category: 'basic',
     title: '表单',
@@ -267,7 +267,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   'Input.Search': {
-    name: 'Input.Search',
+    configName: 'Input',
+    callingName: 'Input.Search',
     dependency: 'antd',
     component: Input.Search,
     category: 'basic',
@@ -276,7 +277,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   'Input.TextArea': {
-    name: 'Input.TextArea',
+    configName: 'Input.TextArea',
     dependency: 'antd',
     component: Input.TextArea,
     category: 'basic',
@@ -285,7 +286,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   InputNumber: {
-    name: 'InputNumber',
+    configName: 'InputNumber',
     dependency: 'antd',
     component: InputNumber,
     category: 'basic',
@@ -294,7 +295,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Mentions: {
-    name: 'Mentions',
+    configName: 'Mentions',
     dependency: 'antd',
     component: Mentions,
     category: 'basic',
@@ -303,7 +304,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Radio: {
-    name: 'Radio',
+    configName: 'Radio',
     dependency: 'antd',
     component: Radio,
     category: 'basic',
@@ -312,7 +313,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Rate: {
-    name: 'Rate',
+    configName: 'Rate',
     component: Rate,
     category: 'basic',
     title: '评分',
@@ -321,7 +322,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Select: {
-    name: 'Select',
+    configName: 'Select',
     dependency: 'antd',
     component: Select,
     category: 'basic',
@@ -330,7 +331,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Slider: {
-    name: 'Slider',
+    configName: 'Slider',
     dependency: 'antd',
     component: Slider,
     category: 'basic',
@@ -339,7 +340,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Switch: {
-    name: 'Switch',
+    configName: 'Switch',
     dependency: 'antd',
     component: Switch,
     category: 'basic',
@@ -348,7 +349,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   TimePicker: {
-    name: 'TimePicker',
+    configName: 'TimePicker',
     dependency: 'antd',
     component: TimePicker,
     category: 'basic',
@@ -357,7 +358,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Transfer: {
-    name: 'Transfer',
+    configName: 'Transfer',
     dependency: 'antd',
     component: Transfer,
     category: 'basic',
@@ -366,7 +367,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   TreeSelect: {
-    name: 'TreeSelect',
+    configName: 'TreeSelect',
     dependency: 'antd',
     component: TreeSelect,
     category: 'basic',
@@ -375,7 +376,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Upload: {
-    name: 'Upload',
+    configName: 'Upload',
     dependency: 'antd',
     component: Upload,
     category: 'basic',
@@ -384,7 +385,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Avatar: {
-    name: 'Avatar',
+    configName: 'Avatar',
     dependency: 'antd',
     component: Avatar,
     category: 'basic',
@@ -394,7 +395,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   },
   // TODO:
   Badge: {
-    name: 'Badge',
+    configName: 'Badge',
     dependency: 'antd',
     component: Badge,
     category: 'basic',
@@ -403,7 +404,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Calendar: {
-    name: 'Calendar',
+    configName: 'Calendar',
     dependency: 'antd',
     component: Calendar,
     category: 'basic',
@@ -412,7 +413,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Card: {
-    name: 'Card',
+    configName: 'Card',
     component: Card,
     category: 'basic',
     title: '卡片',
@@ -421,7 +422,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Carousel: {
-    name: 'Carousel',
+    configName: 'Carousel',
     dependency: 'antd',
     component: Carousel,
     category: 'basic',
@@ -430,7 +431,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Collapse: {
-    name: 'Collapse',
+    configName: 'Collapse',
     dependency: 'antd',
     component: Collapse,
     category: 'basic',
@@ -439,7 +440,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Descriptions: {
-    name: 'Descriptions',
+    configName: 'Descriptions',
     dependency: 'antd',
     component: Descriptions,
     category: 'basic',
@@ -448,7 +449,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Empty: {
-    name: 'Empty',
+    configName: 'Empty',
     dependency: 'antd',
     component: Empty,
     category: 'basic',
@@ -457,7 +458,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Image: {
-    name: 'Image',
+    configName: 'Image',
     dependency: 'antd',
     component: Image as unknown as FC,
     category: 'basic',
@@ -466,7 +467,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   List: {
-    name: 'List',
+    configName: 'List',
     component: List,
     category: 'basic',
     title: '列表',
@@ -475,7 +476,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Popover: {
-    name: 'Popover',
+    configName: 'Popover',
     dependency: 'antd',
     component: Popover,
     category: 'basic',
@@ -484,7 +485,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Statistic: {
-    name: 'Statistic',
+    configName: 'Statistic',
     dependency: 'antd',
     component: Statistic,
     category: 'basic',
@@ -493,7 +494,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Table: {
-    name: 'Table',
+    configName: 'Table',
     dependency: 'antd',
     component: Table,
     category: 'basic',
@@ -502,7 +503,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Tabs: {
-    name: 'Tabs',
+    configName: 'Tabs',
     dependency: 'antd',
     component: Tabs,
     category: 'basic',
@@ -537,7 +538,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     }
   },
   Tag: {
-    name: 'Tag',
+    configName: 'Tag',
     component: Tag,
     category: 'basic',
     title: '标签',
@@ -546,7 +547,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Tooltip: {
-    name: 'Tooltip',
+    configName: 'Tooltip',
     dependency: 'antd',
     component: Tooltip,
     category: 'basic',
@@ -555,7 +556,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Tree: {
-    name: 'Tree',
+    configName: 'Tree',
     dependency: 'antd',
     component: Tree,
     category: 'basic',
@@ -564,7 +565,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Alert: {
-    name: 'Alert',
+    configName: 'Alert',
     dependency: 'antd',
     component: Alert,
     category: 'basic',
@@ -573,7 +574,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Drawer: {
-    name: 'Drawer',
+    configName: 'Drawer',
     dependency: 'antd',
     component: Drawer,
     category: 'layer',
@@ -582,7 +583,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Modal: {
-    name: 'Modal',
+    configName: 'Modal',
     dependency: 'antd',
     component: Modal,
     category: 'layer',
@@ -591,7 +592,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Notification: {
-    name: 'Notification',
+    configName: 'Notification',
     dependency: 'antd',
     component: Notification as unknown as FC,
     category: 'layer',
@@ -600,7 +601,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Popconfirm: {
-    name: 'Popconfirm',
+    configName: 'Popconfirm',
     dependency: 'antd',
     component: Popconfirm as unknown as FC,
     category: 'basic',
@@ -609,7 +610,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Result: {
-    name: 'Result',
+    configName: 'Result',
     dependency: 'antd',
     component: Result,
     category: 'basic',
@@ -618,7 +619,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   Affix: {
-    name: 'Affix',
+    configName: 'Affix',
     dependency: 'antd',
     component: Affix as unknown as FC,
     category: 'basic',
@@ -627,7 +628,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {}
   },
   FloatButton: {
-    name: 'FloatButton',
+    configName: 'FloatButton',
     dependency: 'antd',
     component: FloatButton as unknown as FC,
     category: 'basic',
@@ -638,8 +639,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
 };
 
 const htmlComponentConfig: { [key: string]: IComponentConfig } = {
-  div: {
-    name: 'div',
+  column: {
+    configName: 'Column',
     dependency: 'html',
     isContainer: true,
     component: Container,
