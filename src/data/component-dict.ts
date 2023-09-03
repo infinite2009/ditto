@@ -640,7 +640,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
 
 const htmlComponentConfig: { [key: string]: IComponentConfig } = {
   column: {
-    configName: 'Column',
+    configName: 'column',
     dependency: 'html',
     isContainer: true,
     component: Container,
@@ -978,7 +978,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
     }
   },
   p: {
-    configName: 'P',
+    configName: 'p',
     dependency: 'html',
     component: EditableText,
     category: 'basic',
