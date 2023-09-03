@@ -3,7 +3,8 @@ import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateId, typeOf } from '@/util';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
-import { ValueType } from '@/types/value-type';
+import cloneDeep from 'lodash/cloneDeep';
+import IComponentConfig from '@/types/component-config';
 
 export default class DSLStore {
   private static instance = new DSLStore();
@@ -87,18 +88,13 @@ export default class DSLStore {
     this.dsl.props[componentId] = {};
     const props = this.dsl.props[componentId];
     Object.values(propsConfig).forEach(item => {
-      const { name, value, templateKeyPathsReg } = item;
-      if (templateKeyPathsReg && templateKeyPathsReg.length) {
-        // TODO: 初始化插槽
-      } else {
-        props[name] = {
-          id: name,
-          schemaType: 'props',
-          name: name,
-          valueType: typeOf(value) as ValueType,
-          valueSource: 'editorInput',
-          value
-        };
+      const { name, value, templateKeyPathsReg = [] } = item;
+      props[name] = item;
+      if (templateKeyPathsReg.length) {
+        const cp = cloneDeep(value);
+        const wrapper = { cp };
+        this.setTemplateTo(cp, templateKeyPathsReg, wrapper, 'cp');
+        props[name].value = wrapper.cp;
       }
       componentSchema.propsRefs.push(name);
     });
@@ -199,5 +195,51 @@ export default class DSLStore {
 
   createEmptyContainer() {
     return this.createComponent('div', 'html');
+  }
+
+  setTemplateTo(
+    data: any,
+    keyPathRegs: {
+      path: string;
+      type: 'object' | 'function';
+    }[] = [],
+    parent: any,
+    key = '',
+    currentKeyPath = ''
+  ) {
+    const keyPathMatchResult =
+      keyPathRegs.length &&
+      keyPathRegs.find(pathObj => {
+        return new RegExp(pathObj.path).test(currentKeyPath);
+      });
+    // 如果当前 keyPath 命中正则表达式
+    if (keyPathMatchResult) {
+      parent[key] = this.createEmptyContainer();
+    } else {
+      const type = typeOf(data);
+      if (type === 'object') {
+        Object.entries(data).forEach(([key, val]) => {
+          this.setTemplateTo(
+            val,
+            keyPathRegs,
+            data,
+            key,
+            `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`
+          );
+        });
+      } else if (type === 'array') {
+        data.forEach((item: any, index: number) => {
+          this.setTemplateTo(item, keyPathRegs, data, index.toString(), `${currentKeyPath}[${index}]`);
+        });
+      }
+    }
+  }
+
+  private calculateComponentName(config: IComponentConfig) {
+    const { callingName, importName, configName } = config;
+    if (callingName) {
+      return callingName.replace(/\\./g, '');
+    }
+    return importName || configName;
   }
 }
