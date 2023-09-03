@@ -201,7 +201,7 @@ export default class DSLStore {
   }
 
   createEmptyContainer() {
-    return this.createComponent('div', 'html');
+    return this.createComponent('column', 'html');
   }
 
   setTemplateTo(
