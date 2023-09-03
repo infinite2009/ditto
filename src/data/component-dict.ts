@@ -54,7 +54,6 @@ import {
 } from 'antd';
 import { CodeSandboxOutlined } from '@ant-design/icons';
 import IComponentConfig from '@/types/component-config';
-import Link from '@/components/link';
 import EditableText from '@/components/editable-text';
 import Container from '@/components/container';
 
@@ -69,8 +68,12 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     component: Row,
     propsConfig: {
       align: {
+        id: 'align',
+        schemaType: 'props',
         name: 'align',
-        initialValue: 'middle',
+        value: 'middle',
+        valueType: 'string',
+        valueSource: 'editorInput',
         category: 'style'
       }
     }
@@ -85,23 +88,39 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     icon: CodeSandboxOutlined,
     propsConfig: {
       paddingTop: {
+        id: 'paddingTop',
+        schemaType: 'props',
         name: 'paddingTop',
-        initialValue: 8,
+        value: 8,
+        valueType: 'number',
+        valueSource: 'editorInput',
         category: 'style'
       },
       paddingRight: {
+        id: 'paddingRight',
+        schemaType: 'props',
         name: 'paddingRight',
-        initialValue: 8,
+        value: 8,
+        valueType: 'number',
+        valueSource: 'editorInput',
         category: 'style'
       },
       paddingBottom: {
+        id: 'paddingBottom',
+        schemaType: 'props',
         name: 'paddingBottom',
-        initialValue: 8,
+        value: 8,
+        valueType: 'number',
+        valueSource: 'editorInput',
         category: 'style'
       },
       paddingLeft: {
+        id: 'paddingLeft',
+        schemaType: 'props',
         name: 'paddingLeft',
-        initialValue: 8,
+        value: 8,
+        valueType: 'number',
+        valueSource: 'editorInput',
         category: 'style'
       }
     }
@@ -114,12 +133,20 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     title: '按钮',
     icon: CodeSandboxOutlined,
     propsConfig: {
-      type: { name: 'type', category: 'basic', initialValue: 'primary' },
-      children: {
-        name: 'children',
-        initialValue: '按钮',
-        category: 'children'
+      type: {
+        id: 'type',
+        schemaType: 'props',
+        name: 'type',
+        category: 'basic',
+        value: 'primary',
+        valueType: 'string',
+        valueSource: 'editorInput'
       }
+    },
+    children: {
+      name: 'children',
+      value: '按钮',
+      category: 'children'
     }
   },
   Divider: {
@@ -481,7 +508,33 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     category: 'basic',
     title: '标签页',
     icon: CodeSandboxOutlined,
-    propsConfig: {}
+    propsConfig: {
+      items: {
+        id: 'items',
+        schemaType: 'props',
+        name: 'items',
+        valueSource: 'editorInput',
+        valueType: 'object',
+        templateKeyPathsReg: [
+          {
+            type: 'object',
+            path: '\\[\\d+\\]\\.children'
+          },
+          {
+            type: 'object',
+            path: '\\[\\d+\\]\\.children'
+          }
+        ],
+        value: [
+          {
+            key: '1',
+            label: '新建标签页',
+            children: {}
+          }
+        ],
+        category: 'basic'
+      }
+    }
   },
   Tag: {
     name: 'Tag',
@@ -595,94 +648,162 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
     icon: CodeSandboxOutlined,
     propsConfig: {
       flexDirection: {
+        id: 'flexDirection',
+        schemaType: 'props',
         name: 'flexDirection',
-        initialValue: 'column',
+        value: 'column',
+        valueType: 'string',
+        valueSource: 'editorInput',
         category: 'style'
       },
       flexBasis: {
+        id: 'flexBasis',
+        schemaType: 'props',
         name: 'flexBasis',
-        initialValue: 'auto',
-        category: 'style',
+        value: 'auto',
+        valueType: 'string',
+        valueSource: 'editorInput',
+        category: 'style'
       },
       height: {
+        id: 'height',
+        schemaType: 'props',
         name: 'height',
-        initialValue: 'auto',
-        category: 'style',
+        value: 'auto',
+        valueType: 'string',
+        valueSource: 'editorInput',
+        category: 'style'
       },
       width: {
+        id: 'width',
+        schemaType: 'props',
         name: 'width',
-        initialValue: 'auto',
-        category: 'style',
+        value: 'auto',
+        valueSource: 'editorInput',
+        valueType: 'string',
+        category: 'style'
       },
       flexGrow: {
+        id: 'flexGrow',
+        schemaType: 'props',
         name: 'flexGrow',
-        initialValue: 0,
+        valueType: 'number',
+        value: 0,
+        valueSource: 'editorInput',
         category: 'style'
       },
       flexShrink: {
+        id: 'flexShrink',
+        schemaType: 'props',
         name: 'flexShrink',
-        initialValue: 0,
+        valueType: 'number',
+        value: 0,
+        valueSource: 'editorInput',
         category: 'style'
       },
       alignItems: {
+        id: 'alignItems',
+        schemaType: 'props',
         name: 'alignItems',
-        initialValue: 'flex-start',
+        valueSource: 'editorInput',
+        valueType: 'string',
+        value: 'flex-start',
         category: 'style'
       },
       justifyContent: {
+        id: 'justifyContent',
+        schemaType: 'props',
         name: 'justifyContent',
-        initialValue: 'flex-start',
+        value: 'flex-start',
+        valueSource: 'editorInput',
+        valueType: 'string',
         category: 'style'
       },
       marginTop: {
+        id: 'marginTop',
+        schemaType: 'props',
         name: 'marginTop',
-        initialValue: 10,
+        valueType: 'number',
+        value: 10,
+        valueSource: 'editorInput',
         category: 'style'
       },
       marginRight: {
+        id: 'marginRight',
+        schemaType: 'props',
         name: 'marginRight',
-        initialValue: 10,
+        valueType: 'number',
+        value: 10,
+        valueSource: 'editorInput',
         category: 'style'
       },
       marginBottom: {
+        id: 'marginBottom',
+        schemaType: 'props',
         name: 'marginBottom',
-        initialValue: 10,
+        valueType: 'number',
+        value: 10,
+        valueSource: 'editorInput',
         category: 'style'
       },
       marginLeft: {
+        id: 'marginLeft',
+        schemaType: 'props',
         name: 'marginLeft',
-        initialValue: 10,
+        valueType: 'number',
+        value: 10,
+        valueSource: 'editorInput',
         category: 'style'
       },
       paddingTop: {
+        id: 'paddingTop',
+        schemaType: 'props',
         name: 'paddingTop',
-        initialValue: 8,
+        value: 8,
+        valueSource: 'editorInput',
+        valueType: 'number',
         category: 'style'
       },
       paddingRight: {
+        id: 'paddingRight',
+        schemaType: 'props',
         name: 'paddingRight',
-        initialValue: 8,
+        value: 8,
+        valueType: 'number',
+        valueSource: 'editorInput',
         category: 'style'
       },
       paddingBottom: {
+        id: 'paddingBottom',
+        schemaType: 'props',
         name: 'paddingBottom',
-        initialValue: 8,
+        value: 8,
+        valueType: 'number',
+        valueSource: 'editorInput',
         category: 'style'
       },
       paddingLeft: {
+        id: 'paddingLeft',
+        schemaType: 'props',
         name: 'paddingLeft',
-        initialValue: 8,
+        value: 8,
+        valueType: 'number',
+        valueSource: 'editorInput',
         category: 'style'
       },
       backgroundColor: {
+        id: 'backgroundColor',
+        schemaType: 'props',
         name: 'backgroundColor',
-        initialValue: 'transparent',
-        category: 'style',
+        value: 'transparent',
+        valueSource: 'editorInput',
+        valueType: 'string',
+        category: 'style'
       }
     },
     children: {
       name: 'children',
-      initialValue: [],
+      value: [],
       category: 'children'
     }
   },
@@ -695,28 +816,50 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
     icon: CodeSandboxOutlined,
     propsConfig: {
       fontSize: {
+        id: 'fontSize',
+        schemaType: 'props',
         name: 'fontSize',
-        initialValue: 14,
-        category: 'style',
+        value: 14,
+        valueType: 'number',
+
+        valueSource: 'editorInput',
+        category: 'style'
       },
       fontWeight: {
+        id: 'fontWeight',
+        schemaType: 'props',
         name: 'fontWeight',
-        initialValue: 500,
-        category: 'style',
+        value: 500,
+        valueSource: 'editorInput',
+        valueType: 'number',
+
+        category: 'style'
       },
       lineHeight: {
+        id: 'lineHeight',
+        schemaType: 'props',
         name: 'lineHeight',
-        initialValue: 30,
-        category: 'style',
+        value: 30,
+        valueSource: 'editorInput',
+        valueType: 'number',
+        category: 'style'
       },
       color: {
+        id: 'color',
+        schemaType: 'props',
         name: 'color',
-        initialValue: '#000',
+        value: '#000',
+        valueSource: 'editorInput',
+        valueType: 'string',
         category: 'style'
       },
       children: {
+        id: 'children',
+        schemaType: 'props',
         name: 'children',
-        initialValue: '默认文字',
+        value: '默认文字',
+        valueSource: 'editorInput',
+        valueType: 'string',
         category: 'basic'
       }
     }

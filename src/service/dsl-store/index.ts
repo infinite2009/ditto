@@ -65,13 +65,13 @@ export default class DSLStore {
     let children;
     if (componentConfig.isContainer) {
       children = [];
-    } else if (componentConfig.propsConfig.children) {
-      const { initialValue } = componentConfig.propsConfig.children;
-      const typeOfChildren = typeOf(initialValue);
+    } else if (componentConfig.children) {
+      const { value } = componentConfig.children;
+      const typeOfChildren = typeOf(value);
       if (typeOfChildren === 'array') {
         children = [this.createEmptyContainer()];
       } else {
-        children = initialValue;
+        children = value;
       }
     }
 
@@ -87,15 +87,19 @@ export default class DSLStore {
     this.dsl.props[componentId] = {};
     const props = this.dsl.props[componentId];
     Object.values(propsConfig).forEach(item => {
-      const { name, initialValue } = item;
-      props[name] = {
-        id: name,
-        schemaType: 'props',
-        name: name,
-        valueSource: 'editorInput',
-        value: initialValue
-      };
+      const { name, value, templateKeyPathsReg } = item;
+      if (templateKeyPathsReg && templateKeyPathsReg.length) {
+        // TODO: 初始化插槽
+      } else {
+        props[name] = {
+          id: name,
+          schemaType: 'props',
+          name: name,
           valueType: typeOf(value) as ValueType,
+          valueSource: 'editorInput',
+          value
+        };
+      }
       componentSchema.propsRefs.push(name);
     });
     return componentSchema;

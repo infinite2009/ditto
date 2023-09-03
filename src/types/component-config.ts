@@ -1,5 +1,11 @@
 import React, { FC } from 'react';
 import IComponentSchema from '@/types/component.schema';
+import IPropsSchema from '@/types/props.schema';
+
+export interface IPropsConfigItem extends IPropsSchema {
+  category: 'basic' | 'style' | 'interaction' | 'children';
+  disabled?: boolean;
+}
 
 export default interface IComponentConfig {
   name: string;
@@ -10,16 +16,11 @@ export default interface IComponentConfig {
   icon: React.ForwardRefExoticComponent<any> | null;
   category: 'basic' | 'layer';
   propsConfig: {
-    [key: string]: {
-      name: string;
-      initialValue?: any;
-      category: 'basic' | 'style' | 'interaction' | 'children';
-      disabled?: boolean;
-    };
+    [key: string]: IPropsConfigItem;
   };
   children?: {
     name: string;
-    initialValue: IComponentSchema[] | string;
+    value: IComponentSchema[] | string;
     category: 'basic' | 'style' | 'interaction' | 'children';
     disabled?: boolean;
   };
