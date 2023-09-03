@@ -808,6 +808,175 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
       category: 'children'
     }
   },
+  row: {
+    configName: 'Row',
+    dependency: 'html',
+    isContainer: true,
+    component: Container,
+    category: 'basic',
+    title: '智能容器',
+    icon: CodeSandboxOutlined,
+    propsConfig: {
+      flexDirection: {
+        id: 'flexDirection',
+        schemaType: 'props',
+        name: 'flexDirection',
+        value: 'column',
+        valueType: 'string',
+        valueSource: 'editorInput',
+        category: 'style'
+      },
+      flexBasis: {
+        id: 'flexBasis',
+        schemaType: 'props',
+        name: 'flexBasis',
+        value: 'auto',
+        valueType: 'string',
+        valueSource: 'editorInput',
+        category: 'style'
+      },
+      height: {
+        id: 'height',
+        schemaType: 'props',
+        name: 'height',
+        value: 'auto',
+        valueType: 'string',
+        valueSource: 'editorInput',
+        category: 'style'
+      },
+      width: {
+        id: 'width',
+        schemaType: 'props',
+        name: 'width',
+        value: 'auto',
+        valueSource: 'editorInput',
+        valueType: 'string',
+        category: 'style'
+      },
+      flexGrow: {
+        id: 'flexGrow',
+        schemaType: 'props',
+        name: 'flexGrow',
+        valueType: 'number',
+        value: 0,
+        valueSource: 'editorInput',
+        category: 'style'
+      },
+      flexShrink: {
+        id: 'flexShrink',
+        schemaType: 'props',
+        name: 'flexShrink',
+        valueType: 'number',
+        value: 0,
+        valueSource: 'editorInput',
+        category: 'style'
+      },
+      alignItems: {
+        id: 'alignItems',
+        schemaType: 'props',
+        name: 'alignItems',
+        valueSource: 'editorInput',
+        valueType: 'string',
+        value: 'flex-start',
+        category: 'style'
+      },
+      justifyContent: {
+        id: 'justifyContent',
+        schemaType: 'props',
+        name: 'justifyContent',
+        value: 'flex-start',
+        valueSource: 'editorInput',
+        valueType: 'string',
+        category: 'style'
+      },
+      marginTop: {
+        id: 'marginTop',
+        schemaType: 'props',
+        name: 'marginTop',
+        valueType: 'number',
+        value: 10,
+        valueSource: 'editorInput',
+        category: 'style'
+      },
+      marginRight: {
+        id: 'marginRight',
+        schemaType: 'props',
+        name: 'marginRight',
+        valueType: 'number',
+        value: 10,
+        valueSource: 'editorInput',
+        category: 'style'
+      },
+      marginBottom: {
+        id: 'marginBottom',
+        schemaType: 'props',
+        name: 'marginBottom',
+        valueType: 'number',
+        value: 10,
+        valueSource: 'editorInput',
+        category: 'style'
+      },
+      marginLeft: {
+        id: 'marginLeft',
+        schemaType: 'props',
+        name: 'marginLeft',
+        valueType: 'number',
+        value: 10,
+        valueSource: 'editorInput',
+        category: 'style'
+      },
+      paddingTop: {
+        id: 'paddingTop',
+        schemaType: 'props',
+        name: 'paddingTop',
+        value: 8,
+        valueSource: 'editorInput',
+        valueType: 'number',
+        category: 'style'
+      },
+      paddingRight: {
+        id: 'paddingRight',
+        schemaType: 'props',
+        name: 'paddingRight',
+        value: 8,
+        valueType: 'number',
+        valueSource: 'editorInput',
+        category: 'style'
+      },
+      paddingBottom: {
+        id: 'paddingBottom',
+        schemaType: 'props',
+        name: 'paddingBottom',
+        value: 8,
+        valueType: 'number',
+        valueSource: 'editorInput',
+        category: 'style'
+      },
+      paddingLeft: {
+        id: 'paddingLeft',
+        schemaType: 'props',
+        name: 'paddingLeft',
+        value: 8,
+        valueType: 'number',
+        valueSource: 'editorInput',
+        category: 'style'
+      },
+      backgroundColor: {
+        id: 'backgroundColor',
+        schemaType: 'props',
+        name: 'backgroundColor',
+        value: 'transparent',
+        valueSource: 'editorInput',
+        valueType: 'string',
+        category: 'style'
+      }
+    },
+    children: {
+      name: 'children',
+      value: [],
+      category: 'children'
+    }
+  },
   p: {
     name: 'p',
     dependency: 'html',
