@@ -736,16 +736,12 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
           lineHeight: 30,
           color: '#000'
         }
-      },
-      children: {
-        id: 'children',
-        schemaType: 'props',
-        name: 'children',
-        value: '默认文字',
-        valueSource: 'editorInput',
-        valueType: 'string',
-        category: 'basic'
       }
+    },
+    children: {
+      name: 'children',
+      value: '默认文字',
+      category: 'children'
     }
   }
 };
