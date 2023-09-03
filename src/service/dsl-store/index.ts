@@ -245,7 +245,8 @@ export default class DSLStore {
   private calculateComponentName(config: IComponentConfig) {
     const { callingName, importName, configName } = config;
     if (callingName) {
-      return callingName.replace(/\\./g, '');
+      // callingName 里可能有调用符，需要去掉
+      return callingName.replace(/\./g, '');
     }
     return importName || configName;
   }
