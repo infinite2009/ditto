@@ -3,6 +3,7 @@ import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateId, typeOf } from '@/util';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
+import { ValueType } from '@/types/value-type';
 
 export default class DSLStore {
   private static instance = new DSLStore();
@@ -91,10 +92,10 @@ export default class DSLStore {
         id: name,
         schemaType: 'props',
         name: name,
-        valueType: typeOf(initialValue) as 'string' | 'number' | 'boolean' | 'object' | 'function' | 'array',
         valueSource: 'editorInput',
         value: initialValue
       };
+          valueType: typeOf(value) as ValueType,
       componentSchema.propsRefs.push(name);
     });
     return componentSchema;
