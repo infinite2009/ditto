@@ -27,8 +27,8 @@ export function generateId() {
   return nanoid();
 }
 
-export function fetchComponentConfig(name: string, dependency: string) {
-  return componentConfig[dependency][name];
+export function fetchComponentConfig(configName: string, dependency: string) {
+  return componentConfig[dependency][configName];
 }
 
 export function createAsyncTask(task: (...args: any[]) => string) {
