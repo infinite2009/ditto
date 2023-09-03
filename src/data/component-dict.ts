@@ -641,6 +641,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
 const htmlComponentConfig: { [key: string]: IComponentConfig } = {
   column: {
     configName: 'column',
+    callingName: 'div',
     dependency: 'html',
     isContainer: true,
     component: Container,
@@ -809,7 +810,8 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
     }
   },
   row: {
-    configName: 'Row',
+    configName: 'row',
+    callingName: 'div',
     dependency: 'html',
     isContainer: true,
     component: Container,
