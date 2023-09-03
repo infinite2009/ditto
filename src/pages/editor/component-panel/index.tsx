@@ -30,15 +30,16 @@ export default function ComponentPanel() {
 
   function fetchComponentList() {
     const components = Object.values(componentConfig).map(item => Object.values(item));
-    const result = components.flat(1)
+    const result = components
+      .flat(1)
       .filter(item => item.category === 'basic')
       .map(item => {
         return {
-          key: item.name,
+          key: item.configName,
           title: item.title,
           icon: item.icon,
-          name: item.name,
-          dependency: item.dependency,
+          name: item.configName,
+          dependency: item.dependency
         } as unknown as IComponentInfo;
       });
     setComponentList(result);
@@ -48,7 +49,12 @@ export default function ComponentPanel() {
     const tpl = componentList.map(item => {
       const ComponentIcon = item.icon as FC<IComponentIconProps>;
       return (
-        <DraggableComponent key={item.name} name={item.name} dependency={item.dependency} title={item.title}>
+        <DraggableComponent
+          key={`${item.dependency}_${item.name}`}
+          name={item.name}
+          dependency={item.dependency}
+          title={item.title}
+        >
           <div className={styles.componentItem} key={item.key}>
             <ComponentIcon className={styles.componentIcon} />
             <p className={styles.componentTitle}>{item.title}</p>
