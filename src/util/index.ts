@@ -36,20 +36,24 @@ export function createAsyncTask(task: (...args: any[]) => string) {
 }
 
 export async function savePageDSLFile(filePath: string, dsl: IPageSchema) {
-  const formattedContent = await createAsyncTask(() => prettier.format(JSON.stringify(dsl), {
-    ...prettierConfig,
-    parser: 'json',
-    plugins: [babel]
-  } as unknown as Partial<RequiredOptions>));
+  const formattedContent = await createAsyncTask(() =>
+    prettier.format(JSON.stringify(dsl), {
+      ...prettierConfig,
+      parser: 'json',
+      plugins: [babel]
+    } as unknown as Partial<RequiredOptions>)
+  );
   await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
 }
 
 export async function exportReactPageCodeFile(filePath: string, dsl: IPageSchema) {
   const react = new ReactCodeGenerator(dsl as unknown as IPageSchema, new TypeScriptCodeGenerator());
-  const formattedContent = await createAsyncTask(() => prettier.format(react.generatePageCode().join('\n'), {
-    ...prettierConfig,
-    parser: 'typescript',
-    plugins: [typescript ]
-  } as unknown as Partial<RequiredOptions>));
+  const formattedContent = await createAsyncTask(() =>
+    prettier.format(react.generatePageCode().join('\n'), {
+      ...prettierConfig,
+      parser: 'typescript',
+      plugins: [typescript]
+    } as unknown as Partial<RequiredOptions>)
+  );
   await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
 }
