@@ -978,7 +978,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
     }
   },
   p: {
-    name: 'p',
+    configName: 'P',
     dependency: 'html',
     component: EditableText,
     category: 'basic',
