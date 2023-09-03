@@ -80,15 +80,16 @@ export default class DSLStore {
       id: componentId,
       schemaType: 'component',
       name: this.calculateComponentName(componentConfig),
+      configName: componentConfig.configName,
       dependency: componentConfig.dependency,
       propsRefs: [],
       children
     };
     if (componentConfig.importName) {
-      componentSchema.importName;
+      componentSchema.importName = componentConfig.importName;
     }
     if (componentConfig.callingName) {
-      componentSchema.callingName;
+      componentSchema.callingName = componentConfig.callingName;
     }
 
     const { propsConfig } = componentConfig;

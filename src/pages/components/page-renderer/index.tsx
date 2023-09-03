@@ -108,11 +108,11 @@ export default observer((props: IPageRendererProps) => {
 
     // 处理组件
     const { props = {} } = dslStore.dsl;
-    const { callingName, name, dependency, children = [], propsRefs = [], id } = node as IComponentSchema;
+    const { configName, callingName, name, dependency, children = [], propsRefs = [], id } = node as IComponentSchema;
     let Component: string | FC<PropsWithChildren<any>> = callingName || name;
     let componentConfig: IComponentConfig | undefined;
     if (dependency) {
-      componentConfig = fetchComponentConfig(callingName || name, dependency);
+      componentConfig = fetchComponentConfig(configName || name, dependency);
     }
     if (componentConfig) {
       Component = componentConfig.component;

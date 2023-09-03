@@ -7,6 +7,7 @@ import { ImportType, PropsId } from '@/types/index';
 
 export default interface IComponentSchema extends ISchema {
   desc?: string;
+  configName?: string;
   importName?: string;
   // 调用名，如果导入的名字和调用的名字不一样，调用时用这个
   callingName?: string;
