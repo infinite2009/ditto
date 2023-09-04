@@ -33,24 +33,29 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
     }
   });
 
+  const childrenProcessed = useRef<boolean>(false);
+
   useEffect(() => {
     const wrapperElement = document.getElementById(id);
     if (!wrapperElement) {
       return;
     }
     const childElement: HTMLElement = wrapperElement.children?.[0] as HTMLElement;
-    processBFC(wrapperElement, childElement);
+    if (!childrenProcessed.current) {
+      processBFC(wrapperElement, childElement);
+      childrenProcessed.current = true;
+    }
   }, []);
 
   function processBFC(targetElement: HTMLElement, childElement: HTMLElement) {
     const display = childElement.style.display;
     const width = childElement.style.width;
     const flexBasis = childElement.style.flexBasis;
-    const floatReg = /^-?\d+(\.\d+)?$/;
+    const flexReg = /^-?\d+(\.\d+)?$/;
     switch (display) {
       case 'block':
         // 如果有具体宽度
-        if (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && floatReg.test(width)) {
+        if (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && flexReg.test(width)) {
           targetElement.style.display = 'inline-block';
         } else {
           targetElement.style.display = 'block';
@@ -58,8 +63,8 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
         break;
       case 'flex':
         if (
-          (flexBasis.indexOf('px') !== -1 && flexBasis.indexOf('%') !== -1 && floatReg.test(flexBasis)) ||
-          (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && floatReg.test(width))
+          (flexBasis.indexOf('px') !== -1 && flexBasis.indexOf('%') !== -1 && flexReg.test(flexBasis)) ||
+          (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && flexReg.test(width))
         ) {
           targetElement.style.display = 'inline-block';
         } else {
@@ -70,6 +75,11 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
         targetElement.style.display = 'inline';
         break;
     }
+    // 处理margin
+    targetElement.style.marginLeft = childElement.style.marginLeft;
+    targetElement.style.marginRight = childElement.style.marginRight;
+    childElement.style.marginLeft = '0px';
+    childElement.style.marginRight = '0px';
   }
 
   const style: CSSProperties = useMemo(() => {
