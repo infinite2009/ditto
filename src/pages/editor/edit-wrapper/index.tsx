@@ -63,6 +63,8 @@ export default function EditWrapper({ id, childrenId, children, feature }: IEdit
     const flexReg = /^-?\d+(\.\d+)?$/;
     switch (display) {
       case 'block':
+      case 'initial':
+      case '':
         // 如果有具体宽度
         if (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && flexReg.test(width)) {
           wrapperElement.style.display = 'inline-block';
