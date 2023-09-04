@@ -108,7 +108,16 @@ export default observer((props: IPageRendererProps) => {
 
     // 处理组件
     const { props = {} } = dslStore.dsl;
-    const { configName, callingName, name, dependency, children = [], propsRefs = [], id } = node as IComponentSchema;
+    const {
+      parentId,
+      configName,
+      callingName,
+      name,
+      dependency,
+      children = [],
+      propsRefs = [],
+      id
+    } = node as IComponentSchema;
     let Component: string | FC<PropsWithChildren<any>> = callingName || name;
     let componentConfig: IComponentConfig | undefined;
     if (dependency) {
@@ -146,7 +155,7 @@ export default observer((props: IPageRendererProps) => {
 
     const childId = typeOfChildren === 'array' ? (children as IComponentSchema[])?.map(c => c.id) || [] : undefined;
     return mode === 'edit' ? (
-      <EditWrapper key={id} id={id} childrenId={childId} feature={feature}>
+      <EditWrapper key={id} id={id} parentId={parentId} childrenId={childId} feature={feature}>
         {tpl}
       </EditWrapper>
     ) : (

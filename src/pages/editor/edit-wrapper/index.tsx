@@ -5,13 +5,14 @@ import ComponentFeature from '@/types/component-feature';
 
 export interface IEditorProps {
   id: string;
+  parentId: string;
   childrenId?: string[];
   children: React.ReactNode;
   direction?: 'row' | 'column';
   feature?: ComponentFeature;
 }
 
-export default function EditWrapper({ id, childrenId, children, feature }: IEditorProps) {
+export default function EditWrapper({ id, parentId, childrenId, children, feature }: IEditorProps) {
   const direction = useMemo(() => {
     const wrapperElement = document.getElementById(id);
     if (!wrapperElement) {
@@ -25,6 +26,7 @@ export default function EditWrapper({ id, childrenId, children, feature }: IEdit
     id,
     data: {
       childrenId,
+      parentId,
       direction: direction || 'column',
       feature: feature || ComponentFeature.solid,
       dndType: 'move'
