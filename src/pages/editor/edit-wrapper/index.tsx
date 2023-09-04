@@ -47,7 +47,7 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
     }
   }, []);
 
-  function processBFC(targetElement: HTMLElement, childElement: HTMLElement) {
+  function processBFC(wrapperElement: HTMLElement, childElement: HTMLElement) {
     const display = childElement.style.display;
     const width = childElement.style.width;
     const flexBasis = childElement.style.flexBasis;
@@ -56,9 +56,9 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
       case 'block':
         // 如果有具体宽度
         if (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && flexReg.test(width)) {
-          targetElement.style.display = 'inline-block';
+          wrapperElement.style.display = 'inline-block';
         } else {
-          targetElement.style.display = 'block';
+          wrapperElement.style.display = 'block';
         }
         break;
       case 'flex':
@@ -66,18 +66,18 @@ export default function EditWrapper({ id, childrenId, children, direction = 'col
           (flexBasis.indexOf('px') !== -1 && flexBasis.indexOf('%') !== -1 && flexReg.test(flexBasis)) ||
           (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && flexReg.test(width))
         ) {
-          targetElement.style.display = 'inline-block';
+          wrapperElement.style.display = 'inline-block';
         } else {
-          targetElement.style.display = 'block';
+          wrapperElement.style.display = 'block';
         }
         break;
       default:
-        targetElement.style.display = 'inline';
+        wrapperElement.style.display = 'inline';
         break;
     }
     // 处理margin
-    targetElement.style.marginLeft = childElement.style.marginLeft;
-    targetElement.style.marginRight = childElement.style.marginRight;
+    wrapperElement.style.marginLeft = childElement.style.marginLeft;
+    wrapperElement.style.marginRight = childElement.style.marginRight;
     childElement.style.marginLeft = '0px';
     childElement.style.marginRight = '0px';
   }
