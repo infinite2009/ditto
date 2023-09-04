@@ -11,7 +11,16 @@ export interface IEditorProps {
   feature?: ComponentFeature;
 }
 
-export default function EditWrapper({ id, childrenId, children, direction = 'column', feature }: IEditorProps) {
+export default function EditWrapper({ id, childrenId, children, feature }: IEditorProps) {
+  const direction = useMemo(() => {
+    const wrapperElement = document.getElementById(id);
+    if (!wrapperElement) {
+      return;
+    }
+    const childElement: HTMLElement = wrapperElement.children?.[0] as HTMLElement;
+    return childElement.style.flexDirection;
+  }, [children]);
+
   const { isOver, setNodeRef: setDroppableNodeRef } = useDroppable({
     id,
     data: {

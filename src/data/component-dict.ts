@@ -692,7 +692,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         name: 'style',
         value: {
-          flexDirection: 'column',
+          flexDirection: 'row',
           flexBasis: 'auto',
           height: 'auto',
           width: 'auto',
