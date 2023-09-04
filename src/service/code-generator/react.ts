@@ -290,7 +290,7 @@ export default class ReactCodeGenerator {
             // 处理当前节点的 props
             if (propsDict[id]) {
               const { importInfo, propsStrArr, stateInfo, callbackInfo, memoInfo, effectInfo, constantInfo } =
-                this.analysisProps(propsDict, propsRefs, id);
+                this.analysisProps(propsDict, propsRefs, node as IComponentSchema);
               pNode.propsStrArr = propsStrArr;
               // 将每个组件节点的 stateInfo 合并到 result 中，通过命名系统避免 state 重名，callback，memo，effect 亦然
               Object.assign(result.stateInfo as object, stateInfo);
@@ -341,7 +341,7 @@ export default class ReactCodeGenerator {
   analysisProps(
     propsDict: { [key: string]: { [key: string]: IPropsSchema } },
     propsRefs: string[],
-    componentId: string
+    component: IComponentSchema
   ): {
     importInfo: {
       [importPath: string]: {
@@ -365,6 +365,8 @@ export default class ReactCodeGenerator {
       effectInfo: {},
       constantInfo: {}
     };
+
+    const { id: componentId } = component;
 
     const componentPropsDict = propsDict[componentId];
 
@@ -405,9 +407,11 @@ export default class ReactCodeGenerator {
                 value: this.tsCodeGenerator.generateObjectStrArr(
                   value,
                   templateKeyPathsReg,
-                  (val: any, wrapper: string[] = [], insertIndex = 0) => {
+                  (val: string, wrapper: string[] = [], insertIndex = 0) => {
+                    // TODO：用 val 查出它对应的模板
+                    const template = component.templates.find(item => item.id === val) as IComponentSchema;
                     const { tsxInfo, importInfo, effectInfo, constantInfo, memoInfo, callbackInfo, stateInfo } =
-                      this.analysisTemplate(val as IComponentSchema, propsDict);
+                      this.analysisTemplate(template, propsDict);
                     // 合并统计分析
                     Object.assign(result.stateInfo as object, stateInfo);
                     Object.assign(result.callbackInfo as object, callbackInfo);

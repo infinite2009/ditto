@@ -11,6 +11,7 @@ export default class DSLStore {
   dsl: IPageSchema;
   componentStats: { [key: string]: number } = {};
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
+  currentParentNode: IComponentSchema | null = null;
 
   private constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
@@ -51,13 +52,15 @@ export default class DSLStore {
         name: '',
         dependency: '',
         schemaType: 'component',
-        propsRefs: []
+        propsRefs: [],
+        children: [],
+        templates: []
       }
     };
-    this.dsl.child = this.createEmptyContainer(pageId);
+    this.dsl.child = this.createEmptyContainer();
   }
 
-  createComponent(parentId: string, name: string, dependency: string): IComponentSchema {
+  createComponent(name: string, dependency: string): IComponentSchema {
     if (this.componentStats[name] === undefined) {
       this.componentStats[name] = 0;
     } else {
@@ -72,21 +75,24 @@ export default class DSLStore {
       const { value } = componentConfig.children;
       const typeOfChildren = typeOf(value);
       if (typeOfChildren === 'array') {
-        children = [this.createEmptyContainer(parentId)];
+        children = [this.createEmptyContainer()];
       } else {
         children = value;
       }
+    } else {
+      children = [];
     }
 
     const componentSchema: IComponentSchema = {
       id: componentId,
-      parentId,
+      parentId: this.currentParentNode?.id as string,
       schemaType: 'component',
       name: this.calculateComponentName(componentConfig),
       configName: componentConfig.configName,
       dependency: componentConfig.dependency,
       propsRefs: [],
-      children
+      children,
+      templates: []
     };
     if (componentConfig.importName) {
       componentSchema.importName = componentConfig.importName;
@@ -104,7 +110,7 @@ export default class DSLStore {
       if (templateKeyPathsReg.length) {
         const cp = cloneDeep(value);
         const wrapper = { cp };
-        this.setTemplateTo(cp, templateKeyPathsReg, wrapper, 'cp', '', parentId);
+        this.setTemplateTo(cp, templateKeyPathsReg, wrapper, 'cp', '');
         props[name].value = wrapper.cp;
       }
       componentSchema.propsRefs.push(name);
@@ -116,15 +122,15 @@ export default class DSLStore {
    * 插入一个新的组件
    */
   insertComponent(parentId: string, name: string, dependency: string, insertIndex = -1) {
-    const newComponentNode = this.createComponent(parentId, name, dependency);
-    const parentNode = this.fetchComponentInDSL(parentId);
-    if (parentNode) {
+    this.currentParentNode = this.fetchComponentInDSL(parentId);
+    if (this.currentParentNode) {
+      const newComponentNode = this.createComponent(name, dependency);
       // 如果没有 children，初始化一个，如果需要初始化，说明初始化父节点的代码有 bug
-      parentNode.children = parentNode.children || [];
+      this.currentParentNode.children = this.currentParentNode.children || [];
       if (insertIndex === -1) {
-        (parentNode.children as IComponentSchema[]).push(newComponentNode);
+        (this.currentParentNode.children as IComponentSchema[]).push(newComponentNode);
       } else {
-        (parentNode.children as IComponentSchema[]).splice(insertIndex, 0, newComponentNode);
+        (this.currentParentNode.children as IComponentSchema[]).splice(insertIndex, 0, newComponentNode);
       }
     } else {
       throw new Error(`未找到有效的父节点：${parentId}`);
@@ -198,14 +204,15 @@ export default class DSLStore {
         }
         if (typeOf(node.children) === 'array' && node.children?.length) {
           q = q.concat(node.children as IComponentSchema[]);
+          q = q.concat(node.templates as IComponentSchema[]);
         }
       }
     }
     return null;
   }
 
-  createEmptyContainer(parentId: string) {
-    return this.createComponent(parentId, 'column', 'html');
+  createEmptyContainer() {
+    return this.createComponent('column', 'html');
   }
 
   setTemplateTo(
@@ -216,8 +223,7 @@ export default class DSLStore {
     }[] = [],
     parent: any,
     key = '',
-    currentKeyPath = '',
-    parentId: string
+    currentKeyPath = ''
   ) {
     const keyPathMatchResult =
       keyPathRegs.length &&
@@ -226,7 +232,11 @@ export default class DSLStore {
       });
     // 如果当前 keyPath 命中正则表达式
     if (keyPathMatchResult) {
-      parent[key] = this.createEmptyContainer(parentId);
+      const node = this.createEmptyContainer();
+      parent[key] = node.id;
+      if (this.currentParentNode) {
+        this.currentParentNode.templates.push(node);
+      }
     } else {
       const type = typeOf(data);
       if (type === 'object') {
@@ -236,13 +246,12 @@ export default class DSLStore {
             keyPathRegs,
             data,
             key,
-            `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`,
-            parentId
+            `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`
           );
         });
       } else if (type === 'array') {
         data.forEach((item: any, index: number) => {
-          this.setTemplateTo(item, keyPathRegs, data, index.toString(), `${currentKeyPath}[${index}]`, parentId);
+          this.setTemplateTo(item, keyPathRegs, data, index.toString(), `${currentKeyPath}[${index}]`);
         });
       }
     }

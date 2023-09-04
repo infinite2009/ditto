@@ -126,27 +126,26 @@ export default class TypeScriptCodeGenerator {
     sentences: string[] = []
   ): string[] {
     const type = typeOf(data);
-    const keyPathMatchResult = keyPaths.length && keyPaths.find(pathObj => {
-      return new RegExp(pathObj.path).test(currentKeyPath);
-    });
+    const keyPathMatchResult =
+      keyPaths.length &&
+      keyPaths.find(pathObj => {
+        return new RegExp(pathObj.path).test(currentKeyPath);
+      });
     switch (type) {
       case 'object':
-        if (keyPathMatchResult && !!callback) {
-          let wrapper = [`${key}${key ? ': ' : ''}(`, '),'];
-          if (keyPathMatchResult.type === 'function') {
-            wrapper = [`${key}${key ? ': ' : ''}() => {`, 'return (', ');', '}'];
-          }
-          const customSentences = callback(data, wrapper, keyPathMatchResult.type === 'object' ? 1 : 2);
-          sentences = sentences.concat(customSentences);
-        } else {
-          sentences.push(`${key}${key ? ': ' : ''}{`);
-          Object.entries(data).forEach(([key, value]) => {
-            this.generateObjectStrArr(value, keyPaths, callback, `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`, key).forEach(item => {
-              sentences.push(item);
-            });
+        sentences.push(`${key}${key ? ': ' : ''}{`);
+        Object.entries(data).forEach(([key, value]) => {
+          this.generateObjectStrArr(
+            value,
+            keyPaths,
+            callback,
+            `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`,
+            key
+          ).forEach(item => {
+            sentences.push(item);
           });
-          sentences.push(`},`);
-        }
+        });
+        sentences.push(`},`);
         break;
       case 'array':
         sentences.push(`${key}${key ? ': ' : ''}[`);
@@ -158,7 +157,17 @@ export default class TypeScriptCodeGenerator {
         sentences.push(`],`);
         break;
       case 'string':
-        sentences.push((key ? `${key}: '${data}'` : `'${data}'`) + ',');
+        // 如果命中 key path，这个 string 就是模板的 id
+        if (keyPathMatchResult && !!callback) {
+          let wrapper = [`${key}${key ? ': ' : ''}(`, '),'];
+          if (keyPathMatchResult.type === 'function') {
+            wrapper = [`${key}${key ? ': ' : ''}() => {`, 'return (', ');', '}'];
+          }
+          const customSentences = callback(data, wrapper, keyPathMatchResult.type === 'object' ? 1 : 2);
+          sentences = sentences.concat(customSentences);
+        } else {
+          sentences.push((key ? `${key}: '${data}'` : `'${data}'`) + ',');
+        }
         break;
       default:
         // 这里假设变量都是驼峰命名，符合语法要求

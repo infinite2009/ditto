@@ -253,10 +253,8 @@ export default function Editor() {
       const parentDict: { [key: string]: string } = {};
 
       droppableContainers.forEach((item: DroppableContainer) => {
-        if (item.data.current?.childrenId?.length) {
-          item.data.current.childrenId.forEach((childId: string) => {
-            parentDict[childId] = item.id as string;
-          });
+        if (item.data.current?.parentId) {
+          parentDict[item.id] = item.data.current.parentId;
         }
       });
 

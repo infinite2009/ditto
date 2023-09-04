@@ -1,4 +1,5 @@
 import ISchema from '@/types/schema';
+import { ComponentId } from '@/types/index';
 
 /**
  * @file 属性本身的属性定义

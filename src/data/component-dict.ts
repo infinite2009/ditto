@@ -57,6 +57,8 @@ import IComponentConfig from '@/types/component-config';
 import EditableText from '@/components/editable-text';
 import Container from '@/components/container';
 
+const Search = Input.Search;
+
 const antdComponentConfig: { [key: string]: IComponentConfig } = {
   Row: {
     configName: 'Row',
@@ -270,7 +272,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Input',
     callingName: 'Input.Search',
     dependency: 'antd',
-    component: Input.Search,
+    component: Search,
     category: 'basic',
     title: '搜索框',
     icon: CodeSandboxOutlined,
