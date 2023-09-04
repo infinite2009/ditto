@@ -6,7 +6,9 @@
   "scripts": {
     "start": "tauri dev",
     "build": "tsc && vite build",
-    "build:app": "tauri build",
+    "build:universal": "tauri build --target universal-apple-darwin",
+    "build:x86": "tauri build --target x86_64-apple-darwin",
+    "build:arm": "tauri build --target aarch64-apple-darwin",
     "dev": "vite",
     "prepare": "husky install",
     "preview": "vite preview",
