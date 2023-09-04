@@ -6,6 +6,7 @@ import ISchema from './schema';
 import { ImportType, PropsId } from '@/types/index';
 
 export default interface IComponentSchema extends ISchema {
+  parentId: string;
   desc?: string;
   configName?: string;
   importName?: string;

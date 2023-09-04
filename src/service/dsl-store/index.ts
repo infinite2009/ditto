@@ -37,14 +37,16 @@ export default class DSLStore {
   }
 
   createEmptyPage(name: string, desc: string) {
+    const pageId = generateId();
     this.dsl = {
-      id: generateId(),
+      id: pageId,
       schemaType: 'page',
       name,
       desc,
       props: {},
       // 由于类型设计问题，这里需要初始化一个无效节点
       child: {
+        parentId: pageId,
         id: '',
         name: '',
         dependency: '',
@@ -52,10 +54,10 @@ export default class DSLStore {
         propsRefs: []
       }
     };
-    this.dsl.child = this.createEmptyContainer();
+    this.dsl.child = this.createEmptyContainer(pageId);
   }
 
-  createComponent(name: string, dependency: string): IComponentSchema {
+  createComponent(parentId: string, name: string, dependency: string): IComponentSchema {
     if (this.componentStats[name] === undefined) {
       this.componentStats[name] = 0;
     } else {
@@ -70,7 +72,7 @@ export default class DSLStore {
       const { value } = componentConfig.children;
       const typeOfChildren = typeOf(value);
       if (typeOfChildren === 'array') {
-        children = [this.createEmptyContainer()];
+        children = [this.createEmptyContainer(parentId)];
       } else {
         children = value;
       }
@@ -78,6 +80,7 @@ export default class DSLStore {
 
     const componentSchema: IComponentSchema = {
       id: componentId,
+      parentId,
       schemaType: 'component',
       name: this.calculateComponentName(componentConfig),
       configName: componentConfig.configName,
@@ -101,7 +104,7 @@ export default class DSLStore {
       if (templateKeyPathsReg.length) {
         const cp = cloneDeep(value);
         const wrapper = { cp };
-        this.setTemplateTo(cp, templateKeyPathsReg, wrapper, 'cp');
+        this.setTemplateTo(cp, templateKeyPathsReg, wrapper, 'cp', '', parentId);
         props[name].value = wrapper.cp;
       }
       componentSchema.propsRefs.push(name);
@@ -113,7 +116,7 @@ export default class DSLStore {
    * 插入一个新的组件
    */
   insertComponent(parentId: string, name: string, dependency: string, insertIndex = -1) {
-    const newComponentNode = this.createComponent(name, dependency);
+    const newComponentNode = this.createComponent(parentId, name, dependency);
     const parentNode = this.fetchComponentInDSL(parentId);
     if (parentNode) {
       // 如果没有 children，初始化一个，如果需要初始化，说明初始化父节点的代码有 bug
@@ -201,8 +204,8 @@ export default class DSLStore {
     return null;
   }
 
-  createEmptyContainer() {
-    return this.createComponent('column', 'html');
+  createEmptyContainer(parentId: string) {
+    return this.createComponent(parentId, 'column', 'html');
   }
 
   setTemplateTo(
@@ -213,7 +216,8 @@ export default class DSLStore {
     }[] = [],
     parent: any,
     key = '',
-    currentKeyPath = ''
+    currentKeyPath = '',
+    parentId: string
   ) {
     const keyPathMatchResult =
       keyPathRegs.length &&
@@ -222,7 +226,7 @@ export default class DSLStore {
       });
     // 如果当前 keyPath 命中正则表达式
     if (keyPathMatchResult) {
-      parent[key] = this.createEmptyContainer();
+      parent[key] = this.createEmptyContainer(parentId);
     } else {
       const type = typeOf(data);
       if (type === 'object') {
@@ -232,12 +236,13 @@ export default class DSLStore {
             keyPathRegs,
             data,
             key,
-            `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`
+            `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`,
+            parentId
           );
         });
       } else if (type === 'array') {
         data.forEach((item: any, index: number) => {
-          this.setTemplateTo(item, keyPathRegs, data, index.toString(), `${currentKeyPath}[${index}]`);
+          this.setTemplateTo(item, keyPathRegs, data, index.toString(), `${currentKeyPath}[${index}]`, parentId);
         });
       }
     }
