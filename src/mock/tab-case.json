@@ -15,11 +15,11 @@
         "templateKeyPathsReg": [
           {
             "type": "object",
-            "path":  "\\[0\\]\\.children"
+            "path": "\\[0\\]\\.children"
           },
           {
             "type": "object",
-            "path":  "\\[1\\]\\.children"
+            "path": "\\[1\\]\\.children"
           }
         ],
         "value": [
@@ -27,53 +27,43 @@
             "key": "1",
             "label": "Tab 1",
             "children": {
-              "id": "c7",
-              "schemaType": "component",
-              "dependency": "antd",
-              "name": "Tabs",
-              "propsRefs": [
-                "items"
-              ]
+              "current": "c7",
+              "isText": false
             }
           },
           {
             "key": "2",
             "label": "Tab 2",
             "children": {
-              "id": "c8",
-              "schemaType": "component",
-              "dependency": "antd",
-              "name": "Button",
-              "children": [
-                "测试按钮3"
-              ]
+              "current": "c8",
+              "isText": false
             }
           }
         ]
       }
     },
     "c2": {
-      "columns":  {
+      "columns": {
         "id": "columns",
         "schemaType": "props",
         "name": "columns",
         "category": "basic",
         "valueType": "array",
         "valueSource": "editorInput",
-        "templateKeyPathsReg": [{
-          "path": "\\[\\d+\\]\\.render",
-          "type": "function"
-        }],
+        "templateKeyPathsReg": [
+          {
+            "path": "\\[\\d+\\]\\.render",
+            "type": "function"
+          }
+        ],
         "value": [
           {
             "title": "Name",
             "dataIndex": "name",
             "key": "name",
             "render": {
-              "id": "c13",
-              "schemaType": "component",
-              "name": "a",
-              "children": ["text"]
+              "current": "c13",
+              "isText": false
             }
           },
           {
@@ -85,25 +75,8 @@
             "title": "Action",
             "key": "action",
             "render": {
-              "id": "c14",
-              "schemaType": "component",
-              "dependency": "antd",
-              "name": "Space",
-              "propsRefs": ["size"],
-              "children": [
-                {
-                  "id": "c15",
-                  "schemaType": "component",
-                  "name": "a",
-                  "children": ["Invite Lida"]
-                },
-                {
-                  "id": "c16",
-                  "schemaType": "component",
-                  "name": "a",
-                  "children": ["Delete"]
-                }
-              ]
+              "current": "c14",
+              "isText": false
             }
           }
         ]
@@ -122,7 +95,10 @@
             "lastName": "Brown",
             "age": 32,
             "address": "New York No. 1 Lake Park",
-            "tags": ["nice", "developer"]
+            "tags": [
+              "nice",
+              "developer"
+            ]
           },
           {
             "key": "2",
@@ -130,7 +106,9 @@
             "lastName": "Green",
             "age": 42,
             "address": "London No. 1 Lake Park",
-            "tags": ["loser"]
+            "tags": [
+              "loser"
+            ]
           },
           {
             "key": "3",
@@ -138,7 +116,10 @@
             "lastName": "Black",
             "age": 32,
             "address": "Sydney No. 1 Lake Park",
-            "tags": ["cool", "teacher"]
+            "tags": [
+              "cool",
+              "teacher"
+            ]
           }
         ]
       }
@@ -198,11 +179,11 @@
         "templateKeyPathsReg": [
           {
             "type": "object",
-            "path":  "\\[0\\]\\.children"
+            "path": "\\[0\\]\\.children"
           },
           {
             "type": "object",
-            "path":  "\\[1\\]\\.children"
+            "path": "\\[1\\]\\.children"
           }
         ],
         "value": [
@@ -210,55 +191,16 @@
             "key": "1",
             "label": "测试 Tab 1",
             "children": {
-              "id": "c11",
-              "schemaType": "component",
-              "name": "div",
-              "children": [
-                {
-                  "id": "c2",
-                  "schemaType": "component",
-                  "dependency": "antd",
-                  "name": "Table",
-                  "propsRefs": [
-                    "columns",
-                    "dataSource"
-                  ]
-                },
-                {
-                  "id": "c9",
-                  "schemaType": "component",
-                  "dependency": "antd",
-                  "name": "Button",
-                  "children": [
-                    "测试按钮2"
-                  ]
-                }
-              ]
+              "current": "c11",
+              "isText": false
             }
           },
           {
             "key": "2",
             "label": "测试 Tab 2",
             "children": {
-              "id": "c12",
-              "name": "div",
-              "children": [
-                {
-                  "id": "c3",
-                  "dependency": "antd",
-                  "name": "Table",
-                  "propsRefs": []
-                },
-                {
-                  "id": "c10",
-                  "schemaType": "component",
-                  "dependency": "antd",
-                  "name": "Button",
-                  "children": [
-                    "测试按钮3"
-                  ]
-                }
-              ]
+              "current": "c12",
+              "isText": false
             }
           }
         ]
@@ -288,49 +230,213 @@
     }
   },
   "child": {
-    "id": "c0",
-    "schemaType": "component",
-    "name": "Col",
-    "dependency": "antd",
-    "children": [
-      {
-        "id": "c4",
-        "schemaType": "component",
-        "name": "Col",
-        "dependency": "antd",
-        "children": [
-          {
-            "id": "c5",
-            "schemaType": "component",
-            "callingName": "Input.Search",
-            "dependency": "antd",
-            "name": "Input",
-            "propsRefs": [
-              "value"
-            ]
-          },
-          {
-            "id": "c6",
-            "schemaType": "component",
-            "dependency": "antd",
-            "name": "Select",
-            "propsRefs": [
-              "value",
-              "options"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "c1",
-        "schemaType": "component",
-        "dependency": "antd",
-        "name": "Tabs",
-        "propsRefs": [
-          "items"
-        ]
-      }
-    ]
+    "current": "c0",
+    "isText": false
+  },
+  "componentIndexes": {
+    "c0": {
+      "id": "c0",
+      "schemaType": "component",
+      "name": "Col",
+      "dependency": "antd",
+      "children": [
+        {
+          "current": "c4",
+          "isText": false
+        },
+        {
+          "current": "c1",
+          "isText": false
+        }
+      ]
+    },
+    "c1": {
+      "id": "c1",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Tabs",
+      "propsRefs": [
+        "items"
+      ]
+    },
+    "c8": {
+      "id": "c8",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Button",
+      "children": [
+        {
+          "current": "测试按钮3",
+          "isText": true
+        }
+      ]
+    },
+    "c7": {
+      "id": "c7",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Tabs",
+      "propsRefs": [
+        "items"
+      ]
+    },
+    "c11": {
+      "id": "c11",
+      "schemaType": "component",
+      "name": "div",
+      "children": [
+        {
+          "current": "c12",
+          "isText": false
+        },
+        {
+          "current": "c9",
+          "isText": false
+        }
+      ]
+    },
+    "c9": {
+      "id": "c9",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Button",
+      "children": [
+        {
+          "current": "测试按钮2",
+          "isText": true
+        }
+      ]
+    },
+    "c2": {
+      "id": "c2",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Table",
+      "propsRefs": [
+        "columns",
+        "dataSource"
+      ]
+    },
+    "c14": {
+      "id": "c14",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Space",
+      "propsRefs": [
+        "size"
+      ],
+      "children": [
+        {
+          "current": "c15",
+          "isText": false
+        },
+        {
+          "current": "c16",
+          "isText": false
+        }
+      ]
+    },
+    "c16": {
+      "id": "c16",
+      "schemaType": "component",
+      "name": "a",
+      "children": [
+        {
+          "current": "Delete",
+          "isText": true
+        }
+      ]
+    },
+    "c15": {
+      "id": "c15",
+      "schemaType": "component",
+      "name": "a",
+      "children": [
+        {
+          "current": "Invite Lida",
+          "isText": true
+        }
+      ]
+    },
+    "c13": {
+      "id": "c13",
+      "schemaType": "component",
+      "name": "a",
+      "children": [
+        {
+          "current": "text",
+          "isText": true
+        }
+      ]
+    },
+    "c12": {
+      "id": "c12",
+      "name": "div",
+      "children": [
+        {
+          "current": "c3",
+          "isText": false
+        },
+        {
+          "current": "c10",
+          "isText": false
+        }
+      ]
+    },
+    "c10": {
+      "id": "c10",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Button",
+      "children": [
+        {
+          "current": "测试按钮3",
+          "isText": true
+        }
+      ]
+    },
+    "c3": {
+      "id": "c3",
+      "dependency": "antd",
+      "name": "Table",
+      "propsRefs": []
+    },
+    "c4": {
+      "id": "c4",
+      "schemaType": "component",
+      "name": "Col",
+      "dependency": "antd",
+      "children": [
+        {
+          "current": "c5",
+          "isText": false
+        },
+        {
+          "current": "c6",
+          "isText": false
+        }
+      ]
+    },
+    "c6": {
+      "id": "c6",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Select",
+      "propsRefs": [
+        "value",
+        "options"
+      ]
+    },
+    "c5": {
+      "id": "c5",
+      "schemaType": "component",
+      "callingName": "Input.Search",
+      "dependency": "antd",
+      "name": "Input",
+      "propsRefs": [
+        "value"
+      ]
+    }
   },
   "storage": {
     "inputSearchValue1": "测试"

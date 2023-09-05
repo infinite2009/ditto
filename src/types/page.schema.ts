@@ -7,8 +7,7 @@ import IActionSchema from '@/types/action.schema';
 import IEventSchema from '@/types/event.schema';
 import IHandlerSchema from '@/types/handler.schema';
 import { IHttpServiceSchema } from '@/types/http-service.schema';
-import { Simulate } from 'react-dom/test-utils';
-import keyDown = Simulate.keyDown;
+import ComponentSchemaRef from '@/types/component-schema-ref';
 
 export default interface IPageSchema extends ISchema {
   // 页面的总体介绍，用于写入代码文件的 desc 注释
@@ -20,7 +19,7 @@ export default interface IPageSchema extends ISchema {
     [key: ComponentId]: DynamicObject<IPropsSchema>;
   };
   // 页面的模板
-  child: IComponentSchema;
+  child: ComponentSchemaRef;
   // 客户端存储
   storage?: DynamicObject;
   // 从 url 获取参数
@@ -37,4 +36,8 @@ export default interface IPageSchema extends ISchema {
   };
   // 事件处理器
   handlers?: DynamicObject<IHandlerSchema>;
+  // 组件索引
+  componentIndexes: {
+    [key: ComponentId]: IComponentSchema;
+  };
 }

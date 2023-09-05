@@ -4,6 +4,7 @@
  */
 import ISchema from './schema';
 import { ImportType, PropsId } from '@/types/index';
+import ComponentSchemaRef from '@/types/component-schema-ref';
 
 export default interface IComponentSchema extends ISchema {
   parentId: string;
@@ -26,6 +27,5 @@ export default interface IComponentSchema extends ISchema {
   name: string;
   // 组件属性
   propsRefs: PropsId[];
-  children: IComponentSchema[] | string;
-  templates: IComponentSchema[];
+  children: ComponentSchemaRef[];
 }

@@ -1,22 +1,24 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, toJS } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateId, typeOf } from '@/util';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 import cloneDeep from 'lodash/cloneDeep';
 import IComponentConfig from '@/types/component-config';
+import ComponentSchemaRef from '@/types/component-schema-ref';
+import { ComponentId } from '@/types';
 
 export default class DSLStore {
   private static instance = new DSLStore();
   dsl: IPageSchema;
   componentStats: { [key: string]: number } = {};
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
-  currentParentNode: IComponentSchema | null = null;
+  currentParentNode: IComponentSchema | IPageSchema | null = null;
 
   private constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
     if (dsl) {
-      this.dsl = dsl;
+      this.initDSL(dsl);
     }
   }
 
@@ -47,17 +49,18 @@ export default class DSLStore {
       props: {},
       // 由于类型设计问题，这里需要初始化一个无效节点
       child: {
-        parentId: pageId,
-        id: '',
-        name: '',
-        dependency: '',
-        schemaType: 'component',
-        propsRefs: [],
-        children: [],
-        templates: []
-      }
+        current: '',
+        isText: true
+      },
+      componentIndexes: {}
     };
-    this.dsl.child = this.createEmptyContainer();
+    const emptyContainer = this.createEmptyContainer();
+    this.dsl.child = {
+      current: emptyContainer.id,
+      isText: false
+    };
+    console.log('empty container: ', toJS(emptyContainer));
+    console.log('this.dsl: ', toJS(this.dsl));
   }
 
   createComponent(name: string, dependency: string): IComponentSchema {
@@ -68,16 +71,27 @@ export default class DSLStore {
     }
     const componentId = `${name}${this.componentStats[name]}`;
     const componentConfig = fetchComponentConfig(name, dependency);
-    let children;
+    let children: ComponentSchemaRef[];
     if (componentConfig.isContainer) {
       children = [];
     } else if (componentConfig.children) {
       const { value } = componentConfig.children;
       const typeOfChildren = typeOf(value);
       if (typeOfChildren === 'array') {
-        children = [this.createEmptyContainer()];
+        const emptyContainer = this.createEmptyContainer();
+        children = [
+          {
+            current: emptyContainer.id,
+            isText: false
+          }
+        ];
       } else {
-        children = value;
+        children = [
+          {
+            current: value as string,
+            isText: true
+          }
+        ];
       }
     } else {
       children = [];
@@ -85,15 +99,15 @@ export default class DSLStore {
 
     const componentSchema: IComponentSchema = {
       id: componentId,
-      parentId: this.currentParentNode?.id as string,
+      parentId: (this.currentParentNode?.id || this.dsl.id) as string,
       schemaType: 'component',
       name: this.calculateComponentName(componentConfig),
       configName: componentConfig.configName,
       dependency: componentConfig.dependency,
       propsRefs: [],
-      children,
-      templates: []
+      children
     };
+
     if (componentConfig.importName) {
       componentSchema.importName = componentConfig.importName;
     }
@@ -115,6 +129,9 @@ export default class DSLStore {
       }
       componentSchema.propsRefs.push(name);
     });
+
+    // 加入索引，必须要放最后，因为 this.dsl.componentIndexes[componentSchema.id] 和 componentSchema 不是一个引用
+    this.dsl.componentIndexes[componentSchema.id] = componentSchema;
     return componentSchema;
   }
 
@@ -125,43 +142,47 @@ export default class DSLStore {
     this.currentParentNode = this.fetchComponentInDSL(parentId);
     if (this.currentParentNode) {
       const newComponentNode = this.createComponent(name, dependency);
+
       // 如果没有 children，初始化一个，如果需要初始化，说明初始化父节点的代码有 bug
       this.currentParentNode.children = this.currentParentNode.children || [];
+      const ref = {
+        current: newComponentNode.id,
+        isText: false
+      };
       if (insertIndex === -1) {
-        (this.currentParentNode.children as IComponentSchema[]).push(newComponentNode);
+        this.currentParentNode.children.push(ref);
       } else {
-        (this.currentParentNode.children as IComponentSchema[]).splice(insertIndex, 0, newComponentNode);
+        this.currentParentNode.children.splice(insertIndex, 0, ref);
       }
     } else {
       throw new Error(`未找到有效的父节点：${parentId}`);
     }
   }
 
-  deleteComponent(id: string) {
-    let q: IComponentSchema[] = [this.dsl.child];
-    while (q.length) {
-      const node = q.shift();
-      if (node) {
-        if (typeOf(node.children) === 'array' && node.children?.length) {
-          const index = (node.children as IComponentSchema[]).findIndex(item => item.id === id);
-          if (index > -1) {
-            return (node.children as IComponentSchema[]).splice(index, 1)[0];
-          }
-          q = q.concat(node.children as IComponentSchema[]);
-        }
+  /**
+   * 由于 DSL 的设计特性，嵌套的 template 之间一定会有一层容器作为插槽，所以删除插槽内的节点，只需要遍历插槽的 children
+   *
+   * @param id
+   */
+  deleteComponent(id: ComponentId, removeIndex = true): IComponentSchema | null {
+    const { componentIndexes } = this.dsl;
+    const component = componentIndexes[id];
+    const parent = componentIndexes[component.parentId];
+    if (parent) {
+      parent.children = parent.children.filter(item => item.current !== id);
+      if (removeIndex) {
+        delete componentIndexes[id];
       }
+      return component;
     }
     return null;
   }
 
   moveComponent(parentId: string, childId: string, insertIndex = -1) {
-    const parentNode = this.fetchComponentInDSL(parentId);
-    if (parentNode) {
-      if (typeOf(parentNode.children) !== 'array') {
-        return;
-      }
-      const children = parentNode.children as IComponentSchema[];
-      const childIndex = children.length ? children.findIndex(item => item.id === childId) : -1;
+    this.currentParentNode = this.fetchComponentInDSL(parentId);
+    if (this.currentParentNode) {
+      const { children } = this.currentParentNode;
+      const childIndex = children.length ? children.findIndex(item => item.current === childId && !item.isText) : -1;
       if (childIndex > -1) {
         const [child] = children.splice(childIndex, 1);
         if (insertIndex > childIndex) {
@@ -172,13 +193,19 @@ export default class DSLStore {
           children.splice(insertIndex, 0, child);
         }
       } else {
-        const childComponent = this.deleteComponent(childId);
+        const childComponent = this.deleteComponent(childId, false);
         if (childComponent) {
+          const ref = {
+            current: childComponent.id,
+            isText: false
+          };
           if (insertIndex === -1) {
-            (parentNode.children as IComponentSchema[]).push(childComponent);
+            children.push(ref);
           } else {
-            (parentNode.children as IComponentSchema[]).splice(insertIndex, 0, childComponent);
+            children.splice(insertIndex, 0, ref);
           }
+          // 变更父节点
+          childComponent.parentId = this.currentParentNode.id;
         }
       }
     } else {
@@ -195,20 +222,8 @@ export default class DSLStore {
   }
 
   fetchComponentInDSL(id: string) {
-    let q: IComponentSchema[] = [this.dsl.child];
-    while (q.length) {
-      const node = q.shift();
-      if (node) {
-        if (node.id === id) {
-          return node;
-        }
-        if (typeOf(node.children) === 'array' && node.children?.length) {
-          q = q.concat(node.children as IComponentSchema[]);
-          q = q.concat(node.templates as IComponentSchema[]);
-        }
-      }
-    }
-    return null;
+    const { componentIndexes } = this.dsl;
+    return componentIndexes[id];
   }
 
   createEmptyContainer() {
@@ -233,10 +248,10 @@ export default class DSLStore {
     // 如果当前 keyPath 命中正则表达式
     if (keyPathMatchResult) {
       const node = this.createEmptyContainer();
-      parent[key] = node.id;
-      if (this.currentParentNode) {
-        this.currentParentNode.templates.push(node);
-      }
+      parent[key] = {
+        current: node.id,
+        isText: false
+      };
     } else {
       const type = typeOf(data);
       if (type === 'object') {

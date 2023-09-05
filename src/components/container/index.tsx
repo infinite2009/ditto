@@ -5,7 +5,7 @@ import styles from './index.module.less';
 
 export interface IContainerProps {
   style: CSSProperties;
-  children: ReactNode;
+  children: ReactNode[];
 }
 
 export default function Container({ children, style }: IContainerProps) {
@@ -13,7 +13,7 @@ export default function Container({ children, style }: IContainerProps) {
     return {
       display: 'flex',
       ...style,
-      backgroundColor: children ? style.backgroundColor : '#eee'
+      backgroundColor: children?.length ? style.backgroundColor : '#eee'
     };
   }, [style, children]);
 
@@ -25,7 +25,7 @@ export default function Container({ children, style }: IContainerProps) {
   }, [children]);
 
   function renderChildren() {
-    if (children) {
+    if (children?.length) {
       return children;
     }
     return <div className={classes}>请拖入任意元素</div>;

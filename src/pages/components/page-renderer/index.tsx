@@ -8,6 +8,8 @@ import ComponentFeature from '@/types/component-feature';
 import DSLStore from '../../../service/dsl-store';
 import { observer } from 'mobx-react-lite';
 import IComponentConfig from '@/types/component-config';
+import ComponentSchemaRef from '@/types/component-schema-ref';
+import { toJS } from 'mobx';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -46,8 +48,13 @@ export default observer((props: IPageRendererProps) => {
     return wrapper.valueCopy;
   }
 
-  /*
+  /**
    * 把模板信息转换为 tsx
+   * @param data 传入的数据，可能会命中 template key path
+   * @param keyPathRegs
+   * @param parent
+   * @param key
+   * @param currentKeyPath
    */
   function convertTemplateInfo(
     data: any,
@@ -95,16 +102,15 @@ export default observer((props: IPageRendererProps) => {
 
   /**
    *
-   * @param node
+   * @param nodeRef
    * @param isSlot 当前组件是否是一个插槽
    */
-  function recursivelyRenderTemplate(node: IComponentSchema | string, isSlot = false) {
+  function recursivelyRenderTemplate(nodeRef: ComponentSchemaRef, isSlot = false) {
     // 判断节点的类型
-    const nodeType = typeOf(node);
-    // 如果是字符串类型，直接返回，它不会有子节点了
-    if (nodeType === 'string') {
-      return node as string;
+    if (nodeRef.isText) {
+      return nodeRef.current;
     }
+    const node = dslStore.dsl.componentIndexes[nodeRef.current];
 
     // 处理组件
     const { props = {} } = dslStore.dsl;
@@ -127,17 +133,13 @@ export default observer((props: IPageRendererProps) => {
       Component = componentConfig.component;
     }
     const componentProps = props[id] ? extractProps(props[id], propsRefs) : {};
-    let childrenTemplate = null;
-
-    const typeOfChildren = typeOf(children);
-
-    if (typeOfChildren === 'array' && children.length) {
-      childrenTemplate = (children as IComponentSchema[]).map(c =>
-        recursivelyRenderTemplate(c, !componentConfig?.isContainer)
-      );
-    } else if (typeOfChildren === 'string') {
-      childrenTemplate = children;
-    }
+    // console.log('componentProps: ', componentProps);
+    // console.log('props: ', toJS(props));
+    // console.log('id: ', id);
+    // console.log('propsRefs: ', toJS(propsRefs));
+    const childrenTemplate = children.map(c =>
+      c.isText ? c.current : recursivelyRenderTemplate(c, !componentConfig?.isContainer)
+    );
 
     const tpl = (
       <Component key={id} {...componentProps}>
@@ -153,7 +155,7 @@ export default observer((props: IPageRendererProps) => {
       feature = ComponentFeature.solid;
     }
 
-    const childId = typeOfChildren === 'array' ? (children as IComponentSchema[])?.map(c => c.id) || [] : undefined;
+    const childId = children.filter(c => !c.isText).map(c => c.current);
     return mode === 'edit' ? (
       <EditWrapper key={id} id={id} parentId={parentId} childrenId={childId} feature={feature}>
         {tpl}
