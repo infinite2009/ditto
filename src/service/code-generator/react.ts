@@ -2,8 +2,7 @@ import IPageSchema from '@/types/page.schema';
 import { toUpperCase, typeOf } from '@/util';
 import TypeScriptCodeGenerator, {
   IConstantOptions,
-  IFunctionOptions,
-  IImportOptions
+  IFunctionOptions
 } from '@/service/code-generator/typescript';
 import IComponentSchema from '@/types/component.schema';
 import { ImportType } from '@/types';
