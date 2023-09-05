@@ -86,7 +86,7 @@ export default function Editor() {
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
     activationConstraint: {
-      delay: 50,
+      delay: 100,
       tolerance: 10
     }
   });
