@@ -35,15 +35,15 @@ export default observer((props: IPageRendererProps) => {
   function extractSingleProp(propsSchema: IPropsSchema): any {
     const { templateKeyPathsReg, name, valueType, value, valueSource } = propsSchema;
     // 未防止 dsl props 部分被修改，导致渲染出问题，这里选择深拷贝
-    const cp = cloneDeep(value);
+    const valueCopy = cloneDeep(value);
     // 使用 wrapper 的原因是要能够拿到 cp 的引用，cp 可能会被完全替换为一个新对象，而 convertTemplateInfo 不能反悔新对象。
-    const wrapper = { cp };
+    const wrapper = { valueCopy };
     if (valueSource === 'editorInput') {
       if (templateKeyPathsReg?.length) {
-        convertTemplateInfo(cp, templateKeyPathsReg, wrapper, 'cp');
+        convertTemplateInfo(valueCopy, templateKeyPathsReg, wrapper, 'valueCopy');
       }
     }
-    return wrapper.cp;
+    return wrapper.valueCopy;
   }
 
   /*
