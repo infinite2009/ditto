@@ -1,12 +1,11 @@
 import IPageSchema from '@/types/page.schema';
 import { toUpperCase, typeOf } from '@/util';
-import TypeScriptCodeGenerator, {
-  IConstantOptions,
-  IFunctionOptions
-} from '@/service/code-generator/typescript';
+import TypeScriptCodeGenerator, { IConstantOptions, IFunctionOptions } from '@/service/code-generator/typescript';
 import IComponentSchema from '@/types/component.schema';
 import { ImportType } from '@/types';
 import IPropsSchema from '@/types/props.schema';
+import { ComponentRef } from 'react';
+import ComponentSchemaRef from '@/types/component-schema-ref';
 
 export interface ITSXOptions {
   text?: string;
@@ -184,7 +183,7 @@ export default class ReactCodeGenerator {
   analysisDsl(): IDSLStatsInfo {
     const { child, props, httpService, actions, handlers, name, desc } = this.dsl;
     // 初始化 tsxInfo，后边在这个 children 里边去遍历填充子节点信息
-    const result = this.analysisTemplate(child as unknown as IComponentSchema, props);
+    const result = this.analysisTemplate(child, props);
     result.pageName = name;
     return <IDSLStatsInfo>result;
   }
@@ -211,11 +210,13 @@ export default class ReactCodeGenerator {
   }
 
   analysisTemplate(
-    template: IComponentSchema,
+    templateRef: ComponentSchemaRef,
     propsDict: {
       [key: string]: { [key: string]: IPropsSchema };
     }
   ) {
+    const { componentIndexes } = this.dsl;
+    const template = componentIndexes[templateRef.current];
     const result: Partial<IDSLStatsInfo> = {
       importInfo: {
         react: {
@@ -237,18 +238,18 @@ export default class ReactCodeGenerator {
     // 初始化 tsxInfo，后边在这个 children 里边去遍历填充子节点信息
 
     // 广度遍历 components，获取其中的导入信息和 props
-    let q: (IComponentSchema | string)[] = [template];
+    let q: ComponentSchemaRef[] = [templateRef];
     let p: ITSXOptions[] = [result.tsxInfo as ITSXOptions];
     while (q.length) {
       // 弹出头部的节点
-      const node: IComponentSchema | string | undefined = q.shift();
-      if (node) {
+      const nodeRef: ComponentSchemaRef = q.shift() as ComponentSchemaRef;
+      if (nodeRef) {
+        const node = componentIndexes[nodeRef.current];
         const pNode = p.shift();
 
-        const nodeType = typeOf(node);
-        if (nodeType === 'string') {
+        if (nodeRef.isText) {
           if (pNode) {
-            pNode.text = node as string;
+            pNode.text = nodeRef.current;
           }
         } else {
           const {
@@ -316,16 +317,14 @@ export default class ReactCodeGenerator {
               }
             }
             // 初始化子节点
-            if (children && typeOf(children) === 'array') {
-              pNode.children = (children as IComponentSchema[]).map(() => {
-                return {
-                  componentName: '',
-                  propsStrArr: [],
-                  children: []
-                };
-              });
-              p = p.concat(pNode.children);
-            }
+            pNode.children = children.map(() => {
+              return {
+                componentName: '',
+                propsStrArr: [],
+                children: []
+              };
+            });
+            p = p.concat(pNode.children);
           }
 
           q = q.concat(children || []);
@@ -369,7 +368,6 @@ export default class ReactCodeGenerator {
 
     const componentPropsDict = propsDict[componentId];
 
-    // TODO: 这里要对 html 元素进行定开，后边改
     propsRefs.forEach(ref => {
       const props = componentPropsDict[ref];
       // 找不到的 ref 跳过
@@ -406,11 +404,9 @@ export default class ReactCodeGenerator {
                 value: this.tsCodeGenerator.generateObjectStrArr(
                   value,
                   templateKeyPathsReg,
-                  (val: string, wrapper: string[] = [], insertIndex = 0) => {
-                    // TODO：用 val 查出它对应的模板
-                    const template = component.templates.find(item => item.id === val) as IComponentSchema;
+                  (val: ComponentSchemaRef, wrapper: string[] = [], insertIndex = 0) => {
                     const { tsxInfo, importInfo, effectInfo, constantInfo, memoInfo, callbackInfo, stateInfo } =
-                      this.analysisTemplate(template, propsDict);
+                      this.analysisTemplate(val, propsDict);
                     // 合并统计分析
                     Object.assign(result.stateInfo as object, stateInfo);
                     Object.assign(result.callbackInfo as object, callbackInfo);

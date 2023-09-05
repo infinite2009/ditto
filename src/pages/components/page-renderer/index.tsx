@@ -133,10 +133,6 @@ export default observer((props: IPageRendererProps) => {
       Component = componentConfig.component;
     }
     const componentProps = props[id] ? extractProps(props[id], propsRefs) : {};
-    // console.log('componentProps: ', componentProps);
-    // console.log('props: ', toJS(props));
-    // console.log('id: ', id);
-    // console.log('propsRefs: ', toJS(propsRefs));
     const childrenTemplate = children.map(c =>
       c.isText ? c.current : recursivelyRenderTemplate(c, !componentConfig?.isContainer)
     );

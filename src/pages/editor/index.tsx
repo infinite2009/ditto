@@ -471,7 +471,6 @@ export default function Editor() {
   function createBlankPage() {
     const { name, desc } = form.getFieldsValue();
     dslStore.createEmptyPage(name, desc);
-    console.log('dsl store: ', toJS(dslStore.dsl));
     closePageCreationModal();
   }
 
