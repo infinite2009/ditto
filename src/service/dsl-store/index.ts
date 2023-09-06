@@ -61,7 +61,14 @@ export default class DSLStore {
     };
   }
 
-  createComponent(name: string, dependency: string): IComponentSchema {
+  /**
+   * 生成组件
+   *
+   * @param name
+   * @param dependency
+   * @param extProps 定开场景支持
+   */
+  createComponent(name: string, dependency: string, extProps: {[key: string]: any} | undefined = undefined): IComponentSchema {
     if (this.componentStats[name] === undefined) {
       this.componentStats[name] = 0;
     } else {
@@ -119,6 +126,14 @@ export default class DSLStore {
     Object.values(propsConfig).forEach(item => {
       const { name, value, templateKeyPathsReg = [] } = item;
       props[name] = item;
+      // 针对某些特殊情形
+      if (extProps) {
+        if (typeOf(props[name].value) === 'object') {
+          Object.assign(props[name].value, extProps[name]);
+        } else {
+          props[name].value = extProps[name];
+        }
+      }
       if (templateKeyPathsReg.length) {
         const cp = cloneDeep(value);
         const wrapper = { cp };
@@ -224,8 +239,8 @@ export default class DSLStore {
     return componentIndexes[id];
   }
 
-  createEmptyContainer() {
-    return this.createComponent('column', 'html');
+  createEmptyContainer(ext: {[key: string]:any} | undefined = undefined) {
+    return this.createComponent('column', 'html', ext);
   }
 
   setTemplateTo(
