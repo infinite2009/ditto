@@ -40,6 +40,24 @@
             }
           }
         ]
+      },
+      "tabBarExtraContent": {
+        "id": "items",
+        "schemaType": "props",
+        "name": "tabBarExtraContent",
+        "category": "basic",
+        "valueType": "object",
+        "valueSource": "editorInput",
+        "templateKeyPathsReg": [
+          {
+            "type": "object",
+            "path": ""
+          }
+        ],
+        "value": {
+          "current": "c17",
+          "isText": false
+        }
       }
     },
     "c2": {
@@ -256,7 +274,8 @@
       "dependency": "antd",
       "name": "Tabs",
       "propsRefs": [
-        "items"
+        "items",
+        "tabBarExtraContent"
       ]
     },
     "c8": {
@@ -435,6 +454,18 @@
       "name": "Input",
       "propsRefs": [
         "value"
+      ]
+    },
+    "c17": {
+      "id": "c17",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Button",
+      "children": [
+        {
+          "current": "新建按钮 C17",
+          "isText": true
+        }
       ]
     }
   },
