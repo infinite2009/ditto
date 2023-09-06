@@ -59,8 +59,6 @@ export default class DSLStore {
       current: emptyContainer.id,
       isText: false
     };
-    console.log('empty container: ', toJS(emptyContainer));
-    console.log('this.dsl: ', toJS(this.dsl));
   }
 
   createComponent(name: string, dependency: string): IComponentSchema {
