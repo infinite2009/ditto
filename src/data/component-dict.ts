@@ -536,6 +536,21 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
           }
         ],
         category: 'basic'
+      },
+      tabBarExtraContent: {
+        id: 'tabBarExtraContent',
+        schemaType: 'props',
+        name: 'tabBarExtraContent',
+        valueSource: 'editorInput',
+        valueType: 'object',
+        templateKeyPathsReg: [
+          {
+            type: 'object',
+            path: ''
+          }
+        ],
+        value: {},
+        category: 'basic'
       }
     }
   },
