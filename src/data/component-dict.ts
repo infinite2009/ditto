@@ -56,6 +56,7 @@ import { CodeSandboxOutlined } from '@ant-design/icons';
 import IComponentConfig from '@/types/component-config';
 import EditableText from '@/components/editable-text';
 import Container from '@/components/container';
+import PageRoot from '@/components/page-root';
 
 const Search = Input.Search;
 
@@ -760,6 +761,15 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
       value: '默认文字',
       category: 'children'
     }
+  },
+  pageRoot: {
+    configName: 'pageRoot',
+    category: 'hidden',
+    dependency: 'html',
+    component: EditableText,
+    title: '页面',
+    icon: CodeSandboxOutlined,
+    propsConfig: {}
   }
 };
 

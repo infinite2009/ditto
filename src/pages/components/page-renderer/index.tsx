@@ -105,7 +105,7 @@ export default observer((props: IPageRendererProps) => {
    * @param nodeRef
    * @param isSlot 当前组件是否是一个插槽
    */
-  function recursivelyRenderTemplate(nodeRef: ComponentSchemaRef, isSlot = false) {
+  function recursivelyRenderTemplate(nodeRef: ComponentSchemaRef, isSlot = false, isRoot = true) {
     // 判断节点的类型
     if (nodeRef.isText) {
       return nodeRef.current;
@@ -161,5 +161,5 @@ export default observer((props: IPageRendererProps) => {
     );
   }
 
-  return dslStore.dsl ? <div>{recursivelyRenderTemplate(dslStore.dsl.child, true)}</div> : <div>未获得有效的DSL</div>;
+  return dslStore.dsl ? <>{recursivelyRenderTemplate(dslStore.dsl.child, true)}</> : <div>未获得有效的DSL</div>;
 });

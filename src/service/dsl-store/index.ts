@@ -54,9 +54,9 @@ export default class DSLStore {
       },
       componentIndexes: {}
     };
-    const emptyContainer = this.createEmptyContainer();
+    const pageRoot = this.createPageRoot();
     this.dsl.child = {
-      current: emptyContainer.id,
+      current: pageRoot.id,
       isText: false
     };
   }
@@ -68,7 +68,11 @@ export default class DSLStore {
    * @param dependency
    * @param extProps 定开场景支持
    */
-  createComponent(name: string, dependency: string, extProps: {[key: string]: any} | undefined = undefined): IComponentSchema {
+  createComponent(
+    name: string,
+    dependency: string,
+    extProps: { [key: string]: any } | undefined = undefined
+  ): IComponentSchema {
     if (this.componentStats[name] === undefined) {
       this.componentStats[name] = 0;
     } else {
@@ -239,7 +243,7 @@ export default class DSLStore {
     return componentIndexes[id];
   }
 
-  createEmptyContainer(ext: {[key: string]:any} | undefined = undefined) {
+  createEmptyContainer(ext: { [key: string]: any } | undefined = undefined) {
     return this.createComponent('column', 'html', ext);
   }
 
@@ -292,5 +296,31 @@ export default class DSLStore {
       return callingName.replace(/\./g, '');
     }
     return importName || configName;
+  }
+
+  private createPageRoot() {
+    const name = 'pageRoot';
+    const dependency = 'html';
+    if (this.componentStats[name] === undefined) {
+      this.componentStats[name] = 0;
+    } else {
+      this.componentStats[name]++;
+    }
+    const componentId = `${name}${this.componentStats[name]}`;
+    const componentConfig = fetchComponentConfig(name, dependency);
+
+    const pageRoot: IComponentSchema = {
+      id: componentId,
+      parentId: (this.currentParentNode?.id || this.dsl.id) as string,
+      schemaType: 'component',
+      name: this.calculateComponentName(componentConfig),
+      configName: componentConfig.configName,
+      dependency: componentConfig.dependency,
+      propsRefs: [],
+      children: []
+    };
+
+    this.dsl.componentIndexes[componentId] = pageRoot;
+    return pageRoot;
   }
 }
