@@ -149,8 +149,6 @@ export default function EditWrapper({ id, parentId, childrenId, children, featur
       break;
   }
 
-  console.log('edit wrapper: ', isOver);
-
   return (
     <div id={id} ref={setNodeRef} {...listeners} {...attributes} style={style}>
       {children}

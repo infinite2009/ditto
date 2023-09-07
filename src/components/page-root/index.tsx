@@ -1,10 +1,9 @@
-import { CSSProperties, ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import classNames from 'classnames';
 
 import styles from './index.module.less';
-import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { useDroppable } from '@dnd-kit/core';
 import ComponentFeature from '@/types/component-feature';
-import { observer } from 'mobx-react-lite';
 
 export interface IPageRootProps {
   id: string;
@@ -21,23 +20,21 @@ export default function PageRoot({ id, childrenId, parentId, children }: IPageRo
       parentId,
       direction: 'column',
       feature: ComponentFeature.slot,
-      dndType: 'move'
+      dndType: 'root'
     }
   });
 
   const classes = useMemo(() => {
     return classNames({
       [styles.withoutChildren]: !children?.length,
-      [styles.main]: true
-      // [styles.outline]: isOver
+      [styles.main]: true,
+      [styles.outline]: isOver
     });
   }, [children]);
 
-  console.log('isOver', isOver);
-
   return (
-    <div>
-      <div ref={setNodeRef}>{children}</div>
+    <div className={classes} ref={setNodeRef}>
+      {children}
     </div>
   );
 }

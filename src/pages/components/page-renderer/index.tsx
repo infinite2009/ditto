@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, useContext } from 'react';
+import React, { FC, PropsWithChildren } from 'react';
 import IPropsSchema from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, typeOf } from '@/util';
@@ -9,7 +9,6 @@ import DSLStore from '../../../service/dsl-store';
 import { observer } from 'mobx-react-lite';
 import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
-import { toJS } from 'mobx';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -138,8 +137,19 @@ export default observer((props: IPageRendererProps) => {
       c.isText ? c.current : recursivelyRenderTemplate(c, !componentConfig?.isContainer)
     );
 
+    const childrenId = children.filter(c => !c.isText).map(c => c.current);
+
+    let rootProps = {};
+    if (isRoot) {
+      rootProps = {
+        id,
+        childrenId,
+        parentId: dslStore.dsl.id
+      };
+    }
+
     const tpl = (
-      <Component key={id} {...componentProps}>
+      <Component key={id} {...componentProps} {...rootProps}>
         {childrenTemplate}
       </Component>
     );
@@ -152,9 +162,8 @@ export default observer((props: IPageRendererProps) => {
       feature = ComponentFeature.solid;
     }
 
-    const childId = children.filter(c => !c.isText).map(c => c.current);
     return mode === 'edit' && !isRoot ? (
-      <EditWrapper key={id} id={id} parentId={parentId} childrenId={childId} feature={feature}>
+      <EditWrapper key={id} id={id} parentId={parentId} childrenId={childrenId} feature={feature}>
         {tpl}
       </EditWrapper>
     ) : (
