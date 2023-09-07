@@ -104,8 +104,9 @@ export default observer((props: IPageRendererProps) => {
    *
    * @param nodeRef
    * @param isSlot 当前组件是否是一个插槽
+   * @param isRoot
    */
-  function recursivelyRenderTemplate(nodeRef: ComponentSchemaRef, isSlot = false, isRoot = true) {
+  function recursivelyRenderTemplate(nodeRef: ComponentSchemaRef, isSlot = false, isRoot = false) {
     // 判断节点的类型
     if (nodeRef.isText) {
       return nodeRef.current;
@@ -152,7 +153,7 @@ export default observer((props: IPageRendererProps) => {
     }
 
     const childId = children.filter(c => !c.isText).map(c => c.current);
-    return mode === 'edit' ? (
+    return mode === 'edit' && !isRoot ? (
       <EditWrapper key={id} id={id} parentId={parentId} childrenId={childId} feature={feature}>
         {tpl}
       </EditWrapper>
@@ -161,5 +162,5 @@ export default observer((props: IPageRendererProps) => {
     );
   }
 
-  return dslStore.dsl ? <>{recursivelyRenderTemplate(dslStore.dsl.child, true)}</> : <div>未获得有效的DSL</div>;
+  return dslStore.dsl ? <>{recursivelyRenderTemplate(dslStore.dsl.child, true, true)}</> : <div>未获得有效的DSL</div>;
 });

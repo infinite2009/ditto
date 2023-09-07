@@ -761,6 +761,15 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
       value: '默认文字',
       category: 'children'
     }
+  },
+  pageRoot: {
+    configName: 'pageRoot',
+    category: 'hidden',
+    dependency: 'html',
+    component: PageRoot,
+    title: '页面',
+    icon: CodeSandboxOutlined,
+    propsConfig: {}
   }
 };
 

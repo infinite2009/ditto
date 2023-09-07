@@ -7,6 +7,8 @@ import cloneDeep from 'lodash/cloneDeep';
 import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import { ComponentId } from '@/types';
+import EditableText from '@/components/editable-text';
+import { CodeSandboxOutlined } from '@ant-design/icons';
 
 export default class DSLStore {
   private static instance = new DSLStore();
@@ -299,6 +301,26 @@ export default class DSLStore {
   }
 
   private createPageRoot() {
-    return this.createEmptyContainer({ style: {  } });
+    if (this.componentStats.pageRoot === undefined) {
+      this.componentStats.pageRoot = 0;
+    } else {
+      this.componentStats.pageRoot++;
+    }
+    const componentId = `pageRoot${this.componentStats.pageRoot}`;
+    const componentConfig = fetchComponentConfig('pageRoot', 'html');
+
+    const componentSchema: IComponentSchema = {
+      id: componentId,
+      parentId: (this.currentParentNode?.id || this.dsl.id) as string,
+      schemaType: 'component',
+      name: this.calculateComponentName(componentConfig),
+      configName: componentConfig.configName,
+      dependency: componentConfig.dependency,
+      propsRefs: [],
+      children: []
+    };
+
+    this.dsl.componentIndexes[componentSchema.id] = componentSchema;
+    return componentSchema;
   }
 }

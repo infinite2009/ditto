@@ -1,6 +1,24 @@
 .main {
-  position: absolute;
-  inset:0;
-  z-index:9;
-  overflow: auto;
+  flex-grow: 1;
+  transition: all 0.5s ease-in-out;
+}
+
+.outline {
+  outline: 2px solid #7193f1;
+  outline-offset: -2px;
+}
+
+.withoutChildren {
+  position: relative;
+
+  &:after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    line-height: 20px;
+    content: "请插入任意元素";
+    color: #aaa;
+  }
 }
