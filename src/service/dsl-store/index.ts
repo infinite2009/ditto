@@ -320,6 +320,13 @@ export default class DSLStore {
       children: []
     };
 
+    if (componentConfig.importName) {
+      componentSchema.importName = componentConfig.importName;
+    }
+    if (componentConfig.callingName) {
+      componentSchema.callingName = componentConfig.callingName;
+    }
+
     this.dsl.componentIndexes[componentSchema.id] = componentSchema;
     return componentSchema;
   }

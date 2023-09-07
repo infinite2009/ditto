@@ -751,7 +751,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
         value: {
           fontSize: 14,
           fontWeight: 500,
-          lineHeight: 30,
+          lineHeight: '30px',
           color: '#000'
         }
       }
@@ -764,6 +764,7 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
   },
   pageRoot: {
     configName: 'pageRoot',
+    callingName: 'div',
     category: 'hidden',
     dependency: 'html',
     component: PageRoot,
