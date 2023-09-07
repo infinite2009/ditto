@@ -299,28 +299,6 @@ export default class DSLStore {
   }
 
   private createPageRoot() {
-    const name = 'pageRoot';
-    const dependency = 'html';
-    if (this.componentStats[name] === undefined) {
-      this.componentStats[name] = 0;
-    } else {
-      this.componentStats[name]++;
-    }
-    const componentId = `${name}${this.componentStats[name]}`;
-    const componentConfig = fetchComponentConfig(name, dependency);
-
-    const pageRoot: IComponentSchema = {
-      id: componentId,
-      parentId: (this.currentParentNode?.id || this.dsl.id) as string,
-      schemaType: 'component',
-      name: this.calculateComponentName(componentConfig),
-      configName: componentConfig.configName,
-      dependency: componentConfig.dependency,
-      propsRefs: [],
-      children: []
-    };
-
-    this.dsl.componentIndexes[componentId] = pageRoot;
-    return pageRoot;
+    return this.createEmptyContainer({ style: { position: 'absolute', inset: 0, zIndex: 9, margin: 0, padding: 0 } });
   }
 }

@@ -88,6 +88,18 @@ export default function EditWrapper({ id, parentId, childrenId, children, featur
         wrapperElement.style.display = 'inline';
         break;
     }
+
+    // 处理定位问题
+    if (childElement.style.position === 'absolute') {
+      wrapperElement.style.position = childElement.style.position;
+      wrapperElement.style.top = childElement.style.top;
+      wrapperElement.style.right = childElement.style.right;
+      wrapperElement.style.bottom = childElement.style.bottom;
+      wrapperElement.style.left = childElement.style.left;
+      wrapperElement.style.inset = childElement.style.inset;
+      childElement.style.position = 'static';
+    }
+
     // 处理margin
     wrapperElement.style.marginLeft = childElement.style.marginLeft;
     wrapperElement.style.marginRight = childElement.style.marginRight;
