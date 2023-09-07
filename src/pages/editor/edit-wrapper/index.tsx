@@ -97,7 +97,12 @@ export default function EditWrapper({ id, parentId, childrenId, children, featur
       wrapperElement.style.bottom = childElement.style.bottom;
       wrapperElement.style.left = childElement.style.left;
       wrapperElement.style.inset = childElement.style.inset;
-      childElement.style.position = 'static';
+      wrapperElement.style.height = childElement.style.height;
+      wrapperElement.style.width = childElement.style.width;
+      childElement.style.top = '0px';
+      childElement.style.right = '0px';
+      childElement.style.bottom = '0px';
+      childElement.style.left = '0px';
     }
 
     // 处理margin
