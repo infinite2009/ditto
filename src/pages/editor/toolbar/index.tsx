@@ -53,6 +53,14 @@ export default function Toolbar({ onDo }: IToolbarProps) {
     }
   }
 
+  function handleOpenProject() {
+    if (onDo) {
+      onDo({
+        type: PageAction.openProject
+      });
+    }
+  }
+
   function handleSavingFile() {
     if (onDo) {
       onDo({
@@ -64,6 +72,7 @@ export default function Toolbar({ onDo }: IToolbarProps) {
   return (
     <div className={styles.main}>
       <div>
+        <Button onClick={handleOpenProject}>打开项目</Button>
         <Button type="primary" onClick={handleCreatingNewPage}><PlusOutlined />新建页面</Button>
         <Button onClick={handleSavingFile}>保存页面</Button>
       </div>

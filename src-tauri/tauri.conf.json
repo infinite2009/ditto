@@ -14,7 +14,8 @@
     "allowlist": {
       "all": false,
       "fs": {
-        "all": true
+        "all": true,
+        "scope": ["/Users/**"]
       },
       "path": {
         "all": true

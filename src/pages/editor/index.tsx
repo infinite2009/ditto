@@ -35,7 +35,7 @@ import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 import DSLStore from '@/service/dsl-store';
-import { exportReactPageCodeFile, savePageDSLFile } from '@/util';
+import { exportReactPageCodeFile, openProject, savePageDSLFile } from '@/service/file';
 import { toJS } from 'mobx';
 import { save } from '@tauri-apps/api/dialog';
 import { path } from '@tauri-apps/api';
@@ -464,6 +464,9 @@ export default function Editor() {
         break;
       case PageAction.saveFile:
         saveOrCreateFile();
+        break;
+      case PageAction.openProject:
+        openProject();
         break;
     }
   }

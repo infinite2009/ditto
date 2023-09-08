@@ -4,7 +4,8 @@ enum PageAction {
   redo,
   preview,
   exportCode,
-  saveFile
+  saveFile,
+  openProject
 }
 
 export default PageAction;
