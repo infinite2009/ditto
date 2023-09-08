@@ -23,6 +23,7 @@ interface EntryTree {
 class FileManager {
   private static instance = new FileManager();
   cache: AppData;
+  appDataPath = 'appData.json';
 
   private constructor() {
     this.cache = initialAppData;
@@ -57,8 +58,8 @@ class FileManager {
 
   async initAppData() {
     try {
+      const appDataPath = this.appDataPath;
       await appDataDir();
-      const appDataPath = 'appData.json';
       const doesExist = await exists(appDataPath, { dir: BaseDirectory.AppData });
       if (!doesExist) {
         const text = await createAsyncTask(() =>
@@ -70,6 +71,9 @@ class FileManager {
         );
         await createDir('', { dir: BaseDirectory.AppData, recursive: true });
         writeTextFile(appDataPath, text, { dir: BaseDirectory.AppData });
+      } else {
+        const text = await readTextFile(appDataPath, { dir: BaseDirectory.AppData });
+        this.cache = JSON.parse(text);
       }
     } catch (err) {
       console.error(err);
@@ -78,7 +82,7 @@ class FileManager {
 
   async saveAppData(data: Partial<{ currentFilePath: string; currentProject: string; recentProject: string }>) {
     try {
-      const appDataPath = 'app-data.json';
+      const appDataPath = this.appDataPath;
       const configText = await readTextFile(appDataPath, { dir: BaseDirectory.AppData });
       let config: Partial<AppData> = {};
       if (configText) {
