@@ -3,7 +3,7 @@ import * as prettier from 'prettier/standalone';
 import prettierConfig from '@/config/.prettierrc.json';
 import * as babel from 'prettier/parser-babel';
 import { RequiredOptions } from 'prettier';
-import { BaseDirectory, exists, readDir, readTextFile, writeTextFile } from '@tauri-apps/api/fs';
+import { BaseDirectory, createDir, exists, FileEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/api/fs';
 import { open } from '@tauri-apps/api/dialog';
 import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
@@ -13,85 +13,161 @@ import AppData from '@/types/app-data';
 import initialAppData from '@/config/app-data.json';
 import { appDataDir, documentDir } from '@tauri-apps/api/path';
 
-export async function savePageDSLFile(filePath: string, dsl: IPageSchema) {
-  const formattedContent = await createAsyncTask(() =>
-    prettier.format(JSON.stringify(dsl), {
-      ...prettierConfig,
-      parser: 'json',
-      plugins: [babel]
-    } as unknown as Partial<RequiredOptions>)
-  );
-  await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
+interface EntryTree {
+  key: string;
+  title: string;
+  children?: EntryTree[];
+  isLeaf?: boolean;
 }
 
-export async function exportReactPageCodeFile(filePath: string, dsl: IPageSchema) {
-  const react = new ReactCodeGenerator(dsl as unknown as IPageSchema, new TypeScriptCodeGenerator());
-  const formattedContent = await createAsyncTask(() =>
-    prettier.format(react.generatePageCode().join('\n'), {
-      ...prettierConfig,
-      parser: 'typescript',
-      plugins: [typescript]
-    } as unknown as Partial<RequiredOptions>)
-  );
-  await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
-}
+class FileManager {
+  private static instance = new FileManager();
+  cache: AppData;
 
-
-export async function saveAppData(data: Partial<{ currentFilePath : string; currentProject: string; recentProject: string }>) {
-  const appDataPath = 'app-data.json';
-  console.log('app data path: ', BaseDirectory.Data);
-  const configText = await readTextFile(appDataPath, { dir: BaseDirectory.Data });
-  let config: Partial<AppData> = {};
-  if (configText) {
-    config = JSON.parse(configText);
+  private constructor() {
+    this.cache = initialAppData;
   }
 
-  config.currentFilePath = data.currentFilePath || config.currentFilePath;
-
-  config.currentProject = data.currentProject || config.currentProject;
-
-  config.recentProjects = config.recentProjects || [];
-  const index = config.recentProjects.findIndex(item => item === data.recentProject);
-  if (index > -1) {
-    config.recentProjects.splice(index, 1);
-  }
-  if (data.recentProject) {
-    config.recentProjects.unshift();
+  static getInstance() {
+    return FileManager.instance;
   }
 
-  writeTextFile(appDataPath, JSON.stringify(config), { dir: BaseDirectory.AppData });
-}
+  async savePageDSLFile(filePath: string, dsl: IPageSchema) {
+    const formattedContent = await createAsyncTask(() =>
+      prettier.format(JSON.stringify(dsl), {
+        ...prettierConfig,
+        parser: 'json',
+        plugins: [babel]
+      } as unknown as Partial<RequiredOptions>)
+    );
+    await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
+  }
 
-export async function initAppData() {
-  try {
-    const appDataDir1 = await appDataDir();
-    console.log('appDataDir: ', appDataDir1);
-    const appDataPath = 'app-data.json';
-    const doesExist = await exists(appDataPath, { dir: BaseDirectory.AppData });
-    if (!doesExist) {
-      const text = JSON.stringify(initialAppData);
-      debugger;
-      writeTextFile(appDataPath, text, { dir: BaseDirectory.AppData });
+  async exportReactPageCodeFile(filePath: string, dsl: IPageSchema) {
+    const react = new ReactCodeGenerator(dsl as unknown as IPageSchema, new TypeScriptCodeGenerator());
+    const formattedContent = await createAsyncTask(() =>
+      prettier.format(react.generatePageCode().join('\n'), {
+        ...prettierConfig,
+        parser: 'typescript',
+        plugins: [typescript]
+      } as unknown as Partial<RequiredOptions>)
+    );
+    await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
+  }
+
+  async initAppData() {
+    try {
+      await appDataDir();
+      const appDataPath = 'appData.json';
+      const doesExist = await exists(appDataPath, { dir: BaseDirectory.AppData });
+      if (!doesExist) {
+        const text = await createAsyncTask(() =>
+          prettier.format(JSON.stringify(initialAppData), {
+            ...prettierConfig,
+            parser: 'json',
+            plugins: [babel]
+          } as unknown as Partial<RequiredOptions>)
+        );
+        await createDir('', { dir: BaseDirectory.AppData, recursive: true });
+        writeTextFile(appDataPath, text, { dir: BaseDirectory.AppData });
+      }
+    } catch (err) {
+      console.error(err);
     }
-  } catch (err) {
-    console.error(err);
+  }
+
+  async saveAppData(data: Partial<{ currentFilePath: string; currentProject: string; recentProject: string }>) {
+    try {
+      const appDataPath = 'app-data.json';
+      const configText = await readTextFile(appDataPath, { dir: BaseDirectory.AppData });
+      let config: Partial<AppData> = {};
+      if (configText) {
+        config = JSON.parse(configText);
+      }
+
+      config.currentFilePath = data.currentFilePath || config.currentFilePath;
+
+      config.currentProject = data.currentProject || config.currentProject;
+
+      config.recentProjects = config.recentProjects || [];
+      const index = config.recentProjects.findIndex(item => item === data.recentProject);
+      // 找到的话，就先剔除
+      if (index > -1) {
+        config.recentProjects.splice(index, 1);
+      }
+      if (data.recentProject) {
+        config.recentProjects.unshift(data.recentProject);
+      }
+
+      this.cache = Object.assign(this.cache, config);
+      writeTextFile(appDataPath, JSON.stringify(config), { dir: BaseDirectory.AppData });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async openProject() {
+    const documentDirPath = await documentDir();
+    const selected = (await open({
+      title: '打开文件夹',
+      directory: true,
+      defaultPath: documentDirPath
+    })) as string;
+    if (selected) {
+      await this.saveAppData({ recentProject: selected, currentProject: selected });
+    }
+  }
+
+  async generateProjectData() {
+    if (!this.cache.currentProject) {
+      return [];
+    }
+    const doesExist = await exists(this.cache.currentProject);
+    if (!doesExist) {
+      return [];
+    }
+
+    const entries: FileEntry[] = await readDir(this.cache.currentProject, { recursive: true });
+
+    function recursiveMap(entries: FileEntry[]) {
+      return entries
+        .filter(entry => (entry.name as string).endsWith('.json') || entry.children)
+        .map(entry => {
+          const r: EntryTree = {
+            key: entry.path,
+            title: (entry.name as string).replace(/\.[^/.]+$/, '')
+          };
+          if (entry.children) {
+            r.children = recursiveMap(entry.children);
+          } else {
+            r.isLeaf = true;
+          }
+          return r;
+        });
+    }
+
+    return recursiveMap(entries);
   }
 }
 
-export async function openProject() {
-  const documentDirPath = await documentDir();
-  const selected = await open({
-    title: '打开文件夹',
-    directory: true,
-    defaultPath: documentDirPath
-  }) as string;
-  if (selected) {
-    saveAppData({ recentProject: selected });
-    generateProjectData(selected as string);
-  }
+const fileManager = FileManager.getInstance();
+
+export function initAppData() {
+  return fileManager.initAppData();
 }
 
-export async function generateProjectData(projectPath: string) {
-  const entries = await readDir(projectPath);
-  debugger;
+export function generateProjectData() {
+  return fileManager.generateProjectData();
+}
+
+export function openProject() {
+  return fileManager.openProject();
+}
+
+export function exportReactPageCodeFile(filePath: string, dsl: IPageSchema) {
+  return fileManager.exportReactPageCodeFile(filePath, dsl);
+}
+
+export function savePageDSLFile(filePath: string, dsl: IPageSchema) {
+  return fileManager.savePageDSLFile(filePath, dsl);
 }

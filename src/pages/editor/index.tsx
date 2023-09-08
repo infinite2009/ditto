@@ -35,12 +35,12 @@ import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 import DSLStore from '@/service/dsl-store';
-import { exportReactPageCodeFile, openProject, savePageDSLFile } from '@/service/file';
 import { toJS } from 'mobx';
 import { save } from '@tauri-apps/api/dialog';
 import { path } from '@tauri-apps/api';
 import { dirname, join } from '@tauri-apps/api/path';
 import ComponentFeature from '@/types/component-feature';
+import { exportReactPageCodeFile, generateProjectData, openProject, savePageDSLFile } from '@/service/file';
 
 const collisionOffset = 4;
 
@@ -75,6 +75,7 @@ const tabsItems = [
 export default function Editor() {
   const [, setActiveId] = useState<string>('');
   const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
+  const [projectData, setProjectData] = useState<any[]>([]);
 
   const [form] = useForm();
 
@@ -458,15 +459,19 @@ export default function Editor() {
       case PageAction.undo:
         break;
       case PageAction.exportCode:
-        handleExportingReactPageCodeFile();
+        handleExportingReactPageCodeFile().then();
         break;
       case PageAction.preview:
         break;
       case PageAction.saveFile:
-        saveOrCreateFile();
+        saveOrCreateFile().then();
         break;
       case PageAction.openProject:
-        openProject();
+        openProject().then(() => {
+          generateProjectData().then(res => {
+            setProjectData(res);
+          });
+        });
         break;
     }
   }
@@ -498,7 +503,7 @@ export default function Editor() {
           <div className={styles.draggableArea}>
             <div className={styles.panel}>
               <div className={styles.pagePanel}>
-                <PagePanel />
+                <PagePanel data={projectData} />
               </div>
               <div className={styles.componentPanel}>
                 <Tabs items={tabsItems} />

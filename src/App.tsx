@@ -8,10 +8,14 @@ import { initAppData } from '@/service/file';
 function App() {
   const [, setLocation] = useLocation();
   useEffect(() => {
-    initAppData().then(() => {
+    init().then(() => {
+      setLocation('/home');
     });
-    setLocation('/home');
   }, []);
+
+  async function init() {
+    await initAppData();
+  }
 
   return (
     <div>

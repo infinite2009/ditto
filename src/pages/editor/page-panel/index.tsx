@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Menu, Tree } from 'antd';
-import { FileOutlined, FolderOutlined } from '@ant-design/icons';
+import { generateProjectData } from '@/service/file';
 
 interface PageData {
   key: string;
@@ -8,31 +8,11 @@ interface PageData {
   children?: PageData[];
 }
 
-export default function PagePanel() {
-  const [pages, setPages] = useState<PageData[]>([]);
+export interface IPagePanel {
+  data: any[];
+}
 
-  useEffect(() => {
-    fetchPages();
-  }, []);
-
-  function fetchPages() {
-    setPages([{
-      key: '1.2.0',
-      title: '1.2.0 迭代',
-      children: [{
-        key: '1.2.0-1',
-        title: '核心链路监控',
-      }]
-    }, {
-      key: '1.2.1',
-      title: '1.2.1 迭代',
-      children: [{
-        key: '1.2.1-1',
-        title: '核心链路监控改版'
-      }]
-    }]);
-  }
-
+export default function PagePanel({ data = [] }: IPagePanel) {
   function handlingSelect() {
     console.log('page selected');
   }
@@ -48,7 +28,7 @@ export default function PagePanel() {
         defaultExpandAll
         onSelect={handlingSelect}
         onExpand={handlingExpand}
-        treeData={pages}
+        treeData={data}
       />
     </div>
   );
