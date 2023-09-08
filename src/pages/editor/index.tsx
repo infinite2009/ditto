@@ -103,7 +103,12 @@ export default function Editor() {
     path.documentDir().then(p => {
       defaultPathRef.current = p;
     });
+    fetchProjectData().then();
   }, []);
+
+  async function fetchProjectData() {
+    setProjectData(await generateProjectData());
+  }
 
   function hideAnchor() {
     if (!dslStore) {
@@ -449,7 +454,7 @@ export default function Editor() {
     }
   }
 
-  function handleOnDo(e: PageActionEvent) {
+  async function handleOnDo(e: PageActionEvent) {
     switch (e.type) {
       case PageAction.createPage:
         openPageCreationModal();
@@ -467,11 +472,8 @@ export default function Editor() {
         saveOrCreateFile().then();
         break;
       case PageAction.openProject:
-        openProject().then(() => {
-          generateProjectData().then(res => {
-            setProjectData(res);
-          });
-        });
+        await openProject();
+        await fetchProjectData();
         break;
     }
   }
