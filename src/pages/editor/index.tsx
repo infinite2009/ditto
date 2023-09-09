@@ -38,9 +38,19 @@ import DSLStore from '@/service/dsl-store';
 import { toJS } from 'mobx';
 import { save } from '@tauri-apps/api/dialog';
 import { path } from '@tauri-apps/api';
-import { dirname, join } from '@tauri-apps/api/path';
+import { delimiter, dirname, join, sep } from '@tauri-apps/api/path';
 import ComponentFeature from '@/types/component-feature';
-import { exportReactPageCodeFile, generateProjectData, openProject, savePageDSLFile } from '@/service/file';
+import {
+  closeOpenedFile,
+  exportReactPageCodeFile,
+  fetchCurrentFile,
+  fetchOpenedFiles,
+  generateProjectData,
+  openFile,
+  openProject,
+  savePageDSLFile
+} from '@/service/file';
+import TabBar, { TabItem } from '@/pages/editor/tab-bar';
 
 const collisionOffset = 4;
 
@@ -76,6 +86,8 @@ export default function Editor() {
   const [, setActiveId] = useState<string>('');
   const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
   const [projectData, setProjectData] = useState<any[]>([]);
+  const [openedFiles, setOpenedFiles] = useState<TabItem[]>([]);
+  const [currentFile, setCurrentFile] = useState<string>('');
 
   const [form] = useForm();
 
@@ -104,7 +116,25 @@ export default function Editor() {
       defaultPathRef.current = p;
     });
     fetchProjectData().then();
+    fetchCurrentFileProxy();
+    fetchOpenedFilesProxy();
   }, []);
+
+  function fetchCurrentFileProxy() {
+    setCurrentFile(fetchCurrentFile());
+  }
+
+  function fetchOpenedFilesProxy() {
+    setOpenedFiles(
+      fetchOpenedFiles().map(file => {
+        const arr = file.split(sep);
+        return {
+          title: arr[arr.length - 1].replace(/\.[^/.]+$/, ''),
+          val: file
+        };
+      })
+    );
+  }
 
   async function fetchProjectData() {
     setProjectData(await generateProjectData());
@@ -484,6 +514,22 @@ export default function Editor() {
     closePageCreationModal();
   }
 
+  const handleSelectingTab = useCallback((selected: string) => {
+    setCurrentFile(selected);
+  }, []);
+
+  const handleClosingTab = useCallback(async (selected: string) => {
+    await closeOpenedFile(selected);
+    fetchCurrentFileProxy();
+    fetchOpenedFilesProxy();
+  }, []);
+
+  const handleSelectingPage = useCallback((page: string) => {
+    openFile(page);
+    fetchOpenedFilesProxy();
+    fetchCurrentFileProxy();
+  }, []);
+
   return (
     <div className={styles.main}>
       <Toolbar onDo={handleOnDo} />
@@ -505,7 +551,7 @@ export default function Editor() {
           <div className={styles.draggableArea}>
             <div className={styles.panel}>
               <div className={styles.pagePanel}>
-                <PagePanel data={projectData} />
+                <PagePanel data={projectData} onSelect={handleSelectingPage} />
               </div>
               <div className={styles.componentPanel}>
                 <Tabs items={tabsItems} />
@@ -513,6 +559,12 @@ export default function Editor() {
             </div>
             <div className={styles.canvas}>
               <div className={styles.canvasInner}>
+                <TabBar
+                  data={openedFiles}
+                  selected={currentFile}
+                  onSelect={handleSelectingTab}
+                  onClose={handleClosingTab}
+                />
                 <PageRenderer mode="edit" dslStore={dslStore} />
               </div>
             </div>

@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Menu, Tree } from 'antd';
-import { generateProjectData } from '@/service/file';
+import { Tree } from 'antd';
+import { Key } from 'antd/es/table/interface';
 
 interface PageData {
   key: string;
@@ -9,12 +8,15 @@ interface PageData {
 }
 
 export interface IPagePanel {
-  data: any[];
+  data: PageData[];
+  onSelect: (page: string) => void;
 }
 
-export default function PagePanel({ data = [] }: IPagePanel) {
-  function handlingSelect() {
-    console.log('page selected');
+export default function PagePanel({ data = [], onSelect }: IPagePanel) {
+  function handlingSelect(selectedKeys: Key[]) {
+    if (onSelect) {
+      onSelect(selectedKeys[0] as string);
+    }
   }
 
   function handlingExpand() {

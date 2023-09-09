@@ -1,0 +1,38 @@
+.main {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.tabItem {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 4px 10px;
+  outline: 1px solid #7c7c7c;
+  transition: all 0.5s ease-in-out;
+  &:hover {
+    background: #eee;
+    transition: all 0.5s ease-in-out;
+  }
+}
+
+.title {
+  max-width: 120px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  cursor: default;
+}
+
+.selected {
+  border-bottom: 4px solid #396cd8;
+  background-color: #eee;
+}
+
+.closeIcon {
+  font-size: 12px;
+}

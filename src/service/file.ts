@@ -80,7 +80,14 @@ class FileManager {
     }
   }
 
-  async saveAppData(data: Partial<{ currentFile: string; currentProject: string; recentProject: string }>) {
+  async saveAppData(
+    data: Partial<{
+      currentFile: string;
+      currentProject: string;
+      recentProject: string;
+      openedFiles: string[];
+    }>
+  ) {
     try {
       const appDataPath = this.appDataPath;
       const configText = await readTextFile(appDataPath, { dir: BaseDirectory.AppData });
@@ -88,6 +95,8 @@ class FileManager {
       if (configText) {
         config = JSON.parse(configText);
       }
+
+      config.openedFiles = data.openedFiles;
 
       config.currentFile = data.currentFile || config.currentFile;
 
@@ -152,6 +161,49 @@ class FileManager {
 
     return recursiveMap(entries);
   }
+
+  async closeOpenedFile(file: string) {
+    const index = this.cache.openedFiles.findIndex(item => item === file);
+    if (this.cache.openedFiles.length && index > -1) {
+      if (index === 0) {
+        this.cache.currentFile = this.cache.openedFiles[1];
+      } else {
+        this.cache.currentFile = this.cache.openedFiles[index - 1];
+      }
+      this.cache.openedFiles.splice(index, 1);
+      await this.saveAppData({
+        currentFile: this.cache.currentFile,
+        openedFiles: this.cache.openedFiles
+      });
+    }
+  }
+
+  fetchOpenedFiles() {
+    return this.cache.openedFiles;
+  }
+
+  fetchCurrentFile() {
+    return this.cache.currentFile;
+  }
+
+  openFile(file: string) {
+    if (this.cache.openedFiles.includes(file)) {
+      return;
+    }
+    this.cache.openedFiles.push(file);
+    this.cache.currentFile = file;
+    this.saveAppData({
+      openedFiles: this.cache.openedFiles,
+      currentFile: this.cache.currentFile
+    });
+  }
+
+  selectFile(file: string) {
+    this.cache.currentFile = file;
+    this.saveAppData({
+      currentFile: this.cache.currentFile
+    });
+  }
 }
 
 const fileManager = FileManager.getInstance();
@@ -174,4 +226,24 @@ export function exportReactPageCodeFile(filePath: string, dsl: IPageSchema) {
 
 export function savePageDSLFile(filePath: string, dsl: IPageSchema) {
   return fileManager.savePageDSLFile(filePath, dsl);
+}
+
+export function closeOpenedFile(file: string) {
+  return fileManager.closeOpenedFile(file);
+}
+
+export function fetchCurrentFile() {
+  return fileManager.fetchCurrentFile();
+}
+
+export function fetchOpenedFiles() {
+  return fileManager.fetchOpenedFiles();
+}
+
+export function openFile(file: string) {
+  return fileManager.openFile(file);
+}
+
+export function selectFile(file: string) {
+  return fileManager.selectFile(file);
 }
