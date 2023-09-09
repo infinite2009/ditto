@@ -80,7 +80,7 @@ class FileManager {
     }
   }
 
-  async saveAppData(data: Partial<{ currentFilePath: string; currentProject: string; recentProject: string }>) {
+  async saveAppData(data: Partial<{ currentFile: string; currentProject: string; recentProject: string }>) {
     try {
       const appDataPath = this.appDataPath;
       const configText = await readTextFile(appDataPath, { dir: BaseDirectory.AppData });
@@ -89,7 +89,7 @@ class FileManager {
         config = JSON.parse(configText);
       }
 
-      config.currentFilePath = data.currentFilePath || config.currentFilePath;
+      config.currentFile = data.currentFile || config.currentFile;
 
       config.currentProject = data.currentProject || config.currentProject;
 

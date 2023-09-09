@@ -1,5 +1,5 @@
 export default interface AppData {
-  currentFilePath: string;
+  currentFile: string;
   currentProject: string;
   recentProjects: string[];
 }
