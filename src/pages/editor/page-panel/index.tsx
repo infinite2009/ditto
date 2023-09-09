@@ -9,29 +9,20 @@ interface PageData {
 
 export interface IPagePanel {
   data: PageData[];
+  selected: string;
   onSelect: (page: string) => void;
 }
 
-export default function PagePanel({ data = [], onSelect }: IPagePanel) {
+export default function PagePanel({ data = [], selected, onSelect }: IPagePanel) {
   function handlingSelect(selectedKeys: Key[]) {
     if (onSelect) {
       onSelect(selectedKeys[0] as string);
     }
   }
 
-  function handlingExpand() {
-    console.log('folder expanded');
-  }
-
   return (
     <div>
-      <Tree.DirectoryTree
-        multiple
-        defaultExpandAll
-        onSelect={handlingSelect}
-        onExpand={handlingExpand}
-        treeData={data}
-      />
+      <Tree.DirectoryTree selectedKeys={[selected]} defaultExpandAll onSelect={handlingSelect} treeData={data} />
     </div>
   );
 }

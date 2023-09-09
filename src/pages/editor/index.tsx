@@ -38,7 +38,7 @@ import DSLStore from '@/service/dsl-store';
 import { toJS } from 'mobx';
 import { save } from '@tauri-apps/api/dialog';
 import { path } from '@tauri-apps/api';
-import { delimiter, dirname, join, sep } from '@tauri-apps/api/path';
+import { dirname, join, sep } from '@tauri-apps/api/path';
 import ComponentFeature from '@/types/component-feature';
 import {
   closeOpenedFile,
@@ -551,7 +551,7 @@ export default function Editor() {
           <div className={styles.draggableArea}>
             <div className={styles.panel}>
               <div className={styles.pagePanel}>
-                <PagePanel data={projectData} onSelect={handleSelectingPage} />
+                <PagePanel data={projectData} onSelect={handleSelectingPage} selected={currentFile} />
               </div>
               <div className={styles.componentPanel}>
                 <Tabs items={tabsItems} />

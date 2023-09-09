@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  box-shadow: 2px 2px rgba(0, 0, 0, 0.3);
 }
 
 .tabItem {
@@ -11,7 +12,6 @@
   align-items: center;
   flex-shrink: 0;
   padding: 4px 10px;
-  outline: 1px solid #7c7c7c;
   transition: all 0.5s ease-in-out;
   &:hover {
     background: #eee;
@@ -20,6 +20,7 @@
 }
 
 .title {
+  margin-right: 8px;
   max-width: 120px;
   overflow: hidden;
   white-space: nowrap;
