@@ -419,14 +419,14 @@ export default function Editor() {
   }
 
   async function saveOrCreateFile() {
-    const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, 'index.json');
+    const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, 'index.ditto');
     const selectedFile = await save({
       title: '新建页面',
       defaultPath,
       filters: [
         {
-          name: 'JSON文件',
-          extensions: ['json']
+          name: 'Ditto文件',
+          extensions: ['ditto']
         }
       ]
     });

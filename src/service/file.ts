@@ -135,7 +135,7 @@ class FileManager {
 
     function recursiveMap(entries: FileEntry[]) {
       return entries
-        .filter(entry => (entry.name as string).endsWith('.json') || entry.children)
+        .filter(entry => (entry.name as string).endsWith('.ditto') || entry.children)
         .map(entry => {
           const r: EntryTree = {
             key: entry.path,
