@@ -109,19 +109,19 @@ export default function Editor() {
   const dslStore = DSLStore.createInstance();
 
   useEffect(() => {
-    fetchDSL().then(data => {
-      dslStore.initDSL(data);
-    });
     path.documentDir().then(p => {
       defaultPathRef.current = p;
     });
-    fetchProjectData().then();
-    fetchCurrentFileProxy();
-    fetchOpenedFilesProxy();
+    fetchProjectData().then(() => {
+      fetchCurrentFileProxy();
+      fetchOpenedFilesProxy();
+    });
   }, []);
 
   function fetchCurrentFileProxy() {
-    setCurrentFile(fetchCurrentFile());
+    const currentFile = fetchCurrentFile();
+    openFileProxy(currentFile);
+    setCurrentFile(currentFile);
   }
 
   function fetchOpenedFilesProxy() {
@@ -192,12 +192,6 @@ export default function Editor() {
     // 重置插入索引
     resetInsertIndexRef();
     hideAnchor();
-  }
-
-  async function fetchDSL(): Promise<IPageSchema> {
-    return new Promise<IPageSchema>(resolve => {
-      resolve(dsl as unknown as IPageSchema);
-    });
   }
 
   function isInRect(
@@ -463,6 +457,7 @@ export default function Editor() {
     if (selectedFile) {
       filePathRef.current = await dirname(selectedFile);
       await savePageDSLFile(selectedFile, toJS(dslStore.dsl));
+      fetchProjectData();
     }
   }
 
@@ -515,6 +510,7 @@ export default function Editor() {
   }
 
   const handleSelectingTab = useCallback((selected: string) => {
+    openFileProxy(selected);
     setCurrentFile(selected);
   }, []);
 
@@ -524,11 +520,23 @@ export default function Editor() {
     fetchOpenedFilesProxy();
   }, []);
 
-  const handleSelectingPage = useCallback((page: string) => {
-    openFile(page);
-    fetchOpenedFilesProxy();
-    fetchCurrentFileProxy();
-  }, []);
+  async function openFileProxy(page: string) {
+    const content = await openFile(page);
+    if (content) {
+      dslStore.initDSL(JSON.parse(content));
+    } else {
+      message.error('文件已损坏!');
+    }
+  }
+
+  const handleSelectingPage = useCallback(
+    async (page: string) => {
+      await openFileProxy(page);
+      fetchOpenedFilesProxy();
+      fetchCurrentFileProxy();
+    },
+    [openFileProxy, fetchOpenedFilesProxy, fetchCurrentFileProxy]
+  );
 
   return (
     <div className={styles.main}>

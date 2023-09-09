@@ -131,7 +131,7 @@ class FileManager {
     }
   }
 
-  async generateProjectData() {
+  async fetchProjectData() {
     if (!this.cache.currentProject) {
       return [];
     }
@@ -142,6 +142,8 @@ class FileManager {
 
     const entries: FileEntry[] = await readDir(this.cache.currentProject, { recursive: true });
 
+    const files: string[] = [];
+
     function recursiveMap(entries: FileEntry[]) {
       return entries
         .filter(entry => (entry.name as string).endsWith('.ditto') || entry.children)
@@ -150,6 +152,7 @@ class FileManager {
             key: entry.path,
             title: (entry.name as string).replace(/\.[^/.]+$/, '')
           };
+          files.push(entry.path);
           if (entry.children) {
             r.children = recursiveMap(entry.children);
           } else {
@@ -159,7 +162,12 @@ class FileManager {
         });
     }
 
-    return recursiveMap(entries);
+    const result = recursiveMap(entries);
+    this.cache.openedFiles = this.cache.openedFiles.filter(f => files.includes(f));
+    this.saveAppData({
+      openedFiles: this.cache.openedFiles
+    });
+    return result;
   }
 
   async closeOpenedFile(file: string) {
@@ -186,23 +194,24 @@ class FileManager {
     return this.cache.currentFile;
   }
 
-  openFile(file: string) {
-    if (this.cache.openedFiles.includes(file)) {
-      return;
+  openFile(file: string): Promise<string> | undefined {
+    if (!this.cache.openedFiles.includes(file)) {
+      this.cache.openedFiles.push(file);
+      this.cache.currentFile = file;
+      this.saveAppData({
+        openedFiles: this.cache.openedFiles,
+        currentFile: this.cache.currentFile
+      });
     }
-    this.cache.openedFiles.push(file);
-    this.cache.currentFile = file;
-    this.saveAppData({
-      openedFiles: this.cache.openedFiles,
-      currentFile: this.cache.currentFile
-    });
+    return readTextFile(file);
   }
 
-  selectFile(file: string) {
+  selectFile(file: string): Promise<string> {
     this.cache.currentFile = file;
     this.saveAppData({
       currentFile: this.cache.currentFile
     });
+    return readTextFile(file);
   }
 }
 
@@ -213,7 +222,7 @@ export function initAppData() {
 }
 
 export function generateProjectData() {
-  return fileManager.generateProjectData();
+  return fileManager.fetchProjectData();
 }
 
 export function openProject() {
