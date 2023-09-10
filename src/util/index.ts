@@ -34,3 +34,7 @@ export function fetchComponentConfig(configName: string, dependency: string) {
 export function createAsyncTask(task: (...args: any[]) => string) {
   return Promise.resolve(task).then(res => res());
 }
+
+export function getFileName(path: string) {
+  return path.replace(/\.[^/.]+$/, '');
+}

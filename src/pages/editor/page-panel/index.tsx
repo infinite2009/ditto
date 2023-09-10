@@ -1,5 +1,6 @@
 import { Tree } from 'antd';
 import { Key } from 'antd/es/table/interface';
+import { useCallback, useEffect } from 'react';
 
 interface PageData {
   key: string;
@@ -14,14 +15,17 @@ export interface IPagePanel {
 }
 
 export default function PagePanel({ data = [], selected, onSelect }: IPagePanel) {
-  function handlingSelect(_: any, data: any) {
-    if (onSelect) {
-      const selected = data.selectedNodes[0];
-      if (selected.isLeaf) {
-        onSelect(selected.key as string);
+  const handlingSelect = useCallback(
+    (_: any, data: any) => {
+      if (onSelect) {
+        const selected = data.selectedNodes[0];
+        if (selected.isLeaf) {
+          onSelect(selected.key as string);
+        }
       }
-    }
-  }
+    },
+    [onSelect, data]
+  );
 
   return (
     <div>

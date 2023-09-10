@@ -8,7 +8,7 @@ import { open } from '@tauri-apps/api/dialog';
 import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import * as typescript from 'prettier/parser-typescript';
-import { createAsyncTask } from '@/util';
+import { createAsyncTask, getFileName } from '@/util';
 import AppData from '@/types/app-data';
 import initialAppData from '@/config/app-data.json';
 import { appDataDir, documentDir } from '@tauri-apps/api/path';
@@ -84,7 +84,7 @@ class FileManager {
     data: Partial<{
       currentFile: string;
       currentProject: string;
-      recentProject: string;
+      recentProjects: string;
       openedFiles: string[];
     }>
   ) {
@@ -96,20 +96,16 @@ class FileManager {
         config = JSON.parse(configText);
       }
 
-      config.openedFiles = data.openedFiles;
-
-      config.currentFile = data.currentFile || config.currentFile;
-
-      config.currentProject = data.currentProject || config.currentProject;
+      Object.assign(config, data);
 
       config.recentProjects = config.recentProjects || [];
-      const index = config.recentProjects.findIndex(item => item === data.recentProject);
+      const index = config.recentProjects.findIndex(item => item === data.currentProject);
       // 找到的话，就先剔除
       if (index > -1) {
         config.recentProjects.splice(index, 1);
       }
-      if (data.recentProject) {
-        config.recentProjects.unshift(data.recentProject);
+      if (data.currentProject) {
+        config.recentProjects.unshift(data.currentProject);
       }
 
       this.cache = Object.assign(this.cache, config);
@@ -127,7 +123,7 @@ class FileManager {
       defaultPath: documentDirPath
     })) as string;
     if (selected) {
-      await this.saveAppData({ recentProject: selected, currentProject: selected });
+      await this.saveAppData({ currentProject: selected });
     }
   }
 
@@ -150,7 +146,7 @@ class FileManager {
         .map(entry => {
           const r: EntryTree = {
             key: entry.path,
-            title: (entry.name as string).replace(/\.[^/.]+$/, '')
+            title: getFileName(entry.name as string)
           };
           files.push(entry.path);
           if (entry.children) {
@@ -195,14 +191,14 @@ class FileManager {
   }
 
   openFile(file: string): Promise<string> | undefined {
+    this.cache.currentFile = file;
     if (!this.cache.openedFiles.includes(file)) {
       this.cache.openedFiles.push(file);
-      this.cache.currentFile = file;
-      this.saveAppData({
-        openedFiles: this.cache.openedFiles,
-        currentFile: this.cache.currentFile
-      });
     }
+    this.saveAppData({
+      openedFiles: this.cache.openedFiles,
+      currentFile: this.cache.currentFile
+    });
     return readTextFile(file);
   }
 
@@ -219,6 +215,17 @@ const fileManager = FileManager.getInstance();
 
 export function initAppData() {
   return fileManager.initAppData();
+}
+
+export function saveAppData(
+  data: Partial<{
+    currentFile: string;
+    currentProject: string;
+    recentProjects: string;
+    openedFiles: string[];
+  }>
+) {
+  return fileManager.saveAppData(data);
 }
 
 export function generateProjectData() {

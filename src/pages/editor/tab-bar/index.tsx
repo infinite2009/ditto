@@ -16,17 +16,23 @@ export interface ITabBarProps {
 }
 
 export default function TabBar({ data, selected, onSelect, onClose }: ITabBarProps) {
-  const handleClosingTab = useCallback((item: TabItem) => {
-    if (onClose) {
-      onClose(item.val, item);
-    }
-  }, []);
+  const handleClosingTab = useCallback(
+    (item: TabItem) => {
+      if (onClose) {
+        onClose(item.val, item);
+      }
+    },
+    [onClose]
+  );
 
-  const handleSelectingTab = useCallback((item: TabItem) => {
-    if (onSelect) {
-      onSelect(item.val, item);
-    }
-  }, []);
+  const handleSelectingTab = useCallback(
+    (item: TabItem) => {
+      if (onSelect) {
+        onSelect(item.val, item);
+      }
+    },
+    [onSelect]
+  );
 
   const calcClasses = useCallback(
     (item: TabItem) => {

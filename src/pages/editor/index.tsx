@@ -41,16 +41,17 @@ import { path } from '@tauri-apps/api';
 import { dirname, join, sep } from '@tauri-apps/api/path';
 import ComponentFeature from '@/types/component-feature';
 import {
-  closeOpenedFile,
   exportReactPageCodeFile,
   fetchCurrentFile,
   fetchOpenedFiles,
   generateProjectData,
   openFile,
   openProject,
+  saveAppData,
   savePageDSLFile
 } from '@/service/file';
 import TabBar, { TabItem } from '@/pages/editor/tab-bar';
+import Empty from '@/pages/editor/empty';
 
 const collisionOffset = 4;
 
@@ -120,8 +121,9 @@ export default function Editor() {
 
   function fetchCurrentFileProxy() {
     const currentFile = fetchCurrentFile();
-    openFileProxy(currentFile);
-    setCurrentFile(currentFile);
+    if (currentFile) {
+      setCurrentFile(currentFile);
+    }
   }
 
   function fetchOpenedFilesProxy() {
@@ -509,16 +511,39 @@ export default function Editor() {
     closePageCreationModal();
   }
 
-  const handleSelectingTab = useCallback((selected: string) => {
-    openFileProxy(selected);
-    setCurrentFile(selected);
-  }, []);
+  useEffect(() => {
+    if (currentFile) {
+      openFileProxy(currentFile);
+      if (!openedFiles.find(item => item.val === currentFile)) {
+        const arr = currentFile.split(sep);
+        openedFiles.push({
+          title: arr[arr.length - 1].replace(/\.[^/.]+$/, ''),
+          val: currentFile
+        });
+        setOpenedFiles([...openedFiles]);
+      }
+      saveAppData({
+        currentFile,
+        openedFiles: openedFiles.map(item => item.val)
+      });
+    }
+  }, [currentFile, openedFiles]);
 
-  const handleClosingTab = useCallback(async (selected: string) => {
-    await closeOpenedFile(selected);
-    fetchCurrentFileProxy();
-    fetchOpenedFilesProxy();
-  }, []);
+  function handleClosingTab(selected: string) {
+    const index = openedFiles.findIndex(item => item.val === selected);
+    if (openedFiles.length && index > -1) {
+      if (index === 0) {
+        setCurrentFile(openedFiles[1].val);
+      } else {
+        setCurrentFile(openedFiles[index - 1].val);
+      }
+      openedFiles.splice(index, 1);
+      saveAppData({
+        currentFile: currentFile,
+        openedFiles: openedFiles.map(item => item.val)
+      });
+    }
+  }
 
   async function openFileProxy(page: string) {
     const content = await openFile(page);
@@ -529,14 +554,9 @@ export default function Editor() {
     }
   }
 
-  const handleSelectingPage = useCallback(
-    async (page: string) => {
-      await openFileProxy(page);
-      fetchOpenedFilesProxy();
-      fetchCurrentFileProxy();
-    },
-    [openFileProxy, fetchOpenedFilesProxy, fetchCurrentFileProxy]
-  );
+  function handleSelectingPage(page: string) {
+    setCurrentFile(page);
+  }
 
   return (
     <div className={styles.main}>
@@ -570,10 +590,10 @@ export default function Editor() {
                 <TabBar
                   data={openedFiles}
                   selected={currentFile}
-                  onSelect={handleSelectingTab}
+                  onSelect={handleSelectingPage}
                   onClose={handleClosingTab}
                 />
-                <PageRenderer mode="edit" dslStore={dslStore} />
+                {currentFile ? <PageRenderer mode="edit" dslStore={dslStore} /> : <Empty />}
               </div>
             </div>
           </div>
