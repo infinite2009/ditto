@@ -15,6 +15,8 @@ export default interface IComponentConfig {
   callingName?: string;
   component: FC<any> | string;
   dependency: string;
+  // 是否是图层类组件，默认为 false
+  isLayer?: boolean;
   isContainer?: boolean;
   title: string;
   icon: React.ForwardRefExoticComponent<any> | null;

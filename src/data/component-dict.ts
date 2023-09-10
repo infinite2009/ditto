@@ -606,8 +606,33 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     component: Modal,
     category: 'layer',
     title: '模态框',
+    isLayer: true,
     icon: CodeSandboxOutlined,
-    propsConfig: {}
+    propsConfig: {
+      title: {
+        id: 'title',
+        schemaType: 'props',
+        name: 'title',
+        value: '新建弹窗',
+        valueType: 'string',
+        valueSource: 'editorInput',
+        category: 'basic'
+      },
+      open: {
+        id: 'open',
+        schemaType: 'props',
+        name: 'open',
+        value: true,
+        valueType: 'boolean',
+        valueSource: 'userInput',
+        category: 'basic'
+      }
+    },
+    children: {
+      value: [],
+      name: 'children',
+      category: 'children'
+    }
   },
   Notification: {
     configName: 'Notification',

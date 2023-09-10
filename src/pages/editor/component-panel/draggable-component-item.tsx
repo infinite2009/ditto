@@ -4,17 +4,25 @@ import { useDraggable } from '@dnd-kit/core';
 export interface IDraggableComponentItemProps {
   name: string;
   title: string;
+  isLayer?: boolean;
   dependency: string;
   children: ReactNode;
 }
 
-export default function DraggableComponentItem({ name, title, dependency, children }: IDraggableComponentItemProps) {
+export default function DraggableComponentItem({
+  name,
+  title,
+  dependency,
+  children,
+  isLayer = false
+}: IDraggableComponentItemProps) {
   const { attributes, isDragging, listeners, setNodeRef } = useDraggable({
     id: name,
     data: {
       dndType: 'insert',
       name,
       title,
+      isLayer,
       dependency
     }
   });

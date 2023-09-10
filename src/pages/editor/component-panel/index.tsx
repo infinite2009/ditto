@@ -12,6 +12,7 @@ interface IComponentIconProps {
 interface IComponentInfo {
   key: string;
   title: string;
+  isLayer?: boolean;
   name: string;
   icon: ForwardedRef<any>;
   dependency: string;
@@ -38,6 +39,7 @@ export default function ComponentPanel() {
           key: item.configName,
           title: item.title,
           icon: item.icon,
+          isLayer: item.isLayer,
           name: item.configName,
           dependency: item.dependency
         } as unknown as IComponentInfo;
@@ -52,6 +54,7 @@ export default function ComponentPanel() {
         <DraggableComponent
           key={`${item.dependency}_${item.name}`}
           name={item.name}
+          isLayer={item.isLayer}
           dependency={item.dependency}
           title={item.title}
         >
