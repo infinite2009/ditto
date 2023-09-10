@@ -284,6 +284,38 @@ export default function Editor() {
 
       const parentDict: { [key: string]: string } = {};
 
+      if (active.data?.current?.isLayer) {
+        const root = droppableContainers.find(item => item.data?.current?.dndType === 'root');
+        if (root) {
+          const { id } = root;
+          const rect = droppableRects.get(id);
+          if (rect) {
+            // 这里的 collisionRect 就是移动的矩形
+            const intersectionType = calcIntersectionType(rect, collisionRect);
+            if (intersectionType === 2) {
+              collisions.push({
+                id,
+                data: {
+                  droppableContainer: root,
+                  value: calculateDepth(id as string, parentDict),
+                  ...root.data.current
+                }
+              });
+            }
+            const style = {
+              top: (rect.top + rect.bottom) / 2,
+              left: rect.left,
+              width: rect.width,
+              height: 2
+            };
+            setAnchorCoordinates(style);
+            return collisions;
+          }
+          return [];
+        }
+        return [];
+      }
+
       droppableContainers.forEach((item: DroppableContainer) => {
         if (item.data.current?.parentId) {
           parentDict[item.id] = item.data.current.parentId;
