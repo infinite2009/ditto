@@ -531,15 +531,22 @@ export default function Editor() {
 
   function handleClosingTab(selected: string) {
     const index = openedFiles.findIndex(item => item.val === selected);
+    let newCurrentFile;
     if (openedFiles.length && index > -1) {
       if (index === 0) {
-        setCurrentFile(openedFiles[1].val);
+        if (openedFiles[1]) {
+          newCurrentFile = openedFiles[1].val;
+        } else {
+          newCurrentFile = '';
+        }
       } else {
-        setCurrentFile(openedFiles[index - 1].val);
+        newCurrentFile = openedFiles[index - 1].val;
       }
       openedFiles.splice(index, 1);
+      setCurrentFile(newCurrentFile);
+      setOpenedFiles([...openedFiles]);
       saveAppData({
-        currentFile: currentFile,
+        currentFile: newCurrentFile,
         openedFiles: openedFiles.map(item => item.val)
       });
     }
