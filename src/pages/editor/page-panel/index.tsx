@@ -14,9 +14,12 @@ export interface IPagePanel {
 }
 
 export default function PagePanel({ data = [], selected, onSelect }: IPagePanel) {
-  function handlingSelect(selectedKeys: Key[]) {
+  function handlingSelect(_: any, data: any) {
     if (onSelect) {
-      onSelect(selectedKeys[0] as string);
+      const selected = data.selectedNodes[0];
+      if (selected.isLeaf) {
+        onSelect(selected.key as string);
+      }
     }
   }
 
