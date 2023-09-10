@@ -1,6 +1,7 @@
 import { FC, ForwardedRef, useEffect, useState } from 'react';
 import { message } from 'antd';
 import componentConfig from '@/data/component-dict';
+import DraggableComponent from '@/pages/editor/component-panel/draggable-component-item';
 
 import styles from './index.module.less';
 
@@ -11,7 +12,10 @@ interface IComponentIconProps {
 interface IComponentInfo {
   key: string;
   title: string;
+  isLayer?: boolean;
+  name: string;
   icon: ForwardedRef<any>;
+  dependency: string;
 }
 
 export default function LayerComponentPanel() {
@@ -22,14 +26,18 @@ export default function LayerComponentPanel() {
   }, []);
 
   function fetchComponentList() {
-    // TODO 这里写死了，后期组件库多了之后，需要修改
-    const result = Object.entries(componentConfig.antd)
-      .filter(([, val]) => val.category === 'layer')
-      .map(([key, val]) => {
+    const components = Object.values(componentConfig).map(item => Object.values(item));
+    const result = components
+      .flat(1)
+      .filter(item => item.category === 'layer')
+      .map(item => {
         return {
-          key,
-          title: val.title,
-          icon: val.icon
+          key: item.configName,
+          title: item.title,
+          icon: item.icon,
+          isLayer: item.isLayer,
+          name: item.configName,
+          dependency: item.dependency
         } as unknown as IComponentInfo;
       });
     setComponentList(result);
@@ -43,18 +51,22 @@ export default function LayerComponentPanel() {
     const tpl = componentList.map(item => {
       const ComponentIcon = item.icon as FC<IComponentIconProps>;
       return (
-        <div className={styles.componentItem} key={item.key} onClick={handleClickingComponentItem}>
-          <ComponentIcon className={styles.componentIcon} />
-          <p className={styles.componentTitle}>{item.title}</p>
-        </div>
+        <DraggableComponent
+          key={`${item.dependency}_${item.name}`}
+          name={item.name}
+          isLayer={item.isLayer}
+          dependency={item.dependency}
+          title={item.title}
+        >
+          <div className={styles.componentItem} key={item.key} onClick={handleClickingComponentItem}>
+            <ComponentIcon className={styles.componentIcon} />
+            <p className={styles.componentTitle}>{item.title}</p>
+          </div>
+        </DraggableComponent>
       );
     });
     return <div className={styles.componentList}>{tpl}</div>;
   }
 
-  return (
-    <div className={styles.main}>
-      {renderComponentList()}
-    </div>
-  );
+  return <div className={styles.main}>{renderComponentList()}</div>;
 }
