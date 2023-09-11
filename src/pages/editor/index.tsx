@@ -53,6 +53,8 @@ import {
 } from '@/service/file';
 import TabBar, { TabItem } from '@/pages/editor/tab-bar';
 import Empty from '@/pages/editor/empty';
+import { debounce } from 'lodash';
+import { DataNode } from 'antd/es/tree';
 
 const collisionOffset = 4;
 
@@ -92,6 +94,7 @@ export default function Editor() {
   const [projectData, setProjectData] = useState<any[]>([]);
   const [openedFiles, setOpenedFiles] = useState<TabItem[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
+  const [selectedFolder, setSelectedFolder] = useState<string>('');
 
   const [form] = useForm();
 
@@ -100,7 +103,7 @@ export default function Editor() {
   const defaultPathRef = useRef<string>();
   const filePathRef = useRef<string>();
 
-  const codeType = searchParams.get('codetype') as string || 'react';
+  const codeType = (searchParams.get('codetype') as string) || 'react';
 
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
@@ -481,24 +484,41 @@ export default function Editor() {
     setPageCreationVisible(false);
   }
 
-  async function saveOrCreateFile(fileName = '新建页面') {
-    const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, `${fileName}.ditto`);
-    const selectedFile = await save({
-      title: '新建页面',
-      defaultPath,
-      filters: [
-        {
-          name: 'Ditto文件',
-          extensions: ['ditto']
-        }
-      ]
-    });
+  async function createFile() {
+    const { name = '新建页面', desc } = form.getFieldsValue();
+    dslStore.createEmptyPage(name, desc);
+    let selectedFile;
+    if (selectedFolder) {
+      selectedFile = [selectedFolder, sep, name, '.ditto'].join('');
+    } else if (currentFile) {
+      const dirName = await dirname(currentFile);
+      selectedFile = [dirName, sep, name, '.ditto'].join('');
+    } else {
+      const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, `${name}.ditto`);
+      selectedFile = await save({
+        title: '新建页面',
+        defaultPath,
+        filters: [
+          {
+            name: 'Ditto文件',
+            extensions: ['ditto']
+          }
+        ]
+      });
+    }
     if (selectedFile) {
-      filePathRef.current = await dirname(selectedFile);
       await savePageDSLFile(selectedFile, toJS(dslStore.dsl));
+      setCurrentFile(selectedFile);
       fetchProjectData();
     }
   }
+
+  const saveFile = debounce(async () => {
+    if (currentFile) {
+      filePathRef.current = await dirname(currentFile);
+      await savePageDSLFile(currentFile, toJS(dslStore.dsl));
+    }
+  }, 1000);
 
   async function handleExportingPageCodeFile() {
     const extension = codeType === 'react' ? 'tsx' : 'vue';
@@ -535,7 +555,7 @@ export default function Editor() {
       case PageAction.preview:
         break;
       case PageAction.saveFile:
-        saveOrCreateFile().then();
+        saveFile();
         break;
       case PageAction.openProject:
         await openProject();
@@ -545,11 +565,8 @@ export default function Editor() {
   }
 
   function createBlankPage() {
-    const { name, desc } = form.getFieldsValue();
-    dslStore.createEmptyPage(name, desc);
-    // TODO:
-    saveOrCreateFile(name).then();
     closePageCreationModal();
+    createFile().then();
   }
 
   useEffect(() => {
@@ -606,6 +623,14 @@ export default function Editor() {
     setCurrentFile(page);
   }
 
+  function handleSelectingPageOrFolder(page: DataNode) {
+    if (page.isLeaf) {
+      setCurrentFile(page.key as string);
+    } else {
+      setSelectedFolder(page.key as string);
+    }
+  }
+
   return (
     <div className={styles.main}>
       <Toolbar onDo={handleOnDo} />
@@ -627,7 +652,7 @@ export default function Editor() {
           <div className={styles.draggableArea}>
             <div className={styles.panel}>
               <div className={styles.pagePanel}>
-                <PagePanel data={projectData} onSelect={handleSelectingPage} selected={currentFile} />
+                <PagePanel data={projectData} onSelect={handleSelectingPageOrFolder} selected={currentFile} />
               </div>
               <div className={styles.componentPanel}>
                 <Tabs items={tabsItems} />

@@ -1,6 +1,8 @@
 import { Tree } from 'antd';
 import { Key } from 'antd/es/table/interface';
+import { DataNode } from 'antd/es/tree';
 import { useCallback, useEffect } from 'react';
+import { DownOutlined } from '@ant-design/icons';
 
 interface PageData {
   key: string;
@@ -11,7 +13,7 @@ interface PageData {
 export interface IPagePanel {
   data: PageData[];
   selected: string;
-  onSelect: (page: string) => void;
+  onSelect: (page: DataNode) => void;
 }
 
 export default function PagePanel({ data = [], selected, onSelect }: IPagePanel) {
@@ -19,9 +21,7 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
     (_: any, data: any) => {
       if (onSelect) {
         const selected = data.selectedNodes[0];
-        if (selected.isLeaf) {
-          onSelect(selected.key as string);
-        }
+        onSelect(selected);
       }
     },
     [onSelect, data]
@@ -29,7 +29,13 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
 
   return (
     <div>
-      <Tree.DirectoryTree selectedKeys={[selected]} defaultExpandAll onSelect={handlingSelect} treeData={data} />
+      <Tree
+        switcherIcon={<DownOutlined />}
+        selectedKeys={[selected]}
+        defaultExpandAll
+        onSelect={handlingSelect}
+        treeData={data}
+      />
     </div>
   );
 }
