@@ -27,6 +27,11 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
    */
   generatePropsStrWithLiteral(opt: IPropsOptions): string {
     const { name, variableType, value } = opt;
+
+    // 插槽属性 TODO 待优化 使用variableType = 'slotName'
+    if (name.startsWith('#') && value == '') {
+      return `${name}`;
+    }
     if (variableType === 'string') {
       return `${name}="${value}"`;
     }
@@ -110,6 +115,18 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
       tsxInfo
     } = this.analysisDsl();
 
+    // import react -> import vue
+    importInfo.vue = {
+      default: [],
+      object: importInfo.react.object.map(name => {
+        const map = {
+          useEffect: 'watch',
+          useState: 'useState'
+        };
+        return map[name as keyof typeof map];
+      })
+    };
+    delete importInfo.react;
 
     const functionInfo = {
       functionName: toUpperCase(pageName),
