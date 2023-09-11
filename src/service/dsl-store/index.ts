@@ -158,7 +158,6 @@ export default class DSLStore {
    * 插入一个新的组件
    */
   insertComponent(parentId: string, name: string, dependency: string, insertIndex = -1) {
-    debugger;
     this.currentParentNode = this.fetchComponentInDSL(parentId);
     if (this.currentParentNode) {
       const newComponentNode = this.createComponent(name, dependency);
