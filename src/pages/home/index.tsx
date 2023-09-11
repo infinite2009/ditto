@@ -12,6 +12,11 @@ export default function Home() {
           </Link>
         </Button>
         <Button>
+          <Link href="/edit?codetype=vue">
+            <a>体验 Demo (Vue)</a>
+          </Link>
+        </Button>
+        <Button>
           <Link href="/preview">
             <a>查看样例</a>
           </Link>
