@@ -56,6 +56,10 @@ class FileManager {
     await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
   }
 
+  async exportVuePageCodeFile(filePath: string, dsl: IPageSchema) {
+    // TODO
+  }
+
   async initAppData() {
     try {
       const appDataPath = this.appDataPath;
@@ -238,6 +242,10 @@ export function openProject() {
 
 export function exportReactPageCodeFile(filePath: string, dsl: IPageSchema) {
   return fileManager.exportReactPageCodeFile(filePath, dsl);
+}
+
+export function exportVuePageCodeFile(filePath: string, dsl: IPageSchema) {
+  return fileManager.exportVuePageCodeFile(filePath, dsl);
 }
 
 export function savePageDSLFile(filePath: string, dsl: IPageSchema) {

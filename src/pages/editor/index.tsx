@@ -42,6 +42,7 @@ import { dirname, join, sep } from '@tauri-apps/api/path';
 import ComponentFeature from '@/types/component-feature';
 import {
   exportReactPageCodeFile,
+  exportVuePageCodeFile,
   fetchCurrentFile,
   fetchOpenedFiles,
   generateProjectData,
@@ -84,6 +85,8 @@ const tabsItems = [
 ];
 
 export default function Editor() {
+  const searchParams = new URLSearchParams(window.location.search);
+
   const [, setActiveId] = useState<string>('');
   const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
   const [projectData, setProjectData] = useState<any[]>([]);
@@ -96,6 +99,8 @@ export default function Editor() {
   const anchorCoordinatesRef = useRef<IAnchorCoordinates>();
   const defaultPathRef = useRef<string>();
   const filePathRef = useRef<string>();
+
+  const codeType = searchParams.get('codetype') as string || 'react';
 
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
@@ -495,21 +500,24 @@ export default function Editor() {
     }
   }
 
-  async function handleExportingReactPageCodeFile() {
-    const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, 'index.tsx');
+  async function handleExportingPageCodeFile() {
+    const extension = codeType === 'react' ? 'tsx' : 'vue';
+    const exportPageCodeFile = codeType === 'react' ? exportReactPageCodeFile : exportVuePageCodeFile;
+    const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, `index.${extension}`);
+    console.log(extension);
     const selectedFile = await save({
       title: '导出代码',
       defaultPath,
       filters: [
         {
-          name: 'tsx文件',
-          extensions: ['tsx']
+          name: `${extension}文件`,
+          extensions: [extension]
         }
       ]
     });
     if (selectedFile) {
       filePathRef.current = await dirname(selectedFile);
-      await exportReactPageCodeFile(selectedFile, toJS(dslStore.dsl));
+      await exportPageCodeFile(selectedFile, toJS(dslStore.dsl));
     }
   }
 
@@ -523,7 +531,7 @@ export default function Editor() {
       case PageAction.undo:
         break;
       case PageAction.exportCode:
-        handleExportingReactPageCodeFile().then();
+        handleExportingPageCodeFile().then();
         break;
       case PageAction.preview:
         break;
