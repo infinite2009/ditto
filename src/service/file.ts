@@ -12,6 +12,8 @@ import { createAsyncTask, getFileName } from '@/util';
 import AppData from '@/types/app-data';
 import initialAppData from '@/config/app-data.json';
 import { appDataDir, documentDir } from '@tauri-apps/api/path';
+import VueCodeGenerator from './code-generator/vue';
+import VueTransformer from './dsl-process/vue-transformer';
 
 interface EntryTree {
   key: string;
@@ -50,6 +52,19 @@ class FileManager {
       prettier.format(react.generatePageCode().join('\n'), {
         ...prettierConfig,
         parser: 'typescript',
+        plugins: [typescript]
+      } as unknown as Partial<RequiredOptions>)
+    );
+    await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
+  }
+
+  async exportVuePageCodeFile(filePath: string, dsl: IPageSchema) {
+    const vueDslTransformer = new VueTransformer(dsl as unknown as IPageSchema);
+    const vue = new VueCodeGenerator(vueDslTransformer.transformDsl(), new TypeScriptCodeGenerator());
+    const formattedContent = await createAsyncTask(() =>
+      prettier.format(vue.generatePageCode().join('\n'), {
+        ...prettierConfig,
+        parser: 'vue',
         plugins: [typescript]
       } as unknown as Partial<RequiredOptions>)
     );
@@ -238,6 +253,10 @@ export function openProject() {
 
 export function exportReactPageCodeFile(filePath: string, dsl: IPageSchema) {
   return fileManager.exportReactPageCodeFile(filePath, dsl);
+}
+
+export function exportVuePageCodeFile(filePath: string, dsl: IPageSchema) {
+  return fileManager.exportVuePageCodeFile(filePath, dsl);
 }
 
 export function savePageDSLFile(filePath: string, dsl: IPageSchema) {
