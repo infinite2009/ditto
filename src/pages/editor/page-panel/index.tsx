@@ -31,7 +31,7 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
     <div>
       <Tree
         switcherIcon={<DownOutlined />}
-        selectedKeys={[selected]}
+        // selectedKeys={[selected]}
         defaultExpandAll
         onSelect={handlingSelect}
         treeData={data}

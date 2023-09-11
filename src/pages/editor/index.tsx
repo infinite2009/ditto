@@ -493,6 +493,8 @@ export default function Editor() {
     } else if (currentFile) {
       const dirName = await dirname(currentFile);
       selectedFile = [dirName, sep, name, '.ditto'].join('');
+    } else if (projectData?.length) {
+      selectedFile = [projectData[0].key, sep, name, '.ditto'].join('');
     } else {
       const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, `${name}.ditto`);
       selectedFile = await save({
