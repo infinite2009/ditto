@@ -1,13 +1,14 @@
 import { Tree } from 'antd';
-import { Key } from 'antd/es/table/interface';
 import { DataNode } from 'antd/es/tree';
-import { useCallback, useEffect } from 'react';
-import { DownOutlined } from '@ant-design/icons';
+import { useCallback, useMemo } from 'react';
+import { DownOutlined, FileOutlined, FolderOpenOutlined, FolderOutlined } from '@ant-design/icons';
 
 interface PageData {
   key: string;
   title: string;
   children?: PageData[];
+  isLeaf?: boolean;
+  icon?: any;
 }
 
 export interface IPagePanel {
@@ -27,14 +28,39 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
     [onSelect, data]
   );
 
+  const dataWithIcon = useMemo(() => {
+    if (data) {
+      const recursiveMap = (data: PageData[]) => {
+        return data.map(item => {
+          const converted = {
+            ...item
+          };
+          if (item.children) {
+            converted.children = recursiveMap(item.children);
+          }
+          if (item.isLeaf) {
+            item.icon = <FileOutlined />;
+          } else {
+            item.icon = (props: any) => (props.expanded ? <FolderOpenOutlined /> : <FolderOutlined />);
+          }
+          return converted;
+        });
+      };
+
+      return recursiveMap(data);
+    }
+    return [];
+  }, [data]);
+
   return (
     <div>
       <Tree
         switcherIcon={<DownOutlined />}
+        showIcon
         // selectedKeys={[selected]}
         defaultExpandAll
         onSelect={handlingSelect}
-        treeData={data}
+        treeData={dataWithIcon}
       />
     </div>
   );
