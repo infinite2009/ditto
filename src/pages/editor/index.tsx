@@ -481,8 +481,8 @@ export default function Editor() {
     setPageCreationVisible(false);
   }
 
-  async function saveOrCreateFile() {
-    const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, 'index.ditto');
+  async function saveOrCreateFile(fileName = '新建页面') {
+    const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, `${fileName}.ditto`);
     const selectedFile = await save({
       title: '新建页面',
       defaultPath,
@@ -547,6 +547,8 @@ export default function Editor() {
   function createBlankPage() {
     const { name, desc } = form.getFieldsValue();
     dslStore.createEmptyPage(name, desc);
+    // TODO:
+    saveOrCreateFile(name).then();
     closePageCreationModal();
   }
 
