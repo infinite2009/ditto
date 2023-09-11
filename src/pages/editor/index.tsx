@@ -504,7 +504,6 @@ export default function Editor() {
     const extension = codeType === 'react' ? 'tsx' : 'vue';
     const exportPageCodeFile = codeType === 'react' ? exportReactPageCodeFile : exportVuePageCodeFile;
     const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, `index.${extension}`);
-    console.log(extension);
     const selectedFile = await save({
       title: '导出代码',
       defaultPath,
