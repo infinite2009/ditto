@@ -12,7 +12,7 @@ import * as typescript from 'prettier/parser-typescript';
 import { createAsyncTask, getFileName } from '@/util';
 import AppData from '@/types/app-data';
 import initialAppData from '@/config/app-data.json';
-import { appDataDir, documentDir } from '@tauri-apps/api/path';
+import { appDataDir, documentDir, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
 
@@ -174,7 +174,15 @@ class FileManager {
         });
     }
 
-    const result = recursiveMap(entries);
+    const arr = this.cache.currentProject.split(sep);
+    const projectName = arr[arr.length - 1];
+    const project = {
+      name: projectName,
+      path: this.cache.currentProject,
+      children: entries
+    };
+
+    const result = recursiveMap([project]);
     this.cache.openedFiles = this.cache.openedFiles.filter(f => files.includes(f));
     this.saveAppData({
       openedFiles: this.cache.openedFiles
