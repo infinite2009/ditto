@@ -514,7 +514,10 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         templateKeyPathsReg: [
           {
             path: '\\[\\d+\\]\\.render',
-            type: 'function'
+            type: 'function',
+            repeatPropRef: 'dataSource',
+            indexKey: 'key',
+            itemIndexInArgs: 1
           }
         ],
         value: [

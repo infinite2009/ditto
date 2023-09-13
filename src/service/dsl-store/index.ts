@@ -69,19 +69,23 @@ export default class DSLStore {
    *
    * @param name
    * @param dependency
+   * @param customId
    * @param extProps 定开场景支持
    */
   createComponent(
     name: string,
     dependency: string,
+    customId = '',
     extProps: { [key: string]: any } | undefined = undefined
   ): IComponentSchema {
-    if (this.componentStats[name] === undefined) {
-      this.componentStats[name] = 0;
+    let componentId = '';
+    if (customId) {
+      componentId = customId;
     } else {
-      this.componentStats[name]++;
+      this.updateComponentStats(name);
+      componentId = `${name}${this.componentStats[name]}`;
     }
-    const componentId = `${name}${this.componentStats[name]}`;
+
     const componentConfig = fetchComponentConfig(name, dependency);
     let children: ComponentSchemaRef[];
     if (componentConfig.isContainer) {
@@ -257,8 +261,8 @@ export default class DSLStore {
     return componentIndexes[id];
   }
 
-  createEmptyContainer(ext: { [key: string]: any } | undefined = undefined) {
-    return this.createComponent('column', 'html', ext);
+  createEmptyContainer(customId = '', ext: { [key: string]: any } | undefined = undefined) {
+    return this.createComponent('column', 'html', customId, ext);
   }
 
   setTemplateTo(tplInfo: TemplateInfo, propsConfig: { [key: string]: IPropsConfigItem }) {
@@ -279,11 +283,6 @@ export default class DSLStore {
       });
     // 如果当前 keyPath 命中正则表达式
     if (keyPathMatchResult) {
-      const node = this.createEmptyContainer();
-      parent[key] = {
-        current: node.id,
-        isText: false
-      };
       // 如果是重复渲染的 keyPath，那么前边 parent[key] 的值就不重要了
       const { repeatPropRef, indexKey = '' } = keyPathMatchResult as TemplateKeyPathsReg;
       if (repeatPropRef) {
@@ -291,12 +290,16 @@ export default class DSLStore {
         const dataSourcePropConfig = propsConfig[repeatPropRef];
         if (dataSourcePropConfig && indexKey) {
           (dataSourcePropConfig.value as any[]).forEach(item => {
-            const emptyContainer = this.createEmptyContainer();
-            // 修改这个容器的 id
-            emptyContainer.id = generateTplId(nodeId, item[indexKey]);
-            this.dsl.componentIndexes[emptyContainer.id] = emptyContainer;
+            // TODO：这里有 bug ，不同列，同行的数据会有相同的 id
+            this.createEmptyContainer(generateTplId(nodeId, item[indexKey]));
           });
         }
+      } else {
+        const node = this.createEmptyContainer();
+        parent[key] = {
+          current: node.id,
+          isText: false
+        };
       }
     } else {
       const type = typeOf(data);
@@ -370,5 +373,13 @@ export default class DSLStore {
 
     this.dsl.componentIndexes[componentSchema.id] = componentSchema;
     return componentSchema;
+  }
+
+  updateComponentStats(componentName: string) {
+    if (this.componentStats[componentName] === undefined) {
+      this.componentStats[componentName] = 0;
+    } else {
+      this.componentStats[componentName]++;
+    }
   }
 }

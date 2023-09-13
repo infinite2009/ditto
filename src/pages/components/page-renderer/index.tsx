@@ -86,10 +86,11 @@ export default observer((props: IPageRendererProps) => {
       if (keyPathMatchResult.type === 'object') {
         parent[key] = recursivelyRenderTemplate(data, true);
       } else {
+        const { itemIndexInArgs, indexKey } = keyPathMatchResult as TemplateKeyPathsReg;
         parent[key] = (...args: any[]) => {
-          const itemKey = args[keyPathMatchResult.itemIndexInArgs as number];
-          if (itemKey) {
-            return recursivelyRenderTemplate({ current: generateTplId(nodeId, itemKey), isText: false }, true);
+          const item = args[itemIndexInArgs as number];
+          if (indexKey) {
+            return recursivelyRenderTemplate({ current: generateTplId(nodeId, item[indexKey]), isText: false }, true);
           }
           return recursivelyRenderTemplate(data, true);
         };
