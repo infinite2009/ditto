@@ -65,8 +65,6 @@ export default function EditWrapper({ id, parentId, childrenId, children, featur
     const flexReg = /^-?\d+(\.\d+)?$/;
     switch (display) {
       case 'block':
-      case 'initial':
-      case '':
         // 如果有具体宽度
         if (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && flexReg.test(width)) {
           wrapperElement.style.display = 'inline-block';
@@ -82,6 +80,15 @@ export default function EditWrapper({ id, parentId, childrenId, children, featur
           wrapperElement.style.display = 'inline-block';
         } else {
           wrapperElement.style.display = 'block';
+        }
+        break;
+      case '':
+      case 'initial':
+        if (childElement.nodeName === 'BUTTON') {
+          wrapperElement.style.display = 'inline-block';
+          if (wrapperElement.parentElement?.style?.alignItems === 'stretch') {
+            wrapperElement.style.alignSelf = 'flex-start';
+          }
         }
         break;
       default:
