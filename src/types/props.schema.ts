@@ -1,5 +1,15 @@
 import ISchema from '@/types/schema';
-import { ComponentId } from '@/types/index';
+
+export interface TemplateKeyPathsReg {
+  path: string;
+  type: 'object' | 'function';
+  // 循环渲染引用的prop，例如表格和列表是 dataSource
+  repeatPropRef?: string;
+  // 数据的索引，常见的有 index，key，id 等
+  indexKey?: string;
+  // 哪一个 render 的哪个参数是数据项
+  itemIndexInArgs?: number;
+}
 
 /**
  * @file 属性本身的属性定义
@@ -15,7 +25,7 @@ export default interface IPropsSchema extends ISchema {
    * 模板字段路径，如果是空字符串，表明属性本身是就是模板对象
    * path 字段是正则表达式，即便是采用穷举的方式，也要使用正则表达式进行填充
    */
-  templateKeyPathsReg?: { path: string; type: 'object' | 'function' }[];
+  templateKeyPathsReg?: TemplateKeyPathsReg[];
 
   // 属性的名字
   name: string;
@@ -32,5 +42,5 @@ export default interface IPropsSchema extends ISchema {
    */
   valueSource: 'editorInput' | 'httpRequest' | 'state' | 'userInput' | 'computed' | 'handler';
   // 如果存在 keyPath，里边的对应值会变成 template 的引用
-  value: string | boolean | number | object | ((...params: any[]) => any);
+  value: string | boolean | number | object | ((...params: any[]) => any) | any[];
 }

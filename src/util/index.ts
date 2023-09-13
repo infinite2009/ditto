@@ -38,3 +38,7 @@ export function createAsyncTask(task: (...args: any[]) => string) {
 export function getFileName(path: string) {
   return path.replace(/\.[^/.]+$/, '');
 }
+
+export function generateTplId(nodeId: string, index: number | string) {
+  return `${nodeId}_template_${index}`;
+}

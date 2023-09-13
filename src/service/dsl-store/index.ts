@@ -1,14 +1,15 @@
 import { makeAutoObservable, toJS } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
-import { fetchComponentConfig, generateId, typeOf } from '@/util';
+import { fetchComponentConfig, generateId, generateTplId, typeOf } from '@/util';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 import cloneDeep from 'lodash/cloneDeep';
-import IComponentConfig from '@/types/component-config';
+import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
-import { ComponentId } from '@/types';
+import { ComponentId, TemplateInfo } from '@/types';
 import EditableText from '@/components/editable-text';
 import { CodeSandboxOutlined } from '@ant-design/icons';
+import { TemplateKeyPathsReg } from '@/types/props.schema';
 
 export default class DSLStore {
   private static instance = new DSLStore();
@@ -144,7 +145,17 @@ export default class DSLStore {
       if (templateKeyPathsReg.length) {
         const cp = cloneDeep(value);
         const wrapper = { cp };
-        this.setTemplateTo(cp, templateKeyPathsReg, wrapper, 'cp', '');
+        this.setTemplateTo(
+          {
+            data: cp,
+            keyPathRegs: templateKeyPathsReg,
+            parent: wrapper,
+            key: 'cp',
+            currentKeyPath: '',
+            nodeId: componentId
+          },
+          propsConfig
+        );
         props[name].value = wrapper.cp;
       }
       componentSchema.propsRefs.push(name);
@@ -250,16 +261,17 @@ export default class DSLStore {
     return this.createComponent('column', 'html', ext);
   }
 
-  setTemplateTo(
-    data: any,
-    keyPathRegs: {
-      path: string;
-      type: 'object' | 'function';
-    }[] = [],
-    parent: any,
-    key = '',
-    currentKeyPath = ''
-  ) {
+  setTemplateTo(tplInfo: TemplateInfo, propsConfig: { [key: string]: IPropsConfigItem }) {
+    const basicTplInfo: Partial<TemplateInfo> = {
+      data: undefined,
+      keyPathRegs: [],
+      parent: undefined,
+      key: '',
+      currentKeyPath: ''
+    };
+    const fullTplInfo: TemplateInfo = Object.assign(basicTplInfo, tplInfo);
+
+    const { data, keyPathRegs, parent, key, currentKeyPath, nodeId } = fullTplInfo;
     const keyPathMatchResult =
       keyPathRegs.length &&
       keyPathRegs.find(pathObj => {
@@ -272,21 +284,49 @@ export default class DSLStore {
         current: node.id,
         isText: false
       };
+      // 如果是重复渲染的 keyPath，那么前边 parent[key] 的值就不重要了
+      const { repeatPropRef, indexKey = '' } = keyPathMatchResult as TemplateKeyPathsReg;
+      if (repeatPropRef) {
+        // 找到这个 prop
+        const dataSourcePropConfig = propsConfig[repeatPropRef];
+        if (dataSourcePropConfig && indexKey) {
+          (dataSourcePropConfig.value as any[]).forEach(item => {
+            const emptyContainer = this.createEmptyContainer();
+            // 修改这个容器的 id
+            emptyContainer.id = generateTplId(nodeId, item[indexKey]);
+            this.dsl.componentIndexes[emptyContainer.id] = emptyContainer;
+          });
+        }
+      }
     } else {
       const type = typeOf(data);
       if (type === 'object') {
         Object.entries(data).forEach(([key, val]) => {
           this.setTemplateTo(
-            val,
-            keyPathRegs,
-            data,
-            key,
-            `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`
+            {
+              data: val,
+              keyPathRegs,
+              parent: data,
+              key,
+              currentKeyPath: `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`,
+              nodeId
+            },
+            propsConfig
           );
         });
       } else if (type === 'array') {
         data.forEach((item: any, index: number) => {
-          this.setTemplateTo(item, keyPathRegs, data, index.toString(), `${currentKeyPath}[${index}]`);
+          this.setTemplateTo(
+            {
+              data: item,
+              keyPathRegs,
+              parent: data,
+              key: index.toString(),
+              currentKeyPath: `${currentKeyPath}[${index}]`,
+              nodeId
+            },
+            propsConfig
+          );
         });
       }
     }

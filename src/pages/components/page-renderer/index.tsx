@@ -1,7 +1,7 @@
 import React, { FC, PropsWithChildren } from 'react';
-import IPropsSchema from '@/types/props.schema';
+import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
-import { fetchComponentConfig, typeOf } from '@/util';
+import { fetchComponentConfig, generateTplId, typeOf } from '@/util';
 import cloneDeep from 'lodash/cloneDeep';
 import EditWrapper from '@/pages/editor/edit-wrapper';
 import ComponentFeature from '@/types/component-feature';
@@ -9,6 +9,8 @@ import DSLStore from '../../../service/dsl-store';
 import { observer } from 'mobx-react-lite';
 import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
+import { nanoid } from 'nanoid';
+import { TemplateInfo } from '@/types';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -22,26 +24,39 @@ export default observer((props: IPageRendererProps) => {
 
   const { mode = 'preview', dslStore } = props;
 
-  function extractProps(propsDict: { [key: string]: IPropsSchema }, propsRefs: string[]) {
+  function extractProps(propsDict: { [key: string]: IPropsSchema }, propsRefs: string[], nodeId: string) {
     const result: { [key: string]: any } = {};
     propsRefs.forEach(ref => {
       const propsSchema = propsDict[ref];
       if (propsSchema) {
-        result[ref] = extractSingleProp(propsSchema);
+        result[ref] = extractSingleProp(propsSchema, nodeId);
       }
     });
     return result;
   }
 
-  function extractSingleProp(propsSchema: IPropsSchema): any {
+  function extractSingleProp(propsSchema: IPropsSchema, nodeId: string): any {
     const { templateKeyPathsReg, name, valueType, value, valueSource } = propsSchema;
     // 未防止 dsl props 部分被修改，导致渲染出问题，这里选择深拷贝
     const valueCopy = cloneDeep(value);
-    // 使用 wrapper 的原因是要能够拿到 cp 的引用，cp 可能会被完全替换为一个新对象，而 convertTemplateInfo 不能反悔新对象。
+    // 使用 wrapper 的原因是要能够拿到 cp 的引用，cp 可能会被完全替换为一个新对象，而 convertTemplateInfo 不能返回新对象。
     const wrapper = { valueCopy };
     if (valueSource === 'editorInput') {
       if (templateKeyPathsReg?.length) {
-        convertTemplateInfo(valueCopy, templateKeyPathsReg, wrapper, 'valueCopy');
+        // data: undefined,
+        // keyPathRegs: [],
+        // parent: undefined,
+        // key: '',
+        // currentKeyPath: '',
+        // nodeId: undefined
+        convertTemplateInfo({
+          data: valueCopy,
+          keyPathRegs: templateKeyPathsReg,
+          parent: wrapper,
+          key: 'valueCopy',
+          currentKeyPath: '',
+          nodeId: nodeId
+        });
       }
     }
     return wrapper.valueCopy;
@@ -49,22 +64,18 @@ export default observer((props: IPageRendererProps) => {
 
   /**
    * 把模板信息转换为 tsx
-   * @param data 传入的数据，可能会命中 template key path
-   * @param keyPathRegs
-   * @param parent
-   * @param key
-   * @param currentKeyPath
+   * @param tplInfo
    */
-  function convertTemplateInfo(
-    data: any,
-    keyPathRegs: {
-      path: string;
-      type: 'object' | 'function';
-    }[] = [],
-    parent: any,
-    key = '',
-    currentKeyPath = ''
-  ) {
+  function convertTemplateInfo(tplInfo: TemplateInfo) {
+    const basicTplInfo: Partial<TemplateInfo> = {
+      data: undefined,
+      keyPathRegs: [],
+      parent: undefined,
+      key: '',
+      currentKeyPath: ''
+    };
+    const fullTplInfo: TemplateInfo = Object.assign(basicTplInfo, tplInfo);
+    const { data, keyPathRegs, parent, key, currentKeyPath, nodeId } = fullTplInfo;
     const keyPathMatchResult =
       keyPathRegs.length &&
       keyPathRegs.find(pathObj => {
@@ -75,7 +86,11 @@ export default observer((props: IPageRendererProps) => {
       if (keyPathMatchResult.type === 'object') {
         parent[key] = recursivelyRenderTemplate(data, true);
       } else {
-        parent[key] = () => {
+        parent[key] = (...args: any[]) => {
+          const itemKey = args[keyPathMatchResult.itemIndexInArgs as number];
+          if (itemKey) {
+            return recursivelyRenderTemplate({ current: generateTplId(nodeId, itemKey), isText: false }, true);
+          }
           return recursivelyRenderTemplate(data, true);
         };
       }
@@ -83,17 +98,31 @@ export default observer((props: IPageRendererProps) => {
       const type = typeOf(data);
       if (type === 'object') {
         Object.entries(data).forEach(([key, val]) => {
-          convertTemplateInfo(
-            val,
+          convertTemplateInfo({
+            data: val,
             keyPathRegs,
-            data,
+            parent: data,
             key,
-            `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`
-          );
+            currentKeyPath: `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`,
+            nodeId: nodeId
+          });
         });
       } else if (type === 'array') {
         data.forEach((item: any, index: number) => {
-          convertTemplateInfo(item, keyPathRegs, data, index.toString(), `${currentKeyPath}[${index}]`);
+          // data: undefined,
+          // keyPathRegs: [],
+          // parent: undefined,
+          // key: '',
+          // currentKeyPath: '',
+          // nodeId: undefined
+          convertTemplateInfo({
+            data: item,
+            keyPathRegs,
+            parent: data,
+            key: index.toString(),
+            currentKeyPath: `${currentKeyPath}[${index}]`,
+            nodeId
+          });
         });
       }
     }
@@ -132,7 +161,7 @@ export default observer((props: IPageRendererProps) => {
     if (componentConfig) {
       Component = componentConfig.component;
     }
-    const componentProps = props[id] ? extractProps(props[id], propsRefs) : {};
+    const componentProps = props[id] ? extractProps(props[id], propsRefs, id) : {};
     const childrenTemplate = children.map(c => (c.isText ? c.current : recursivelyRenderTemplate(c)));
 
     const childrenId = children.filter(c => !c.isText).map(c => c.current);
