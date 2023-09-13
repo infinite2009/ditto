@@ -5,6 +5,8 @@ export interface TemplateKeyPathsReg {
   type: 'object' | 'function';
   // 循环渲染引用的prop，例如表格和列表是 dataSource
   repeatPropRef?: string;
+  // 重复的类型：表格或者列表
+  repeatType: 'list' | 'table';
   // 数据的索引，常见的有 index，key，id 等
   indexKey?: string;
   // 哪一个 render 的哪个参数是数据项
