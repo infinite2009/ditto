@@ -6,7 +6,7 @@ export interface TemplateKeyPathsReg {
   // 循环渲染引用的prop，例如表格和列表是 dataSource
   repeatPropRef?: string;
   // 重复的类型：表格或者列表
-  repeatType: 'list' | 'table';
+  repeatType?: 'list' | 'table';
   // 列索引变量名，对于 table 它是必需的，对于 list 它不是必需的，这个 key 的值为数据列的字段名，比如 age，name，gender 等
   columnKey?: string;
   // 数据的行索引变量名，常见的有 index，key，id 等，对于 list，只有行索引就可以了

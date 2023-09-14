@@ -1,7 +1,7 @@
 import { makeAutoObservable, toJS } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
-import { fetchComponentConfig, generateId, generateTplId, typeOf } from '@/util';
+import { fetchComponentConfig, generateId, generateSlotId, typeOf } from '@/util';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 import cloneDeep from 'lodash/cloneDeep';
 import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
@@ -284,15 +284,25 @@ export default class DSLStore {
     // 如果当前 keyPath 命中正则表达式
     if (keyPathMatchResult) {
       // 如果是重复渲染的 keyPath，那么前边 parent[key] 的值就不重要了
-      const { repeatPropRef, indexKey = '' } = keyPathMatchResult as TemplateKeyPathsReg;
+      const {
+        repeatPropRef,
+        indexKey = '',
+        columnKey = '',
+        repeatType = ''
+      } = keyPathMatchResult as TemplateKeyPathsReg;
       if (repeatPropRef) {
         // 找到这个 prop
         const dataSourcePropConfig = propsConfig[repeatPropRef];
-        if (dataSourcePropConfig && indexKey) {
-          (dataSourcePropConfig.value as any[]).forEach(item => {
-            // TODO：这里有 bug ，不同列，同行的数据会有相同的 id
-            this.createEmptyContainer(generateTplId(nodeId, item[indexKey]));
-          });
+        if (dataSourcePropConfig) {
+          if (repeatType === 'list' && indexKey) {
+            (dataSourcePropConfig.value as any[]).forEach(item => {
+              this.createEmptyContainer(generateSlotId(nodeId, item[indexKey]));
+            });
+          } else if (repeatType === 'table' && indexKey && columnKey) {
+            (dataSourcePropConfig.value as any[]).forEach(item => {
+              this.createEmptyContainer(generateSlotId(nodeId, item[indexKey], parent[columnKey]));
+            });
+          }
         }
       } else {
         const node = this.createEmptyContainer();

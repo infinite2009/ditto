@@ -515,6 +515,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
           {
             path: '\\[\\d+\\]\\.render',
             type: 'function',
+            repeatType: 'table',
+            columnKey: 'dataIndex',
             repeatPropRef: 'dataSource',
             indexKey: 'key',
             itemIndexInArgs: 1
@@ -534,6 +536,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
           },
           {
             title: 'Action',
+            dataIndex: 'action',
             key: 'action',
             render: {}
           }

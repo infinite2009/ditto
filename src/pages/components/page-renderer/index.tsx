@@ -1,7 +1,7 @@
 import React, { FC, PropsWithChildren } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
-import { fetchComponentConfig, generateTplId, typeOf } from '@/util';
+import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
 import cloneDeep from 'lodash/cloneDeep';
 import EditWrapper from '@/pages/editor/edit-wrapper';
 import ComponentFeature from '@/types/component-feature';
@@ -86,14 +86,29 @@ export default observer((props: IPageRendererProps) => {
       if (keyPathMatchResult.type === 'object') {
         parent[key] = recursivelyRenderTemplate(data, true);
       } else {
-        const { itemIndexInArgs, indexKey } = keyPathMatchResult as TemplateKeyPathsReg;
-        parent[key] = (...args: any[]) => {
-          const item = args[itemIndexInArgs as number];
-          if (indexKey) {
-            return recursivelyRenderTemplate({ current: generateTplId(nodeId, item[indexKey]), isText: false }, true);
-          }
-          return recursivelyRenderTemplate(data, true);
-        };
+        const { itemIndexInArgs, indexKey, repeatType, columnKey } = keyPathMatchResult as TemplateKeyPathsReg;
+        if (repeatType === 'list' && indexKey) {
+          parent[key] = (...args: any[]) => {
+            const item = args[itemIndexInArgs as number];
+            return recursivelyRenderTemplate({ current: generateSlotId(nodeId, item[indexKey]), isText: false }, true);
+          };
+        } else if (repeatType === 'table') {
+          parent[key] = (...args: any[]) => {
+            debugger;
+            const item = args[itemIndexInArgs as number];
+            if (indexKey && columnKey) {
+              return recursivelyRenderTemplate(
+                { current: generateSlotId(nodeId, item[indexKey], parent[columnKey]), isText: false },
+                true
+              );
+            }
+            return recursivelyRenderTemplate(data, true);
+          };
+        } else {
+          parent[key] = (...args: any[]) => {
+            return recursivelyRenderTemplate(data, true);
+          };
+        }
       }
     } else {
       const type = typeOf(data);

@@ -39,6 +39,15 @@ export function getFileName(path: string) {
   return path.replace(/\.[^/.]+$/, '');
 }
 
-export function generateTplId(nodeId: string, index: number | string) {
-  return `${nodeId}_template_${index}`;
+/**
+ * 生成插槽的 id
+ * @param nodeId
+ * @param row
+ * @param column
+ */
+export function generateSlotId(nodeId: string, row: number | string, column?: number | string) {
+  if (column !== undefined && column !== null) {
+    return `${nodeId}_template_${row}_${column}`;
+  }
+  return `${nodeId}_template_${row}`;
 }
