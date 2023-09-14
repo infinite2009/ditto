@@ -114,7 +114,7 @@ export default class DSLStore {
       children = [];
     }
 
-    const componentSchema: IComponentSchema = {
+    this.dsl.componentIndexes[componentId] = {
       id: componentId,
       parentId: (this.currentParentNode?.id || this.dsl.id) as string,
       schemaType: 'component',
@@ -123,7 +123,9 @@ export default class DSLStore {
       dependency: componentConfig.dependency,
       propsRefs: [],
       children
-    };
+    } as IComponentSchema;
+
+    const componentSchema = this.dsl.componentIndexes[componentId];
 
     if (componentConfig.importName) {
       componentSchema.importName = componentConfig.importName;
@@ -164,9 +166,6 @@ export default class DSLStore {
       }
       componentSchema.propsRefs.push(name);
     });
-
-    // 加入索引，必须要放最后，因为 this.dsl.componentIndexes[componentSchema.id] 和 componentSchema 不是一个引用
-    this.dsl.componentIndexes[componentSchema.id] = componentSchema;
     return componentSchema;
   }
 
@@ -296,11 +295,13 @@ export default class DSLStore {
         if (dataSourcePropConfig) {
           if (repeatType === 'list' && indexKey) {
             (dataSourcePropConfig.value as any[]).forEach(item => {
-              this.createEmptyContainer(generateSlotId(nodeId, item[indexKey]));
+              const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey]));
+              component.parentId = nodeId;
             });
           } else if (repeatType === 'table' && indexKey && columnKey) {
             (dataSourcePropConfig.value as any[]).forEach(item => {
-              this.createEmptyContainer(generateSlotId(nodeId, item[indexKey], parent[columnKey]));
+              const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey], parent[columnKey]));
+              component.parentId = nodeId;
             });
           }
         }
@@ -363,7 +364,7 @@ export default class DSLStore {
     const componentId = `pageRoot${this.componentStats.pageRoot}`;
     const componentConfig = fetchComponentConfig('pageRoot', 'html');
 
-    const componentSchema: IComponentSchema = {
+    this.dsl.componentIndexes[componentId] = {
       id: componentId,
       parentId: (this.currentParentNode?.id || this.dsl.id) as string,
       schemaType: 'component',
@@ -374,6 +375,8 @@ export default class DSLStore {
       children: []
     };
 
+    const componentSchema = this.dsl.componentIndexes[componentId];
+
     if (componentConfig.importName) {
       componentSchema.importName = componentConfig.importName;
     }
@@ -381,7 +384,6 @@ export default class DSLStore {
       componentSchema.callingName = componentConfig.callingName;
     }
 
-    this.dsl.componentIndexes[componentSchema.id] = componentSchema;
     return componentSchema;
   }
 
