@@ -91,6 +91,7 @@ export default observer((props: IPageRendererProps) => {
         if (repeatType === 'list' && indexKey) {
           parent[key] = (...args: any[]) => {
             const item = args[itemIndexInArgs as number];
+            // TODO：这里输入的 nodeRef 是不可观察的
             return recursivelyRenderTemplate({ current: generateSlotId(nodeId, item[indexKey]), isText: false }, true);
           };
         } else if (repeatType === 'table') {
@@ -214,8 +215,13 @@ export default observer((props: IPageRendererProps) => {
     );
   }
 
+  function render() {
+    const { child } = toJS(dslStore.dsl);
+    return recursivelyRenderTemplate(child, true, true);
+  }
+
   // 为什么加上这句，就可以让表格插槽重绘？
   // console.log(toJS(dslStore.dsl));
 
-  return dslStore.dsl ? <>{recursivelyRenderTemplate(dslStore.dsl.child, true, true)}</> : <div>未获得有效的DSL</div>;
+  return dslStore.dsl ? <>{render()}</> : <div>未获得有效的DSL</div>;
 });
