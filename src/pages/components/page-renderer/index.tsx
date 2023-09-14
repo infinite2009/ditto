@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren } from 'react';
+import React, { FC, PropsWithChildren, useEffect } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
@@ -11,6 +11,7 @@ import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import { nanoid } from 'nanoid';
 import { TemplateInfo } from '@/types';
+import { toJS } from 'mobx';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -94,7 +95,6 @@ export default observer((props: IPageRendererProps) => {
           };
         } else if (repeatType === 'table') {
           parent[key] = (...args: any[]) => {
-            debugger;
             const item = args[itemIndexInArgs as number];
             if (indexKey && columnKey) {
               return recursivelyRenderTemplate(
@@ -213,6 +213,8 @@ export default observer((props: IPageRendererProps) => {
       tpl
     );
   }
+
+  // console.log('page rendering: ', dslStore.dsl);
 
   return dslStore.dsl ? <>{recursivelyRenderTemplate(dslStore.dsl.child, true, true)}</> : <div>未获得有效的DSL</div>;
 });
