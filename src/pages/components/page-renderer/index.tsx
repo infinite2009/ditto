@@ -214,7 +214,8 @@ export default observer((props: IPageRendererProps) => {
     );
   }
 
-  // console.log('page rendering: ', dslStore.dsl);
+  // 为什么加上这句，就可以让表格插槽重绘？
+  // console.log(toJS(dslStore.dsl));
 
   return dslStore.dsl ? <>{recursivelyRenderTemplate(dslStore.dsl.child, true, true)}</> : <div>未获得有效的DSL</div>;
 });
