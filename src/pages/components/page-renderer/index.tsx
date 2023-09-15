@@ -25,6 +25,8 @@ export default observer((props: IPageRendererProps) => {
 
   const { mode = 'preview', dslStore } = props;
 
+  const dslObj = toJS(dslStore.dsl);
+
   function extractProps(propsDict: { [key: string]: IPropsSchema }, propsRefs: string[], nodeId: string) {
     const result: { [key: string]: any } = {};
     propsRefs.forEach(ref => {
@@ -38,10 +40,7 @@ export default observer((props: IPageRendererProps) => {
 
   function extractSingleProp(propsSchema: IPropsSchema, nodeId: string): any {
     const { templateKeyPathsReg, name, valueType, value, valueSource } = propsSchema;
-    // 未防止 dsl props 部分被修改，导致渲染出问题，这里选择深拷贝
-    const valueCopy = cloneDeep(value);
-    // 使用 wrapper 的原因是要能够拿到 cp 的引用，cp 可能会被完全替换为一个新对象，而 convertTemplateInfo 不能返回新对象。
-    const wrapper = { valueCopy };
+    const wrapper = { value };
     if (valueSource === 'editorInput') {
       if (templateKeyPathsReg?.length) {
         // data: undefined,
@@ -51,16 +50,16 @@ export default observer((props: IPageRendererProps) => {
         // currentKeyPath: '',
         // nodeId: undefined
         convertTemplateInfo({
-          data: valueCopy,
+          data: value,
           keyPathRegs: templateKeyPathsReg,
           parent: wrapper,
-          key: 'valueCopy',
+          key: 'value',
           currentKeyPath: '',
           nodeId: nodeId
         });
       }
     }
-    return wrapper.valueCopy;
+    return wrapper.value;
   }
 
   /**
@@ -156,10 +155,10 @@ export default observer((props: IPageRendererProps) => {
     if (nodeRef.isText) {
       return nodeRef.current;
     }
-    const node = dslStore.dsl.componentIndexes[nodeRef.current];
+    const node = dslObj.componentIndexes[nodeRef.current];
 
     // 处理组件
-    const { props = {} } = dslStore.dsl;
+    const { props = {} } = dslObj;
     const {
       parentId,
       configName,
@@ -188,7 +187,7 @@ export default observer((props: IPageRendererProps) => {
       rootProps = {
         id,
         childrenId,
-        parentId: dslStore.dsl.id
+        parentId: dslObj.id
       };
     }
 
@@ -216,8 +215,7 @@ export default observer((props: IPageRendererProps) => {
   }
 
   function render() {
-    const { child } = toJS(dslStore.dsl);
-    return recursivelyRenderTemplate(child, true, true);
+    return recursivelyRenderTemplate(dslObj.child, true, true);
   }
 
   // 为什么加上这句，就可以让表格插槽重绘？
