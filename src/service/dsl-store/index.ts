@@ -294,14 +294,28 @@ export default class DSLStore {
         const dataSourcePropConfig = propsConfig[repeatPropRef];
         if (dataSourcePropConfig) {
           if (repeatType === 'list' && indexKey) {
-            (dataSourcePropConfig.value as any[]).forEach(item => {
+            (dataSourcePropConfig.value as any[]).forEach((item, index) => {
               const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey]));
               component.parentId = nodeId;
+              // 只保留第一行的render
+              if (index === 0) {
+                parent[key] = {
+                  current: component.id,
+                  isText: false
+                };
+              }
             });
           } else if (repeatType === 'table' && indexKey && columnKey) {
-            (dataSourcePropConfig.value as any[]).forEach(item => {
+            (dataSourcePropConfig.value as any[]).forEach((item, index) => {
               const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey], parent[columnKey]));
               component.parentId = nodeId;
+              // 只保留第一行的render
+              if (index === 0) {
+                parent[key] = {
+                  current: component.id,
+                  isText: false
+                };
+              }
             });
           }
         }
