@@ -55,7 +55,9 @@
     },
     "windows": [
       {
-        "decorations": false,
+        "decorations": true,
+        "hiddenTitle": true,
+        "titleBarStyle": "Overlay",
         "fileDropEnabled": true,
         "maximized": true,
         "fullscreen": false,
