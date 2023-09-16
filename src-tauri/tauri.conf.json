@@ -26,6 +26,16 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "window": {
+        "close": true,
+        "maximize": true,
+        "minimize": true,
+        "unmaximize": true,
+        "unminimize": true,
+        "setDecorations": true,
+        "startDragging": true,
+        "setFullscreen": true
       }
     },
     "bundle": {
@@ -45,6 +55,7 @@
     },
     "windows": [
       {
+        "decorations": false,
         "fileDropEnabled": true,
         "maximized": true,
         "fullscreen": false,

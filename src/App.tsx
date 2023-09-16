@@ -4,6 +4,7 @@ import Editor from '@/pages/editor';
 import Home from '@/pages/home';
 import Preview from '@/pages/preview';
 import { initAppData } from '@/service/file';
+import CustomTitleBar from '@/components/custom-title-bar';
 
 function App() {
   const [, setLocation] = useLocation();
@@ -19,6 +20,7 @@ function App() {
 
   return (
     <div>
+      <CustomTitleBar />
       <Route path="/edit">
         <Editor />
       </Route>

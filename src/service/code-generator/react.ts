@@ -217,6 +217,9 @@ export default class ReactCodeGenerator {
   ) {
     const { componentIndexes } = this.dsl;
     const template = componentIndexes[templateRef.current];
+    if (!template) {
+      debugger;
+    }
     const result: Partial<IDSLStatsInfo> = {
       importInfo: {
         react: {
