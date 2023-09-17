@@ -12,7 +12,6 @@ import { TemplateKeyPathsReg } from '@/types/props.schema';
 export default class DSLStore {
   private static instance = new DSLStore();
   dsl: IPageSchema;
-  componentStats: { [key: string]: number } = {};
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
   currentParentNode: IComponentSchema | IPageSchema | null = null;
 
@@ -53,7 +52,8 @@ export default class DSLStore {
         current: '',
         isText: true
       },
-      componentIndexes: {}
+      componentIndexes: {},
+      componentStats: {}
     };
     const pageRoot = this.createPageRoot();
     this.dsl.child = {
@@ -81,7 +81,7 @@ export default class DSLStore {
       componentId = customId;
     } else {
       this.updateComponentStats(name);
-      componentId = `${name}${this.componentStats[name]}`;
+      componentId = `${name}${this.dsl.componentStats[name]}`;
     }
 
     const componentConfig = fetchComponentConfig(name, dependency);
@@ -368,12 +368,12 @@ export default class DSLStore {
   }
 
   private createPageRoot() {
-    if (this.componentStats.pageRoot === undefined) {
-      this.componentStats.pageRoot = 0;
+    if (this.dsl.componentStats.pageRoot === undefined) {
+      this.dsl.componentStats.pageRoot = 0;
     } else {
-      this.componentStats.pageRoot++;
+      this.dsl.componentStats.pageRoot++;
     }
-    const componentId = `pageRoot${this.componentStats.pageRoot}`;
+    const componentId = `pageRoot${this.dsl.componentStats.pageRoot}`;
     const componentConfig = fetchComponentConfig('pageRoot', 'html');
 
     this.dsl.componentIndexes[componentId] = {
@@ -400,10 +400,10 @@ export default class DSLStore {
   }
 
   updateComponentStats(componentName: string) {
-    if (this.componentStats[componentName] === undefined) {
-      this.componentStats[componentName] = 0;
+    if (this.dsl.componentStats[componentName] === undefined) {
+      this.dsl.componentStats[componentName] = 0;
     } else {
-      this.componentStats[componentName]++;
+      this.dsl.componentStats[componentName]++;
     }
   }
 }

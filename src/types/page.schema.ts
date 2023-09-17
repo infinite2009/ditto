@@ -40,4 +40,6 @@ export default interface IPageSchema extends ISchema {
   componentIndexes: {
     [key: ComponentId]: IComponentSchema;
   };
+  // 组件数量统计，用来生成合适的组件ID
+  componentStats: Record<string, number>;
 }
