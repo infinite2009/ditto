@@ -1,4 +1,4 @@
-import { makeAutoObservable, toJS } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateId, generateSlotId, typeOf } from '@/util';
@@ -7,8 +7,6 @@ import cloneDeep from 'lodash/cloneDeep';
 import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import { ComponentId, TemplateInfo } from '@/types';
-import EditableText from '@/components/editable-text';
-import { CodeSandboxOutlined } from '@ant-design/icons';
 import { TemplateKeyPathsReg } from '@/types/props.schema';
 
 export default class DSLStore {
