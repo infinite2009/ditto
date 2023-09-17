@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, useEffect } from 'react';
+import React, { FC, PropsWithChildren, useEffect, useReducer, useState } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
@@ -10,8 +10,10 @@ import { observer } from 'mobx-react-lite';
 import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import { nanoid } from 'nanoid';
-import { TemplateInfo } from '@/types';
+import { ComponentId, PropsId, TemplateInfo } from '@/types';
 import { toJS } from 'mobx';
+import IActionSchema from '@/types/action.schema';
+import ActionType from '@/types/action-type';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -26,6 +28,34 @@ export default observer((props: IPageRendererProps) => {
   const { mode = 'preview', dslStore } = props;
 
   const dslObj = toJS(dslStore.dsl);
+
+  const [eventState, setEventState] = useReducer<Record<ComponentId, Record<PropsId, any>>>(eventStateReducer, {});
+  const [componentHidden, setComponentHidden] = useReducer<Record<ComponentId, boolean>>(componentHiddenReducer, {});
+
+  function eventStateReducer() {}
+
+  function componentHiddenReducer() {}
+
+  function executeComponentEvent(actionSchema: IActionSchema) {
+    const { type, payload } = actionSchema;
+    switch (type) {
+      case ActionType.pageRedirection:
+        // TODO:
+        break;
+      case ActionType.visibilityToggle:
+        // TODO:
+        break;
+      case ActionType.stateTransition:
+        // TODO:
+        break;
+      case ActionType.httpRequest:
+        // TODO:
+        break;
+      default:
+        console.error('unknown action type: ', type);
+        break;
+    }
+  }
 
   function extractProps(propsDict: { [key: string]: IPropsSchema }, propsRefs: string[], nodeId: string) {
     const result: { [key: string]: any } = {};
@@ -156,6 +186,11 @@ export default observer((props: IPageRendererProps) => {
       return nodeRef.current;
     }
     const node = dslObj.componentIndexes[nodeRef.current];
+
+    // 检查组件的运行时显隐情况，如果是隐藏状态，则不予渲染。（通过组件 props 控制的组件不在此列）
+    if (componentHidden[node.id]) {
+      return null;
+    }
 
     // 处理组件
     const { props = {} } = dslObj;
