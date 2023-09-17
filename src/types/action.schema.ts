@@ -10,6 +10,6 @@ export default interface IActionSchema extends ISchema {
    * service: 调用服务（需要传参）
    * transfer: 转换和格式化数据
    */
-  type: 'stateSetting' | 'service' | 'dataConversion';
+  type: 'stateSetting' | 'service' | 'dataConversion' | 'pageRedirection' | 'visibilityToggle';
   payload: IHttpServicePayload | IStatePayload | IDataConversionPayload;
 }
