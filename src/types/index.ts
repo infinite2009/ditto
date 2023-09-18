@@ -8,6 +8,8 @@ export type ActionId = string;
 
 export type HandlerId = string;
 
+export type EventId = string;
+
 export type ImportType = 'default' | 'object' | '*';
 
 export type TemplateInfo = {

@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, useEffect, useReducer, useState } from 'react';
+import React, { FC, PropsWithChildren, Reducer, ReducerWithoutAction, useEffect, useReducer, useState } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
@@ -14,6 +14,8 @@ import { ComponentId, PropsId, TemplateInfo } from '@/types';
 import { toJS } from 'mobx';
 import IActionSchema from '@/types/action.schema';
 import ActionType from '@/types/action-type';
+import { open } from '@tauri-apps/api/shell';
+import { useLocation } from 'wouter';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -29,27 +31,59 @@ export default observer((props: IPageRendererProps) => {
 
   const dslObj = toJS(dslStore.dsl);
 
-  const [eventState, setEventState] = useReducer<Record<ComponentId, Record<PropsId, any>>>(eventStateReducer, {});
-  const [componentHidden, setComponentHidden] = useReducer<Record<ComponentId, boolean>>(componentHiddenReducer, {});
+  const [eventState, eventDispatch] = useReducer<Reducer<Record<ComponentId, Record<PropsId, any>>, any>>(
+    eventStateReducer,
+    {}
+  );
+  const [componentVisibilityState, componentVisibilityDispatch] = useReducer<
+    Reducer<Record<ComponentId, boolean>, any>
+  >(componentHiddenReducer, {});
 
-  function eventStateReducer() {}
+  const [, setLocation] = useLocation();
 
-  function componentHiddenReducer() {}
+  function eventStateReducer(
+    state: Record<ComponentId, Record<PropsId, any>>,
+    action: { target: ComponentId; props: Record<PropsId, { name: string; value: any }> }
+  ): Record<ComponentId, Record<PropsId, any>> {
+    const { target, props } = action;
+    return {
+      ...state,
+      [target]: {
+        ...props
+      }
+    };
+  }
+
+  function componentHiddenReducer(
+    state: Record<ComponentId, boolean>,
+    action: { target: ComponentId; visible: boolean }
+  ): Record<ComponentId, boolean> {
+    const { target, visible } = action;
+    return {
+      ...state,
+      [target]: visible
+    };
+  }
 
   function executeComponentEvent(actionSchema: IActionSchema) {
     const { type, payload } = actionSchema;
     switch (type) {
       case ActionType.pageRedirection:
-        // TODO:
+        if (payload.isExternal) {
+          open(payload.href);
+        } else {
+          // TODO: 跳转内部路由
+          // setLocation(payload.href);
+        }
         break;
       case ActionType.visibilityToggle:
-        // TODO:
+        componentVisibilityDispatch(payload);
         break;
       case ActionType.stateTransition:
-        // TODO:
+        eventDispatch(payload);
         break;
       case ActionType.httpRequest:
-        // TODO:
+        // TODO: need implementation
         break;
       default:
         console.error('unknown action type: ', type);
@@ -69,7 +103,7 @@ export default observer((props: IPageRendererProps) => {
   }
 
   function extractSingleProp(propsSchema: IPropsSchema, nodeId: string): any {
-    const { templateKeyPathsReg, name, valueType, value, valueSource } = propsSchema;
+    const { templateKeyPathsReg, eventId, name, valueType, value, valueSource } = propsSchema;
     const wrapper = { value };
     if (valueSource === 'editorInput') {
       if (templateKeyPathsReg?.length) {
@@ -81,6 +115,23 @@ export default observer((props: IPageRendererProps) => {
           currentKeyPath: '',
           nodeId: nodeId
         });
+      } else {
+        // 如果存在 eventId 处理事件相关的 props
+        if (eventId) {
+          // 获取 eventSchema
+          const eventSchema = dslObj.events[eventId];
+          if (eventSchema) {
+            const handlerSchema = dslObj.handlers[eventSchema.handlerRef];
+            if (handlerSchema) {
+              const actionsSchema = handlerSchema.actionRefs.map(ref => dslObj.actions[ref]);
+              wrapper.value = () => {
+                actionsSchema.forEach(action => {
+                  executeComponentEvent(action);
+                });
+              };
+            }
+          }
+        }
       }
     }
     return wrapper.value;
@@ -176,7 +227,7 @@ export default observer((props: IPageRendererProps) => {
     const node = dslObj.componentIndexes[nodeRef.current];
 
     // 检查组件的运行时显隐情况，如果是隐藏状态，则不予渲染。（通过组件 props 控制的组件不在此列）
-    if (componentHidden[node.id]) {
+    if (componentVisibilityState[node.id] === false) {
       return null;
     }
 

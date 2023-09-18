@@ -9,5 +9,6 @@ export default interface IVisibilityActionSchema extends IActionSchema {
   type: ActionType.visibilityToggle;
   payload: {
     target: ComponentId;
+    visible: boolean;
   };
 }
