@@ -73,12 +73,6 @@ export default observer((props: IPageRendererProps) => {
     const wrapper = { value };
     if (valueSource === 'editorInput') {
       if (templateKeyPathsReg?.length) {
-        // data: undefined,
-        // keyPathRegs: [],
-        // parent: undefined,
-        // key: '',
-        // currentKeyPath: '',
-        // nodeId: undefined
         convertTemplateInfo({
           data: value,
           keyPathRegs: templateKeyPathsReg,
@@ -155,12 +149,6 @@ export default observer((props: IPageRendererProps) => {
         });
       } else if (type === 'array') {
         data.forEach((item: any, index: number) => {
-          // data: undefined,
-          // keyPathRegs: [],
-          // parent: undefined,
-          // key: '',
-          // currentKeyPath: '',
-          // nodeId: undefined
           convertTemplateInfo({
             data: item,
             keyPathRegs,
@@ -252,9 +240,6 @@ export default observer((props: IPageRendererProps) => {
   function render() {
     return recursivelyRenderTemplate(dslObj.child, true, true);
   }
-
-  // 为什么加上这句，就可以让表格插槽重绘？
-  // console.log(toJS(dslStore.dsl));
 
   return dslStore.dsl ? <>{render()}</> : <div>未获得有效的DSL</div>;
 });
