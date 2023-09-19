@@ -31,8 +31,8 @@ export default observer((props: IPageRendererProps) => {
 
   const dslObj = toJS(dslStore.dsl);
 
-  const [componentState, componentStateDispatch] = useReducer<Reducer<Record<ComponentId, Record<PropsId, any>>, any>>(
-    eventStateReducer,
+  const [transferredComponentState, componentStateDispatch] = useReducer<Reducer<Record<ComponentId, Record<PropsId, any>>, any>>(
+    stateTransitionReducer,
     {}
   );
   const [componentVisibilityState, componentVisibilityDispatch] = useReducer<
@@ -41,7 +41,7 @@ export default observer((props: IPageRendererProps) => {
 
   const [, setLocation] = useLocation();
 
-  function eventStateReducer(
+  function stateTransitionReducer(
     state: Record<ComponentId, Record<PropsId, any>>,
     action: { target: ComponentId; props: Record<PropsId, { name: string; value: any }> }
   ): Record<ComponentId, Record<PropsId, any>> {
@@ -252,7 +252,15 @@ export default observer((props: IPageRendererProps) => {
       Component = componentConfig.component;
     }
     const componentProps = props[componentId] ? extractProps(props[componentId], propsRefs, componentId) : {};
-    const childrenTemplate = children.map(c => (c.isText ? c.current : recursivelyRenderTemplate(c)));
+
+    // 将事件修改的 props 合并到 componentProps，为了表达简洁，没有判断额外的属性是否存在
+    Object.assign(componentProps, transferredComponentState[componentId]);
+
+    // 剔除 props 中的 children
+    delete componentProps.children;
+
+    // 对于 children 是纯文本的组件，如果事件动作修改了它的 children，讲替换掉 schema 中描述的 children。这是运行时的改动，不会影响 dsl 存储
+    const childrenTemplate = transferredComponentState[componentId]?.children || children.map(c => (c.isText ? c.current : recursivelyRenderTemplate(c)));
 
     const childrenId = children.filter(c => !c.isText).map(c => c.current);
 
