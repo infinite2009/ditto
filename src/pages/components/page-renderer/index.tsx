@@ -31,10 +31,9 @@ export default observer((props: IPageRendererProps) => {
 
   const dslObj = toJS(dslStore.dsl);
 
-  const [transferredComponentState, componentStateDispatch] = useReducer<Reducer<Record<ComponentId, Record<PropsId, any>>, any>>(
-    stateTransitionReducer,
-    {}
-  );
+  const [transferredComponentState, componentStateDispatch] = useReducer<
+    Reducer<Record<ComponentId, Record<PropsId, any>>, any>
+  >(stateTransitionReducer, {});
   const [componentVisibilityState, componentVisibilityDispatch] = useReducer<
     Reducer<Record<ComponentId, boolean>, any>
   >(componentHiddenReducer, {});
@@ -72,8 +71,8 @@ export default observer((props: IPageRendererProps) => {
         if (payload.isExternal) {
           open(payload.href);
         } else {
-          // TODO: 跳转内部路由
-          // setLocation(payload.href);
+          // TODO: 跳转内部路由，作为 /preview 的子路由或者参数
+          setLocation(payload.href);
         }
         break;
       case ActionType.visibilityToggle:
@@ -260,7 +259,9 @@ export default observer((props: IPageRendererProps) => {
     delete componentProps.children;
 
     // 对于 children 是纯文本的组件，如果事件动作修改了它的 children，讲替换掉 schema 中描述的 children。这是运行时的改动，不会影响 dsl 存储
-    const childrenTemplate = transferredComponentState[componentId]?.children || children.map(c => (c.isText ? c.current : recursivelyRenderTemplate(c)));
+    const childrenTemplate =
+      transferredComponentState[componentId]?.children ||
+      children.map(c => (c.isText ? c.current : recursivelyRenderTemplate(c)));
 
     const childrenId = children.filter(c => !c.isText).map(c => c.current);
 
