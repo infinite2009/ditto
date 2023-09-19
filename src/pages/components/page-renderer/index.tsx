@@ -31,7 +31,7 @@ export default observer((props: IPageRendererProps) => {
 
   const dslObj = toJS(dslStore.dsl);
 
-  const [eventState, eventDispatch] = useReducer<Reducer<Record<ComponentId, Record<PropsId, any>>, any>>(
+  const [componentState, componentStateDispatch] = useReducer<Reducer<Record<ComponentId, Record<PropsId, any>>, any>>(
     eventStateReducer,
     {}
   );
@@ -80,7 +80,7 @@ export default observer((props: IPageRendererProps) => {
         componentVisibilityDispatch(payload);
         break;
       case ActionType.stateTransition:
-        eventDispatch(payload);
+        componentStateDispatch(payload);
         break;
       case ActionType.httpRequest:
         // TODO: need implementation
@@ -241,7 +241,7 @@ export default observer((props: IPageRendererProps) => {
       dependency,
       children = [],
       propsRefs = [],
-      id
+      id: componentId
     } = node as IComponentSchema;
     let Component: string | FC<PropsWithChildren<any>> = callingName || name;
     let componentConfig: IComponentConfig | undefined;
@@ -251,7 +251,7 @@ export default observer((props: IPageRendererProps) => {
     if (componentConfig) {
       Component = componentConfig.component;
     }
-    const componentProps = props[id] ? extractProps(props[id], propsRefs, id) : {};
+    const componentProps = props[componentId] ? extractProps(props[componentId], propsRefs, componentId) : {};
     const childrenTemplate = children.map(c => (c.isText ? c.current : recursivelyRenderTemplate(c)));
 
     const childrenId = children.filter(c => !c.isText).map(c => c.current);
@@ -259,14 +259,14 @@ export default observer((props: IPageRendererProps) => {
     let rootProps = {};
     if (isRoot) {
       rootProps = {
-        id,
+        componentId,
         childrenId,
         parentId: dslObj.id
       };
     }
 
     const tpl = (
-      <Component key={id} {...componentProps} {...rootProps}>
+      <Component key={componentId} {...componentProps} {...rootProps}>
         {childrenTemplate}
       </Component>
     );
@@ -280,7 +280,7 @@ export default observer((props: IPageRendererProps) => {
     }
 
     return mode === 'edit' && !isRoot ? (
-      <EditWrapper key={id} id={id} parentId={parentId} childrenId={childrenId} feature={feature}>
+      <EditWrapper key={componentId} id={componentId} parentId={parentId} childrenId={childrenId} feature={feature}>
         {tpl}
       </EditWrapper>
     ) : (
