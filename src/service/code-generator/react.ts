@@ -6,6 +6,8 @@ import { ImportType } from '@/types';
 import IPropsSchema from '@/types/props.schema';
 import { ComponentRef } from 'react';
 import ComponentSchemaRef from '@/types/component-schema-ref';
+import IActionSchema from '@/types/action.schema';
+import ActionType from '@/types/action-type';
 
 export interface ITSXOptions {
   text?: string;
@@ -635,5 +637,26 @@ export default class ReactCodeGenerator {
         });
       }
     );
+  }
+
+  private generateActionFunctionDefinition(actionSchema: IActionSchema): string[] {
+    const { type, payload } = actionSchema;
+    switch (type) {
+      case ActionType.pageRedirection:
+        // redirection location
+        // open external page
+        return [];
+      case ActionType.visibilityToggle:
+        // 返回
+        return [];
+      case ActionType.stateTransition:
+        // set{PropName}Of{ComponentId}
+        return [];
+      case ActionType.httpRequest:
+        // TODO: 这个名字不好起
+        return [];
+      default:
+        return [];
+    }
   }
 }
