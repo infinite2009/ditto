@@ -1,15 +1,13 @@
-import React, { FC, PropsWithChildren, Reducer, ReducerWithoutAction, useEffect, useReducer, useState } from 'react';
+import React, { FC, PropsWithChildren, Reducer, useReducer } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
-import cloneDeep from 'lodash/cloneDeep';
 import EditWrapper from '@/pages/editor/edit-wrapper';
 import ComponentFeature from '@/types/component-feature';
 import DSLStore from '../../../service/dsl-store';
 import { observer } from 'mobx-react-lite';
 import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
-import { nanoid } from 'nanoid';
 import { ComponentId, PropsId, TemplateInfo } from '@/types';
 import { toJS } from 'mobx';
 import IActionSchema from '@/types/action.schema';
@@ -268,7 +266,7 @@ export default observer((props: IPageRendererProps) => {
     let rootProps = {};
     if (isRoot) {
       rootProps = {
-        componentId,
+        id: componentId,
         childrenId,
         parentId: dslObj.id
       };
