@@ -1,23 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import IPageSchema from '@/types/page.schema';
-import * as dsl from '@/mock/tab-case.json';
+import React, { useEffect } from 'react';
 import PageRenderer from '@/pages/components/page-renderer';
 import DSLStore from '@/service/dsl-store';
+import { openFile } from '@/service/file';
+import { message } from 'antd';
 
 export default function Preview() {
+  const params = new URLSearchParams(window.location.search);
+
+  console.log('Preview: ', params.get('file'));
+
   const dslStore = DSLStore.createInstance();
 
   useEffect(() => {
-    fetchDSL().then(data => {
-      dslStore.initDSL(data);
-    });
+    fetchDSL(params.get('file') as string);
   }, []);
 
-  async function fetchDSL(): Promise<IPageSchema> {
-    return new Promise<IPageSchema>(resolve => {
-      resolve(dsl as unknown as IPageSchema);
-    });
+  async function fetchDSL(file: string): Promise<void> {
+    if (!file) {
+      message.error('未找到文件!');
+    }
+    // 根据 pageId 获取 dsl
+    const content = await openFile(file);
+    if (content) {
+      dslStore.initDSL(JSON.parse(content));
+    } else {
+      message.error('文件已损坏!');
+    }
   }
 
-  return dslStore.dsl ? <PageRenderer dslStore={dslStore} /> : <div>未获得有效的DSL</div>;
+  return <PageRenderer dslStore={dslStore} />;
 }

@@ -11,7 +11,7 @@ import * as typescript from 'prettier/parser-typescript';
 import { createAsyncTask, getFileName } from '@/util';
 import AppData from '@/types/app-data';
 import initialAppData from '@/config/app-data.json';
-import { appDataDir, documentDir, sep } from '@tauri-apps/api/path';
+import { documentDir, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
 
@@ -74,7 +74,6 @@ class FileManager {
   async initAppData() {
     try {
       const appDataPath = this.appDataPath;
-      await appDataDir();
       const doesExist = await exists(appDataPath, { dir: BaseDirectory.AppData });
       if (!doesExist) {
         const text = await createAsyncTask(() =>
@@ -122,7 +121,6 @@ class FileManager {
       if (data.currentProject) {
         config.recentProjects.unshift(data.currentProject);
       }
-
       this.cache = Object.assign(this.cache, config);
       writeTextFile(appDataPath, JSON.stringify(config), { dir: BaseDirectory.AppData });
     } catch (err) {
@@ -155,7 +153,7 @@ class FileManager {
 
     const files: string[] = [];
 
-    function recursiveMap(entries: FileEntry[]) {
+    const recursiveMap = (entries: FileEntry[]) => {
       return entries
         .filter(entry => (entry.name as string).endsWith('.ditto') || entry.children)
         .map(entry => {
@@ -171,7 +169,7 @@ class FileManager {
           }
           return r;
         });
-    }
+    };
 
     const arr = this.cache.currentProject.split(sep);
     const projectName = arr[arr.length - 1];

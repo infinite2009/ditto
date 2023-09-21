@@ -42,6 +42,9 @@ export default class DSLStore {
   createEmptyPage(name: string, desc: string) {
     const pageId = generateId();
     this.dsl = {
+      actions: {},
+      events: {},
+      handlers: {},
       id: pageId,
       schemaType: 'page',
       name,
@@ -358,6 +361,14 @@ export default class DSLStore {
     }
   }
 
+  updateComponentStats(componentName: string) {
+    if (this.dsl.componentStats[componentName] === undefined) {
+      this.dsl.componentStats[componentName] = 0;
+    } else {
+      this.dsl.componentStats[componentName]++;
+    }
+  }
+
   private calculateComponentName(config: IComponentConfig) {
     const { callingName, importName, configName } = config;
     if (callingName) {
@@ -397,13 +408,5 @@ export default class DSLStore {
     }
 
     return componentSchema;
-  }
-
-  updateComponentStats(componentName: string) {
-    if (this.dsl.componentStats[componentName] === undefined) {
-      this.dsl.componentStats[componentName] = 0;
-    } else {
-      this.dsl.componentStats[componentName]++;
-    }
   }
 }

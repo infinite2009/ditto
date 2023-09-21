@@ -24,6 +24,8 @@ export default function PageRoot({ id, childrenId, parentId, children }: IPageRo
     }
   });
 
+  console.log('page root id: ', id);
+
   const classes = useMemo(() => {
     return classNames({
       [styles.withoutChildren]: !children?.length,
