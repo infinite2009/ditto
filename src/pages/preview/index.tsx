@@ -3,17 +3,17 @@ import PageRenderer from '@/pages/components/page-renderer';
 import DSLStore from '@/service/dsl-store';
 import { openFile } from '@/service/file';
 import { message } from 'antd';
+import { useSearch } from 'wouter/use-location';
 
 export default function Preview() {
-  const params = new URLSearchParams(window.location.search);
-
-  console.log('Preview: ', params.get('file'));
+  const search = useSearch();
 
   const dslStore = DSLStore.createInstance();
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
     fetchDSL(params.get('file') as string);
-  }, []);
+  }, [search]);
 
   async function fetchDSL(file: string): Promise<void> {
     if (!file) {
