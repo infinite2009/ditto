@@ -5,7 +5,7 @@ export default interface IPageRedirectionActionSchema extends IActionSchema {
   type: ActionType.pageRedirection;
   payload: {
     href: string;
-    target: '_blank' | '_self';
+    target?: '_blank' | '_self';
     isExternal: boolean;
   };
 }
