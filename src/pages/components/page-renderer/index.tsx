@@ -69,8 +69,7 @@ export default observer((props: IPageRendererProps) => {
         if (payload.isExternal) {
           open(payload.href);
         } else {
-          // TODO: 跳转内部路由，作为 /preview 的子路由或者参数
-          setLocation(payload.href);
+          setLocation(`/preview?file=${payload.href}`);
         }
         break;
       case ActionType.visibilityToggle:
