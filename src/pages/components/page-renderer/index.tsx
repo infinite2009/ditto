@@ -99,7 +99,7 @@ export default observer((props: IPageRendererProps) => {
   }
 
   function extractSingleProp(propsSchema: IPropsSchema, nodeId: string): any {
-    const { templateKeyPathsReg, eventId, name, valueType, value, valueSource } = propsSchema;
+    const { templateKeyPathsReg, name, valueType, value, valueSource } = propsSchema;
     const wrapper = { value };
     if (valueSource === 'editorInput') {
       if (templateKeyPathsReg?.length) {
@@ -111,22 +111,19 @@ export default observer((props: IPageRendererProps) => {
           currentKeyPath: '',
           nodeId: nodeId
         });
-      } else {
-        // 如果存在 eventId 处理事件相关的 props
-        if (eventId) {
-          // 获取 eventSchema
-          const eventSchema = dslObj.events[eventId];
-          if (eventSchema) {
-            const handlerSchema = dslObj.handlers[eventSchema.handlerRef];
-            if (handlerSchema) {
-              const actionsSchema = handlerSchema.actionRefs.map(ref => dslObj.actions[ref]);
-              wrapper.value = () => {
-                actionsSchema.forEach(action => {
-                  executeComponentEvent(action);
-                });
-              };
-            }
-          }
+      }
+    } else if (valueSource === 'handler') {
+      // 获取 eventSchema
+      const eventSchema = dslObj.events[value as string];
+      if (eventSchema) {
+        const handlerSchema = dslObj.handlers[eventSchema.handlerRef];
+        if (handlerSchema) {
+          const actionsSchema = handlerSchema.actionRefs.map(ref => dslObj.actions[ref]);
+          wrapper.value = () => {
+            actionsSchema.forEach(action => {
+              executeComponentEvent(action);
+            });
+          };
         }
       }
     }

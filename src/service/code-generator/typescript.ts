@@ -12,6 +12,7 @@ export interface IImportOptions {
 export interface IFunctionOptions {
   functionName: string;
   functionParams: string[];
+  functionComments?: string[];
   exportType?: 'default' | 'object';
   useArrow?: boolean;
   useAsync?: boolean;
@@ -67,12 +68,13 @@ export default class TypeScriptCodeGenerator {
     const {
       functionParams = [],
       functionName,
+      functionComments = [],
       useAsync = false,
       useArrow = false,
       exportType = 'null',
       body = []
     } = data;
-    let sentences = [];
+    let sentences = [...functionComments];
     let signatureSentence = '';
     const functionParamsStr = functionParams.join(', ');
     if (useArrow) {
@@ -143,7 +145,13 @@ export default class TypeScriptCodeGenerator {
         } else {
           sentences.push(`${key}${key ? ': ' : ''}{`);
           Object.entries(data).forEach(([key, value]) => {
-            this.generateObjectStrArr(value, keyPaths, callback, `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`, key).forEach(item => {
+            this.generateObjectStrArr(
+              value,
+              keyPaths,
+              callback,
+              `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`,
+              key
+            ).forEach(item => {
               sentences.push(item);
             });
           });

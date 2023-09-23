@@ -26,9 +26,6 @@ export default interface IPropsSchema extends ISchema {
   isValue?: boolean;
   // 控制 UI 显隐性
   isVisible?: boolean;
-  // 如果该值为真，说明该属性支持事件响应
-  eventId?: EventId;
-
   /**
    * 模板字段路径，如果是空字符串，表明属性本身是就是模板对象
    * path 字段是正则表达式，即便是采用穷举的方式，也要使用正则表达式进行填充
@@ -49,6 +46,9 @@ export default interface IPropsSchema extends ISchema {
    * handler: 事件处理器，当用户为事件配置了相应后，会产生这个值
    */
   valueSource: 'editorInput' | 'httpRequest' | 'state' | 'userInput' | 'computed' | 'handler';
-  // 如果存在 keyPath，里边的对应值会变成 template 的引用
+  /*
+   * 如果存在 keyPath，里边的对应值会变成 template 的引用
+   * 如果 valueSource 的值为 handler, 则 value 的值是一个 eventId
+   */
   value: string | boolean | number | object | ((...params: any[]) => any) | any[];
 }

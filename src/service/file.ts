@@ -48,8 +48,9 @@ class FileManager {
 
   async exportReactPageCodeFile(filePath: string, dsl: IPageSchema) {
     const react = new ReactCodeGenerator(dsl as unknown as IPageSchema, new TypeScriptCodeGenerator());
+    const originalCodeContent = react.generatePageCode().join('\n');
     const formattedContent = await createAsyncTask(() =>
-      prettier.format(react.generatePageCode().join('\n'), {
+      prettier.format(originalCodeContent, {
         ...prettierConfig,
         parser: 'typescript',
         plugins: [typescript]

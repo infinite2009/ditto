@@ -1,9 +1,4 @@
 import ISchema from './schema';
-import IHttpServicePayload from '@/types/service-payload.schema';
-import IStatePayload from '@/types/state.schema';
-import IDataConversionPayload from '@/types/data-conversion-payload';
-import { IPageRendererProps } from '@/pages/components/page-renderer';
-import IPageDirectionPayload from '@/types/page-redirection-payload';
 
 export default interface IActionSchema extends ISchema {
   /*

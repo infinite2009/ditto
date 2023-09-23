@@ -51,3 +51,19 @@ export function generateSlotId(nodeId: string, row: number | string, column?: nu
   }
   return `${nodeId}_template_${row}`;
 }
+
+export function toProgressive(verb: string) {
+  const lastChar = verb.slice(-1);
+  const beforeLastChar = verb.slice(-2, -1);
+  const vowels = ['a', 'e', 'i', 'o', 'u'];
+
+  if (beforeLastChar === 'i' && lastChar === 'e') {
+    return `${verb.slice(0, -2)}ying`;
+  } else if (lastChar === 'e') {
+    return `${verb.slice(0, -1)}ing`;
+  } else if (!vowels.includes(beforeLastChar) && vowels.includes(lastChar)) {
+    return `${verb}${lastChar}ing`;
+  } else {
+    return `${verb}ing`;
+  }
+}
