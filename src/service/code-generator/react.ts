@@ -1,5 +1,5 @@
 import IPageSchema from '@/types/page.schema';
-import { toProgressive, toUpperCase } from '@/util';
+import { toProgressive, toUpperCase, typeOf } from '@/util';
 import TypeScriptCodeGenerator, { IConstantOptions, IFunctionOptions } from '@/service/code-generator/typescript';
 import IComponentSchema from '@/types/component.schema';
 import { ComponentId, ImportType, PropsId } from '@/types';
@@ -13,6 +13,7 @@ import EventTrigger from '@/types/event-trigger';
 
 export interface ITSXOptions {
   text?: string;
+  componentId: ComponentId;
   componentName?: string;
   propsStrArr?: string[];
   children?: ITSXOptions[];
@@ -98,6 +99,9 @@ export default class ReactCodeGenerator {
   dsl: IPageSchema;
   tsCodeGenerator: TypeScriptCodeGenerator;
 
+  // 组件可见性字典，它的值是指定组件的可见性 state
+  componentVisibilityDict: Record<ComponentId, stateName> = {};
+
   constructor(dsl: IPageSchema, tsCodeGenerator: TypeScriptCodeGenerator) {
     this.dsl = dsl;
     this.tsCodeGenerator = tsCodeGenerator;
@@ -108,11 +112,18 @@ export default class ReactCodeGenerator {
     if (opt.text) {
       return [opt.text];
     }
-    const { propsStrArr = [], componentName, children = [] } = opt as unknown as ITSXOptions;
+    const { propsStrArr = [], componentId, componentName, children = [] } = opt as unknown as ITSXOptions;
+    // TODO: 这里适配可见性问题
     const startTagStr = `<${componentName}${propsStrArr?.length ? ' ' : ''}${propsStrArr.join(' ')} ${
       children?.length ? '' : '/'
     }>`;
-    sentences.push(startTagStr);
+
+    const visibilityState = this.componentVisibilityDict[componentId];
+    if (visibilityState) {
+      sentences.push(`{ ${visibilityState} ? ${startTagStr}`);
+    } else {
+      sentences.push(startTagStr);
+    }
     if (children?.length) {
       children?.forEach(child => {
         this.generateTSX(child).forEach(item => {
@@ -121,6 +132,9 @@ export default class ReactCodeGenerator {
       });
       const closeTagStr = `</${componentName}>`;
       sentences.push(closeTagStr);
+    }
+    if (sentences.length && visibilityState) {
+      sentences[sentences.length - 1] = `${sentences[sentences.length - 1]} : null }`;
     }
     return sentences;
   }
@@ -240,6 +254,7 @@ export default class ReactCodeGenerator {
       constantInfo: {},
       tsxInfo: {
         componentName: template.callingName || template.name,
+        componentId: templateRef.current,
         propsStrArr: [],
         children: []
       }
@@ -335,9 +350,10 @@ export default class ReactCodeGenerator {
               }
             }
             // 初始化子节点
-            pNode.children = children.map(() => {
+            pNode.children = children.map(item => {
               return {
                 componentName: '',
+                componentId: item.current,
                 propsStrArr: [],
                 children: []
               };
@@ -488,7 +504,7 @@ export default class ReactCodeGenerator {
       } else if (valueSource === 'handler') {
         const eventSchema = this.dsl.events[value as string];
         const handlerSchema = this.dsl.handlers[eventSchema.handlerRef];
-        const handlerInfo = this.generateHandlerInfo(handlerSchema, eventSchema.triggerType);
+        const handlerInfo = this.generateHandlerInfo(handlerSchema, eventSchema.triggerType, result.stateInfo);
         // 添加 props 赋值
         result.propsStrArr.push(
           this.generatePropAssignmentExpWithVariable({
@@ -658,17 +674,37 @@ export default class ReactCodeGenerator {
   }
 
   // 生成 handler 函数定义，目前 handler 内部的调用代码还不能重构为不冗余的代码
-  private generateHandlerInfo(handlerSchema: IHandlerSchema, trigger: EventTrigger) {
+  private generateHandlerInfo(
+    handlerSchema: IHandlerSchema,
+    trigger: EventTrigger,
+    stateInfo: Record<string, IUseStateOptions>
+  ) {
     const callingSentences = handlerSchema.actionRefs
       .map(item => {
         const { type, payload } = this.dsl.actions[item];
         switch (type) {
           case ActionType.visibilityToggle:
-            return `setVisibilityOf${payload.target}(${payload.visible})`;
+            // 副作用，增加一个 useState
+            // eslint-disable-next-line no-case-declarations
+            const variableName = this.generateVariableName(payload.target, 'visibility', 'state');
+            stateInfo[variableName] = {
+              name: variableName,
+              initialValue: !payload.visible,
+              valueType: 'boolean'
+            };
+            this.componentVisibilityDict[payload.target] = variableName;
+            return `setVisibilityStateOf${payload.target}(${payload.visible})`;
           case ActionType.stateTransition:
             return Object.entries(payload.props).map(([propName, val]: [string, any]) => {
+              const basicValueTypes = ['string', 'number', 'boolean'];
+              const valueType = typeOf(val.value);
+              const valStr = basicValueTypes.includes(valueType)
+                ? valueType !== 'string'
+                  ? val.value
+                  : `'${val.value}'`
+                : this.tsCodeGenerator.generateObjectStrArr(val.value).join(' ');
               // 巧合式编程，不健壮
-              return `set${toUpperCase(this.generateVariableName(payload.target, propName, 'state'))}('${val.value}')`;
+              return `set${toUpperCase(this.generateVariableName(payload.target, propName, 'state'))}(${valStr})`;
             });
           case ActionType.pageRedirection:
             if (payload.isExternal) {
