@@ -93,8 +93,8 @@ type stateName = string;
 type stateSetterName = string;
 
 export default class ReactCodeGenerator {
-  // 存储每个 prop 对应的 state
-  propMap: Record<ComponentId, Record<PropsId, [stateName, stateSetterName]>> = {};
+  // 存储 handler 引入的 props，在解析完当前组件的 props 后，如果其中包含了没有出现过的 props，要把它们也加入 state
+  propsMap: Record<ComponentId, Record<PropsId, [stateName, stateSetterName]>> = {};
   // 存储每个 prop 对应的 handler 函数名
   handler: Record<ComponentId, Record<PropsId, string>> = {};
   dsl: IPageSchema;
@@ -668,9 +668,9 @@ export default class ReactCodeGenerator {
           case ActionType.visibilityToggle:
             return `setVisibilityOf${payload.target}(${payload.visible})`;
           case ActionType.stateTransition:
-            return Object.entries(payload.props).map(([propName, val]) => {
+            return Object.entries(payload.props).map(([propName, val]: [string, any]) => {
               // 巧合式编程，不健壮
-              return `set${toUpperCase(this.generateVariableName(payload.target, propName, 'state'))}(${val})`;
+              return `set${toUpperCase(this.generateVariableName(payload.target, propName, 'state'))}('${val.value}')`;
             });
           case ActionType.pageRedirection:
             if (payload.isExternal) {
