@@ -50,5 +50,5 @@ export default interface IPropsSchema extends ISchema {
    * 如果存在 keyPath，里边的对应值会变成 template 的引用
    * 如果 valueSource 的值为 handler, 则 value 的值是一个 eventId
    */
-  value: string | boolean | number | object | ((...params: any[]) => any) | any[];
+  value: string | boolean | number | Record<string, any> | ((...params: any[]) => any) | any[] | undefined;
 }
