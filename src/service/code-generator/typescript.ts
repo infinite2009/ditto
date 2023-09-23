@@ -155,7 +155,7 @@ export default class TypeScriptCodeGenerator {
               sentences.push(item);
             });
           });
-          sentences.push(`},`);
+          sentences.push(`}${key ? ',' : ''}`);
         }
         break;
       case 'array':
