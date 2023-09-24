@@ -3,9 +3,9 @@ import IFormConfig from '@/types/form-config';
 /**
  * 记载整个表单库，它和组件库是一对一的。
  */
-export function loadFormLibrary(): Record<string, IFormConfig> {
+export function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
   // TODO: need implementation, 改为远程加载
-  return {
+  return Promise.resolve({
     Button: {
       configName: 'Button',
       schema: {
@@ -133,5 +133,5 @@ export function loadFormLibrary(): Record<string, IFormConfig> {
         }
       }
     }
-  };
+  });
 }
