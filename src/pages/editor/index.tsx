@@ -22,8 +22,6 @@ import ComponentPanel from '@/pages/editor/component-panel';
 import TemplatePanel from '@/pages/editor/template-panel';
 import FormPanel from '@/pages/editor/form-panel';
 import PageRenderer from '@/pages/components/page-renderer';
-import IPageSchema from '@/types/page.schema';
-import * as dsl from '@/mock/tab-case.json';
 
 import LayerComponentPanel from '@/pages/editor/layer-component-panel';
 import styles from './index.module.less';
@@ -55,6 +53,7 @@ import TabBar, { TabItem } from '@/pages/editor/tab-bar';
 import Empty from '@/pages/editor/empty';
 import { debounce } from 'lodash';
 import { DataNode } from 'antd/es/tree';
+import { useLocation } from 'wouter';
 
 const collisionOffset = 4;
 
@@ -88,6 +87,7 @@ const tabsItems = [
 
 export default function Editor() {
   const searchParams = new URLSearchParams(window.location.search);
+  const [, setLocation] = useLocation();
 
   const [, setActiveId] = useState<string>('');
   const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
@@ -108,7 +108,7 @@ export default function Editor() {
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
     activationConstraint: {
-      distance: 4,
+      distance: 4
     }
   });
 
@@ -541,6 +541,10 @@ export default function Editor() {
     }
   }
 
+  function redirectToPreview() {
+    setLocation(`/preview/?file=${currentFile}`);
+  }
+
   async function handleOnDo(e: PageActionEvent) {
     switch (e.type) {
       case PageAction.createPage:
@@ -554,6 +558,7 @@ export default function Editor() {
         handleExportingPageCodeFile().then();
         break;
       case PageAction.preview:
+        redirectToPreview();
         break;
       case PageAction.saveFile:
         saveFile();

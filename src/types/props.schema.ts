@@ -1,4 +1,5 @@
 import ISchema from '@/types/schema';
+import { EventId } from '@/types/index';
 
 export interface TemplateKeyPathsReg {
   path: string;
@@ -45,6 +46,9 @@ export default interface IPropsSchema extends ISchema {
    * handler: 事件处理器，当用户为事件配置了相应后，会产生这个值
    */
   valueSource: 'editorInput' | 'httpRequest' | 'state' | 'userInput' | 'computed' | 'handler';
-  // 如果存在 keyPath，里边的对应值会变成 template 的引用
-  value: string | boolean | number | object | ((...params: any[]) => any) | any[];
+  /*
+   * 如果存在 keyPath，里边的对应值会变成 template 的引用
+   * 如果 valueSource 的值为 handler, 则 value 的值是一个 eventId
+   */
+  value: string | boolean | number | Record<string, any> | ((...params: any[]) => any) | any[] | undefined;
 }

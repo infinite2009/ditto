@@ -1,17 +1,19 @@
-import React, { FC, PropsWithChildren, useEffect } from 'react';
+import React, { FC, PropsWithChildren, Reducer, useReducer } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
-import cloneDeep from 'lodash/cloneDeep';
 import EditWrapper from '@/pages/editor/edit-wrapper';
 import ComponentFeature from '@/types/component-feature';
 import DSLStore from '../../../service/dsl-store';
 import { observer } from 'mobx-react-lite';
 import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
-import { nanoid } from 'nanoid';
-import { TemplateInfo } from '@/types';
+import { ComponentId, PropsId, TemplateInfo } from '@/types';
 import { toJS } from 'mobx';
+import IActionSchema from '@/types/action.schema';
+import ActionType from '@/types/action-type';
+import { open } from '@tauri-apps/api/shell';
+import { useLocation } from 'wouter';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -26,6 +28,64 @@ export default observer((props: IPageRendererProps) => {
   const { mode = 'preview', dslStore } = props;
 
   const dslObj = toJS(dslStore.dsl);
+
+  const [transferredComponentState, componentStateDispatch] = useReducer<
+    Reducer<Record<ComponentId, Record<PropsId, any>>, any>
+  >(stateTransitionReducer, {});
+  const [componentVisibilityState, componentVisibilityDispatch] = useReducer<
+    Reducer<Record<ComponentId, boolean>, any>
+  >(componentHiddenReducer, {});
+
+  const [, setLocation] = useLocation();
+
+  function stateTransitionReducer(
+    state: Record<ComponentId, Record<PropsId, any>>,
+    action: { target: ComponentId; props: Record<PropsId, { name: string; value: any }> }
+  ): Record<ComponentId, Record<PropsId, any>> {
+    const { target, props } = action;
+    return {
+      ...state,
+      [target]: {
+        ...props
+      }
+    };
+  }
+
+  function componentHiddenReducer(
+    state: Record<ComponentId, boolean>,
+    action: { target: ComponentId; visible: boolean }
+  ): Record<ComponentId, boolean> {
+    const { target, visible } = action;
+    return {
+      ...state,
+      [target]: visible
+    };
+  }
+
+  function executeComponentEvent(actionSchema: IActionSchema) {
+    const { type, payload } = actionSchema;
+    switch (type) {
+      case ActionType.pageRedirection:
+        if (payload.isExternal) {
+          open(payload.href);
+        } else {
+          setLocation(`/preview?file=${payload.href}`);
+        }
+        break;
+      case ActionType.visibilityToggle:
+        componentVisibilityDispatch(payload);
+        break;
+      case ActionType.stateTransition:
+        componentStateDispatch(payload);
+        break;
+      case ActionType.httpRequest:
+        // TODO: need implementation
+        break;
+      default:
+        console.error('unknown action type: ', type);
+        break;
+    }
+  }
 
   function extractProps(propsDict: { [key: string]: IPropsSchema }, propsRefs: string[], nodeId: string) {
     const result: { [key: string]: any } = {};
@@ -43,12 +103,6 @@ export default observer((props: IPageRendererProps) => {
     const wrapper = { value };
     if (valueSource === 'editorInput') {
       if (templateKeyPathsReg?.length) {
-        // data: undefined,
-        // keyPathRegs: [],
-        // parent: undefined,
-        // key: '',
-        // currentKeyPath: '',
-        // nodeId: undefined
         convertTemplateInfo({
           data: value,
           keyPathRegs: templateKeyPathsReg,
@@ -57,6 +111,20 @@ export default observer((props: IPageRendererProps) => {
           currentKeyPath: '',
           nodeId: nodeId
         });
+      }
+    } else if (valueSource === 'handler') {
+      // 获取 eventSchema
+      const eventSchema = dslObj.events[value as string];
+      if (eventSchema) {
+        const handlerSchema = dslObj.handlers[eventSchema.handlerRef];
+        if (handlerSchema) {
+          const actionsSchema = handlerSchema.actionRefs.map(ref => dslObj.actions[ref]);
+          wrapper.value = () => {
+            actionsSchema.forEach(action => {
+              executeComponentEvent(action);
+            });
+          };
+        }
       }
     }
     return wrapper.value;
@@ -125,12 +193,6 @@ export default observer((props: IPageRendererProps) => {
         });
       } else if (type === 'array') {
         data.forEach((item: any, index: number) => {
-          // data: undefined,
-          // keyPathRegs: [],
-          // parent: undefined,
-          // key: '',
-          // currentKeyPath: '',
-          // nodeId: undefined
           convertTemplateInfo({
             data: item,
             keyPathRegs,
@@ -157,6 +219,11 @@ export default observer((props: IPageRendererProps) => {
     }
     const node = dslObj.componentIndexes[nodeRef.current];
 
+    // 检查组件的运行时显隐情况，如果是隐藏状态，则不予渲染。（通过组件 props 控制的组件不在此列）
+    if (componentVisibilityState[node.id] === false) {
+      return null;
+    }
+
     // 处理组件
     const { props = {} } = dslObj;
     const {
@@ -167,7 +234,7 @@ export default observer((props: IPageRendererProps) => {
       dependency,
       children = [],
       propsRefs = [],
-      id
+      id: componentId
     } = node as IComponentSchema;
     let Component: string | FC<PropsWithChildren<any>> = callingName || name;
     let componentConfig: IComponentConfig | undefined;
@@ -177,22 +244,32 @@ export default observer((props: IPageRendererProps) => {
     if (componentConfig) {
       Component = componentConfig.component;
     }
-    const componentProps = props[id] ? extractProps(props[id], propsRefs, id) : {};
-    const childrenTemplate = children.map(c => (c.isText ? c.current : recursivelyRenderTemplate(c)));
+    const componentProps = props[componentId] ? extractProps(props[componentId], propsRefs, componentId) : {};
+
+    // 将事件修改的 props 合并到 componentProps，为了表达简洁，没有判断额外的属性是否存在
+    Object.assign(componentProps, transferredComponentState[componentId]);
+
+    // 剔除 props 中的 children
+    delete componentProps.children;
+
+    // 对于 children 是纯文本的组件，如果事件动作修改了它的 children，讲替换掉 schema 中描述的 children。这是运行时的改动，不会影响 dsl 存储
+    const childrenTemplate =
+      transferredComponentState[componentId]?.children ||
+      children.map(c => (c.isText ? c.current : recursivelyRenderTemplate(c)));
 
     const childrenId = children.filter(c => !c.isText).map(c => c.current);
 
     let rootProps = {};
     if (isRoot) {
       rootProps = {
-        id,
+        id: componentId,
         childrenId,
         parentId: dslObj.id
       };
     }
 
     const tpl = (
-      <Component key={id} {...componentProps} {...rootProps}>
+      <Component key={componentId} {...componentProps} {...rootProps}>
         {childrenTemplate}
       </Component>
     );
@@ -206,7 +283,7 @@ export default observer((props: IPageRendererProps) => {
     }
 
     return mode === 'edit' && !isRoot ? (
-      <EditWrapper key={id} id={id} parentId={parentId} childrenId={childrenId} feature={feature}>
+      <EditWrapper key={componentId} id={componentId} parentId={parentId} childrenId={childrenId} feature={feature}>
         {tpl}
       </EditWrapper>
     ) : (
@@ -217,9 +294,6 @@ export default observer((props: IPageRendererProps) => {
   function render() {
     return recursivelyRenderTemplate(dslObj.child, true, true);
   }
-
-  // 为什么加上这句，就可以让表格插槽重绘？
-  // console.log(toJS(dslStore.dsl));
 
   return dslStore.dsl ? <>{render()}</> : <div>未获得有效的DSL</div>;
 });

@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { Route, useLocation } from 'wouter';
+import { useEffect, useState } from 'react';
+import { Redirect, Route, Switch } from 'wouter';
 import Editor from '@/pages/editor';
 import Home from '@/pages/home';
 import Preview from '@/pages/preview';
@@ -7,31 +7,36 @@ import { initAppData } from '@/service/file';
 import CustomTitleBar from '@/components/custom-title-bar';
 
 function App() {
-  const [, setLocation] = useLocation();
+  const [showUI, setShowUI] = useState<boolean>(false);
   useEffect(() => {
-    init().then(() => {
-      setLocation('/home');
-    });
+    init();
   }, []);
 
   async function init() {
     await initAppData();
+    setShowUI(true);
   }
 
-  return (
+  return showUI ? (
     <div>
       <CustomTitleBar />
-      <Route path="/edit">
-        <Editor />
-      </Route>
-      <Route path="/home">
-        <Home />
-      </Route>
-      <Route path="/preview">
-        <Preview />
-      </Route>
+      <Switch>
+        <Route path="/">
+          <Redirect to="/home" />
+        </Route>
+        <Route path="/edit">
+          <Editor />
+        </Route>
+        <Route path="/home">
+          <Home />
+        </Route>
+        <Route path="/preview">
+          <Preview />
+        </Route>
+        <Route>404</Route>
+      </Switch>
     </div>
-  );
+  ) : null;
 }
 
 export default App;

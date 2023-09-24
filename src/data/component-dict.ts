@@ -144,6 +144,15 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         value: 'primary',
         valueType: 'string',
         valueSource: 'editorInput'
+      },
+      onClick: {
+        id: 'onClick',
+        schemaType: 'props',
+        name: 'onClick',
+        category: 'event',
+        value: undefined,
+        valueType: 'function',
+        valueSource: 'handler'
       }
     },
     children: {
