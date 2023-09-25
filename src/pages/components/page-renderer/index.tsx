@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, Reducer, useReducer } from 'react';
+import React, { FC, PropsWithChildren, Reducer, useContext, useReducer } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
@@ -14,10 +14,10 @@ import IActionSchema from '@/types/action.schema';
 import ActionType from '@/types/action-type';
 import { open } from '@tauri-apps/api/shell';
 import { useLocation } from 'wouter';
+import { DSLStoreContext } from '@/hooks/context';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
-  dslStore: DSLStore;
 }
 
 export default observer((props: IPageRendererProps) => {
@@ -25,7 +25,9 @@ export default observer((props: IPageRendererProps) => {
     return null;
   }
 
-  const { mode = 'preview', dslStore } = props;
+  const dslStore = useContext(DSLStoreContext);
+
+  const { mode = 'preview' } = props;
 
   const dslObj = toJS(dslStore.dsl);
 

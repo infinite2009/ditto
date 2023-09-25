@@ -1,7 +1,17 @@
 import { useCombinedRefs } from '@dnd-kit/utilities';
-import React, { CSSProperties, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  CSSProperties,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import ComponentFeature from '@/types/component-feature';
+import { DSLStoreContext } from '@/hooks/context';
 
 export interface IEditorProps {
   id: string;
@@ -13,6 +23,8 @@ export interface IEditorProps {
 }
 
 export default function EditWrapper({ id, parentId, childrenId, children, feature }: IEditorProps) {
+  const dslStore = useContext(DSLStoreContext);
+
   const direction = useMemo(() => {
     const wrapperElement = document.getElementById(id);
     if (!wrapperElement) {
@@ -156,8 +168,12 @@ export default function EditWrapper({ id, parentId, childrenId, children, featur
       break;
   }
 
+  function handleClick() {
+    dslStore.selectComponent(id);
+  }
+
   return (
-    <div id={id} ref={setNodeRef} {...listeners} {...attributes} style={style}>
+    <div id={id} ref={setNodeRef} {...listeners} {...attributes} style={style} onClick={handleClick}>
       {children}
     </div>
   );

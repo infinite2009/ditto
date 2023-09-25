@@ -12,6 +12,7 @@ import { TemplateKeyPathsReg } from '@/types/props.schema';
 export default class DSLStore {
   private static instance = new DSLStore();
   dsl: IPageSchema;
+  selectedComponent: IComponentSchema;
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
   currentParentNode: IComponentSchema | IPageSchema | null = null;
 
@@ -144,7 +145,7 @@ export default class DSLStore {
       // 针对某些特殊情形
       if (extProps) {
         if (typeOf(props[name].value) === 'object') {
-          Object.assign(props[name].value, extProps[name]);
+          Object.assign(props[name].value as object, extProps[name]);
         } else {
           props[name].value = extProps[name];
         }
@@ -408,5 +409,9 @@ export default class DSLStore {
     }
 
     return componentSchema;
+  }
+
+  selectComponent(componentId: ComponentId) {
+    this.selectedComponent = this.dsl.componentIndexes[componentId];
   }
 }

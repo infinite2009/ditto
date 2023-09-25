@@ -58,6 +58,7 @@ import { loadFormLibrary } from '@/service/form';
 import IFormConfig from '@/types/form-config';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig } from '@/util';
+import { DSLStoreContext } from '@/hooks/context';
 
 const collisionOffset = 4;
 
@@ -88,6 +89,8 @@ const tabsItems = [
     children: <TemplatePanel />
   }
 ];
+
+const dslStore = DSLStore.createInstance();
 
 export default function Editor() {
   const searchParams = new URLSearchParams(window.location.search);
@@ -122,8 +125,6 @@ export default function Editor() {
 
   const sensors = useSensors(mouseSensor);
 
-  const dslStore = DSLStore.createInstance();
-
   useEffect(() => {
     path.documentDir().then(p => {
       defaultPathRef.current = p;
@@ -144,15 +145,18 @@ export default function Editor() {
     }
   }
 
-  const formConfigForSelectedComponent = useMemo(() => {
-    if (selectedComponent) {
+  function formConfigForSelectedComponent() {
+    debugger;
+    const { selectedComponent } = dslStore;
+    if (selectedComponent && formConfigRef.current) {
       const { configName, name, dependency } = selectedComponent;
-      fetchComponentConfig(configName || name, dependency);
+      return formConfigRef.current[configName || name];
     }
     return undefined;
-  }, [selectedComponent]);
+  }
 
-  const propsValueOfSelectedComponent = useMemo(() => {
+  function propsValueOfSelectedComponent() {
+    const { selectedComponent } = dslStore;
     if (selectedComponent) {
       const { propsRefs } = selectedComponent;
       const value: Record<string, any> = {};
@@ -162,7 +166,7 @@ export default function Editor() {
       });
       return value;
     }
-  }, [selectedComponent]);
+  }
 
   function fetchOpenedFilesProxy() {
     setOpenedFiles(
@@ -705,7 +709,13 @@ export default function Editor() {
                   onSelect={handleSelectingPage}
                   onClose={handleClosingTab}
                 />
-                {currentFile ? <PageRenderer mode="edit" dslStore={dslStore} /> : <Empty />}
+                {currentFile ? (
+                  <DSLStoreContext.Provider value={dslStore}>
+                    <PageRenderer mode="edit" />
+                  </DSLStoreContext.Provider>
+                ) : (
+                  <Empty />
+                )}
               </div>
             </div>
           </div>
@@ -717,11 +727,12 @@ export default function Editor() {
           )}
         </DndContext>
         <div className={styles.formPanel}>
-          {formConfigForSelectedComponent ? (
+          {/* TODO: 这套方案不能 work */}
+          {formConfigForSelectedComponent() ? (
             <FormPanel
-              formConfig={formConfigForSelectedComponent}
+              formConfig={formConfigForSelectedComponent() as IFormConfig}
               onChange={handleChangingOfFormPanel}
-              value={propsValueOfSelectedComponent}
+              value={propsValueOfSelectedComponent()}
             />
           ) : (
             <div>加载中</div>
