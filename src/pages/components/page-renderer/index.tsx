@@ -4,7 +4,6 @@ import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
 import EditWrapper from '@/pages/editor/edit-wrapper';
 import ComponentFeature from '@/types/component-feature';
-import DSLStore from '../../../service/dsl-store';
 import { observer } from 'mobx-react-lite';
 import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';

@@ -3,7 +3,6 @@ import IComponentSchema from '@/types/component.schema';
 import IPropsSchema from '@/types/props.schema';
 
 export interface IPropsConfigItem extends IPropsSchema {
-  category: 'basic' | 'style' | 'event' | 'children';
   disabled?: boolean;
 }
 

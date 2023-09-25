@@ -249,8 +249,11 @@ export default class DSLStore {
     }
   }
 
-  updateComponentProps(id: string, propsPartial: { [key: string]: any }) {
-    console.log('update component props works');
+  updateComponentProps(propsPartial: { [key: string]: any }) {
+    const props = this.dsl.props[this.selectedComponent.id];
+    Object.entries(propsPartial).forEach(([propName, prop]) => {
+      props[propName].value = prop;
+    });
   }
 
   exportAsTemplate(id: string) {

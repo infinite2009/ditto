@@ -102,7 +102,6 @@ export default function Editor() {
   const [openedFiles, setOpenedFiles] = useState<TabItem[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
   const [selectedFolder, setSelectedFolder] = useState<string>('');
-  const [selectedComponent, setSelectedComponent] = useState<IComponentSchema>();
 
   const formConfigRef = useRef<Record<string, IFormConfig>>();
 
@@ -133,38 +132,12 @@ export default function Editor() {
       fetchCurrentFileProxy();
       fetchOpenedFilesProxy();
     });
-    loadFormLibrary().then(res => {
-      formConfigRef.current = res;
-    });
   }, []);
 
   function fetchCurrentFileProxy() {
     const currentFile = fetchCurrentFile();
     if (currentFile) {
       setCurrentFile(currentFile);
-    }
-  }
-
-  function formConfigForSelectedComponent() {
-    debugger;
-    const { selectedComponent } = dslStore;
-    if (selectedComponent && formConfigRef.current) {
-      const { configName, name, dependency } = selectedComponent;
-      return formConfigRef.current[configName || name];
-    }
-    return undefined;
-  }
-
-  function propsValueOfSelectedComponent() {
-    const { selectedComponent } = dslStore;
-    if (selectedComponent) {
-      const { propsRefs } = selectedComponent;
-      const value: Record<string, any> = {};
-      propsRefs.forEach(ref => {
-        const prop = dslStore.dsl.props[selectedComponent.id][ref];
-        value[ref] = prop.value;
-      });
-      return value;
     }
   }
 
@@ -672,73 +645,59 @@ export default function Editor() {
     }
   }
 
-  function handleChangingOfFormPanel() {}
-
   return (
     <div className={styles.main}>
       <Toolbar onDo={handleOnDo} />
-      <div className={styles.editArea}>
-        <DndContext
-          collisionDetection={customDetection}
-          sensors={sensors}
-          measuring={{
-            droppable: {
-              strategy: MeasuringStrategy.Always
-            }
-          }}
-          modifiers={[snapCenterToCursor]}
-          onDragStart={handleDraggingStart}
-          onDragMove={handleDraggingMove}
-          onDragEnd={handleDraggingEnd}
-          onDragCancel={handleDraggingCancel}
-        >
-          <div className={styles.draggableArea}>
-            <div className={styles.panel}>
-              <div className={styles.pagePanel}>
-                <PagePanel data={projectData} onSelect={handleSelectingPageOrFolder} selected={currentFile} />
+      <DSLStoreContext.Provider value={dslStore}>
+        <div className={styles.editArea}>
+          <DndContext
+            collisionDetection={customDetection}
+            sensors={sensors}
+            measuring={{
+              droppable: {
+                strategy: MeasuringStrategy.Always
+              }
+            }}
+            modifiers={[snapCenterToCursor]}
+            onDragStart={handleDraggingStart}
+            onDragMove={handleDraggingMove}
+            onDragEnd={handleDraggingEnd}
+            onDragCancel={handleDraggingCancel}
+          >
+            <div className={styles.draggableArea}>
+              <div className={styles.panel}>
+                <div className={styles.pagePanel}>
+                  <PagePanel data={projectData} onSelect={handleSelectingPageOrFolder} selected={currentFile} />
+                </div>
+                <div className={styles.componentPanel}>
+                  <Tabs items={tabsItems} />
+                </div>
               </div>
-              <div className={styles.componentPanel}>
-                <Tabs items={tabsItems} />
-              </div>
-            </div>
-            <div className={styles.canvas}>
-              <div className={styles.canvasInner}>
-                <TabBar
-                  data={openedFiles}
-                  selected={currentFile}
-                  onSelect={handleSelectingPage}
-                  onClose={handleClosingTab}
-                />
-                {currentFile ? (
-                  <DSLStoreContext.Provider value={dslStore}>
-                    <PageRenderer mode="edit" />
-                  </DSLStoreContext.Provider>
-                ) : (
-                  <Empty />
-                )}
+              <div className={styles.canvas}>
+                <div className={styles.canvasInner}>
+                  <TabBar
+                    data={openedFiles}
+                    selected={currentFile}
+                    onSelect={handleSelectingPage}
+                    onClose={handleClosingTab}
+                  />
+                  {currentFile ? <PageRenderer mode="edit" /> : <Empty />}
+                </div>
               </div>
             </div>
+            {createPortal(
+              <DragOverlay dropAnimation={dropAnimation}>
+                <div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>
+              </DragOverlay>,
+              document.body
+            )}
+          </DndContext>
+          <div className={styles.formPanel}>
+            <FormPanel />
           </div>
-          {createPortal(
-            <DragOverlay dropAnimation={dropAnimation}>
-              <div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>
-            </DragOverlay>,
-            document.body
-          )}
-        </DndContext>
-        <div className={styles.formPanel}>
-          {/* TODO: 这套方案不能 work */}
-          {formConfigForSelectedComponent() ? (
-            <FormPanel
-              formConfig={formConfigForSelectedComponent() as IFormConfig}
-              onChange={handleChangingOfFormPanel}
-              value={propsValueOfSelectedComponent()}
-            />
-          ) : (
-            <div>加载中</div>
-          )}
         </div>
-      </div>
+      </DSLStoreContext.Provider>
+
       <Modal
         title="创建页面"
         open={pageCreationVisible}

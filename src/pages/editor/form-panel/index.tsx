@@ -1,12 +1,14 @@
 import { Tabs } from 'antd';
 import styles from './index.module.less';
-import { CSSProperties, FC, useEffect, useRef } from 'react';
+import { CSSProperties, FC, useContext, useEffect, useRef, useState } from 'react';
 import { loadFormLibrary } from '@/service/form';
 import IFormConfig, { FormSchema } from '@/types/form-config';
 import BasicForm from '@/pages/editor/form-panel/basic-form';
 import EventForm from '@/pages/editor/form-panel/event-form';
 import DataForm from '@/pages/editor/form-panel/data-form';
 import StyleForm from '@/pages/editor/form-panel/style-form';
+import { observer } from 'mobx-react-lite';
+import { DSLStoreContext } from '@/hooks/context';
 
 export interface FormValue {
   style: CSSProperties;
@@ -21,7 +23,12 @@ export interface IFormPanelProps {
   onChange: (value: Partial<FormValue>) => void;
 }
 
-export default function FormPanel({ value = {}, onChange, formConfig }: IFormPanelProps) {
+export default observer(() => {
+  const dslStore = useContext(DSLStoreContext);
+
+  const [formConfig, setFormConfig] = useState<IFormConfig>();
+  const formConfigRef = useRef<Record<string, IFormConfig>>();
+
   const tabsItems = [
     {
       key: 'style',
@@ -45,65 +52,105 @@ export default function FormPanel({ value = {}, onChange, formConfig }: IFormPan
     }
   ];
 
-  function handleChangingBasicFormValues(value: Record<string, any>) {
-    if (onChange) {
-      onChange({
-        basic: value
+  useEffect(() => {
+    loadFormLibrary().then(res => {
+      formConfigRef.current = res;
+    });
+  }, []);
+
+  function propsValueOfSelectedComponent() {
+    const { selectedComponent } = dslStore;
+    if (selectedComponent) {
+      const { propsRefs } = selectedComponent;
+      const value: Record<string, any> = {};
+      propsRefs.forEach(ref => {
+        const prop = dslStore.dsl.props[selectedComponent.id][ref];
+        value[ref] = prop.value;
       });
+      return value;
     }
+  }
+
+  function formConfigForSelectedComponent() {
+    const { selectedComponent } = dslStore;
+    if (selectedComponent && formConfigRef.current) {
+      const { configName, name, dependency } = selectedComponent;
+      return formConfigRef.current[configName || name];
+    }
+    return undefined;
+  }
+
+  function handleChangingBasicFormValues(value: Record<string, any>) {
+    dslStore.updateComponentProps(value);
   }
 
   function handleChangingEventFormValues(value: Record<string, any>) {
-    if (onChange) {
-      onChange({
-        event: value
-      });
-    }
+    dslStore.updateComponentProps(value);
   }
 
   function handleChangingStyleForm(value: CSSProperties) {
-    if (onChange) {
-      onChange({
-        style: value
-      });
-    }
+    dslStore.updateComponentProps({ style: value });
   }
 
   function handleChangingDataFormValues(value: Record<string, any>) {
-    if (onChange) {
-      onChange({
-        data: value
-      });
-    }
+    dslStore.updateComponentProps(value);
+  }
+
+  function getBasicValue() {
+    return {};
+  }
+
+  function getStyleValue() {
+    return {};
+  }
+
+  function getEventValue() {
+    // TODO: 从 actions 里边取
+    return {};
+  }
+
+  function getDataValue() {
+    return {};
   }
 
   function renderStyleForm() {
+    if (!formConfig) {
+      return null;
+    }
     return (
-      <StyleForm key="style" onChange={handleChangingStyleForm} value={value.style} config={formConfig.schema?.style} />
+      <StyleForm
+        key="style"
+        onChange={handleChangingStyleForm}
+        value={getStyleValue()}
+        config={formConfig.schema?.style}
+      />
     );
   }
 
   function renderBasicForm() {
+    if (!formConfig) {
+      return null;
+    }
     if (formConfig.formComponent?.basic) {
       const FormComponent = formConfig.formComponent.basic;
-      return <FormComponent value={value.basic} onChange={handleChangingBasicFormValues} />;
+      return <FormComponent value={getBasicValue()} onChange={handleChangingBasicFormValues} />;
     }
     return (
       <BasicForm
         key="basic"
         onChange={handleChangingBasicFormValues}
-        value={value.basic}
+        value={getStyleValue()}
         formSchema={formConfig.schema?.basic as unknown as FormSchema}
       />
     );
   }
 
   function renderEventForm() {
-    return <EventForm key="event" onChange={handleChangingEventFormValues} value={value.event} />;
+    return <EventForm key="event" onChange={handleChangingEventFormValues} value={getEventValue()} />;
   }
 
   function renderDataForm() {
-    return <DataForm key="data" onChange={handleChangingDataFormValues} value={value.data} />;
+    return <DataForm key="data" onChange={handleChangingDataFormValues} value={getDataValue()} />;
   }
 
   return (
@@ -111,4 +158,4 @@ export default function FormPanel({ value = {}, onChange, formConfig }: IFormPan
       <Tabs items={tabsItems} />
     </div>
   );
-}
+});
