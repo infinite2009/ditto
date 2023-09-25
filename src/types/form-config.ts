@@ -22,7 +22,12 @@ export default interface IFormConfig {
     style: FormSchema;
     basic: FormSchema;
     event: FormSchema;
-    advanced: FormSchema;
+    data: FormSchema;
   };
-  formComponent?: FC<any>;
+  formComponent?: {
+    style: FC<any>;
+    basic: FC<any>;
+    event: FC<any>;
+    data: FC<any>;
+  };
 }
