@@ -26,7 +26,6 @@ export interface IFormPanelProps {
 export default observer(() => {
   const dslStore = useContext(DSLStoreContext);
 
-  const [formConfig, setFormConfig] = useState<IFormConfig>();
   const formConfigRef = useRef<Record<string, IFormConfig>>();
 
   const tabsItems = [
@@ -52,6 +51,19 @@ export default observer(() => {
     }
   ];
 
+  const formConfig: IFormConfig | null = getFormConfig();
+
+  function getFormConfig() {
+    if (!formConfigRef.current) {
+      return null;
+    }
+    if (!dslStore.selectedComponent) {
+      return null;
+    }
+    const { configName, name } = dslStore.selectedComponent;
+    return formConfigRef.current[configName || name];
+  }
+
   useEffect(() => {
     loadFormLibrary().then(res => {
       formConfigRef.current = res;
@@ -69,15 +81,6 @@ export default observer(() => {
       });
       return value;
     }
-  }
-
-  function formConfigForSelectedComponent() {
-    const { selectedComponent } = dslStore;
-    if (selectedComponent && formConfigRef.current) {
-      const { configName, name, dependency } = selectedComponent;
-      return formConfigRef.current[configName || name];
-    }
-    return undefined;
   }
 
   function handleChangingBasicFormValues(value: Record<string, any>) {
