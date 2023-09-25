@@ -1,13 +1,25 @@
-import { Form } from 'antd';
+import { Cascader, Checkbox, Form, Input, InputNumber, Radio, Select, Switch } from 'antd';
+import { FC, useEffect } from 'react';
+import { FormSchema } from '@/types/form-config';
 import { useForm } from 'antd/es/form/Form';
-import { useEffect } from 'react';
 
 export interface IBasicFormProps {
-  value: Record<string, any>;
   onChange: (value: Record<string, any>) => void;
+  value?: Record<string, any>;
+  formSchema: FormSchema;
 }
 
-export default function BasicForm({ value, onChange }: IBasicFormProps) {
+const formItemDict: Record<string, FC<any>> = {
+  Input: Input,
+  InputNumber: InputNumber,
+  Select: Select,
+  Switch: Switch,
+  Checkbox: Checkbox,
+  Radio: Radio,
+  Cascader: Cascader
+};
+
+export default function BasicForm({ value, onChange, formSchema }: IBasicFormProps) {
   const [form] = useForm();
 
   useEffect(() => {
@@ -19,5 +31,20 @@ export default function BasicForm({ value, onChange }: IBasicFormProps) {
     }
   }
 
-  return <Form form={form} onValuesChange={handleChanging}></Form>;
+  function renderFormItems() {
+    return Object.entries(formSchema.properties).map(([name, config]) => {
+      const Component = formItemDict[config.component];
+      return (
+        <Form.Item key={name} label={config.title} name={name}>
+          <Component {...config.componentProps} />
+        </Form.Item>
+      );
+    });
+  }
+
+  return (
+    <Form form={form} onValuesChange={handleChanging}>
+      {renderFormItems()}
+    </Form>
+  );
 }

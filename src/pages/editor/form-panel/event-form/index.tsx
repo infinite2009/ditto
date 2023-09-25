@@ -2,7 +2,7 @@ import Form, { useForm } from 'antd/es/form/Form';
 import { useEffect } from 'react';
 
 export interface IEventFormProps {
-  value: Record<string, any>;
+  value?: Record<string, any>;
   onChange: (value: Record<string, any>) => void;
 }
 

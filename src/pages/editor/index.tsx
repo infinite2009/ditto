@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CollisionDescriptor,
   CollisionDetection,
@@ -54,6 +54,10 @@ import Empty from '@/pages/editor/empty';
 import { debounce } from 'lodash';
 import { DataNode } from 'antd/es/tree';
 import { useLocation } from 'wouter';
+import { loadFormLibrary } from '@/service/form';
+import IFormConfig from '@/types/form-config';
+import IComponentSchema from '@/types/component.schema';
+import { fetchComponentConfig } from '@/util';
 
 const collisionOffset = 4;
 
@@ -95,11 +99,15 @@ export default function Editor() {
   const [openedFiles, setOpenedFiles] = useState<TabItem[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
   const [selectedFolder, setSelectedFolder] = useState<string>('');
+  const [selectedComponent, setSelectedComponent] = useState<IComponentSchema>();
+
+  const formConfigRef = useRef<Record<string, IFormConfig>>();
 
   const [form] = useForm();
 
   const insertIndexRef = useRef<number>(-1);
   const anchorCoordinatesRef = useRef<IAnchorCoordinates>();
+  // TODO: 文件路径数据需要重构为 indexedDB 存储
   const defaultPathRef = useRef<string>();
   const filePathRef = useRef<string>();
 
@@ -124,6 +132,9 @@ export default function Editor() {
       fetchCurrentFileProxy();
       fetchOpenedFilesProxy();
     });
+    loadFormLibrary().then(res => {
+      formConfigRef.current = res;
+    });
   }, []);
 
   function fetchCurrentFileProxy() {
@@ -132,6 +143,26 @@ export default function Editor() {
       setCurrentFile(currentFile);
     }
   }
+
+  const formConfigForSelectedComponent = useMemo(() => {
+    if (selectedComponent) {
+      const { configName, name, dependency } = selectedComponent;
+      fetchComponentConfig(configName || name, dependency);
+    }
+    return undefined;
+  }, [selectedComponent]);
+
+  const propsValueOfSelectedComponent = useMemo(() => {
+    if (selectedComponent) {
+      const { propsRefs } = selectedComponent;
+      const value: Record<string, any> = {};
+      propsRefs.forEach(ref => {
+        const prop = dslStore.dsl.props[selectedComponent.id][ref];
+        value[ref] = prop.value;
+      });
+      return value;
+    }
+  }, [selectedComponent]);
 
   function fetchOpenedFilesProxy() {
     setOpenedFiles(
@@ -637,6 +668,8 @@ export default function Editor() {
     }
   }
 
+  function handleChangingOfFormPanel() {}
+
   return (
     <div className={styles.main}>
       <Toolbar onDo={handleOnDo} />
@@ -684,7 +717,15 @@ export default function Editor() {
           )}
         </DndContext>
         <div className={styles.formPanel}>
-          <FormPanel />
+          {formConfigForSelectedComponent ? (
+            <FormPanel
+              formConfig={formConfigForSelectedComponent}
+              onChange={handleChangingOfFormPanel}
+              value={propsValueOfSelectedComponent}
+            />
+          ) : (
+            <div>加载中</div>
+          )}
         </div>
       </div>
       <Modal
