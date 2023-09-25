@@ -127,7 +127,7 @@ export function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
           type: 'object',
           properties: {}
         },
-        advanced: {
+        data: {
           type: 'object',
           properties: {}
         }
