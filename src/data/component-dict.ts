@@ -145,6 +145,69 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         valueType: 'string',
         valueSource: 'editorInput'
       },
+      danger: {
+        id: 'danger',
+        schemaType: 'props',
+        name: 'danger',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      disabled: {
+        id: 'disabled',
+        schemaType: 'props',
+        name: 'disabled',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      href: {
+        id: 'href',
+        schemaType: 'props',
+        name: 'href',
+        category: 'basic',
+        value: '',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      target: {
+        id: 'target',
+        schemaType: 'props',
+        name: 'target',
+        category: 'basic',
+        value: '_blank',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      loading: {
+        id: 'loading',
+        schemaType: 'props',
+        name: 'loading',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      shape: {
+        id: 'shape',
+        schemaType: 'props',
+        name: 'shape',
+        category: 'basic',
+        value: 'default',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      size: {
+        id: 'size',
+        schemaType: 'props',
+        name: 'size',
+        category: 'basic',
+        value: 'middle',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      },
       style: {
         id: 'style',
         schemaType: 'props',
