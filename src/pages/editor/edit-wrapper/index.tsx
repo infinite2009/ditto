@@ -24,6 +24,7 @@ export interface IEditorProps {
 
 export default function EditWrapper({ id, parentId, childrenId, children, feature }: IEditorProps) {
   const dslStore = useContext(DSLStoreContext);
+  const animationFrameIdRef = useRef<number>();
 
   const direction = useMemo(() => {
     const wrapperElement = document.getElementById(id);
@@ -57,6 +58,15 @@ export default function EditWrapper({ id, parentId, childrenId, children, featur
   });
 
   const childrenProcessed = useRef<boolean>(false);
+
+  const wrapperElement = document.getElementById(id);
+
+  if (wrapperElement) {
+    const childElement: HTMLElement = wrapperElement.children?.[0] as HTMLElement;
+    animationFrameIdRef.current = requestAnimationFrame(() => {
+      processBFC(wrapperElement, childElement);
+    });
+  }
 
   useEffect(() => {
     const wrapperElement = document.getElementById(id);
@@ -96,7 +106,7 @@ export default function EditWrapper({ id, parentId, childrenId, children, featur
         break;
       case '':
       case 'initial':
-        if (childElement.nodeName === 'BUTTON') {
+        if (['BUTTON', 'A', 'SPAN', 'INPUT', 'SELECT', 'IMAGE'].includes(childElement.nodeName)) {
           wrapperElement.style.display = 'inline-block';
           if (wrapperElement.parentElement?.style?.alignItems === 'stretch') {
             wrapperElement.style.alignSelf = 'flex-start';
@@ -125,10 +135,14 @@ export default function EditWrapper({ id, parentId, childrenId, children, featur
     }
 
     // 处理margin
-    wrapperElement.style.marginLeft = childElement.style.marginLeft;
+    wrapperElement.style.marginTop = childElement.style.marginTop;
     wrapperElement.style.marginRight = childElement.style.marginRight;
-    childElement.style.marginLeft = '0px';
+    wrapperElement.style.marginBottom = childElement.style.marginBottom;
+    wrapperElement.style.marginLeft = childElement.style.marginLeft;
+    childElement.style.marginTop = '0px';
     childElement.style.marginRight = '0px';
+    childElement.style.marginBottom = '0px';
+    childElement.style.marginLeft = '0px';
   }
 
   const style: CSSProperties = useMemo(() => {

@@ -283,6 +283,9 @@ export default observer((props: IPageRendererProps) => {
       feature = ComponentFeature.solid;
     }
 
+    // TODO: 在这里继续开发
+    const marginStyle = {};
+
     return mode === 'edit' && !isRoot ? (
       <EditWrapper key={componentId} id={componentId} parentId={parentId} childrenId={childrenId} feature={feature}>
         {tpl}
