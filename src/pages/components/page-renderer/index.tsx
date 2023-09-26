@@ -269,6 +269,8 @@ export default observer((props: IPageRendererProps) => {
       };
     }
 
+    console.log('componentProps: ', componentProps);
+
     const tpl = (
       <Component key={componentId} {...componentProps} {...rootProps}>
         {childrenTemplate}

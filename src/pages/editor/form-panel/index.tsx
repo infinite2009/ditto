@@ -1,6 +1,5 @@
 import { Tabs } from 'antd';
-import styles from './index.module.less';
-import { CSSProperties, FC, useContext, useEffect, useRef, useState } from 'react';
+import { CSSProperties, useContext, useEffect, useRef } from 'react';
 import { loadFormLibrary } from '@/service/form';
 import IFormConfig, { FormSchema } from '@/types/form-config';
 import BasicForm from '@/pages/editor/form-panel/basic-form';
@@ -9,25 +8,12 @@ import DataForm from '@/pages/editor/form-panel/data-form';
 import StyleForm from '@/pages/editor/form-panel/style-form';
 import { observer } from 'mobx-react-lite';
 import { DSLStoreContext } from '@/hooks/context';
-
-export interface FormValue {
-  style: CSSProperties;
-  basic: Record<string, any>;
-  event: Record<string, any>;
-  data: Record<string, any>;
-}
-
-export interface IFormPanelProps {
-  formConfig: IFormConfig;
-  value?: Partial<FormValue>;
-  onChange: (value: Partial<FormValue>) => void;
-}
+import styles from './index.module.less';
+import { toJS } from 'mobx';
 
 export default observer(() => {
   const dslStore = useContext(DSLStoreContext);
-
-  const formConfigRef = useRef<Record<string, IFormConfig>>();
-
+  useRef<Record<string, IFormConfig>>();
   const tabsItems = [
     {
       key: 'style',
@@ -51,37 +37,11 @@ export default observer(() => {
     }
   ];
 
-  const formConfig: IFormConfig | null = getFormConfig();
-
-  function getFormConfig() {
-    if (!formConfigRef.current) {
-      return null;
-    }
-    if (!dslStore.selectedComponent) {
-      return null;
-    }
-    const { configName, name } = dslStore.selectedComponent;
-    return formConfigRef.current[configName || name];
-  }
-
   useEffect(() => {
     loadFormLibrary().then(res => {
-      formConfigRef.current = res;
+      dslStore.initTotalFormConfig(res);
     });
   }, []);
-
-  function propsValueOfSelectedComponent() {
-    const { selectedComponent } = dslStore;
-    if (selectedComponent) {
-      const { propsRefs } = selectedComponent;
-      const value: Record<string, any> = {};
-      propsRefs.forEach(ref => {
-        const prop = dslStore.dsl.props[selectedComponent.id][ref];
-        value[ref] = prop.value;
-      });
-      return value;
-    }
-  }
 
   function handleChangingBasicFormValues(value: Record<string, any>) {
     dslStore.updateComponentProps(value);
@@ -93,6 +53,7 @@ export default observer(() => {
 
   function handleChangingStyleForm(value: CSSProperties) {
     dslStore.updateComponentProps({ style: value });
+    console.log('dsl: ', toJS(dslStore.dsl));
   }
 
   function handleChangingDataFormValues(value: Record<string, any>) {
@@ -103,62 +64,55 @@ export default observer(() => {
     return {};
   }
 
-  function getStyleValue() {
-    return {};
-  }
-
-  function getEventValue() {
-    // TODO: 从 actions 里边取
-    return {};
-  }
-
-  function getDataValue() {
-    return {};
-  }
-
   function renderStyleForm() {
-    if (!formConfig) {
+    if (!dslStore.formConfigOfSelectedComponent) {
       return null;
     }
     return (
       <StyleForm
         key="style"
         onChange={handleChangingStyleForm}
-        value={getStyleValue()}
-        config={formConfig.schema?.style}
+        value={dslStore.valueOfSelectedComponent?.style}
+        config={dslStore.formConfigOfSelectedComponent.schema?.style}
       />
     );
   }
 
   function renderBasicForm() {
-    if (!formConfig) {
+    if (!dslStore.formConfigOfSelectedComponent) {
       return null;
     }
-    if (formConfig.formComponent?.basic) {
-      const FormComponent = formConfig.formComponent.basic;
+    if (dslStore.formConfigOfSelectedComponent.formComponent?.basic) {
+      const FormComponent = dslStore.formConfigOfSelectedComponent.formComponent.basic;
       return <FormComponent value={getBasicValue()} onChange={handleChangingBasicFormValues} />;
     }
     return (
       <BasicForm
         key="basic"
         onChange={handleChangingBasicFormValues}
-        value={getStyleValue()}
-        formSchema={formConfig.schema?.basic as unknown as FormSchema}
+        value={dslStore.valueOfSelectedComponent?.style}
+        formSchema={dslStore.formConfigOfSelectedComponent.schema?.basic as unknown as FormSchema}
       />
     );
   }
 
   function renderEventForm() {
-    return <EventForm key="event" onChange={handleChangingEventFormValues} value={getEventValue()} />;
+    return (
+      <EventForm
+        key="event"
+        onChange={handleChangingEventFormValues}
+        value={dslStore.valueOfSelectedComponent?.event}
+      />
+    );
   }
 
   function renderDataForm() {
-    return <DataForm key="data" onChange={handleChangingDataFormValues} value={getDataValue()} />;
+    return (
+      <DataForm key="data" onChange={handleChangingDataFormValues} value={dslStore.valueOfSelectedComponent?.data} />
+    );
   }
 
   return (
-    <div className={styles.main}>
-      <Tabs items={tabsItems} />
-    </div>
+    <div className={styles.main}>{dslStore.selectedComponent ? <Tabs items={tabsItems} /> : <div>请选择组件</div>}</div>
   );
 });

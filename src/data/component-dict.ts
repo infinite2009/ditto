@@ -145,6 +145,15 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         valueType: 'string',
         valueSource: 'editorInput'
       },
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
       onClick: {
         id: 'onClick',
         schemaType: 'props',
