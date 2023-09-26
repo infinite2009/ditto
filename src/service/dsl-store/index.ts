@@ -297,19 +297,11 @@ export default class DSLStore {
 
   updateComponentProps(propsPartial: Record<string, any>) {
     const props = this.dsl.props[this.selectedComponent.id];
-    if (!props.style) {
-      props.style = {
-        id: 'style',
-        schemaType: 'props',
-        name: 'style',
-        category: 'style',
-        value: {},
-        valueType: 'object',
-        valueSource: 'editorInput'
-      } as IPropsSchema;
-    }
-    // @ts-ignore
-    Object.assign(props.style.value, propsPartial.style);
+    Object.keys(propsPartial).forEach(key => {
+      if (props[key]) {
+        props[key].value = propsPartial[key];
+      }
+    });
   }
 
   exportAsTemplate(id: string) {
