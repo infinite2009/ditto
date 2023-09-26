@@ -32,7 +32,7 @@ export default function BasicForm({ value, onChange, formSchema }: IBasicFormPro
   }
 
   function renderFormItems() {
-    return Object.entries(formSchema.properties).map(([name, config]) => {
+    return Object.entries(formSchema).map(([name, config]) => {
       const Component = formItemDict[config.component];
       return (
         <Form.Item key={name} label={config.title} name={name}>
