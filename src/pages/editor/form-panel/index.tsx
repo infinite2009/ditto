@@ -53,7 +53,6 @@ export default observer(() => {
 
   function handleChangingStyleForm(value: CSSProperties) {
     dslStore.updateComponentProps({ style: value });
-    console.log('dsl: ', toJS(dslStore.dsl));
   }
 
   function handleChangingDataFormValues(value: Record<string, any>) {
