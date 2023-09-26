@@ -81,7 +81,7 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     return styleConfig.map(item => {
       const Component = defaultStyleConfig[item].component;
       return (
-        <Form.Item label={defaultStyleConfig[item].label} name={defaultStyleConfig[item].name}>
+        <Form.Item key={item} label={defaultStyleConfig[item].label} name={defaultStyleConfig[item].name}>
           <Component />
         </Form.Item>
       );
