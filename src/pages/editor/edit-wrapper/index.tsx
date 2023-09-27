@@ -1,14 +1,5 @@
 import { useCombinedRefs } from '@dnd-kit/utilities';
-import React, {
-  CSSProperties,
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { CSSProperties, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import ComponentFeature from '@/types/component-feature';
 import { DSLStoreContext } from '@/hooks/context';
@@ -31,12 +22,13 @@ export default function EditWrapper({
   childrenId,
   children,
   feature,
-  childrenStyle = {},
-  parentStyle = {}
+  // 不要赋值默认值
+  childrenStyle,
+  // 不要赋值默认值
+  parentStyle
 }: IEditorProps) {
   const [styleState, setStyleState] = useState<CSSProperties>({});
   const dslStore = useContext(DSLStoreContext);
-  const animationFrameIdRef = useRef<number>();
 
   const direction = useMemo(() => {
     const wrapperElement = document.getElementById(id);
@@ -71,7 +63,7 @@ export default function EditWrapper({
 
   useEffect(() => {
     setStyleState(processBFC());
-  }, [JSON.stringify(toJS(childrenStyle)), JSON.stringify(toJS(parentStyle)), JSON.stringify(toJS(feature))]);
+  }, [childrenStyle, parentStyle, feature]);
 
   function processBFC(): CSSProperties {
     const result: CSSProperties = {};
@@ -90,7 +82,7 @@ export default function EditWrapper({
       'inset'
     ];
     styleNames.forEach(name => {
-      if (childrenStyle[name] !== undefined) {
+      if (childrenStyle?.[name] !== undefined) {
         // @ts-ignore
         result[name] = childrenStyle[name];
       }
@@ -153,22 +145,22 @@ export default function EditWrapper({
         result.position = childElement.style.position;
       }
     }
-    if (!result.top) {
+    if (!result.top && childElement.style.top !== '') {
       result.top = childElement.style.top;
       childElement.style.top = '0px';
     }
 
-    if (!result.right) {
+    if (!result.right && childElement.style.right !== '') {
       result.right = childElement.style.right;
       childElement.style.right = '0px';
     }
 
-    if (!result.bottom) {
+    if (!result.bottom && childElement.style.bottom !== '') {
       result.bottom = childElement.style.bottom;
       childElement.style.bottom = '0px';
     }
 
-    if (!result.left) {
+    if (!result.left && childElement.style.left !== '') {
       result.left = childElement.style.left;
       childElement.style.left = '0px';
     }
