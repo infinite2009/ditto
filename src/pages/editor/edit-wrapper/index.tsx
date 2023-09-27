@@ -12,6 +12,7 @@ import React, {
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import ComponentFeature from '@/types/component-feature';
 import { DSLStoreContext } from '@/hooks/context';
+import { toJS } from 'mobx';
 
 export interface IEditorProps {
   id: string;
@@ -20,9 +21,20 @@ export interface IEditorProps {
   children: React.ReactNode;
   direction?: 'row' | 'column';
   feature?: ComponentFeature;
+  parentStyle?: CSSProperties;
+  childrenStyle?: CSSProperties;
 }
 
-export default function EditWrapper({ id, parentId, childrenId, children, feature }: IEditorProps) {
+export default function EditWrapper({
+  id,
+  parentId,
+  childrenId,
+  children,
+  feature,
+  childrenStyle = {},
+  parentStyle = {}
+}: IEditorProps) {
+  const [styleState, setStyleState] = useState<CSSProperties>({});
   const dslStore = useContext(DSLStoreContext);
   const animationFrameIdRef = useRef<number>();
 
@@ -57,95 +69,136 @@ export default function EditWrapper({ id, parentId, childrenId, children, featur
     }
   });
 
-  const childrenProcessed = useRef<boolean>(false);
-
-  const wrapperElement = document.getElementById(id);
-
-  if (wrapperElement) {
-    const childElement: HTMLElement = wrapperElement.children?.[0] as HTMLElement;
-    animationFrameIdRef.current = requestAnimationFrame(() => {
-      processBFC(wrapperElement, childElement);
-    });
-  }
-
   useEffect(() => {
+    setStyleState(processBFC());
+  }, [JSON.stringify(toJS(childrenStyle)), JSON.stringify(toJS(parentStyle)), JSON.stringify(toJS(feature))]);
+
+  function processBFC(): CSSProperties {
+    const result: CSSProperties = {};
+    const styleNames: (keyof CSSProperties)[] = [
+      'display',
+      'margin',
+      'marginLeft',
+      'marginTop',
+      'marginRight',
+      'marginBottom',
+      'position',
+      'top',
+      'right',
+      'bottom',
+      'left',
+      'inset'
+    ];
+    styleNames.forEach(name => {
+      if (childrenStyle[name] !== undefined) {
+        // @ts-ignore
+        result[name] = childrenStyle[name];
+      }
+    });
+
     const wrapperElement = document.getElementById(id);
     if (!wrapperElement) {
-      return;
+      return result;
     }
     const childElement: HTMLElement = wrapperElement.children?.[0] as HTMLElement;
-    if (!childrenProcessed.current) {
-      processBFC(wrapperElement, childElement);
-      childrenProcessed.current = true;
+    if (!childElement) {
+      return result;
     }
-  }, []);
+    const computedChildStyle = getComputedStyle(childElement);
 
-  function processBFC(wrapperElement: HTMLElement, childElement: HTMLElement) {
-    const display = childElement.style.display;
-    const width = childElement.style.width;
-    const flexBasis = childElement.style.flexBasis;
-    const flexReg = /^-?\d+(\.\d+)?$/;
-    switch (display) {
-      case 'block':
-        // 如果有具体宽度
-        if (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && flexReg.test(width)) {
-          wrapperElement.style.display = 'inline-block';
-        } else {
-          wrapperElement.style.display = 'block';
-        }
-        break;
-      case 'flex':
-        if (
-          (flexBasis.indexOf('px') !== -1 && flexBasis.indexOf('%') !== -1 && flexReg.test(flexBasis)) ||
-          (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && flexReg.test(width))
-        ) {
-          wrapperElement.style.display = 'inline-block';
-        } else {
-          wrapperElement.style.display = 'block';
-        }
-        break;
-      case '':
-      case 'initial':
-        if (['BUTTON', 'A', 'SPAN', 'INPUT', 'SELECT', 'IMAGE'].includes(childElement.nodeName)) {
-          wrapperElement.style.display = 'inline-block';
-          if (wrapperElement.parentElement?.style?.alignItems === 'stretch') {
-            wrapperElement.style.alignSelf = 'flex-start';
+    if (!result.display) {
+      const display = computedChildStyle.getPropertyValue('display');
+      const width = computedChildStyle.getPropertyValue('width');
+      const flexBasis = childElement.style.flexBasis;
+      const flexReg = /^-?\d+(\.\d+)?$/;
+      switch (display) {
+        case 'block':
+          // 如果有具体宽度
+          if (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && flexReg.test(width)) {
+            result.display = 'inline-block';
+          } else {
+            result.display = 'block';
           }
-        }
-        break;
-      default:
-        wrapperElement.style.display = 'inline';
-        break;
+          break;
+        case 'flex':
+          if (
+            (flexBasis.indexOf('px') !== -1 && flexBasis.indexOf('%') !== -1 && flexReg.test(flexBasis)) ||
+            (width.indexOf('px') !== -1 && width.indexOf('%') !== -1 && flexReg.test(width))
+          ) {
+            result.display = 'inline-block';
+          } else {
+            result.display = 'block';
+          }
+          break;
+        case 'inline-block':
+          result.display = 'inline-block';
+          if (parentStyle?.alignItems === 'stretch') {
+            result.alignSelf = 'flex-start';
+          } else if (wrapperElement.parentElement) {
+            const computedParentStyle = getComputedStyle(wrapperElement.parentElement);
+            if (computedParentStyle.getPropertyValue('alignItems') === 'stretch') {
+              result.alignSelf = 'flex-start';
+            }
+          }
+          break;
+        default:
+          result.display = 'inline';
+          break;
+      }
     }
 
     // 处理定位问题
-    if (childElement.style.position === 'absolute') {
-      wrapperElement.style.position = childElement.style.position;
-      wrapperElement.style.top = childElement.style.top;
-      wrapperElement.style.right = childElement.style.right;
-      wrapperElement.style.bottom = childElement.style.bottom;
-      wrapperElement.style.left = childElement.style.left;
-      wrapperElement.style.inset = childElement.style.inset;
-      wrapperElement.style.height = childElement.style.height;
-      wrapperElement.style.width = childElement.style.width;
+    if (!result.position) {
+      if (childElement.style.position === 'absolute') {
+        result.position = childElement.style.position;
+      }
+    }
+    if (!result.top) {
+      result.top = childElement.style.top;
       childElement.style.top = '0px';
+    }
+
+    if (!result.right) {
+      result.right = childElement.style.right;
       childElement.style.right = '0px';
+    }
+
+    if (!result.bottom) {
+      result.bottom = childElement.style.bottom;
       childElement.style.bottom = '0px';
+    }
+
+    if (!result.left) {
+      result.left = childElement.style.left;
       childElement.style.left = '0px';
     }
 
     // 处理margin
-    wrapperElement.style.marginTop = childElement.style.marginTop;
-    wrapperElement.style.marginRight = childElement.style.marginRight;
-    wrapperElement.style.marginBottom = childElement.style.marginBottom;
-    wrapperElement.style.marginLeft = childElement.style.marginLeft;
-    childElement.style.marginTop = '0px';
-    childElement.style.marginRight = '0px';
-    childElement.style.marginBottom = '0px';
-    childElement.style.marginLeft = '0px';
-  }
+    if (!result.margin) {
+      result.margin = childElement.style.margin;
+      childElement.style.margin = '0px';
+    }
 
-  const style: CSSProperties = useMemo(() => {
+    if (!result.marginTop) {
+      wrapperElement.style.marginTop = childElement.style.marginTop;
+      childElement.style.marginTop = '0px';
+    }
+
+    if (!result.marginRight) {
+      wrapperElement.style.marginRight = childElement.style.marginRight;
+      childElement.style.marginRight = '0px';
+    }
+
+    if (!result.marginBottom) {
+      wrapperElement.style.marginBottom = childElement.style.marginBottom;
+      childElement.style.marginBottom = '0px';
+    }
+
+    if (!result.marginLeft) {
+      wrapperElement.style.marginLeft = childElement.style.marginLeft;
+      childElement.style.marginLeft = '0px';
+    }
+
     let backgroundColor;
     switch (feature) {
       case ComponentFeature.slot:
@@ -158,15 +211,17 @@ export default function EditWrapper({ id, parentId, childrenId, children, featur
         backgroundColor = '#0ff';
         break;
     }
+
     return {
       opacity: isDragging ? 0.5 : 1,
       outline: isOver ? '2px solid #7193f1' : undefined,
       outlineOffset: isOver ? -2 : undefined,
       transition: 'border 0.5s ease-in-out',
       boxSizing: 'border-box',
-      backgroundColor
-    };
-  }, [feature]);
+      backgroundColor,
+      ...result
+    } as CSSProperties;
+  }
 
   let setNodeRef: React.LegacyRef<HTMLDivElement> | undefined;
   switch (feature) {
@@ -187,7 +242,7 @@ export default function EditWrapper({ id, parentId, childrenId, children, featur
   }
 
   return (
-    <div id={id} ref={setNodeRef} {...listeners} {...attributes} style={style} onClick={handleClick}>
+    <div id={id} ref={setNodeRef} {...listeners} {...attributes} style={styleState} onClick={handleClick}>
       {children}
     </div>
   );

@@ -10,7 +10,6 @@ import { ComponentId, TemplateInfo } from '@/types';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IFormConfig from '@/types/form-config';
 import { CSSProperties, ReactNode } from 'react';
-import { Debugger } from 'inspector';
 
 type FormValue = {
   style: CSSProperties;

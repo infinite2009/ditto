@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, Reducer, useContext, useReducer } from 'react';
+import React, { CSSProperties, FC, PropsWithChildren, Reducer, useContext, useReducer } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
@@ -283,11 +283,18 @@ export default observer((props: IPageRendererProps) => {
       feature = ComponentFeature.solid;
     }
 
-    // TODO: 在这里继续开发
-    const marginStyle = {};
+    const parentProps = dslStore.dsl.props[parentId];
 
     return mode === 'edit' && !isRoot ? (
-      <EditWrapper key={componentId} id={componentId} parentId={parentId} childrenId={childrenId} feature={feature}>
+      <EditWrapper
+        key={componentId}
+        id={componentId}
+        parentId={parentId}
+        childrenId={childrenId}
+        feature={feature}
+        childrenStyle={componentProps?.style}
+        parentStyle={parentProps?.style.value as CSSProperties}
+      >
         {tpl}
       </EditWrapper>
     ) : (
