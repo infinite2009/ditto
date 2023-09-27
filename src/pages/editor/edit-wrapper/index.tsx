@@ -88,6 +88,32 @@ export default function EditWrapper({
         result[name] = childrenStyle[name];
       }
     });
+    // 额外处理下 margin
+    const { margin, marginLeft, marginTop, marginRight, marginBottom } = result;
+
+    const mergedMarginTop = marginTop || margin;
+
+    if (mergedMarginTop !== undefined) {
+      result.marginTop = mergedMarginTop;
+    }
+
+    const mergedMarginRight = marginRight || margin;
+
+    if (mergedMarginRight !== undefined) {
+      result.marginRight = mergedMarginRight;
+    }
+
+    const mergedMarginBottom = marginBottom || margin;
+
+    if (mergedMarginBottom !== undefined) {
+      result.marginTop = mergedMarginBottom;
+    }
+
+    const mergedMarginLeft = marginLeft || margin;
+
+    if (mergedMarginLeft !== undefined) {
+      result.marginLeft = mergedMarginLeft;
+    }
 
     const wrapperElement = document.getElementById(id);
     if (!wrapperElement) {
@@ -166,31 +192,23 @@ export default function EditWrapper({
       childElement.style.left = '0px';
     }
 
-    // 处理margin
-    if (!result.margin) {
-      result.margin = childElement.style.margin;
+    const marginStyleNames: (keyof CSSProperties)[] = [
+      'margin',
+      'marginTop',
+      'marginRight',
+      'marginBottom',
+      'marginLeft'
+    ];
+    marginStyleNames.forEach(name => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (result[name] === undefined && childElement.style[name] !== '') {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        result[name] = childElement.style[name];
+      }
       childElement.style.margin = '0px';
-    }
-
-    if (!result.marginTop) {
-      wrapperElement.style.marginTop = childElement.style.marginTop;
-      childElement.style.marginTop = '0px';
-    }
-
-    if (!result.marginRight) {
-      wrapperElement.style.marginRight = childElement.style.marginRight;
-      childElement.style.marginRight = '0px';
-    }
-
-    if (!result.marginBottom) {
-      wrapperElement.style.marginBottom = childElement.style.marginBottom;
-      childElement.style.marginBottom = '0px';
-    }
-
-    if (!result.marginLeft) {
-      wrapperElement.style.marginLeft = childElement.style.marginLeft;
-      childElement.style.marginLeft = '0px';
-    }
+    });
 
     let backgroundColor;
     switch (feature) {

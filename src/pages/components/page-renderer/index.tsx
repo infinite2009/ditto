@@ -14,6 +14,7 @@ import ActionType from '@/types/action-type';
 import { open } from '@tauri-apps/api/shell';
 import { useLocation } from 'wouter';
 import { DSLStoreContext } from '@/hooks/context';
+import cloneDeep from 'lodash/cloneDeep';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -269,8 +270,22 @@ export default observer((props: IPageRendererProps) => {
       };
     }
 
+    const componentPropsWithoutMargin = cloneDeep(componentProps);
+    const marginStyleNames: (keyof CSSProperties)[] = [
+      'margin',
+      'marginTop',
+      'marginRight',
+      'marginBottom',
+      'marginLeft'
+    ];
+    marginStyleNames.forEach(name => {
+      if (componentPropsWithoutMargin?.style) {
+        delete componentPropsWithoutMargin?.style[name];
+      }
+    });
+
     const tpl = (
-      <Component key={componentId} {...componentProps} {...rootProps}>
+      <Component key={componentId} {...componentPropsWithoutMargin} {...rootProps}>
         {childrenTemplate}
       </Component>
     );
