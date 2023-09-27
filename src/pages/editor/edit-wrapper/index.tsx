@@ -83,6 +83,7 @@ export default function EditWrapper({
     ];
     styleNames.forEach(name => {
       if (childrenStyle?.[name] !== undefined) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         result[name] = childrenStyle[name];
       }
