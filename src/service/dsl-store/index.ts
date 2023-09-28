@@ -73,8 +73,16 @@ export default class DSLStore {
       const propSchema: IPropsSchema = props[key];
       const { value, category } = propSchema;
       if (result[category]) {
-        // @ts-ignore
-        result[category][key] = value;
+        // style 需要特殊处理
+        if (category === 'style') {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          result[category] = value;
+        } else {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          result[category][key] = value;
+        }
       }
     });
     return result;
