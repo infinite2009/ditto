@@ -10,7 +10,6 @@ import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import * as typescript from 'prettier/parser-typescript';
 import { createAsyncTask, fetchComponentConfig, getFileName } from '@/util';
 import AppData from '@/types/app-data';
-import initialAppData from '@/config/app-data.json';
 import { documentDir, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
@@ -25,6 +24,14 @@ interface EntryTree {
   children?: EntryTree[];
   isLeaf?: boolean;
 }
+
+const initialAppData = {
+  currentFile: '',
+  currentProject: '',
+  openedFiles: [],
+  openedProjects: [],
+  recentProjects: []
+};
 
 class FileManager {
   private static instance = new FileManager();
