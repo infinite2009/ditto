@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   CollisionDescriptor,
   CollisionDetection,
@@ -54,10 +54,7 @@ import Empty from '@/pages/editor/empty';
 import { debounce } from 'lodash';
 import { DataNode } from 'antd/es/tree';
 import { useLocation } from 'wouter';
-import { loadFormLibrary } from '@/service/form';
 import IFormConfig from '@/types/form-config';
-import IComponentSchema from '@/types/component.schema';
-import { fetchComponentConfig } from '@/util';
 import { DSLStoreContext } from '@/hooks/context';
 
 const collisionOffset = 4;
@@ -628,6 +625,7 @@ export default function Editor() {
     const content = await openFile(page);
     if (content) {
       dslStore.initDSL(JSON.parse(content));
+      // TODO: save AppData
     } else {
       message.error('文件已损坏!');
     }

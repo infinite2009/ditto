@@ -3,20 +3,21 @@ import * as prettier from 'prettier/standalone';
 import prettierConfig from '@/config/.prettierrc.json';
 import * as babel from 'prettier/parser-babel';
 import { RequiredOptions } from 'prettier';
-import { BaseDirectory, createDir, exists, FileEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/api/fs';
+import { BaseDirectory, exists, FileEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/api/fs';
 import { open } from '@tauri-apps/api/dialog';
 import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import * as typescript from 'prettier/parser-typescript';
-import { createAsyncTask, fetchComponentConfig, getFileName } from '@/util';
 import AppData from '@/types/app-data';
 import { documentDir, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
 import cloneDeep from 'lodash/cloneDeep';
-import ActionType from '@/types/action-type';
 import { PropsId } from '@/types';
 import { isEqual } from 'lodash';
+import { createAsyncTask, fetchComponentConfig, getFileName } from '@/util';
+import ActionType from '@/types/action-type';
+import * as localforage from 'localforage';
 
 interface EntryTree {
   key: string;
@@ -34,13 +35,14 @@ const initialAppData = {
 };
 
 class FileManager {
+  // Danger: 不要改数据库的名字
+  static db = localforage.createInstance({
+    name: 'Ditto'
+  });
+  static APP_DATA_STORE_NAME = 'appData';
   private static instance = new FileManager();
   cache: AppData;
   appDataPath = 'appData.json';
-
-  private constructor() {
-    this.cache = initialAppData;
-  }
 
   static getInstance() {
     return FileManager.instance;
@@ -71,54 +73,6 @@ class FileManager {
     await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
   }
 
-  /**
-   * 精简 dsl 的 props
-   */
-  private simplifyProps(dsl: IPageSchema) {
-    const dslClone = cloneDeep(dsl);
-    const { actions } = dslClone;
-    const indexes = Object.values(dslClone.componentIndexes);
-    indexes.forEach(componentSchema => {
-      const { id: componentId, configName, name, dependency, propsRefs } = componentSchema;
-      const { propsConfig } = fetchComponentConfig(configName || name, dependency);
-      const propsDict = dslClone.props[componentId];
-      propsRefs.forEach(ref => {
-        const props = propsDict[ref];
-        const actionPropsDict: Record<PropsId, { name: string; value: any }> = {};
-        Object.values(actions).forEach(action => {
-          if (action.type === ActionType.stateTransition && action.payload.target === componentId) {
-            Object.assign(actionPropsDict, action.payload.props);
-          }
-        });
-        // 如果 props 的值还是初始值，并且不是 状态转移类别的 action 涉及到的 props，就删除
-        if (!actionPropsDict[props.name]) {
-          if (isEqual(props.value, propsConfig[props.name].value)) {
-            delete propsDict[props.name];
-            const index = propsRefs.indexOf(props.name);
-            if (index !== -1) {
-              propsRefs.splice(index, 1);
-            }
-          } else if (props.name === 'style') {
-            // 针对 style 要特殊处理
-            const initialValue = propsConfig[props.name].value as Record<string, any>;
-            Object.keys(initialValue).forEach(key => {
-              if (props.value) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                if (initialValue[key] === props.value[key]) {
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  delete props.value[key];
-                }
-              }
-            });
-          }
-        }
-      });
-    });
-    return dslClone;
-  }
-
   async exportVuePageCodeFile(filePath: string, dsl: IPageSchema) {
     const vueDslTransformer = new VueTransformer(dsl as unknown as IPageSchema);
     const vue = new VueCodeGenerator(vueDslTransformer.transformDsl(), new TypeScriptCodeGenerator());
@@ -133,57 +87,48 @@ class FileManager {
   }
 
   async initAppData() {
+    // try {
+    //   const appDataPath = this.appDataPath;
+    //   const doesExist = await exists(appDataPath, { dir: BaseDirectory.AppData });
+    //   if (!doesExist) {
+    //     const text = await createAsyncTask(() =>
+    //       prettier.format(JSON.stringify(initialAppData), {
+    //         ...prettierConfig,
+    //         parser: 'json',
+    //         plugins: [babel]
+    //       } as unknown as Partial<RequiredOptions>)
+    //     );
+    //     await createDir('', { dir: BaseDirectory.AppData, recursive: true });
+    //     writeTextFile(appDataPath, text, { dir: BaseDirectory.AppData });
+    //   } else {
+    //     const text = await readTextFile(appDataPath, { dir: BaseDirectory.AppData });
+    //     this.cache = JSON.parse(text);
+    //   }
+    // } catch (err) {
+    //   console.error(err);
+    // }
+    // TODO: read app data from database, if there is no data in db, assign initial data to cache
     try {
-      const appDataPath = this.appDataPath;
-      const doesExist = await exists(appDataPath, { dir: BaseDirectory.AppData });
-      if (!doesExist) {
-        const text = await createAsyncTask(() =>
-          prettier.format(JSON.stringify(initialAppData), {
-            ...prettierConfig,
-            parser: 'json',
-            plugins: [babel]
-          } as unknown as Partial<RequiredOptions>)
-        );
-        await createDir('', { dir: BaseDirectory.AppData, recursive: true });
-        writeTextFile(appDataPath, text, { dir: BaseDirectory.AppData });
-      } else {
-        const text = await readTextFile(appDataPath, { dir: BaseDirectory.AppData });
-        this.cache = JSON.parse(text);
-      }
+      const appData = await FileManager.db.getItem(FileManager.APP_DATA_STORE_NAME);
+      this.cache = (appData as AppData) || initialAppData;
     } catch (err) {
       console.error(err);
     }
   }
 
-  async saveAppData(
-    data: Partial<{
-      currentFile: string;
-      currentProject: string;
-      recentProjects: string;
-      openedFiles: string[];
-    }>
-  ) {
+  async saveAppData(data: Partial<AppData>) {
     try {
-      const appDataPath = this.appDataPath;
-      const configText = await readTextFile(appDataPath, { dir: BaseDirectory.AppData });
-      let config: Partial<AppData> = {};
-      if (configText) {
-        config = JSON.parse(configText);
-      }
-
-      Object.assign(config, data);
-
-      config.recentProjects = config.recentProjects || [];
-      const index = config.recentProjects.findIndex(item => item === data.currentProject);
+      Object.assign(this.cache, data);
+      this.cache.recentProjects = this.cache.recentProjects || [];
+      const index = this.cache.recentProjects.findIndex(item => item === data.currentProject);
       // 找到的话，就先剔除
       if (index > -1) {
-        config.recentProjects.splice(index, 1);
+        this.cache.recentProjects.splice(index, 1);
       }
       if (data.currentProject) {
-        config.recentProjects.unshift(data.currentProject);
+        this.cache.recentProjects.unshift(data.currentProject);
       }
-      this.cache = Object.assign(this.cache, config);
-      writeTextFile(appDataPath, JSON.stringify(config), { dir: BaseDirectory.AppData });
+      await FileManager.db.setItem(FileManager.APP_DATA_STORE_NAME, this.cache);
     } catch (err) {
       console.error(err);
     }
@@ -291,6 +236,54 @@ class FileManager {
     });
     return readTextFile(file);
   }
+
+  /**
+   * 精简 dsl 的 props
+   */
+  private simplifyProps(dsl: IPageSchema) {
+    const dslClone = cloneDeep(dsl);
+    const { actions } = dslClone;
+    const indexes = Object.values(dslClone.componentIndexes);
+    indexes.forEach(componentSchema => {
+      const { id: componentId, configName, name, dependency, propsRefs } = componentSchema;
+      const { propsConfig } = fetchComponentConfig(configName || name, dependency);
+      const propsDict = dslClone.props[componentId];
+      propsRefs.forEach(ref => {
+        const props = propsDict[ref];
+        const actionPropsDict: Record<PropsId, { name: string; value: any }> = {};
+        Object.values(actions).forEach(action => {
+          if (action.type === ActionType.stateTransition && action.payload.target === componentId) {
+            Object.assign(actionPropsDict, action.payload.props);
+          }
+        });
+        // 如果 props 的值还是初始值，并且不是 状态转移类别的 action 涉及到的 props，就删除
+        if (!actionPropsDict[props.name]) {
+          if (isEqual(props.value, propsConfig[props.name].value)) {
+            delete propsDict[props.name];
+            const index = propsRefs.indexOf(props.name);
+            if (index !== -1) {
+              propsRefs.splice(index, 1);
+            }
+          } else if (props.name === 'style') {
+            // 针对 style 要特殊处理
+            const initialValue = propsConfig[props.name].value as Record<string, any>;
+            Object.keys(initialValue).forEach(key => {
+              if (props.value) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                if (initialValue[key] === props.value[key]) {
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  delete props.value[key];
+                }
+              }
+            });
+          }
+        }
+      });
+    });
+    return dslClone;
+  }
 }
 
 const fileManager = FileManager.getInstance();
@@ -299,14 +292,7 @@ export function initAppData() {
   return fileManager.initAppData();
 }
 
-export function saveAppData(
-  data: Partial<{
-    currentFile: string;
-    currentProject: string;
-    recentProjects: string;
-    openedFiles: string[];
-  }>
-) {
+export function saveAppData(data: Partial<AppData>) {
   return fileManager.saveAppData(data);
 }
 

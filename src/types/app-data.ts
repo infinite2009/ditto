@@ -4,4 +4,5 @@ export default interface AppData {
   openedFiles: string[];
   openedProjects: string[];
   recentProjects: string[];
+  [key: string]: any;
 }
