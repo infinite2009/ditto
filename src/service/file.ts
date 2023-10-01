@@ -8,7 +8,7 @@ import { open } from '@tauri-apps/api/dialog';
 import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import * as typescript from 'prettier/parser-typescript';
-import AppData from '@/types/app-data';
+import AppData, { ProjectInfo } from '@/types/app-data';
 import { documentDir, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
@@ -18,6 +18,7 @@ import { isEqual } from 'lodash';
 import { createAsyncTask, fetchComponentConfig, getFileName } from '@/util';
 import ActionType from '@/types/action-type';
 import * as localforage from 'localforage';
+import { nanoid } from 'nanoid';
 
 interface EntryTree {
   key: string;
@@ -31,15 +32,21 @@ const initialAppData = {
   currentProject: '',
   openedFiles: [],
   openedProjects: [],
-  recentProjects: []
+  recentProjects: {}
 };
 
 class FileManager {
-  // Danger: 不要改数据库的名字
-  static db = localforage.createInstance({
-    name: 'Ditto'
-  });
   static APP_DATA_STORE_NAME = 'appData';
+  static RECENT_PROJECTS_STORE_NAME = 'recentProjects';
+  // Danger: 不要改数据库的名字
+  static appDataStore = localforage.createInstance({
+    name: 'Ditto',
+    storeName: FileManager.APP_DATA_STORE_NAME
+  });
+  static recentProjectsStore = localforage.createInstance({
+    name: 'Ditto',
+    storeName: FileManager.RECENT_PROJECTS_STORE_NAME
+  });
   private static instance = new FileManager();
   cache: AppData;
   appDataPath = 'appData.json';
@@ -87,30 +94,16 @@ class FileManager {
   }
 
   async initAppData() {
-    // try {
-    //   const appDataPath = this.appDataPath;
-    //   const doesExist = await exists(appDataPath, { dir: BaseDirectory.AppData });
-    //   if (!doesExist) {
-    //     const text = await createAsyncTask(() =>
-    //       prettier.format(JSON.stringify(initialAppData), {
-    //         ...prettierConfig,
-    //         parser: 'json',
-    //         plugins: [babel]
-    //       } as unknown as Partial<RequiredOptions>)
-    //     );
-    //     await createDir('', { dir: BaseDirectory.AppData, recursive: true });
-    //     writeTextFile(appDataPath, text, { dir: BaseDirectory.AppData });
-    //   } else {
-    //     const text = await readTextFile(appDataPath, { dir: BaseDirectory.AppData });
-    //     this.cache = JSON.parse(text);
-    //   }
-    // } catch (err) {
-    //   console.error(err);
-    // }
-    // TODO: read app data from database, if there is no data in db, assign initial data to cache
     try {
-      const appData = await FileManager.db.getItem(FileManager.APP_DATA_STORE_NAME);
-      this.cache = (appData as AppData) || initialAppData;
+      this.cache = initialAppData;
+      await Promise.all([
+        FileManager.appDataStore.iterate((val, key) => {
+          this.cache[key] = val;
+        }),
+        FileManager.recentProjectsStore.iterate((val, key) => {
+          this.cache.recentProjects[key] = val as ProjectInfo;
+        })
+      ]);
     } catch (err) {
       console.error(err);
     }
@@ -119,16 +112,12 @@ class FileManager {
   async saveAppData(data: Partial<AppData>) {
     try {
       Object.assign(this.cache, data);
-      this.cache.recentProjects = this.cache.recentProjects || [];
-      const index = this.cache.recentProjects.findIndex(item => item === data.currentProject);
-      // 找到的话，就先剔除
-      if (index > -1) {
-        this.cache.recentProjects.splice(index, 1);
-      }
-      if (data.currentProject) {
-        this.cache.recentProjects.unshift(data.currentProject);
-      }
-      await FileManager.db.setItem(FileManager.APP_DATA_STORE_NAME, this.cache);
+      const promises = Object.keys(data)
+        .filter(key => key !== 'recentProjects')
+        .map(key => {
+          FileManager.appDataStore.setItem(key, this.cache[key]);
+        });
+      await Promise.all(promises);
     } catch (err) {
       console.error(err);
     }
@@ -238,6 +227,35 @@ class FileManager {
   }
 
   /**
+   * 获取用户的全部项目
+   */
+  async fetchRecentProjects(): Promise<ProjectInfo[]> {
+    const recentProjects: ProjectInfo[] = [];
+    await FileManager.recentProjectsStore.iterate(val => {
+      recentProjects.push(val as ProjectInfo);
+    });
+    return recentProjects;
+  }
+
+  /**
+   * 创建一个新项目，需要用户选择文件夹
+   * @param projectName
+   * @param path
+   * @param frameworkType
+   */
+  async createProject(projectName: string, path: string, frameworkType: 'vue' | 'react') {
+    const project = {
+      id: nanoid(),
+      name: projectName,
+      path,
+      type: frameworkType,
+      lastModified: new Date().getTime()
+    };
+    this.cache.recentProjects[project.id] = project;
+    await FileManager.recentProjectsStore.setItem(project.id, project);
+  }
+
+  /**
    * 精简 dsl 的 props
    */
   private simplifyProps(dsl: IPageSchema) {
@@ -320,6 +338,10 @@ export function closeOpenedFile(file: string) {
   return fileManager.closeOpenedFile(file);
 }
 
+export function fetchRecentProjects(): Promise<ProjectInfo[]> {
+  return fileManager.fetchRecentProjects();
+}
+
 export function fetchCurrentFile() {
   return fileManager.fetchCurrentFile();
 }
@@ -334,4 +356,8 @@ export function openFile(file: string) {
 
 export function selectFile(file: string) {
   return fileManager.selectFile(file);
+}
+
+export function createProject(projectName: string, path: string, frameworkType: 'vue' | 'react') {
+  return fileManager.createProject(projectName, path, frameworkType);
 }

@@ -1,0 +1,159 @@
+.main {
+  margin: 60px auto;
+  min-width: 400px;
+  max-width: 840px;
+  height: calc(100vh - 154px);
+}
+
+.lateral() {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.btnWrapper {
+  margin: 0 12px 32px;
+  .lateral();
+  justify-content: space-between;
+}
+
+.newBtn {
+  margin-right: 16px;
+  border-radius: 8px;
+  width: 150px;
+  height: 36px;
+  font-family: PingFang SC, serif;
+  font-size: 14px;
+  font-style: normal;
+  line-height: 28px;
+  color: #fff;
+  background: #1A4BFF;
+}
+
+.openBtn {
+  border-radius: 8px;
+  width: 150px;
+  height: 36px;
+  font-family: PingFang SC, serif;
+  font-size: 14px;
+  font-style: normal;
+  line-height: 28px;
+  color: #1A4BFF;
+  border-color: #1A4BFF;
+}
+
+.btnIcon {
+  font-size: 16px;
+}
+
+.left {
+  .lateral();
+}
+
+.right {
+  .lateral();
+}
+
+.feedbackIcon {
+  font-size: 16px;
+}
+
+.feedbackTitle {
+  margin: 8px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  color: #9499A0;
+  font-family: PingFang SC, serif;
+}
+
+.title {
+  margin: 0 12px;
+  line-height: 40px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.listHeader {
+  margin: 0 12px;
+  .lateral();
+  border-bottom: 1px solid #E3E5E7;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 40px;
+  font-family: PingFang SC, sans-serif;
+  color: #61666D;
+}
+
+.projectNameCol {
+  margin-right: 24px;
+  width: 504px;
+}
+
+.recentEdit {
+  margin-right: 24px;
+  width: 240px;
+  cursor: pointer;
+}
+
+.action {
+  width: 24px;
+}
+
+.projectList {
+
+}
+
+.projectListBody {
+  max-height: calc(100vh - 320px);
+  overflow: auto;
+}
+
+.project {
+  padding: 16px 12px;
+  .lateral();
+  line-height: 24px;
+  &:hover {
+    border-radius: 6px;
+    background-color: #f6f7f8;
+  }
+}
+
+.projectName {
+  .lateral();
+  margin-right: 24px;
+  width: 504px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #18191C;
+  cursor: pointer;
+}
+
+.editTime {
+  display: block;
+  margin-right: 24px;
+  width: 240px;
+  font-size: 12px;
+  color: #9499A0;
+}
+
+.projectIcon {
+  margin-right: 12px;
+  font-size: 24px;
+}
+
+.dropDownItem {
+  .lateral();
+  justify-content: space-between;
+  //padding: 6px 8px;
+  //border-radius: 6px;
+  font-size: 12px;
+  line-height: 20px;
+  //background-color: #F6F7F8;
+}
+
+.shortKey {
+  color: #9499A0;
+}
