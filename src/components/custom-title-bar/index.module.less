@@ -1,4 +1,115 @@
+@containHeight: 34px;
+@tabHeight: 30px;
+@radius: 8px;
+
 .main {
-  padding-left: 72px;
-  height: 32px;
+  padding-left: 76px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  height: @containHeight;
+  background-color: #f1f2f3;
+}
+
+.icon {
+  line-height: 30px;
+  font-size: 12px;
+  color: #9499A0;
+}
+
+.home {
+  width: 52px;
+  height: @tabHeight;
+  cursor: pointer;
+  &:hover {
+    .outBorder(#f8f9fa, 9, 9);
+    .closeIcon {
+      opacity: 1;
+    }
+  }
+}
+
+.homeIcon {
+  display: block;
+  margin: 7px auto;
+  color: #9499A0;
+}
+
+.unselected {
+  position: relative;
+  font-size: 12px;
+  line-height: 30px;
+  color: #9499A0;
+  &:before {
+    position: absolute;
+    content: "";
+    left: -1px;
+    top: 50%;
+    transform: translate(0, -50%);
+    height: 12px;
+    width: 1px;
+    background-color: #e3e5e7;
+    z-index: 1;
+  }
+}
+
+.outBorder(@color, @zIndex, @zIndex) {
+  position: relative;
+  border-top-left-radius: @radius;
+  border-top-right-radius: @radius;
+  height: @tabHeight;
+  background-color: @color;
+  &:before {
+    content: "";
+    position: absolute;
+    left: initial !important;
+    top: initial !important;
+    transform: initial !important;
+    right: -@radius;
+    bottom: 0;
+    width: @radius;
+    height: @radius;
+    background: radial-gradient(circle at 100% 0%, transparent @radius, @color 0);
+    z-index: @zIndex;
+  }
+  &:after {
+    content: "";
+    position: absolute;
+    left: -@radius;
+    bottom: 0;
+    width: @radius;
+    height: @radius;
+    background: radial-gradient(circle at 0% 0%, transparent @radius, @color 0);
+    z-index: @zIndex;
+  }
+  z-index: @zIndex;
+}
+
+.selected {
+  .outBorder(#fff, 1, 1);
+}
+
+.titleWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-width: 104px;
+  padding: 0 6px 0 12px;
+  justify-content: space-between;
+  cursor: pointer;
+  .closeIcon {
+    opacity: 0;
+    pointer-events: none;
+  }
+  &:hover {
+    .outBorder(#f8f9fa, 9, 9);
+    .closeIcon {
+      opacity: 1;
+    }
+  }
+}
+
+.previewIcon {
+  margin: 6px;
 }
