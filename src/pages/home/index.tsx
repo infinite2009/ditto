@@ -2,7 +2,7 @@ import { useLocation } from 'wouter';
 
 import style from './index.module.less';
 import { FileFilled, PlusOutlined, SelectOutlined, SortAscendingOutlined } from '@ant-design/icons';
-import { Button, Dropdown } from 'antd';
+import { Button, Divider, Dropdown } from 'antd';
 import { useEffect, useState } from 'react';
 import { fetchRecentProjects } from '@/service/file';
 import { ProjectInfo } from '@/types/app-data';
@@ -14,167 +14,6 @@ export default function Home() {
   useEffect(() => {
     fetchRecentProjects().then(res => {
       setRecentProjects([
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        },
         {
           id: '1',
           name: '测试项目',
@@ -201,27 +40,34 @@ export default function Home() {
     });
   }
 
-  function handleButtonClick() {}
+  function openProject(data) {}
+  function dropdownRender(data: ProjectInfo) {
+    return (
+      <div className={style.dropdownContainer}>
+        <div className={style.dropDownItem} onClick={() => openProject(data)}>
+          <span>打开</span>
+        </div>
+        <Divider style={{ backgroundColor: '#F1F2F3', margin: '4px 0' }} />
+        <div className={style.dropDownItem}>
+          <span>创建副本</span>
+        </div>
+        <div className={style.dropDownItem}>
+          <span>重命名</span>
+          <span className={style.shortKey}>Q</span>
+        </div>
+        <Divider style={{ backgroundColor: '#F1F2F3', margin: '4px 0' }} />
+        <div className={style.dropDownItem}>
+          <span>删除</span>
+          <span className={style.shortKey}>Q</span>
+        </div>
+      </div>
+    );
+  }
 
   function renderActionComponent(data: ProjectInfo) {
-    const menuProps = [
-      {
-        label: <span>打开</span>,
-        key: '1'
-      },
-      {
-        label: (
-          <div className={style.dropDownItem}>
-            <span>创建副本</span>
-            <span className={style.shortKey}>Q</span>
-          </div>
-        ),
-        key: '2'
-      }
-    ];
     return (
-      <Dropdown menu={{ items: menuProps, onClick: handleButtonClick }} trigger={['click']}>
-        <div>...</div>
+      <Dropdown className={style.dropDownOverlay} dropdownRender={() => dropdownRender(data)} trigger={['click']}>
+        <div className={style.dropDownBtn}>...</div>
       </Dropdown>
     );
   }
