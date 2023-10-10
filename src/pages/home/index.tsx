@@ -31,6 +31,7 @@ export default function Home() {
         <li key={project.id}>
           <Dropdown
             className={style.dropDownOverlay}
+            destroyPopupOnHide
             dropdownRender={() => dropdownRender(project)}
             trigger={['contextMenu']}
           >
@@ -102,7 +103,12 @@ export default function Home() {
 
   function renderActionComponent(data: ProjectInfo) {
     return (
-      <Dropdown className={style.dropDownOverlay} dropdownRender={() => dropdownRender(data)} trigger={['click']}>
+      <Dropdown
+        className={style.dropDownOverlay}
+        destroyPopupOnHide
+        dropdownRender={() => dropdownRender(data)}
+        trigger={['click']}
+      >
         <div className={style.dropDownBtn}>...</div>
       </Dropdown>
     );
