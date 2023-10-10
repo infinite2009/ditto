@@ -55,6 +55,7 @@ export default class VueTransformer {
             componentHanlderMap[nodeName][propsName](node);
           }
         });
+        this.fixDependency(node);
       } else {
         this.fixDependency(node);
       }
@@ -214,7 +215,7 @@ export default class VueTransformer {
     const { props, componentIndexes } = this.dsl;
     const componentProps = props[node.id];
     const templateKeyPathsReg = componentProps[name].templateKeyPathsReg;
-
+    // console.log(node, templateKeyPathsReg, componentProps[name].value);
     if (!templateKeyPathsReg || templateKeyPathsReg.length === 0) {
       return;
     }
