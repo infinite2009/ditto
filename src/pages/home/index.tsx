@@ -2,14 +2,18 @@ import { useLocation } from 'wouter';
 
 import style from './index.module.less';
 import { FileFilled, PlusOutlined, SelectOutlined, SortAscendingOutlined } from '@ant-design/icons';
-import { Button, Divider, Dropdown } from 'antd';
-import { useEffect, useState } from 'react';
+import { Button, Divider, Dropdown, Input, InputRef } from 'antd';
+import { useEffect, useRef, useState } from 'react';
 import { fetchRecentProjects } from '@/service/file';
 import { ProjectInfo } from '@/types/app-data';
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const [recentProjects, setRecentProjects] = useState<any[]>([]);
+  const [selectedProject, setSelectedProject] = useState<ProjectInfo>();
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const inputRef = useRef<InputRef>(null);
 
   useEffect(() => {
     fetchRecentProjects().then(res => {
@@ -25,6 +29,20 @@ export default function Home() {
     });
   }, []);
 
+  useEffect(() => {
+    if (isEditing && selectedProject) {
+      inputRef.current?.focus({
+        cursor: 'all'
+      });
+    }
+  }, [isEditing]);
+
+  function changeText(e: any) {
+    debugger;
+    // TODO: 更新项目的名字
+    setIsEditing(false);
+  }
+
   function renderRecentProjects() {
     return recentProjects.map(project => {
       return (
@@ -33,12 +51,17 @@ export default function Home() {
             className={style.dropDownOverlay}
             destroyPopupOnHide
             dropdownRender={() => dropdownRender(project)}
+            onOpenChange={(open: boolean) => onOpenChange(open, project)}
             trigger={['contextMenu']}
           >
             <div className={style.project}>
               <div className={style.projectName}>
                 <FileFilled className={style.projectIcon} />
-                <span>{project.name}</span>
+                {selectedProject?.id === project.id && isEditing ? (
+                  <Input ref={inputRef} value={project.name} onPressEnter={changeText} onBlur={changeText} />
+                ) : (
+                  <span>{project.name}</span>
+                )}
               </div>
               <span className={style.editTime}>12分钟前</span>
               <div className={style.action}>{renderActionComponent(project)}</div>
@@ -65,7 +88,7 @@ export default function Home() {
    * @param data
    */
   function renameProject(data: ProjectInfo) {
-    // TODO:
+    setIsEditing(true);
   }
 
   /**
@@ -101,12 +124,19 @@ export default function Home() {
     );
   }
 
+  function onOpenChange(open: boolean, data: ProjectInfo) {
+    if (open) {
+      setSelectedProject(data);
+    }
+  }
+
   function renderActionComponent(data: ProjectInfo) {
     return (
       <Dropdown
         className={style.dropDownOverlay}
         destroyPopupOnHide
         dropdownRender={() => dropdownRender(data)}
+        onOpenChange={(open: boolean) => onOpenChange(open, data)}
         trigger={['click']}
       >
         <div className={style.dropDownBtn}>...</div>
