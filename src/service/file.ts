@@ -9,12 +9,16 @@ import { open } from '@tauri-apps/api/dialog';
 import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import * as typescript from 'prettier/parser-typescript';
-import { createAsyncTask, getFileName } from '@/util';
+import { createAsyncTask, fetchComponentConfig, getFileName } from '@/util';
 import AppData from '@/types/app-data';
 import initialAppData from '@/config/app-data.json';
-import { appDataDir, documentDir, sep } from '@tauri-apps/api/path';
+import { documentDir, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
+import cloneDeep from 'lodash/cloneDeep';
+import ActionType from '@/types/action-type';
+import { PropsId } from '@/types';
+import { isEqual } from 'lodash';
 
 interface EntryTree {
   key: string;
@@ -48,15 +52,65 @@ class FileManager {
   }
 
   async exportReactPageCodeFile(filePath: string, dsl: IPageSchema) {
-    const react = new ReactCodeGenerator(dsl as unknown as IPageSchema, new TypeScriptCodeGenerator());
+    const simplifiedDSL = this.simplifyProps(dsl);
+    const react = new ReactCodeGenerator(simplifiedDSL as unknown as IPageSchema, new TypeScriptCodeGenerator());
+    const originalCodeContent = react.generatePageCode().join('\n');
     const formattedContent = await createAsyncTask(() =>
-      prettier.format(react.generatePageCode().join('\n'), {
+      prettier.format(originalCodeContent, {
         ...prettierConfig,
         parser: 'typescript',
         plugins: [typescript]
       } as unknown as Partial<RequiredOptions>)
     );
     await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
+  }
+
+  /**
+   * 精简 dsl 的 props
+   */
+  private simplifyProps(dsl: IPageSchema) {
+    const dslClone = cloneDeep(dsl);
+    const { actions } = dslClone;
+    const indexes = Object.values(dslClone.componentIndexes);
+    indexes.forEach(componentSchema => {
+      const { id: componentId, configName, name, dependency, propsRefs } = componentSchema;
+      const { propsConfig } = fetchComponentConfig(configName || name, dependency);
+      const propsDict = dslClone.props[componentId];
+      propsRefs.forEach(ref => {
+        const props = propsDict[ref];
+        const actionPropsDict: Record<PropsId, { name: string; value: any }> = {};
+        Object.values(actions).forEach(action => {
+          if (action.type === ActionType.stateTransition && action.payload.target === componentId) {
+            Object.assign(actionPropsDict, action.payload.props);
+          }
+        });
+        // 如果 props 的值还是初始值，并且不是 状态转移类别的 action 涉及到的 props，就删除
+        if (!actionPropsDict[props.name]) {
+          if (isEqual(props.value, propsConfig[props.name].value)) {
+            delete propsDict[props.name];
+            const index = propsRefs.indexOf(props.name);
+            if (index !== -1) {
+              propsRefs.splice(index, 1);
+            }
+          } else if (props.name === 'style') {
+            // 针对 style 要特殊处理
+            const initialValue = propsConfig[props.name].value as Record<string, any>;
+            Object.keys(initialValue).forEach(key => {
+              if (props.value) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                if (initialValue[key] === props.value[key]) {
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  delete props.value[key];
+                }
+              }
+            });
+          }
+        }
+      });
+    });
+    return dslClone;
   }
 
   async exportVuePageCodeFile(filePath: string, dsl: IPageSchema) {
@@ -75,7 +129,6 @@ class FileManager {
   async initAppData() {
     try {
       const appDataPath = this.appDataPath;
-      await appDataDir();
       const doesExist = await exists(appDataPath, { dir: BaseDirectory.AppData });
       if (!doesExist) {
         const text = await createAsyncTask(() =>
@@ -123,7 +176,6 @@ class FileManager {
       if (data.currentProject) {
         config.recentProjects.unshift(data.currentProject);
       }
-
       this.cache = Object.assign(this.cache, config);
       writeTextFile(appDataPath, JSON.stringify(config), { dir: BaseDirectory.AppData });
     } catch (err) {
@@ -156,7 +208,7 @@ class FileManager {
 
     const files: string[] = [];
 
-    function recursiveMap(entries: FileEntry[]) {
+    const recursiveMap = (entries: FileEntry[]) => {
       return entries
         .filter(entry => (entry.name as string).endsWith('.ditto') || entry.children)
         .map(entry => {
@@ -172,7 +224,7 @@ class FileManager {
           }
           return r;
         });
-    }
+    };
 
     const arr = this.cache.currentProject.split(sep);
     const projectName = arr[arr.length - 1];

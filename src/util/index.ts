@@ -38,3 +38,32 @@ export function createAsyncTask(task: (...args: any[]) => string) {
 export function getFileName(path: string) {
   return path.replace(/\.[^/.]+$/, '');
 }
+
+/**
+ * 生成插槽的 id
+ * @param nodeId
+ * @param row
+ * @param column
+ */
+export function generateSlotId(nodeId: string, row: number | string, column?: number | string) {
+  if (column !== undefined && column !== null) {
+    return `${nodeId}_template_${row}_${column}`;
+  }
+  return `${nodeId}_template_${row}`;
+}
+
+export function toProgressive(verb: string) {
+  const lastChar = verb.slice(-1);
+  const beforeLastChar = verb.slice(-2, -1);
+  const vowels = ['a', 'e', 'i', 'o', 'u'];
+
+  if (beforeLastChar === 'i' && lastChar === 'e') {
+    return `${verb.slice(0, -2)}ying`;
+  } else if (lastChar === 'e') {
+    return `${verb.slice(0, -1)}ing`;
+  } else if (!vowels.includes(beforeLastChar) && vowels.includes(lastChar)) {
+    return `${verb}${lastChar}ing`;
+  } else {
+    return `${verb}ing`;
+  }
+}

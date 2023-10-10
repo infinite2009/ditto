@@ -144,6 +144,15 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         value: 'primary',
         valueType: 'string',
         valueSource: 'editorInput'
+      },
+      onClick: {
+        id: 'onClick',
+        schemaType: 'props',
+        name: 'onClick',
+        category: 'event',
+        value: undefined,
+        valueType: 'function',
+        valueSource: 'handler'
       }
     },
     children: {
@@ -503,7 +512,80 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     category: 'basic',
     title: '表格',
     icon: CodeSandboxOutlined,
-    propsConfig: {}
+    propsConfig: {
+      columns: {
+        id: 'columns',
+        schemaType: 'props',
+        name: 'columns',
+        category: 'basic',
+        valueType: 'array',
+        valueSource: 'editorInput',
+        templateKeyPathsReg: [
+          {
+            path: '\\[\\d+\\]\\.render',
+            type: 'function',
+            repeatType: 'table',
+            columnKey: 'dataIndex',
+            repeatPropRef: 'dataSource',
+            indexKey: 'key',
+            itemIndexInArgs: 1
+          }
+        ],
+        value: [
+          {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+            render: {}
+          },
+          {
+            title: 'Age',
+            dataIndex: 'age',
+            key: 'age'
+          },
+          {
+            title: 'Action',
+            dataIndex: 'action',
+            key: 'action',
+            render: {}
+          }
+        ]
+      },
+      dataSource: {
+        id: 'dataSource',
+        schemaType: 'props',
+        name: 'dataSource',
+        category: 'basic',
+        valueType: 'array',
+        valueSource: 'editorInput',
+        value: [
+          {
+            key: '1',
+            firstName: 'John',
+            lastName: 'Brown',
+            age: 32,
+            address: 'New York No. 1 Lake Park',
+            tags: ['nice', 'developer']
+          },
+          {
+            key: '2',
+            name: 'Jim',
+            lastName: 'Green',
+            age: 42,
+            address: 'London No. 1 Lake Park',
+            tags: ['loser']
+          },
+          {
+            key: '3',
+            name: 'Joe',
+            lastName: 'Black',
+            age: 32,
+            address: 'Sydney No. 1 Lake Park',
+            tags: ['cool', 'teacher']
+          }
+        ]
+      }
+    }
   },
   Tabs: {
     configName: 'Tabs',

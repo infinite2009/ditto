@@ -3,8 +3,9 @@
  */
 import ISchema from '@/types/schema';
 import { HandlerId } from '@/types/index';
+import EventTrigger from '@/types/event-trigger';
 
 export default interface IEventSchema extends ISchema {
-  triggerType: 'interval' | 'onload' | 'onunload' | 'onScroll'
+  triggerType: EventTrigger;
   handlerRef: HandlerId;
 }

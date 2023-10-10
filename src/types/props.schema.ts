@@ -1,5 +1,20 @@
 import ISchema from '@/types/schema';
-import { ComponentId } from '@/types/index';
+import { EventId } from '@/types/index';
+
+export interface TemplateKeyPathsReg {
+  path: string;
+  type: 'object' | 'function';
+  // 循环渲染引用的prop，例如表格和列表是 dataSource
+  repeatPropRef?: string;
+  // 重复的类型：表格或者列表
+  repeatType?: 'list' | 'table';
+  // 列索引变量名，对于 table 它是必需的，对于 list 它不是必需的，这个 key 的值为数据列的字段名，比如 age，name，gender 等
+  columnKey?: string;
+  // 数据的行索引变量名，常见的有 index，key，id 等，对于 list，只有行索引就可以了
+  indexKey?: string;
+  // 哪一个 render 的哪个参数是数据项
+  itemIndexInArgs?: number;
+}
 
 /**
  * @file 属性本身的属性定义
@@ -15,7 +30,7 @@ export default interface IPropsSchema extends ISchema {
    * 模板字段路径，如果是空字符串，表明属性本身是就是模板对象
    * path 字段是正则表达式，即便是采用穷举的方式，也要使用正则表达式进行填充
    */
-  templateKeyPathsReg?: { path: string; type: 'object' | 'function' }[];
+  templateKeyPathsReg?: TemplateKeyPathsReg[];
 
   // 属性的名字
   name: string;
@@ -31,6 +46,9 @@ export default interface IPropsSchema extends ISchema {
    * handler: 事件处理器，当用户为事件配置了相应后，会产生这个值
    */
   valueSource: 'editorInput' | 'httpRequest' | 'state' | 'userInput' | 'computed' | 'handler';
-  // 如果存在 keyPath，里边的对应值会变成 template 的引用
-  value: string | boolean | number | object | ((...params: any[]) => any);
+  /*
+   * 如果存在 keyPath，里边的对应值会变成 template 的引用
+   * 如果 valueSource 的值为 handler, 则 value 的值是一个 eventId
+   */
+  value: string | boolean | number | Record<string, any> | ((...params: any[]) => any) | any[] | undefined;
 }

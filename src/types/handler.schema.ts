@@ -1,4 +1,4 @@
-import ISchema from "@/types/schema";
+import ISchema from '@/types/schema';
 import { ActionId } from '@/types/index';
 
 /**
@@ -6,6 +6,7 @@ import { ActionId } from '@/types/index';
  * @description 还没有想好怎么用
  */
 export default interface IHandlerSchema extends ISchema {
+  id: string;
   name: string;
   desc: string;
   actionRefs: ActionId[];

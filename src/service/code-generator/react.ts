@@ -1,14 +1,19 @@
 import IPageSchema from '@/types/page.schema';
-import { toUpperCase, typeOf } from '@/util';
+import { toProgressive, toUpperCase, typeOf } from '@/util';
 import TypeScriptCodeGenerator, { IConstantOptions, IFunctionOptions } from '@/service/code-generator/typescript';
 import IComponentSchema from '@/types/component.schema';
-import { ImportType } from '@/types';
+import { ComponentId, ImportType, PropsId } from '@/types';
 import IPropsSchema from '@/types/props.schema';
-import { ComponentRef } from 'react';
 import ComponentSchemaRef from '@/types/component-schema-ref';
+import IActionSchema from '@/types/action.schema';
+import ActionType from '@/types/action-type';
+import IHandlerSchema from '@/types/handler.schema';
+import IEventSchema from '@/types/event.schema';
+import EventTrigger from '@/types/event-trigger';
 
 export interface ITSXOptions {
   text?: string;
+  componentId: ComponentId;
   componentName?: string;
   propsStrArr?: string[];
   children?: ITSXOptions[];
@@ -57,8 +62,6 @@ export interface IImportInfo {
 }
 
 export interface IDSLStatsInfo {
-  [key: string]: any;
-
   pageName: string;
   importInfo: IImportInfo;
   stateInfo: {
@@ -83,28 +86,44 @@ export interface IDSLStatsInfo {
     [constantName: string]: IConstantOptions;
   };
   tsxInfo: ITSXOptions | null;
+
+  [key: string]: any;
 }
 
+type stateName = string;
+type stateSetterName = string;
+
 export default class ReactCodeGenerator {
+  // 存储每个 prop 对应的 handler 函数名
+  handler: Record<ComponentId, Record<PropsId, string>> = {};
+  dsl: IPageSchema;
+  tsCodeGenerator: TypeScriptCodeGenerator;
+
+  // 组件可见性字典，它的值是指定组件的可见性 state
+  componentVisibilityDict: Record<ComponentId, stateName> = {};
+
   constructor(dsl: IPageSchema, tsCodeGenerator: TypeScriptCodeGenerator) {
     this.dsl = dsl;
     this.tsCodeGenerator = tsCodeGenerator;
   }
-
-  dsl: IPageSchema;
-
-  tsCodeGenerator: TypeScriptCodeGenerator;
 
   generateTSX(opt: ITSXOptions, sentences: string[] = []): string[] {
     // 如果 text 字段是真值，说明这个节点本身是纯文本
     if (opt.text) {
       return [opt.text];
     }
-    const { propsStrArr = [], componentName, children = [] } = opt as unknown as ITSXOptions;
+    const { propsStrArr = [], componentId, componentName, children = [] } = opt as unknown as ITSXOptions;
+    // TODO: 这里适配可见性问题
     const startTagStr = `<${componentName}${propsStrArr?.length ? ' ' : ''}${propsStrArr.join(' ')} ${
       children?.length ? '' : '/'
     }>`;
-    sentences.push(startTagStr);
+
+    const visibilityState = this.componentVisibilityDict[componentId];
+    if (visibilityState) {
+      sentences.push(`{ ${visibilityState} ? ${startTagStr}`);
+    } else {
+      sentences.push(startTagStr);
+    }
     if (children?.length) {
       children?.forEach(child => {
         this.generateTSX(child).forEach(item => {
@@ -113,6 +132,9 @@ export default class ReactCodeGenerator {
       });
       const closeTagStr = `</${componentName}>`;
       sentences.push(closeTagStr);
+    }
+    if (sentences.length && visibilityState) {
+      sentences[sentences.length - 1] = `${sentences[sentences.length - 1]} : null }`;
     }
     return sentences;
   }
@@ -226,11 +248,13 @@ export default class ReactCodeGenerator {
       },
       stateInfo: {},
       memoInfo: {},
+      handlerInfo: {},
       callbackInfo: {},
       effectInfo: {},
       constantInfo: {},
       tsxInfo: {
         componentName: template.callingName || template.name,
+        componentId: templateRef.current,
         propsStrArr: [],
         children: []
       }
@@ -289,8 +313,16 @@ export default class ReactCodeGenerator {
             pNode.componentName = callingName || name;
             // 处理当前节点的 props
             if (propsDict[id]) {
-              const { importInfo, propsStrArr, stateInfo, callbackInfo, memoInfo, effectInfo, constantInfo } =
-                this.analysisProps(propsDict, propsRefs, node as IComponentSchema);
+              const {
+                importInfo,
+                propsStrArr,
+                stateInfo,
+                callbackInfo,
+                memoInfo,
+                effectInfo,
+                constantInfo,
+                handlerInfo
+              } = this.analysisProps(propsDict, propsRefs, node as IComponentSchema);
               pNode.propsStrArr = propsStrArr;
               // 将每个组件节点的 stateInfo 合并到 result 中，通过命名系统避免 state 重名，callback，memo，effect 亦然
               Object.assign(result.stateInfo as object, stateInfo);
@@ -298,6 +330,7 @@ export default class ReactCodeGenerator {
               Object.assign(result.memoInfo as object, memoInfo);
               Object.assign(result.effectInfo as object, effectInfo);
               Object.assign(result.constantInfo as object, constantInfo);
+              Object.assign(result.handlerInfo as object, handlerInfo);
               if (result.importInfo) {
                 const { object } = result.importInfo.react;
                 if (Object.entries(effectInfo).length && !object.includes('useEffect')) {
@@ -317,9 +350,10 @@ export default class ReactCodeGenerator {
               }
             }
             // 初始化子节点
-            pNode.children = children.map(() => {
+            pNode.children = children.map(item => {
               return {
                 componentName: '',
+                componentId: item.current,
                 propsStrArr: [],
                 children: []
               };
@@ -351,6 +385,7 @@ export default class ReactCodeGenerator {
     callbackInfo: { [callbackName: string]: IUseCallbackOptions };
     memoInfo: { [memoName: string]: IUseMemoOptions };
     effectInfo: { [effectName: string]: IUseEffectOptions };
+    handlerInfo: { [handlerName: string]: IFunctionOptions };
     constantInfo: { [constantName: string]: IConstantOptions };
   } {
     // TODO 暂时改为 any，跑通后再修改为真实类型
@@ -361,7 +396,8 @@ export default class ReactCodeGenerator {
       memoInfo: {},
       callbackInfo: {},
       effectInfo: {},
-      constantInfo: {}
+      constantInfo: {},
+      handlerInfo: {}
     };
 
     const { id: componentId } = component;
@@ -378,110 +414,106 @@ export default class ReactCodeGenerator {
       const basicValueTypes = ['string', 'number', 'boolean'];
       // 基础类型固定值走字面，其他情况走变量（常量、state、memo、callback）
       if (valueSource === 'editorInput') {
-        if (basicValueTypes.includes(valueType)) {
+        if (templateKeyPathsReg.length) {
+          const variableName = this.generateVariableName(componentId, name, 'const');
           result.propsStrArr.push(
-            this.generatePropsStrWithLiteral({
+            this.generatePropAssignmentExpWithVariable({
               name: ref,
-              value: value.toString(),
+              variableName,
               variableType: valueType
             })
           );
-        } else {
-          if (templateKeyPathsReg.length) {
-            const variableName = this.generateVariableName(componentId, name, 'const');
-            result.propsStrArr.push(
-              this.generatePropAssignmentExpWithVariable({
-                name: ref,
-                variableName,
-                variableType: valueType
-              })
-            );
 
-            // 模板使用嵌套
-            if (result.constantInfo) {
-              result.constantInfo[variableName] = {
-                name: variableName,
-                value: this.tsCodeGenerator.generateObjectStrArr(
-                  value,
-                  templateKeyPathsReg,
-                  (val: ComponentSchemaRef, wrapper: string[] = [], insertIndex = 0) => {
-                    const { tsxInfo, importInfo, effectInfo, constantInfo, memoInfo, callbackInfo, stateInfo } =
-                      this.analysisTemplate(val, propsDict);
-                    // 合并统计分析
-                    Object.assign(result.stateInfo as object, stateInfo);
-                    Object.assign(result.callbackInfo as object, callbackInfo);
-                    Object.assign(result.memoInfo as object, memoInfo);
-                    Object.assign(result.effectInfo as object, effectInfo);
-                    Object.assign(result.constantInfo as object, constantInfo);
-                    if (importInfo) {
-                      // 合并 hooks
-                      const { object } = importInfo.react;
-                      if (
-                        result.effectInfo &&
-                        Object.entries(result.effectInfo).length &&
-                        !object.includes('useEffect')
-                      ) {
-                        object.push('useEffect');
-                      }
-                      if (result.stateInfo && Object.entries(result.stateInfo).length && !object.includes('useState')) {
-                        object.push('useState');
-                      }
-                      if (result.memoInfo && Object.entries(result.memoInfo).length && !object.includes('useMemo')) {
-                        object.push('useMemo');
-                      }
-                      if (
-                        result.callbackInfo &&
-                        Object.entries(result.callbackInfo).length &&
-                        !object.includes('useCallback')
-                      ) {
-                        object.push('useCallback');
-                      }
-                      this.mergeImportInfo(result.importInfo, importInfo);
+          // 模板使用嵌套
+          if (result.constantInfo) {
+            result.constantInfo[variableName] = {
+              name: variableName,
+              value: this.tsCodeGenerator.generateObjectStrArr(
+                value,
+                templateKeyPathsReg,
+                (val: ComponentSchemaRef, wrapper: string[] = [], insertIndex = 0) => {
+                  const { tsxInfo, importInfo, effectInfo, constantInfo, memoInfo, callbackInfo, stateInfo } =
+                    this.analysisTemplate(val, propsDict);
+                  // 合并统计分析
+                  Object.assign(result.stateInfo as object, stateInfo);
+                  Object.assign(result.callbackInfo as object, callbackInfo);
+                  Object.assign(result.memoInfo as object, memoInfo);
+                  Object.assign(result.effectInfo as object, effectInfo);
+                  Object.assign(result.constantInfo as object, constantInfo);
+                  if (importInfo) {
+                    // 合并 hooks
+                    const { object } = importInfo.react;
+                    if (
+                      result.effectInfo &&
+                      Object.entries(result.effectInfo).length &&
+                      !object.includes('useEffect')
+                    ) {
+                      object.push('useEffect');
                     }
-
-                    if (tsxInfo) {
-                      const tsxSentences = this.generateTSX(tsxInfo);
-                      // 这里如果存在 wrapper ，则按照插入索引的位置，插入 tsx 代码
-                      if (wrapper.length) {
-                        const cp = [...wrapper];
-                        cp.splice(insertIndex, 0, ...tsxSentences);
-                        return cp;
-                      }
-                      return tsxSentences;
+                    if (result.stateInfo && Object.entries(result.stateInfo).length && !object.includes('useState')) {
+                      object.push('useState');
                     }
-                    return [];
+                    if (result.memoInfo && Object.entries(result.memoInfo).length && !object.includes('useMemo')) {
+                      object.push('useMemo');
+                    }
+                    if (
+                      result.callbackInfo &&
+                      Object.entries(result.callbackInfo).length &&
+                      !object.includes('useCallback')
+                    ) {
+                      object.push('useCallback');
+                    }
+                    this.mergeImportInfo(result.importInfo, importInfo);
                   }
-                )
-              };
-            }
-          } else {
-            const variableName = this.generateVariableName(componentId, name, 'state');
-            result.propsStrArr.push(
-              this.generatePropAssignmentExpWithVariable({
-                name: ref,
-                variableName,
-                variableType: valueType
-              })
-            );
-            // 变量需要转为 state
-            if (result.stateInfo) {
-              result.stateInfo[variableName] = {
-                name: variableName,
-                initialValue: this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
-                valueType
-              };
-            }
+
+                  if (tsxInfo) {
+                    const tsxSentences = this.generateTSX(tsxInfo);
+                    // 这里如果存在 wrapper ，则按照插入索引的位置，插入 tsx 代码
+                    if (wrapper.length) {
+                      const cp = [...wrapper];
+                      cp.splice(insertIndex, 0, ...tsxSentences);
+                      return cp;
+                    }
+                    return tsxSentences;
+                  }
+                  return [];
+                }
+              )
+            };
+          }
+        } else {
+          const variableName = this.generateVariableName(componentId, name, 'state');
+          result.propsStrArr.push(
+            this.generatePropAssignmentExpWithVariable({
+              name: ref,
+              variableName,
+              variableType: valueType
+            })
+          );
+          // 变量需要转为 state
+          if (result.stateInfo) {
+            result.stateInfo[variableName] = {
+              name: variableName,
+              initialValue: basicValueTypes.includes(valueType)
+                ? value
+                : this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
+              valueType
+            };
           }
         }
       } else if (valueSource === 'handler') {
-        // TODO: 生成 useCallback
-        const variableName = this.generateVariableName(componentId, name, 'state');
-        if (result.callbackInfo) {
-          result.callbackInfo[variableName] = {
-            dependencies: [],
-            handlerCallingSentence: `() => { console.log('useCallback ${variableName} works!'); }`
-          };
-        }
+        const eventSchema = this.dsl.events[value as string];
+        const handlerSchema = this.dsl.handlers[eventSchema.handlerRef];
+        const handlerInfo = this.generateHandlerInfo(handlerSchema, eventSchema.triggerType, result.stateInfo);
+        // 添加 props 赋值
+        result.propsStrArr.push(
+          this.generatePropAssignmentExpWithVariable({
+            name: ref,
+            variableName: handlerInfo.functionName,
+            variableType: valueType
+          })
+        );
+        result.handlerInfo[handlerInfo.functionName] = handlerInfo;
       } else if (valueSource === 'computed') {
         // TODO:  生成 useMemo
         const variableName = this.generateVariableName(componentId, name, 'state');
@@ -541,6 +573,7 @@ export default class ReactCodeGenerator {
       memoInfo,
       constantInfo,
       importInfo,
+      handlerInfo,
       tsxInfo
     } = this.analysisDsl();
 
@@ -558,7 +591,7 @@ export default class ReactCodeGenerator {
       });
     });
     const functionInfo = {
-      functionName: toUpperCase(pageName),
+      functionName: 'Index',
       functionParams: [],
       useArrow: false,
       useAsync: false,
@@ -581,6 +614,9 @@ export default class ReactCodeGenerator {
               expressions: i.value
             })
           )
+          .flat(2),
+        ...Object.values(handlerInfo)
+          .map(i => this.tsCodeGenerator.generateFunctionDefinition(i))
           .flat(2)
       ]
     };
@@ -635,5 +671,61 @@ export default class ReactCodeGenerator {
         });
       }
     );
+  }
+
+  // 生成 handler 函数定义，目前 handler 内部的调用代码还不能重构为不冗余的代码
+  private generateHandlerInfo(
+    handlerSchema: IHandlerSchema,
+    trigger: EventTrigger,
+    stateInfo: Record<string, IUseStateOptions>
+  ) {
+    const callingSentences = handlerSchema.actionRefs
+      .map(item => {
+        const { type, payload } = this.dsl.actions[item];
+        switch (type) {
+          case ActionType.visibilityToggle:
+            // 副作用，增加一个 useState
+            // eslint-disable-next-line no-case-declarations
+            const variableName = this.generateVariableName(payload.target, 'visibility', 'state');
+            stateInfo[variableName] = {
+              name: variableName,
+              initialValue: !payload.visible,
+              valueType: 'boolean'
+            };
+            this.componentVisibilityDict[payload.target] = variableName;
+            return `setVisibilityStateOf${payload.target}(${payload.visible})`;
+          case ActionType.stateTransition:
+            return Object.entries(payload.props).map(([propName, val]: [string, any]) => {
+              const basicValueTypes = ['string', 'number', 'boolean'];
+              const valueType = typeOf(val.value);
+              const valStr = basicValueTypes.includes(valueType)
+                ? valueType !== 'string'
+                  ? val.value
+                  : `'${val.value}'`
+                : this.tsCodeGenerator.generateObjectStrArr(val.value).join(' ');
+              // 巧合式编程，不健壮
+              return `set${toUpperCase(this.generateVariableName(payload.target, propName, 'state'))}(${valStr})`;
+            });
+          case ActionType.pageRedirection:
+            if (payload.isExternal) {
+              return `window.open('${payload.href}', '${payload.target}')`;
+            }
+            return '// TODO: 请使用项目所用的路由跳转函数实现，Ditto 暂时无法为你生成它';
+          case ActionType.httpRequest:
+            return '// TODO: 请使用项目所用的接口请求函数实现，Ditto 暂时无法为你生成它';
+          default:
+            return '';
+        }
+      })
+      .flat();
+
+    return {
+      functionName: `handle${toUpperCase(toProgressive(trigger.replace(/on/i, '')))}Of${
+        handlerSchema.name || handlerSchema.id
+      }`,
+      functionParams: [''],
+      functionComments: ['/**', `* ${handlerSchema.desc}`, '*/'],
+      body: callingSentences
+    };
   }
 }

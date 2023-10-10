@@ -1,19 +1,17 @@
-import { makeAutoObservable, toJS } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
-import { fetchComponentConfig, generateId, typeOf } from '@/util';
+import { fetchComponentConfig, generateId, generateSlotId, typeOf } from '@/util';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 import cloneDeep from 'lodash/cloneDeep';
-import IComponentConfig from '@/types/component-config';
+import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
-import { ComponentId } from '@/types';
-import EditableText from '@/components/editable-text';
-import { CodeSandboxOutlined } from '@ant-design/icons';
+import { ComponentId, TemplateInfo } from '@/types';
+import { TemplateKeyPathsReg } from '@/types/props.schema';
 
 export default class DSLStore {
   private static instance = new DSLStore();
   dsl: IPageSchema;
-  componentStats: { [key: string]: number } = {};
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
   currentParentNode: IComponentSchema | IPageSchema | null = null;
 
@@ -44,6 +42,9 @@ export default class DSLStore {
   createEmptyPage(name: string, desc: string) {
     const pageId = generateId();
     this.dsl = {
+      actions: {},
+      events: {},
+      handlers: {},
       id: pageId,
       schemaType: 'page',
       name,
@@ -54,7 +55,8 @@ export default class DSLStore {
         current: '',
         isText: true
       },
-      componentIndexes: {}
+      componentIndexes: {},
+      componentStats: {}
     };
     const pageRoot = this.createPageRoot();
     this.dsl.child = {
@@ -68,19 +70,23 @@ export default class DSLStore {
    *
    * @param name
    * @param dependency
+   * @param customId
    * @param extProps 定开场景支持
    */
   createComponent(
     name: string,
     dependency: string,
+    customId = '',
     extProps: { [key: string]: any } | undefined = undefined
   ): IComponentSchema {
-    if (this.componentStats[name] === undefined) {
-      this.componentStats[name] = 0;
+    let componentId = '';
+    if (customId) {
+      componentId = customId;
     } else {
-      this.componentStats[name]++;
+      this.updateComponentStats(name);
+      componentId = `${name}${this.dsl.componentStats[name]}`;
     }
-    const componentId = `${name}${this.componentStats[name]}`;
+
     const componentConfig = fetchComponentConfig(name, dependency);
     let children: ComponentSchemaRef[];
     if (componentConfig.isContainer) {
@@ -109,7 +115,7 @@ export default class DSLStore {
       children = [];
     }
 
-    const componentSchema: IComponentSchema = {
+    this.dsl.componentIndexes[componentId] = {
       id: componentId,
       parentId: (this.currentParentNode?.id || this.dsl.id) as string,
       schemaType: 'component',
@@ -118,7 +124,9 @@ export default class DSLStore {
       dependency: componentConfig.dependency,
       propsRefs: [],
       children
-    };
+    } as IComponentSchema;
+
+    const componentSchema = this.dsl.componentIndexes[componentId];
 
     if (componentConfig.importName) {
       componentSchema.importName = componentConfig.importName;
@@ -144,14 +152,21 @@ export default class DSLStore {
       if (templateKeyPathsReg.length) {
         const cp = cloneDeep(value);
         const wrapper = { cp };
-        this.setTemplateTo(cp, templateKeyPathsReg, wrapper, 'cp', '');
+        this.setTemplateTo(
+          {
+            data: cp,
+            keyPathRegs: templateKeyPathsReg,
+            parent: wrapper,
+            key: 'cp',
+            currentKeyPath: '',
+            nodeId: componentId
+          },
+          propsConfig
+        );
         props[name].value = wrapper.cp;
       }
       componentSchema.propsRefs.push(name);
     });
-
-    // 加入索引，必须要放最后，因为 this.dsl.componentIndexes[componentSchema.id] 和 componentSchema 不是一个引用
-    this.dsl.componentIndexes[componentSchema.id] = componentSchema;
     return componentSchema;
   }
 
@@ -246,20 +261,21 @@ export default class DSLStore {
     return componentIndexes[id];
   }
 
-  createEmptyContainer(ext: { [key: string]: any } | undefined = undefined) {
-    return this.createComponent('column', 'html', ext);
+  createEmptyContainer(customId = '', ext: { [key: string]: any } | undefined = undefined) {
+    return this.createComponent('column', 'html', customId, ext);
   }
 
-  setTemplateTo(
-    data: any,
-    keyPathRegs: {
-      path: string;
-      type: 'object' | 'function';
-    }[] = [],
-    parent: any,
-    key = '',
-    currentKeyPath = ''
-  ) {
+  setTemplateTo(tplInfo: TemplateInfo, propsConfig: { [key: string]: IPropsConfigItem }) {
+    const basicTplInfo: Partial<TemplateInfo> = {
+      data: undefined,
+      keyPathRegs: [],
+      parent: undefined,
+      key: '',
+      currentKeyPath: ''
+    };
+    const fullTplInfo: TemplateInfo = Object.assign(basicTplInfo, tplInfo);
+
+    const { data, keyPathRegs, parent, key, currentKeyPath, nodeId } = fullTplInfo;
     const keyPathMatchResult =
       keyPathRegs.length &&
       keyPathRegs.find(pathObj => {
@@ -267,28 +283,89 @@ export default class DSLStore {
       });
     // 如果当前 keyPath 命中正则表达式
     if (keyPathMatchResult) {
-      const node = this.createEmptyContainer();
-      parent[key] = {
-        current: node.id,
-        isText: false
-      };
+      // 如果是重复渲染的 keyPath，那么前边 parent[key] 的值就不重要了
+      const {
+        repeatPropRef,
+        indexKey = '',
+        columnKey = '',
+        repeatType = ''
+      } = keyPathMatchResult as TemplateKeyPathsReg;
+      if (repeatPropRef) {
+        // 找到这个 prop
+        const dataSourcePropConfig = propsConfig[repeatPropRef];
+        if (dataSourcePropConfig) {
+          if (repeatType === 'list' && indexKey) {
+            (dataSourcePropConfig.value as any[]).forEach((item, index) => {
+              const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey]));
+              component.parentId = nodeId;
+              // 只保留第一行的render
+              if (index === 0) {
+                parent[key] = {
+                  current: component.id,
+                  isText: false
+                };
+              }
+            });
+          } else if (repeatType === 'table' && indexKey && columnKey) {
+            (dataSourcePropConfig.value as any[]).forEach((item, index) => {
+              const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey], parent[columnKey]));
+              component.parentId = nodeId;
+              // 只保留第一行的render
+              if (index === 0) {
+                parent[key] = {
+                  current: component.id,
+                  isText: false
+                };
+              }
+            });
+          }
+        }
+      } else {
+        const node = this.createEmptyContainer();
+        parent[key] = {
+          current: node.id,
+          isText: false
+        };
+      }
     } else {
       const type = typeOf(data);
       if (type === 'object') {
         Object.entries(data).forEach(([key, val]) => {
           this.setTemplateTo(
-            val,
-            keyPathRegs,
-            data,
-            key,
-            `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`
+            {
+              data: val,
+              keyPathRegs,
+              parent: data,
+              key,
+              currentKeyPath: `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`,
+              nodeId
+            },
+            propsConfig
           );
         });
       } else if (type === 'array') {
         data.forEach((item: any, index: number) => {
-          this.setTemplateTo(item, keyPathRegs, data, index.toString(), `${currentKeyPath}[${index}]`);
+          this.setTemplateTo(
+            {
+              data: item,
+              keyPathRegs,
+              parent: data,
+              key: index.toString(),
+              currentKeyPath: `${currentKeyPath}[${index}]`,
+              nodeId
+            },
+            propsConfig
+          );
         });
       }
+    }
+  }
+
+  updateComponentStats(componentName: string) {
+    if (this.dsl.componentStats[componentName] === undefined) {
+      this.dsl.componentStats[componentName] = 0;
+    } else {
+      this.dsl.componentStats[componentName]++;
     }
   }
 
@@ -302,15 +379,15 @@ export default class DSLStore {
   }
 
   private createPageRoot() {
-    if (this.componentStats.pageRoot === undefined) {
-      this.componentStats.pageRoot = 0;
+    if (this.dsl.componentStats.pageRoot === undefined) {
+      this.dsl.componentStats.pageRoot = 0;
     } else {
-      this.componentStats.pageRoot++;
+      this.dsl.componentStats.pageRoot++;
     }
-    const componentId = `pageRoot${this.componentStats.pageRoot}`;
+    const componentId = `pageRoot${this.dsl.componentStats.pageRoot}`;
     const componentConfig = fetchComponentConfig('pageRoot', 'html');
 
-    const componentSchema: IComponentSchema = {
+    this.dsl.componentIndexes[componentId] = {
       id: componentId,
       parentId: (this.currentParentNode?.id || this.dsl.id) as string,
       schemaType: 'component',
@@ -321,6 +398,8 @@ export default class DSLStore {
       children: []
     };
 
+    const componentSchema = this.dsl.componentIndexes[componentId];
+
     if (componentConfig.importName) {
       componentSchema.importName = componentConfig.importName;
     }
@@ -328,7 +407,6 @@ export default class DSLStore {
       componentSchema.callingName = componentConfig.callingName;
     }
 
-    this.dsl.componentIndexes[componentSchema.id] = componentSchema;
     return componentSchema;
   }
 }
