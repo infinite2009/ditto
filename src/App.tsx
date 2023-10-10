@@ -24,13 +24,13 @@ function App() {
         <Route path="/">
           <Redirect to="/home" />
         </Route>
-        <Route path="/edit">
+        <Route path="/edit/:projectId">
           <Editor />
         </Route>
         <Route path="/home">
           <Home />
         </Route>
-        <Route path="/preview">
+        <Route path="/preview/:pageId">
           <Preview />
         </Route>
         <Route>404</Route>

@@ -71,7 +71,8 @@ export default observer((props: IPageRendererProps) => {
         if (payload.isExternal) {
           open(payload.href);
         } else {
-          setLocation(`/preview?file=${payload.href}`);
+          // TODO: 这里 href 是页面的 id，需要用户填，得找个地方展示页面的 id
+          setLocation(`/preview/${payload.href}`);
         }
         break;
       case ActionType.visibilityToggle:
