@@ -361,3 +361,5 @@ export function selectFile(file: string) {
 export function createProject(projectName: string, path: string, frameworkType: 'vue' | 'react') {
   return fileManager.createProject(projectName, path, frameworkType);
 }
+
+export default fileManager;

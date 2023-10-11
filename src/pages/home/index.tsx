@@ -4,7 +4,7 @@ import style from './index.module.less';
 import { FileFilled, PlusOutlined, SelectOutlined, SortAscendingOutlined } from '@ant-design/icons';
 import { Button, Divider, Dropdown, Input, InputRef } from 'antd';
 import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
-import { fetchRecentProjects } from '@/service/file';
+import fileManager from '@/service/file';
 import { ProjectInfo } from '@/types/app-data';
 import classNames from 'classnames';
 import { stopPropagation } from '@dnd-kit/core/dist/sensors/events';
@@ -18,7 +18,7 @@ export default function Home() {
   const inputRef = useRef<InputRef>(null);
 
   useEffect(() => {
-    fetchRecentProjects().then(res => {
+    fileManager.fetchRecentProjects().then(res => {
       setRecentProjects([
         {
           id: '1',

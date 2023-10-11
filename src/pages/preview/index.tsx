@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PageRenderer from '@/pages/components/page-renderer';
 import DSLStore from '@/service/dsl-store';
-import { openFile } from '@/service/file';
+import fileManager from '@/service/file';
 import { message } from 'antd';
 import { useSearch } from 'wouter/use-location';
 
@@ -20,7 +20,7 @@ export default function Preview() {
       message.error('未找到文件!');
     }
     // 根据 pageId 获取 dsl
-    const content = await openFile(file);
+    const content = await fileManager.openFile(file);
     if (content) {
       dslStore.initDSL(JSON.parse(content));
     } else {

@@ -38,17 +38,7 @@ import { save } from '@tauri-apps/api/dialog';
 import { path } from '@tauri-apps/api';
 import { dirname, join, sep } from '@tauri-apps/api/path';
 import ComponentFeature from '@/types/component-feature';
-import {
-  exportReactPageCodeFile,
-  exportVuePageCodeFile,
-  fetchCurrentFile,
-  fetchOpenedFiles,
-  generateProjectData,
-  openFile,
-  openProject,
-  saveAppData,
-  savePageDSLFile
-} from '@/service/file';
+import fileManager from '@/service/file';
 import TabBar, { TabItem } from '@/pages/editor/tab-bar';
 import Empty from '@/pages/editor/empty';
 import { debounce } from 'lodash';
@@ -132,7 +122,7 @@ export default function Editor() {
   }, []);
 
   function fetchCurrentFileProxy() {
-    const currentFile = fetchCurrentFile();
+    const currentFile = fileManager.fetchCurrentFile();
     if (currentFile) {
       setCurrentFile(currentFile);
     }
@@ -140,7 +130,7 @@ export default function Editor() {
 
   function fetchOpenedFilesProxy() {
     setOpenedFiles(
-      fetchOpenedFiles().map(file => {
+      fileManager.fetchOpenedFiles().map(file => {
         const arr = file.split(sep);
         return {
           title: arr[arr.length - 1].replace(/\.[^/.]+$/, ''),
@@ -151,7 +141,7 @@ export default function Editor() {
   }
 
   async function fetchProjectData() {
-    setProjectData(await generateProjectData());
+    setProjectData(await fileManager.fetchProjectData());
   }
 
   function hideAnchor() {
@@ -513,7 +503,7 @@ export default function Editor() {
       });
     }
     if (selectedFile) {
-      await savePageDSLFile(selectedFile, toJS(dslStore.dsl));
+      await fileManager.savePageDSLFile(selectedFile, toJS(dslStore.dsl));
       setCurrentFile(selectedFile);
       fetchProjectData();
     }
@@ -522,13 +512,14 @@ export default function Editor() {
   const saveFile = debounce(async () => {
     if (currentFile) {
       filePathRef.current = await dirname(currentFile);
-      await savePageDSLFile(currentFile, toJS(dslStore.dsl));
+      await fileManager.savePageDSLFile(currentFile, toJS(dslStore.dsl));
     }
   }, 1000);
 
   async function handleExportingPageCodeFile() {
     const extension = codeType === 'react' ? 'tsx' : 'vue';
-    const exportPageCodeFile = codeType === 'react' ? exportReactPageCodeFile : exportVuePageCodeFile;
+    const exportPageCodeFile =
+      codeType === 'react' ? fileManager.exportReactPageCodeFile : fileManager.exportVuePageCodeFile;
     const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, `index.${extension}`);
     const selectedFile = await save({
       title: '导出代码',
@@ -569,7 +560,7 @@ export default function Editor() {
         saveFile();
         break;
       case PageAction.openProject:
-        await openProject();
+        await fileManager.openProject();
         await fetchProjectData();
         break;
     }
@@ -591,7 +582,7 @@ export default function Editor() {
         });
         setOpenedFiles([...openedFiles]);
       }
-      saveAppData({
+      fileManager.saveAppData({
         currentFile,
         openedFiles: openedFiles.map(item => item.val)
       });
@@ -614,7 +605,7 @@ export default function Editor() {
       openedFiles.splice(index, 1);
       setCurrentFile(newCurrentFile);
       setOpenedFiles([...openedFiles]);
-      saveAppData({
+      fileManager.saveAppData({
         currentFile: newCurrentFile,
         openedFiles: openedFiles.map(item => item.val)
       });
@@ -622,7 +613,7 @@ export default function Editor() {
   }
 
   async function openFileProxy(page: string) {
-    const content = await openFile(page);
+    const content = await fileManager.openFile(page);
     if (content) {
       dslStore.initDSL(JSON.parse(content));
       // TODO: save AppData

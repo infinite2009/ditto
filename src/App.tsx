@@ -3,7 +3,7 @@ import { Redirect, Route, Switch } from 'wouter';
 import Editor from '@/pages/editor';
 import Home from '@/pages/home';
 import Preview from '@/pages/preview';
-import { initAppData } from '@/service/file';
+import fileManager from '@/service/file';
 import CustomTitleBar from '@/components/custom-title-bar';
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
   }, []);
 
   async function init() {
-    await initAppData();
+    await fileManager.initAppData();
     setShowUI(true);
   }
 
