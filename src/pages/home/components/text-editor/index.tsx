@@ -14,7 +14,6 @@ export default function TextEditor({ text, onChange }: ITextEditorProps) {
   }
 
   function changeText(e: any) {
-    debugger;
     if (onChange) {
       onChange(e.target.value.trim());
     }
