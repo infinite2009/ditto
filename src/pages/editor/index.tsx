@@ -39,12 +39,10 @@ import { path } from '@tauri-apps/api';
 import { dirname, join, sep } from '@tauri-apps/api/path';
 import ComponentFeature from '@/types/component-feature';
 import fileManager from '@/service/file';
-import TabBar, { TabItem } from '@/pages/editor/tab-bar';
 import Empty from '@/pages/editor/empty';
 import { debounce } from 'lodash';
 import { DataNode } from 'antd/es/tree';
 import { useLocation } from 'wouter';
-import IFormConfig from '@/types/form-config';
 import { DSLStoreContext } from '@/hooks/context';
 
 const collisionOffset = 4;
@@ -86,11 +84,8 @@ export default function Editor() {
   const [, setActiveId] = useState<string>('');
   const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
   const [projectData, setProjectData] = useState<any[]>([]);
-  const [openedFiles, setOpenedFiles] = useState<TabItem[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
   const [selectedFolder, setSelectedFolder] = useState<string>('');
-
-  const formConfigRef = useRef<Record<string, IFormConfig>>();
 
   const [form] = useForm();
 
@@ -117,7 +112,6 @@ export default function Editor() {
     });
     fetchProjectData().then(() => {
       fetchCurrentFileProxy();
-      fetchOpenedFilesProxy();
     });
   }, []);
 
@@ -126,18 +120,6 @@ export default function Editor() {
     if (currentFile) {
       setCurrentFile(currentFile);
     }
-  }
-
-  function fetchOpenedFilesProxy() {
-    setOpenedFiles(
-      fileManager.fetchOpenedFiles().map(file => {
-        const arr = file.split(sep);
-        return {
-          title: arr[arr.length - 1].replace(/\.[^/.]+$/, ''),
-          val: file
-        };
-      })
-    );
   }
 
   async function fetchProjectData() {
@@ -573,44 +555,13 @@ export default function Editor() {
 
   useEffect(() => {
     if (currentFile) {
-      openFileProxy(currentFile);
-      if (!openedFiles.find(item => item.val === currentFile)) {
-        const arr = currentFile.split(sep);
-        openedFiles.push({
-          title: arr[arr.length - 1].replace(/\.[^/.]+$/, ''),
-          val: currentFile
+      openFileProxy(currentFile).then(() => {
+        fileManager.saveAppData({
+          currentFile
         });
-        setOpenedFiles([...openedFiles]);
-      }
-      fileManager.saveAppData({
-        currentFile,
-        openedFiles: openedFiles.map(item => item.val)
       });
     }
-  }, [currentFile, openedFiles]);
-
-  function handleClosingTab(selected: string) {
-    const index = openedFiles.findIndex(item => item.val === selected);
-    let newCurrentFile;
-    if (openedFiles.length && index > -1) {
-      if (index === 0) {
-        if (openedFiles[1]) {
-          newCurrentFile = openedFiles[1].val;
-        } else {
-          newCurrentFile = '';
-        }
-      } else {
-        newCurrentFile = openedFiles[index - 1].val;
-      }
-      openedFiles.splice(index, 1);
-      setCurrentFile(newCurrentFile);
-      setOpenedFiles([...openedFiles]);
-      fileManager.saveAppData({
-        currentFile: newCurrentFile,
-        openedFiles: openedFiles.map(item => item.val)
-      });
-    }
-  }
+  }, [currentFile]);
 
   async function openFileProxy(page: string) {
     const content = await fileManager.openFile(page);
@@ -620,10 +571,6 @@ export default function Editor() {
     } else {
       message.error('文件已损坏!');
     }
-  }
-
-  function handleSelectingPage(page: string) {
-    setCurrentFile(page);
   }
 
   function handleSelectingPageOrFolder(page: DataNode) {
@@ -663,15 +610,7 @@ export default function Editor() {
                 </div>
               </div>
               <div className={styles.canvas}>
-                <div className={styles.canvasInner}>
-                  <TabBar
-                    data={openedFiles}
-                    selected={currentFile}
-                    onSelect={handleSelectingPage}
-                    onClose={handleClosingTab}
-                  />
-                  {currentFile ? <PageRenderer mode="edit" /> : <Empty />}
-                </div>
+                <div className={styles.canvasInner}>{currentFile ? <PageRenderer mode="edit" /> : <Empty />}</div>
               </div>
             </div>
             {createPortal(

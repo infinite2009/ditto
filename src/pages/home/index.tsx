@@ -2,12 +2,11 @@ import { useLocation } from 'wouter';
 
 import style from './index.module.less';
 import { FileFilled, PlusOutlined, SelectOutlined, SortAscendingOutlined } from '@ant-design/icons';
-import { Button, Divider, Dropdown, Input, InputRef } from 'antd';
-import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
+import { Button, Dropdown, Input, InputRef, message } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import fileManager from '@/service/file';
 import { ProjectInfo } from '@/types/app-data';
 import classNames from 'classnames';
-import { stopPropagation } from '@dnd-kit/core/dist/sensors/events';
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -19,15 +18,7 @@ export default function Home() {
 
   useEffect(() => {
     fileManager.fetchRecentProjects().then(res => {
-      setRecentProjects([
-        {
-          id: '1',
-          name: '测试项目',
-          lastModified: new Date().getTime(),
-          type: 'react',
-          path: ''
-        }
-      ]);
+      setRecentProjects(res);
     });
   }, []);
 
@@ -195,15 +186,24 @@ export default function Home() {
     );
   }
 
-  function openNewProjectModal() {
-    // TODO: 输入项目名称、描述和技术栈
+  async function createProject() {
+    const project = await fileManager.createProject();
+    if (!project) {
+      message.error('项目创建失败，请重试');
+      return;
+    }
+    setLocation(`/edit/${project.id}`);
   }
 
   /**
    * 打开本地的文件夹
    */
-  function openLocalProject() {
-    // TODO: 移植编辑页面打开项目的功能。如果没有对应的项目，则创建一个新项目，要求幂等。同时要更新项目的编辑时间。
+  async function openLocalProject() {
+    const project = await fileManager.openProject();
+    if (!project) {
+      return;
+    }
+    setLocation(`/edit/${project.id}`);
   }
 
   function handleClickWhiteSpace(e: any) {
@@ -217,7 +217,7 @@ export default function Home() {
       <div id="main" className={style.main}>
         <div className={style.btnWrapper}>
           <div className={style.left}>
-            <Button className={style.newBtn} type="primary" onClick={openNewProjectModal}>
+            <Button className={style.newBtn} type="primary" onClick={createProject}>
               <PlusOutlined className={style.btnIcon} />
               新建
             </Button>

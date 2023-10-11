@@ -34,19 +34,6 @@ export default class DSLStore {
     }
   }
 
-  static createInstance(dsl: IPageSchema | undefined = undefined) {
-    if (dsl) {
-      DSLStore.instance.initDSL(dsl);
-    }
-    return DSLStore.instance;
-  }
-
-  initDSL(dsl: IPageSchema) {
-    if (dsl) {
-      this.dsl = dsl;
-    }
-  }
-
   get formConfigOfSelectedComponent() {
     if (!this.totalFormConfig) {
       return null;
@@ -88,11 +75,24 @@ export default class DSLStore {
     return result;
   }
 
+  static createInstance(dsl: IPageSchema | undefined = undefined) {
+    if (dsl) {
+      DSLStore.instance.initDSL(dsl);
+    }
+    return DSLStore.instance;
+  }
+
+  initDSL(dsl: IPageSchema) {
+    if (dsl) {
+      this.dsl = dsl;
+    }
+  }
+
   setAnchorCoordinates(anchor: IAnchorCoordinates) {
     this.anchor = anchor;
   }
 
-  createEmptyPage(name: string, desc: string) {
+  createEmptyPage(name: string, desc = '') {
     const pageId = generateId();
     this.dsl = {
       actions: {},
@@ -428,6 +428,14 @@ export default class DSLStore {
     }
   }
 
+  selectComponent(componentId: ComponentId) {
+    this.selectedComponent = this.dsl.componentIndexes[componentId];
+  }
+
+  initTotalFormConfig(formConfig: Record<string, IFormConfig>) {
+    this.totalFormConfig = formConfig;
+  }
+
   private calculateComponentName(config: IComponentConfig) {
     const { callingName, importName, configName } = config;
     if (callingName) {
@@ -467,13 +475,5 @@ export default class DSLStore {
     }
 
     return componentSchema;
-  }
-
-  selectComponent(componentId: ComponentId) {
-    this.selectedComponent = this.dsl.componentIndexes[componentId];
-  }
-
-  initTotalFormConfig(formConfig: Record<string, IFormConfig>) {
-    this.totalFormConfig = formConfig;
   }
 }

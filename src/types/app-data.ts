@@ -3,6 +3,7 @@ export default interface AppData {
   currentProject: string;
   openedProjects: Record<string, ProjectInfo>;
   recentProjects: Record<string, ProjectInfo>;
+  pathToProjectDict: Record<string, ProjectInfo>;
   [key: string]: any;
 }
 
@@ -11,5 +12,4 @@ export interface ProjectInfo {
   lastModified: number;
   name: string;
   path: string;
-  type: 'vue' | 'react';
 }
