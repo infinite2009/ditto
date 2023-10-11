@@ -28,5 +28,5 @@ export default function Preview() {
     }
   }
 
-  return <PageRenderer dslStore={dslStore} />;
+  return <PageRenderer />;
 }
