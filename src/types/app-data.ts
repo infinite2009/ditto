@@ -1,8 +1,7 @@
 export default interface AppData {
   currentFile: string;
   currentProject: string;
-  openedFiles: string[];
-  openedProjects: string[];
+  openedProjects: Record<string, ProjectInfo>;
   recentProjects: Record<string, ProjectInfo>;
   [key: string]: any;
 }
