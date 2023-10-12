@@ -318,7 +318,7 @@ class FileManager {
    */
   async createProject(): Promise<ProjectInfo | null> {
     try {
-      let folder = await FileManager.generateNewFolderName('未命名文件夹');
+      const folder = await FileManager.generateNewFolderName('未命名文件夹');
       await createDir(folder, { dir: BaseDirectory.Document });
       const documentPath = await documentDir();
       const projectPath = await join(documentPath, folder);
