@@ -13,6 +13,7 @@ export default function Home() {
   const [recentProjects, setRecentProjects] = useState<any[]>([]);
   const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [temporaryProjectName, setTemporaryProjectName] = useState<string>('');
 
   const inputRef = useRef<InputRef>(null);
   const deleteFolder = useRef<boolean>(false);
@@ -34,9 +35,16 @@ export default function Home() {
     setRecentProjects(res);
   }
 
-  function changeText(e: any) {
-    // TODO: 更新项目的名字: e.target.value
-    setIsEditing(false);
+  async function changeText(e: any) {
+    if (!selectedProject) {
+      return;
+    }
+    try {
+      await fileManager.renameProject(selectedProject, e.target.value.trim());
+      setIsEditing(false);
+    } catch (err) {
+      message.error(err.toString());
+    }
   }
 
   function handleClickDropdownMenu({ key }: { key: string }) {
@@ -77,7 +85,7 @@ export default function Home() {
         {
           key: '3',
           label: (
-            <div className={style.dropDownItem} onClick={() => renameProject(data)}>
+            <div className={style.dropDownItem} onClick={() => handleClickRenameBtn(data)}>
               <span>重命名</span>
               <span className={style.shortKey}>⌘ R</span>
             </div>
@@ -127,7 +135,14 @@ export default function Home() {
               <div className={style.projectName}>
                 <FileFilled className={style.projectIcon} />
                 {selectedProject?.id === project.id && isEditing ? (
-                  <Input ref={inputRef} value={project.name} onPressEnter={changeText} onBlur={changeText} />
+                  <Input
+                    ref={inputRef}
+                    value={temporaryProjectName}
+                    onInput={(e: any) => setTemporaryProjectName(e.target.value.trim())}
+                    onClick={e => e.stopPropagation()}
+                    onPressEnter={changeText}
+                    onBlur={changeText}
+                  />
                 ) : (
                   <span>{project.name}</span>
                 )}
@@ -161,7 +176,8 @@ export default function Home() {
    * 重命名项目，展示编辑名称的输入框
    * @param data
    */
-  function renameProject(data: ProjectInfo) {
+  function handleClickRenameBtn(data: ProjectInfo) {
+    setTemporaryProjectName(data.name);
     setIsEditing(true);
   }
 
@@ -181,7 +197,6 @@ export default function Home() {
       okButtonProps: { style: { borderRadius: 8, backgroundColor: '#F85A54' } },
       cancelText: '取消',
       cancelButtonProps: {},
-      onCancel() {},
       focusTriggerAfterClose: false,
       autoFocusButton: null
     });

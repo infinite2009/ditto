@@ -4,7 +4,7 @@
     "beforeBuildCommand": "pnpm build",
     "devPath": "http://localhost:1420",
     "distDir": "../dist",
-    "withGlobalTauri": false
+    "withGlobalTauri": true
   },
   "package": {
     "productName": "ditto",
@@ -64,6 +64,21 @@
             "cmd": "rm",
             "args": [
               "-rf",
+              {
+                "validator": "\\S+"
+              }
+            ]
+          },
+          {
+            "name": "Rename folder on win32",
+            "cmd": "powershell",
+            "args": [
+              "Rename-Item",
+              "-Path",
+              {
+                "validator": "\\S+"
+              },
+              "-NewName",
               {
                 "validator": "\\S+"
               }

@@ -30,6 +30,7 @@ import * as localforage from 'localforage';
 import { nanoid } from 'nanoid';
 import DSLStore from '@/service/dsl-store';
 import { Command } from '@tauri-apps/api/shell';
+import { platform } from '@tauri-apps/api/os';
 
 interface EntryTree {
   key: string;
@@ -340,6 +341,47 @@ class FileManager {
     } catch (err) {
       console.error(err);
       return null;
+    }
+  }
+
+  async renameProject(project: ProjectInfo, newName: string) {
+    const projectInfo = (await FileManager.recentProjectsStore.getItem(project.id)) as ProjectInfo;
+    if (projectInfo) {
+      const documentPath = await documentDir();
+      const newPath = await join(documentPath, newName);
+      const existNewPath = await exists(newPath);
+      if (existNewPath) {
+        throw new Error('文件夹已存在，请重新输入');
+      }
+      const os = await platform();
+      if (os === 'win32') {
+        try {
+          const log = await new Command('Rename folder on win32', [
+            'Rename-Item',
+            '-Path',
+            `${projectInfo.path}`,
+            '-NewName',
+            `${newPath}`
+          ]).execute();
+        } catch (err) {
+          console.log(err);
+          throw new Error('系统错误');
+        }
+      } else {
+        const log = await new Command('mv', [projectInfo.path, newPath]).execute();
+        if (log.code !== 0) {
+          throw new Error(log.stderr);
+        }
+      }
+
+      projectInfo.name = newName;
+      await FileManager.recentProjectsStore.setItem(projectInfo.id, projectInfo);
+
+      delete this.cache.recentProjects[project.id];
+      delete this.cache.pathToProjectDict[project.path];
+
+      this.cache.recentProjects[projectInfo.id] = projectInfo;
+      this.cache.pathToProjectDict[projectInfo.path] = projectInfo;
     }
   }
 
