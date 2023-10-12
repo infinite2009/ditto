@@ -213,7 +213,7 @@ export default function Home() {
   }
 
   return (
-    <div id="wrapper" className={style.wrapper} onClick={handleClickWhiteSpace}>
+    <div id="wrapper" onClick={handleClickWhiteSpace}>
       <div id="main" className={style.main}>
         <div className={style.btnWrapper}>
           <div className={style.left}>
