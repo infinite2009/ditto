@@ -20,6 +20,7 @@ import ActionType from '@/types/action-type';
 import * as localforage from 'localforage';
 import { nanoid } from 'nanoid';
 import DSLStore from '@/service/dsl-store';
+import { Command } from '@tauri-apps/api/shell';
 
 interface EntryTree {
   key: string;
@@ -54,6 +55,39 @@ class FileManager {
 
   static getInstance() {
     return FileManager.instance;
+  }
+
+  /**
+   * 根据输入字符串生成一个同目录下的文件夹副本的名字，永不重复
+   * @param folderName
+   * @private
+   */
+  private static async generateNewFolderName(folderName: string): Promise<string> {
+    let newFolderName = folderName;
+    let suffix = 0;
+    let whetherExists = false;
+    do {
+      whetherExists = await exists(newFolderName, { dir: BaseDirectory.Document });
+      if (whetherExists) {
+        suffix++;
+        newFolderName = `${folderName} ${suffix}`;
+      }
+    } while (whetherExists);
+    return newFolderName;
+  }
+
+  async deleteProject(project: ProjectInfo, deleteFolder: boolean = false): Promise<void> {
+    try {
+      await FileManager.recentProjectsStore.removeItem(project.id);
+      delete this.cache.recentProjects[project.id];
+      delete this.cache.pathToProjectDict[project.path];
+      if (deleteFolder) {
+        const log = await new Command('rm', ['-rf', project.path]).execute();
+        console.log('log: ', log);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async savePageDSLFile(filePath: string, dsl: IPageSchema) {
@@ -103,6 +137,7 @@ class FileManager {
         }),
         FileManager.recentProjectsStore.iterate((val, key) => {
           this.cache.recentProjects[key] = val as ProjectInfo;
+          this.cache.pathToProjectDict[(val as ProjectInfo).path] = val as ProjectInfo;
         })
       ]);
     } catch (err) {
@@ -151,15 +186,41 @@ class FileManager {
           } else {
             const project = {
               id: nanoid(),
-              name: selected.split(sep).pop(),
+              name: selected.split(sep).pop() as string,
               path: selected,
               lastModified: new Date().getTime()
             };
             await FileManager.recentProjectsStore.setItem(project.id, project);
+            // 更新缓存
+            this.cache.recentProjects[project.id] = project;
+            this.cache.pathToProjectDict[project.path] = project;
           }
         }
       }
       return null;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }
+
+  async copyProject(project: ProjectInfo): Promise<ProjectInfo | null> {
+    try {
+      const documentPath = await documentDir();
+      const folder = await FileManager.generateNewFolderName(project.path.split(sep).pop() as string);
+      const cpPath = await join(documentPath, folder);
+      const log = await new Command('cp', ['-r', project.path, cpPath]).execute();
+      const projectCp = {
+        id: nanoid(),
+        name: folder,
+        path: cpPath,
+        lastModified: new Date().getTime()
+      };
+      await FileManager.recentProjectsStore.setItem(projectCp.id, projectCp);
+      // 更新缓存
+      this.cache.recentProjects[projectCp.id] = projectCp;
+      this.cache.pathToProjectDict[projectCp.path] = projectCp;
+      return projectCp;
     } catch (err) {
       console.error(err);
       return null;
@@ -231,12 +292,15 @@ class FileManager {
    * 获取用户的全部项目
    */
   async fetchRecentProjects(): Promise<ProjectInfo[]> {
+    if (Object.keys(this.cache.recentProjects).length > 0) {
+      console.log('命中缓存');
+      return Object.values(this.cache.recentProjects);
+    }
     const recentProjects: ProjectInfo[] = [];
     await FileManager.recentProjectsStore.iterate(val => {
       recentProjects.push(val as ProjectInfo);
       this.cache.pathToProjectDict[(val as ProjectInfo).path] = val as ProjectInfo;
     });
-
     return recentProjects;
   }
 
@@ -245,16 +309,7 @@ class FileManager {
    */
   async createProject(): Promise<ProjectInfo | null> {
     try {
-      let folder = '未命名文件夹';
-      let suffix = 0;
-      let whetherExists = false;
-      do {
-        whetherExists = await exists(folder, { dir: BaseDirectory.Document });
-        if (whetherExists) {
-          suffix++;
-          folder = `${folder}${suffix}`;
-        }
-      } while (whetherExists);
+      let folder = await FileManager.generateNewFolderName('未命名文件夹');
       await createDir(folder, { dir: BaseDirectory.Document });
       const documentPath = await documentDir();
       const projectPath = await join(documentPath, folder);
@@ -270,6 +325,8 @@ class FileManager {
         lastModified: new Date().getTime()
       };
       await FileManager.recentProjectsStore.setItem(project.id, project);
+      this.cache.recentProjects[project.id] = project;
+      this.cache.pathToProjectDict[project.path] = project;
       return project;
     } catch (err) {
       console.error(err);

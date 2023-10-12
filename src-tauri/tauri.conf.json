@@ -15,7 +15,9 @@
       "all": false,
       "fs": {
         "all": true,
-        "scope": ["**"]
+        "scope": [
+          "**"
+        ]
       },
       "path": {
         "all": true
@@ -23,9 +25,51 @@
       "dialog": {
         "all": true
       },
+      "os": {
+        "all": true
+      },
       "shell": {
-        "all": false,
-        "open": true
+        "all": true,
+        "open": true,
+        "sidecar": true,
+        "execute": true,
+        "scope": [
+          {
+            "name": "cp",
+            "cmd": "cp",
+            "args": [
+              "-r",
+              {
+                "validator": "\\S+"
+              },
+              {
+                "validator": "\\S+"
+              }
+            ]
+          },
+          {
+            "name": "mv",
+            "cmd": "mv",
+            "args": [
+              {
+                "validator": "\\S+"
+              },
+              {
+                "validator": "\\S+"
+              }
+            ]
+          },
+          {
+            "name": "rm",
+            "cmd": "rm",
+            "args": [
+              "-rf",
+              {
+                "validator": "\\S+"
+              }
+            ]
+          }
+        ]
       },
       "window": {
         "close": true,

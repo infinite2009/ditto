@@ -1,12 +1,12 @@
 import { useLocation } from 'wouter';
 
-import style from './index.module.less';
 import { FileFilled, PlusOutlined, SelectOutlined, SortAscendingOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Input, InputRef, message } from 'antd';
+import { Button, Checkbox, Dropdown, Input, InputRef, message, Modal } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import fileManager from '@/service/file';
 import { ProjectInfo } from '@/types/app-data';
 import classNames from 'classnames';
+import style from './index.module.less';
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -15,11 +15,10 @@ export default function Home() {
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const inputRef = useRef<InputRef>(null);
+  const deleteFolder = useRef<boolean>(true);
 
   useEffect(() => {
-    fileManager.fetchRecentProjects().then(res => {
-      setRecentProjects(res);
-    });
+    fetchRecentProjects();
   }, []);
 
   useEffect(() => {
@@ -29,6 +28,11 @@ export default function Home() {
       });
     }
   }, [isEditing]);
+
+  async function fetchRecentProjects() {
+    const res = await fileManager.fetchRecentProjects();
+    setRecentProjects(res);
+  }
 
   function changeText(e: any) {
     // TODO: 更新项目的名字: e.target.value
@@ -85,7 +89,7 @@ export default function Home() {
         {
           key: '4',
           label: (
-            <div className={style.dropDownItem} onClick={() => deleteProject(data)}>
+            <div className={style.dropDownItem} onClick={() => openProjectDeletingModal(data)}>
               <span>删除</span>
               <span className={style.shortKey}>⌘ D</span>
             </div>
@@ -144,8 +148,13 @@ export default function Home() {
   /**
    * 创建项目副本
    */
-  function createCopy(data: ProjectInfo) {
-    // TODO:
+  async function createCopy(data: ProjectInfo) {
+    const projectCp = await fileManager.copyProject(data);
+    if (!projectCp) {
+      message.error('创建副本失败，请重试');
+      return;
+    }
+    await fetchRecentProjects();
   }
 
   /**
@@ -156,12 +165,47 @@ export default function Home() {
     setIsEditing(true);
   }
 
+  function openProjectDeletingModal(data: ProjectInfo) {
+    Modal.confirm({
+      title: `是否删除 ${selectedProject?.name}`,
+      icon: null,
+      content: (
+        <div className={style.deleteProject}>
+          <Checkbox defaultChecked onChange={e => (deleteFolder.current = e.target.checked)} />
+          删除后文件将被移至系统废纸篓
+        </div>
+      ),
+      onOk() {
+        return deleteProject(data);
+      },
+      okText: '删除',
+      okButtonProps: { style: { borderRadius: 8, backgroundColor: '#F85A54' } },
+      cancelText: '取消',
+      cancelButtonProps: {},
+      onCancel() {},
+      focusTriggerAfterClose: false,
+      autoFocusButton: null
+    });
+  }
+
   /**
-   * 删除项目
+   * 弹出删除项目
    * @param data
    */
-  function deleteProject(data: ProjectInfo) {
-    // TODO:
+  async function deleteProject(data: ProjectInfo) {
+    try {
+      await fileManager.deleteProject(data, deleteFolder.current);
+      Modal.info({
+        icon: null,
+        title: '已删除',
+        content: '请重新'
+      });
+      await fetchRecentProjects();
+      return Promise.resolve(data);
+    } catch (e) {
+      console.error(e);
+      return Promise.reject(e);
+    }
   }
 
   function onOpenChange(open: boolean, data: ProjectInfo) {
@@ -172,7 +216,13 @@ export default function Home() {
 
   function renderActionComponent(data: ProjectInfo) {
     return (
-      <div onClick={e => e.stopPropagation()}>
+      <div
+        onClick={(e: any) => {
+          if (e.target.id !== 'dropdownBtn') {
+            e.stopPropagation();
+          }
+        }}
+      >
         <Dropdown
           menu={generateDropDownMenu(data)}
           overlayClassName={style.dropdownContainer}
@@ -180,7 +230,15 @@ export default function Home() {
           onOpenChange={(open: boolean) => onOpenChange(open, data)}
           trigger={['click']}
         >
-          <div id="dropdownBtn" className={style.dropDownBtn} onContextMenu={e => e.stopPropagation()}>
+          <div
+            id="dropdownBtn"
+            className={style.dropDownBtn}
+            onContextMenu={(e: any) => {
+              e.stopPropagation();
+              e.preventDefault();
+              e.target.click();
+            }}
+          >
             ...
           </div>
         </Dropdown>
@@ -194,7 +252,7 @@ export default function Home() {
       message.error('项目创建失败，请重试');
       return;
     }
-    setLocation(`/edit/${project.id}`);
+    openProject(project);
   }
 
   /**
@@ -205,7 +263,7 @@ export default function Home() {
     if (!project) {
       return;
     }
-    setLocation(`/edit/${project.id}`);
+    openProject(project);
   }
 
   function handleClickWhiteSpace(e: any) {
