@@ -3,7 +3,16 @@ import * as prettier from 'prettier/standalone';
 import prettierConfig from '@/config/.prettierrc.json';
 import * as babel from 'prettier/parser-babel';
 import { RequiredOptions } from 'prettier';
-import { BaseDirectory, createDir, exists, FileEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/api/fs';
+import {
+  BaseDirectory,
+  createDir,
+  exists,
+  FileEntry,
+  readDir,
+  readTextFile,
+  removeDir,
+  writeTextFile
+} from '@tauri-apps/api/fs';
 import { open } from '@tauri-apps/api/dialog';
 import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
@@ -82,8 +91,7 @@ class FileManager {
       delete this.cache.recentProjects[project.id];
       delete this.cache.pathToProjectDict[project.path];
       if (deleteFolder) {
-        const log = await new Command('rm', ['-rf', project.path]).execute();
-        console.log('log: ', log);
+        await removeDir(project.path, { recursive: true });
       }
     } catch (err) {
       console.error(err);
