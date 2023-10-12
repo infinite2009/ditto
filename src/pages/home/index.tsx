@@ -172,17 +172,19 @@ export default function Home() {
 
   function renderActionComponent(data: ProjectInfo) {
     return (
-      <Dropdown
-        menu={generateDropDownMenu(data)}
-        overlayClassName={style.dropdownContainer}
-        destroyPopupOnHide
-        onOpenChange={(open: boolean) => onOpenChange(open, data)}
-        trigger={['click']}
-      >
-        <div id="dropdownBtn" className={style.dropDownBtn}>
-          ...
-        </div>
-      </Dropdown>
+      <div onClick={e => e.stopPropagation()}>
+        <Dropdown
+          menu={generateDropDownMenu(data)}
+          overlayClassName={style.dropdownContainer}
+          destroyPopupOnHide
+          onOpenChange={(open: boolean) => onOpenChange(open, data)}
+          trigger={['click']}
+        >
+          <div id="dropdownBtn" className={style.dropDownBtn} onContextMenu={e => e.stopPropagation()}>
+            ...
+          </div>
+        </Dropdown>
+      </div>
     );
   }
 
