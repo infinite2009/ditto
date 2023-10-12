@@ -15,7 +15,7 @@ export default function Home() {
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const inputRef = useRef<InputRef>(null);
-  const deleteFolder = useRef<boolean>(true);
+  const deleteFolder = useRef<boolean>(false);
 
   useEffect(() => {
     fetchRecentProjects();
@@ -171,8 +171,7 @@ export default function Home() {
       icon: null,
       content: (
         <div className={style.deleteProject}>
-          <Checkbox defaultChecked onChange={e => (deleteFolder.current = e.target.checked)} />
-          删除后文件将被移至系统废纸篓
+          <Checkbox onChange={e => (deleteFolder.current = e.target.checked)}>删除后文件将被移至系统废纸篓</Checkbox>
         </div>
       ),
       onOk() {
