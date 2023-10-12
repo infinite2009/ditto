@@ -194,6 +194,7 @@ class FileManager {
             // 更新缓存
             this.cache.recentProjects[project.id] = project;
             this.cache.pathToProjectDict[project.path] = project;
+            return project;
           }
         }
       }
