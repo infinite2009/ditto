@@ -85,7 +85,7 @@ class FileManager {
     return newFolderName;
   }
 
-  async deleteProject(project: ProjectInfo, deleteFolder: boolean = false): Promise<void> {
+  async deleteProject(project: ProjectInfo, deleteFolder = false): Promise<void> {
     try {
       await FileManager.recentProjectsStore.removeItem(project.id);
       delete this.cache.recentProjects[project.id];
