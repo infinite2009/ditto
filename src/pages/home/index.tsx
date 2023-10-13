@@ -52,7 +52,7 @@ export default function Home() {
     try {
       await fileManager.renameProject(selectedProject, e.target.value.trim());
       await fetchRecentProjects();
-    } catch (err) {
+    } catch (err: any) {
       message.error(err.toString());
     } finally {
       setIsEditing(false);
