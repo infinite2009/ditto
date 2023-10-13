@@ -30,6 +30,12 @@ export default function Home() {
     }
   }, [isEditing]);
 
+  useEffect(() => {
+    if (selectedProject === null) {
+      setIsEditing(false);
+    }
+  }, [selectedProject]);
+
   async function fetchRecentProjects() {
     const res = await fileManager.fetchRecentProjects();
     setRecentProjects(res);
@@ -39,11 +45,17 @@ export default function Home() {
     if (!selectedProject) {
       return;
     }
+    if (selectedProject.name.trim() === e.target.value.trim()) {
+      setIsEditing(false);
+      return;
+    }
     try {
       await fileManager.renameProject(selectedProject, e.target.value.trim());
-      setIsEditing(false);
+      await fetchRecentProjects();
     } catch (err) {
       message.error(err.toString());
+    } finally {
+      setIsEditing(false);
     }
   }
 

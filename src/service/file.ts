@@ -368,6 +368,7 @@ class FileManager {
           throw new Error('系统错误');
         }
       } else {
+        // await createDir(newPath);
         const log = await new Command('mv', [projectInfo.path, newPath]).execute();
         if (log.code !== 0) {
           throw new Error(log.stderr);
@@ -375,6 +376,8 @@ class FileManager {
       }
 
       projectInfo.name = newName;
+      projectInfo.path = newPath;
+      projectInfo.lastModified = new Date().getTime();
       await FileManager.recentProjectsStore.setItem(projectInfo.id, projectInfo);
 
       delete this.cache.recentProjects[project.id];
