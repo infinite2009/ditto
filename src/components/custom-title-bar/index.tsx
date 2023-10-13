@@ -11,23 +11,24 @@ interface ProjectItem {
 
 export interface ICustomTitleBarProps {
   data?: ProjectItem[];
-  isHome?: boolean;
   selectedProjectId?: string;
   onClose?: (item: ProjectItem) => void;
   onSelect?: (item: ProjectItem) => void;
 }
 
-export default function CustomTitleBar({ selectedProjectId, isHome, data, onSelect, onClose }: ICustomTitleBarProps) {
-  const [, setLocation] = useLocation();
+export default function CustomTitleBar({ selectedProjectId, data, onSelect, onClose }: ICustomTitleBarProps) {
+  const [location, setLocation] = useLocation();
 
   function handleClickHome() {
-    setLocation('/home');
+    if (location !== '/home') {
+      setLocation('/home');
+    }
   }
 
   const homeClass = classNames({
     [style.home]: true,
-    [style.selected]: isHome,
-    [style.unselected]: !isHome
+    [style.selected]: location === '/home',
+    [style.unselected]: !(location === '/home')
   });
 
   function handleCloseProject(item: ProjectItem) {
