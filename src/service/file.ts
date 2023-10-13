@@ -39,7 +39,7 @@ interface EntryTree {
   isLeaf?: boolean;
 }
 
-const initialAppData = {
+const initialCache = {
   currentFile: '',
   currentProject: '',
   openedProjects: {},
@@ -139,7 +139,7 @@ class FileManager {
 
   async initAppData() {
     try {
-      this.cache = initialAppData;
+      this.cache = initialCache;
       await Promise.all([
         FileManager.appDataStore.iterate((val, key) => {
           this.cache[key] = val;
@@ -280,6 +280,10 @@ class FileManager {
 
   fetchCurrentFile() {
     return this.cache.currentFile;
+  }
+
+  fetchOpenedProjects() {
+    FileManager.appDataStore;
   }
 
   async openFile(file: string): Promise<string> {
