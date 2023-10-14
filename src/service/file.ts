@@ -267,12 +267,13 @@ class FileManager {
     if (!this.cache.currentProject) {
       return [];
     }
-    const doesExist = await exists(this.cache.currentProject);
+    const currentProjectPath = this.cache.recentProjects[this.cache.currentProject].path;
+    const doesExist = await exists(currentProjectPath);
     if (!doesExist) {
       return [];
     }
 
-    const entries: FileEntry[] = await readDir(this.cache.currentProject, { recursive: true });
+    const entries: FileEntry[] = await readDir(currentProjectPath, { recursive: true });
 
     const files: string[] = [];
 
@@ -294,11 +295,11 @@ class FileManager {
         });
     };
 
-    const arr = this.cache.currentProject.split(sep);
+    const arr = currentProjectPath.split(sep);
     const projectName = arr[arr.length - 1];
     const project = {
       name: projectName,
-      path: this.cache.currentProject,
+      path: currentProjectPath,
       children: entries
     };
     return recursiveMap([project]);
