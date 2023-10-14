@@ -12,8 +12,8 @@ interface ProjectItem {
 export interface ICustomTitleBarProps {
   data?: ProjectItem[];
   selectedProjectId?: string;
-  onClose?: (item: ProjectItem) => void;
-  onSelect?: (item: ProjectItem) => void;
+  onClose?: (project: string) => Promise<void>;
+  onSelect?: (projectId: string | null) => Promise<void>;
 }
 
 export default function CustomTitleBar({ selectedProjectId, data, onSelect, onClose }: ICustomTitleBarProps) {
@@ -31,15 +31,43 @@ export default function CustomTitleBar({ selectedProjectId, data, onSelect, onCl
     [style.unselected]: !(location === '/home')
   });
 
-  function handleCloseProject(item: ProjectItem) {
+  async function handleCloseProject(e: any, projectItem: ProjectItem) {
+    e.stopPropagation();
     if (onClose) {
-      onClose(item);
+      await onClose(projectItem.id);
+      console.log('onClose');
+    }
+    console.log('onClose out');
+    if (projectItem.id !== selectedProjectId) {
+      return;
+    }
+    if (data?.length) {
+      const l = data.length;
+      // 如果右侧有打开的项目，选择右边第一个，如果没有，选择左侧最后一个
+      const index = data.findIndex(item => projectItem.id === item.id);
+      if (index > -1) {
+        let nextSelectedId;
+        if (index < l - 1) {
+          nextSelectedId = data[index + 1].id;
+        } else if (index > 0) {
+          nextSelectedId = data[index - 1].id;
+        } else {
+          nextSelectedId = null;
+        }
+        if (nextSelectedId === null) {
+          setLocation('/home');
+          return;
+        }
+        if (onSelect) {
+          onSelect(nextSelectedId);
+        }
+      }
     }
   }
 
   function handleClickTab(item: ProjectItem) {
     if (onSelect) {
-      onSelect(item);
+      onSelect(item.id);
     }
   }
 
@@ -56,7 +84,7 @@ export default function CustomTitleBar({ selectedProjectId, data, onSelect, onCl
             {item.isPreview ? <VideoCameraOutlined className={style.previewIcon} /> : null}
             {item.title}
           </div>
-          <CloseOutlined className={style.closeIcon} onClick={() => handleCloseProject(item)} />
+          <CloseOutlined className={style.closeIcon} onClick={(e: any) => handleCloseProject(e, item)} />
         </div>
       );
     });
@@ -64,8 +92,8 @@ export default function CustomTitleBar({ selectedProjectId, data, onSelect, onCl
 
   return (
     <div data-tauri-drag-region={true} className={style.main}>
-      <div className={homeClass}>
-        <HomeOutlined className={style.homeIcon} onClick={handleClickHome} />
+      <div className={homeClass} onClick={handleClickHome}>
+        <HomeOutlined className={style.homeIcon} />
       </div>
       {renderTitle()}
     </div>

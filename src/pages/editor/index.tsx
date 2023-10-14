@@ -77,7 +77,12 @@ const tabsItems = [
 
 const dslStore = DSLStore.createInstance();
 
-export default function Editor() {
+export interface IEditorProps {
+  onPreview: (projectId: string) => void;
+  onPreviewClose: (projectId: string) => void;
+}
+
+export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
   const searchParams = new URLSearchParams(window.location.search);
   const [, setLocation] = useLocation();
 
@@ -542,7 +547,7 @@ export default function Editor() {
         saveFile();
         break;
       case PageAction.openProject:
-        await fileManager.openProject();
+        await fileManager.openLocalProject();
         await fetchProjectData();
         break;
     }

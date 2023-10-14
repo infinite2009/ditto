@@ -8,7 +8,11 @@ import { ProjectInfo } from '@/types/app-data';
 import classNames from 'classnames';
 import style from './index.module.less';
 
-export default function Home() {
+export interface IHomeProps {
+  onOpenProject: (projectId: string) => void;
+}
+
+export default function Home({ onOpenProject }: IHomeProps) {
   const [, setLocation] = useLocation();
   const [recentProjects, setRecentProjects] = useState<any[]>([]);
   const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(null);
@@ -168,7 +172,10 @@ export default function Home() {
     });
   }
 
-  function openProject(data: ProjectInfo) {
+  async function openProject(data: ProjectInfo) {
+    if (onOpenProject) {
+      onOpenProject(data.id);
+    }
     setLocation(`/edit/${data.id}`);
   }
 
@@ -285,7 +292,7 @@ export default function Home() {
    * 打开本地的文件夹
    */
   async function openLocalProject() {
-    const project = await fileManager.openProject();
+    const project = await fileManager.openLocalProject();
     if (!project) {
       return;
     }

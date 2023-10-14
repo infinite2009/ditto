@@ -50,6 +50,7 @@ const initialCache = {
 class FileManager {
   static APP_DATA_STORE_NAME = 'appData';
   static RECENT_PROJECTS_STORE_NAME = 'recentProjects';
+  static OPENED_PROJECTS = 'openedProjects';
   // Danger: 不要改数据库的名字
   static appDataStore = localforage.createInstance({
     name: 'Ditto',
@@ -58,6 +59,10 @@ class FileManager {
   static recentProjectsStore = localforage.createInstance({
     name: 'Ditto',
     storeName: FileManager.RECENT_PROJECTS_STORE_NAME
+  });
+  static openedProjectsStore = localforage.createInstance({
+    name: 'Ditto',
+    storeName: FileManager.OPENED_PROJECTS
   });
   private static instance = new FileManager();
   cache: AppData;
@@ -84,6 +89,15 @@ class FileManager {
       }
     } while (whetherExists);
     return newFolderName;
+  }
+
+  async closeProject(projectId: string) {
+    await FileManager.openedProjectsStore.removeItem(projectId);
+    delete this.cache.openedProjects[projectId];
+    if (projectId === this.cache.currentProject) {
+      await FileManager.appDataStore.removeItem('currentProject');
+      this.cache.currentProject = '';
+    }
   }
 
   async deleteProject(project: ProjectInfo, deleteFolder = false): Promise<void> {
@@ -147,6 +161,9 @@ class FileManager {
         FileManager.recentProjectsStore.iterate((val, key) => {
           this.cache.recentProjects[key] = val as ProjectInfo;
           this.cache.pathToProjectDict[(val as ProjectInfo).path] = val as ProjectInfo;
+        }),
+        FileManager.openedProjectsStore.iterate((val, key) => {
+          this.cache.openedProjects[key] = val as ProjectInfo;
         })
       ]);
     } catch (err) {
@@ -168,7 +185,16 @@ class FileManager {
     }
   }
 
-  async openProject() {
+  async openProject(projectId: string) {
+    await Promise.all([
+      FileManager.appDataStore.setItem('currentProject', projectId),
+      FileManager.openedProjectsStore.setItem(projectId, this.cache.recentProjects[projectId])
+    ]);
+    this.cache.currentProject = projectId;
+    this.cache.openedProjects[projectId] = this.cache.recentProjects[projectId];
+  }
+
+  async openLocalProject() {
     try {
       const documentDirPath = await documentDir();
       const selected = (await open({
@@ -283,7 +309,16 @@ class FileManager {
   }
 
   fetchOpenedProjects() {
-    FileManager.appDataStore;
+    return this.cache.openedProjects;
+  }
+
+  async setCurrentProject(projectId: string) {
+    await FileManager.appDataStore.setItem('currentProject', projectId);
+    this.cache.currentProject = projectId;
+  }
+
+  fetchCurrentProject() {
+    return this.cache.currentProject;
   }
 
   async openFile(file: string): Promise<string> {
@@ -293,21 +328,11 @@ class FileManager {
     });
     return readTextFile(file);
   }
-
-  selectFile(file: string): Promise<string> {
-    this.cache.currentFile = file;
-    this.saveAppData({
-      currentFile: this.cache.currentFile
-    });
-    return readTextFile(file);
-  }
-
   /**
    * 获取用户的全部项目
    */
   async fetchRecentProjects(): Promise<ProjectInfo[]> {
     if (Object.keys(this.cache.recentProjects).length > 0) {
-      console.log('命中缓存');
       return Object.values(this.cache.recentProjects);
     }
     const recentProjects: ProjectInfo[] = [];
