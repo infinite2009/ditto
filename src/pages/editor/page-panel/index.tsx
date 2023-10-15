@@ -54,14 +54,16 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
 
   return (
     <div>
-      <Tree
-        switcherIcon={<DownOutlined />}
-        showIcon
-        // selectedKeys={[selected]}
-        defaultExpandAll
-        onSelect={handlingSelect}
-        treeData={dataWithIcon}
-      />
+      {dataWithIcon?.length > 0 ? (
+        <Tree.DirectoryTree
+          switcherIcon={<DownOutlined />}
+          showIcon
+          defaultSelectedKeys={[selected]}
+          defaultExpandedKeys={[selected]}
+          onSelect={handlingSelect}
+          treeData={dataWithIcon}
+        />
+      ) : null}
     </div>
   );
 }
