@@ -42,7 +42,7 @@ import fileManager from '@/service/file';
 import Empty from '@/pages/editor/empty';
 import { debounce } from 'lodash';
 import { DataNode } from 'antd/es/tree';
-import { useLocation, useParams } from 'wouter';
+import { useLocation } from 'wouter';
 import { DSLStoreContext } from '@/hooks/context';
 
 const collisionOffset = 4;
@@ -99,8 +99,6 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
   // TODO: 文件路径数据需要重构为 indexedDB 存储
   const defaultPathRef = useRef<string>();
   const filePathRef = useRef<string>();
-
-  const queryParams = useParams();
 
   const codeType = (searchParams.get('codetype') as string) || 'react';
 
