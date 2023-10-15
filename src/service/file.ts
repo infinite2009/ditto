@@ -170,21 +170,6 @@ class FileManager {
       console.error(err);
     }
   }
-
-  async saveAppData(data: Partial<AppData>) {
-    try {
-      Object.assign(this.cache, data);
-      const promises = Object.keys(data)
-        .filter(key => key !== 'recentProjects')
-        .map(key => {
-          FileManager.appDataStore.setItem(key, this.cache[key]);
-        });
-      await Promise.all(promises);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   async openProject(projectId: string) {
     await Promise.all([
       FileManager.appDataStore.setItem('currentProject', projectId),
@@ -323,10 +308,8 @@ class FileManager {
   }
 
   async openFile(file: string): Promise<string> {
+    await FileManager.appDataStore.setItem('currentFile', file);
     this.cache.currentFile = file;
-    await this.saveAppData({
-      currentFile: this.cache.currentFile
-    });
     return readTextFile(file);
   }
   /**
