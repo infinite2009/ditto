@@ -562,11 +562,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
 
   useEffect(() => {
     if (currentFile) {
-      openFileProxy(currentFile).then(() => {
-        fileManager.saveAppData({
-          currentFile
-        });
-      });
+      openFileProxy(currentFile);
     }
   }, [currentFile]);
 
@@ -574,7 +570,6 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
     const content = await fileManager.openFile(page);
     if (content) {
       dslStore.initDSL(JSON.parse(content));
-      // TODO: save AppData
     } else {
       message.error('文件已损坏!');
     }
