@@ -623,7 +623,9 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
 
   return (
     <div className={styles.main}>
-      <Toolbar onDo={handleOnDo} />
+      <div className={styles.topBar}>
+        <Toolbar onDo={handleOnDo} />
+      </div>
       <DSLStoreContext.Provider value={dslStore}>
         <div className={styles.editArea}>
           <DndContext

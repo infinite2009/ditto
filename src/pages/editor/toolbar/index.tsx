@@ -1,7 +1,8 @@
 import styles from './index.module.less';
-import { Button } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Button, Divider } from 'antd';
 import PageAction from '@/types/page-action';
+import React from 'react';
+import { DesktopOutlined, MobileOutlined, RedoOutlined, TabletOutlined, UndoOutlined } from '@ant-design/icons';
 
 export interface PageActionEvent {
   type: PageAction;
@@ -69,20 +70,26 @@ export default function Toolbar({ onDo }: IToolbarProps) {
     }
   }
 
+  function handleTogglePlatform(platform: 'pc' | 'pad' | 'phone') {}
+
   return (
     <div className={styles.main}>
-      <div>
-        <Button onClick={handleOpenProject}>打开项目</Button>
-        <Button type="primary" onClick={handleCreatingNewPage}><PlusOutlined />新建页面</Button>
-        <Button onClick={handleSavingFile}>保存页面</Button>
-      </div>
-      <div>
-        <Button className={styles.btn} onClick={handleUndo}>撤销</Button>
-        <Button className={styles.btn} onClick={handleRedo}>重做</Button>
+      <div className={styles.leftBtnWrapper}>
+        <UndoOutlined className={styles.iconBtn} onClick={handleUndo} />
+        <RedoOutlined className={styles.iconBtn} onClick={handleRedo} />
+        <Divider type="vertical" />
+        <DesktopOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('pc')} />
+        <TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('pc')} />
+        <MobileOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('pc')} />
+        <Divider type="vertical" />
       </div>
       <div className={styles.right}>
-        <Button className={styles.btn} onClick={handlePreview}>预览</Button>
-        <Button className={styles.btn} onClick={handleExportingCode}>下载代码</Button>
+        <Button className={styles.btn} onClick={handlePreview}>
+          预览
+        </Button>
+        <Button className={styles.btn} onClick={handleExportingCode}>
+          下载代码
+        </Button>
       </div>
     </div>
   );
