@@ -35,9 +35,7 @@ export default function CustomTitleBar({ selectedProjectId, data, onSelect, onCl
     e.stopPropagation();
     if (onClose) {
       await onClose(projectItem.id);
-      console.log('onClose');
     }
-    console.log('onClose out');
     if (projectItem.id !== selectedProjectId) {
       return;
     }
