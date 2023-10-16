@@ -42,7 +42,7 @@ import fileManager from '@/service/file';
 import Empty from '@/pages/editor/empty';
 import { debounce } from 'lodash';
 import { DataNode } from 'antd/es/tree';
-import { useLocation } from 'wouter';
+import { useLocation, useParams } from 'wouter';
 import { DSLStoreContext } from '@/hooks/context';
 
 const collisionOffset = 4;
@@ -85,6 +85,7 @@ export interface IEditorProps {
 export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
   const searchParams = new URLSearchParams(window.location.search);
   const [, setLocation] = useLocation();
+  const params = useParams();
 
   const [, setActiveId] = useState<string>('');
   const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
@@ -118,7 +119,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
     fetchProjectData().then(() => {
       fetchCurrentFileProxy();
     });
-  }, []);
+  }, [params]);
 
   function fetchCurrentFileProxy() {
     const currentFile = fileManager.fetchCurrentFile();
