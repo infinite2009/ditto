@@ -1,11 +1,16 @@
+.lateral {
+  display: flex;
+  align-items: center;
+}
+
 .main {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   border-bottom: 1px solid #dbdbdb;
-  padding: 0 10px;
+  height: 36px;
   flex-basis: 60px;
   flex-shrink: 0;
+  flex-grow: 1;
 }
 
 .btn {
@@ -13,9 +18,45 @@
   margin-right: 10px;
 }
 
-.iconBtn {
-  width: 24px;
+.iconBtnWrapper {
+  margin: 0 8px;
   height: 24px;
+  width: 24px;
+  border-radius: 6px;
   font-size: 16px;
   line-height: 24px;
+  text-align: center;
+  color: #61666D;
+  &.selected {
+    color: #1A4BFF;
+    background-color: rgba(76, 109, 228, 0.10);
+    &:hover {
+      background-color: rgba(76, 109, 228, 0.10);
+    }
+  }
+  &:hover {
+    background-color: #F6F7F8;
+  }
+}
+
+.iconBtn {
+  height: 24px;
+}
+
+.leftBtnWrapper {
+  .lateral();
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.rightBtnWrapper {
+  .lateral();
+  padding: 0 12px;
+  width: 320px;
+  flex-shrink: 0;
+  justify-content: flex-end;
+}
+
+.divider {
+  border-color: #F1F2F3;
 }

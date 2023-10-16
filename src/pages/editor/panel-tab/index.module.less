@@ -1,3 +1,36 @@
 .main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 4px;
+  margin: 6px 8px;
+  padding: 2px;
+  width: 184px;
+  height: 24px;
+  background-color: #F1F2F3;
+}
 
+.btn {
+  border-radius: 4px;
+  border: none;
+  width: 89px;
+  height: 20px;
+  padding: 0;
+  line-height: 20px;
+  text-align: center;
+  color: #9499A0;
+  background-color: transparent;
+  box-shadow: none;
+  &.selected {
+    color: #1A4BFF;
+    background-color: #FFF;
+  }
+  &:hover {
+    border: none;
+  }
+}
+
+.icon {
+  font-size: 16px;
+  line-height: 20px;
 }

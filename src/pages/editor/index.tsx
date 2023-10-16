@@ -44,6 +44,7 @@ import { DataNode } from 'antd/es/tree';
 import { useLocation, useParams } from 'wouter';
 import { DSLStoreContext } from '@/hooks/context';
 import { OpenedProject } from '@/types/app-data';
+import PanelTab, { PanelType } from '@/pages/editor/panel-tab';
 
 const collisionOffset = 4;
 
@@ -621,9 +622,14 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
     }
   }
 
+  function handleTogglePanel(type: PanelType) {
+    // TODO:
+  }
+
   return (
     <div className={styles.main}>
       <div className={styles.topBar}>
+        <PanelTab onSelect={handleTogglePanel} />
         <Toolbar onDo={handleOnDo} />
       </div>
       <DSLStoreContext.Provider value={dslStore}>
