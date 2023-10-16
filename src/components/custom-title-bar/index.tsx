@@ -75,8 +75,8 @@ export default function CustomTitleBar({ selectedProjectId, data, onSelect, onCl
     return data?.map(item => {
       const titleWrapperClass = classNames({
         [style.titleWrapper]: true,
-        [style.selected]: item.id === selectedProjectId,
-        [style.unselected]: item.id !== selectedProjectId
+        [style.selected]: item.id === selectedProjectId && location !== '/home',
+        [style.unselected]: item.id !== selectedProjectId || location === '/home'
       });
       return (
         <div key={item.id} className={titleWrapperClass} onClick={() => handleClickTab(item)}>
