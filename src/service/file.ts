@@ -411,6 +411,12 @@ class FileManager {
 
       this.cache.recentProjects[projectInfo.id] = projectInfo;
       this.cache.pathToProjectDict[projectInfo.path] = projectInfo;
+
+      const oldProjectInfo = (await FileManager.openedProjectsStore.getItem(projectInfo.id)) as ProjectInfo;
+      oldProjectInfo.name = projectInfo.name;
+      await FileManager.openedProjectsStore.setItem(projectInfo.id, oldProjectInfo);
+      // 更新缓存
+      this.cache.openedProjects[projectInfo.id] = projectInfo;
     }
   }
 

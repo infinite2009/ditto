@@ -87,7 +87,9 @@ function App() {
     fetchOpenedProjects();
   }
 
-  function handleRenamingProject(projectId: string) {}
+  function handleRenamingProject(projectId: string) {
+    fetchOpenedProjects();
+  }
 
   return showUI ? (
     <div>
