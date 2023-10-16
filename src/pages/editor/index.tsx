@@ -35,8 +35,7 @@ import IAnchorCoordinates from '@/types/anchor-coordinate';
 import DSLStore from '@/service/dsl-store';
 import { toJS } from 'mobx';
 import { save } from '@tauri-apps/api/dialog';
-import { path } from '@tauri-apps/api';
-import { dirname, join, sep } from '@tauri-apps/api/path';
+import { dirname, documentDir, join, sep } from '@tauri-apps/api/path';
 import ComponentFeature from '@/types/component-feature';
 import fileManager from '@/service/file';
 import Empty from '@/pages/editor/empty';
@@ -44,6 +43,7 @@ import { debounce } from 'lodash';
 import { DataNode } from 'antd/es/tree';
 import { useLocation, useParams } from 'wouter';
 import { DSLStoreContext } from '@/hooks/context';
+import { OpenedProject } from '@/types/app-data';
 
 const collisionOffset = 4;
 
@@ -89,6 +89,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
 
   const [, setActiveId] = useState<string>('');
   const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
+  const [currentProject, setCurrentProject] = useState<OpenedProject>();
   const [projectData, setProjectData] = useState<any[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
   const [selectedFolder, setSelectedFolder] = useState<string>('');
@@ -113,19 +114,27 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
   const sensors = useSensors(mouseSensor);
 
   useEffect(() => {
-    path.documentDir().then(p => {
+    documentDir().then(p => {
       defaultPathRef.current = p;
     });
-    fetchProjectData().then(() => {
-      fetchCurrentFileProxy();
-    });
+    fetchProjectData().then();
+    fetchCurrentProject().then();
   }, [params]);
 
-  function fetchCurrentFileProxy() {
-    const currentFile = fileManager.fetchCurrentFile();
-    if (currentFile) {
-      setCurrentFile(currentFile);
+  useEffect(() => {
+    if (currentProject) {
+      let currentFile = currentProject.openedFile;
+      if (currentFile) {
+        openFile(currentFile).then();
+      }
+      setCurrentFile(currentFile || '');
     }
+  }, [currentProject]);
+
+  async function fetchCurrentProject() {
+    const projectId = fileManager.fetchCurrentProject();
+    const openedProjectInfo = await fileManager.fetchOpenedProject(projectId);
+    setCurrentProject(openedProjectInfo);
   }
 
   async function fetchProjectData() {
@@ -187,8 +196,16 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
   }
 
   function isInRect(
-    point: { top: any; left: any },
-    rect: { top: any; right: any; bottom: any; left: any },
+    point: {
+      top: any;
+      left: any;
+    },
+    rect: {
+      top: any;
+      right: any;
+      bottom: any;
+      left: any;
+    },
     offset = 0
   ) {
     const { top: pointerTop, left: pointerLeft } = point;
@@ -210,8 +227,16 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
    * return 0 | 1 | 2. 0 表示没有重叠，1 表示左上角落在另一个矩形的内部边缘，2 表示左上角落在另一个矩形的核心区域
    */
   function calcIntersectionType(
-    rect: { top: number; right: number; bottom: number; left: number },
-    collisionRect: { top: number; left: number }
+    rect: {
+      top: number;
+      right: number;
+      bottom: number;
+      left: number;
+    },
+    collisionRect: {
+      top: number;
+      left: number;
+    }
   ) {
     const pointer = {
       top: collisionRect.top,
@@ -226,7 +251,13 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
     return 1;
   }
 
-  function isDescendant(entry: string, target: string, parentDict: { [key: string]: string }) {
+  function isDescendant(
+    entry: string,
+    target: string,
+    parentDict: {
+      [key: string]: string;
+    }
+  ) {
     let currentParent = parentDict[entry];
     while (currentParent) {
       if (target === currentParent) {
@@ -238,7 +269,12 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
   }
 
   // 计算当前节点的深度
-  function calculateDepth(id: string, parentDict: { [key: string]: string }) {
+  function calculateDepth(
+    id: string,
+    parentDict: {
+      [key: string]: string;
+    }
+  ) {
     let depth = 0;
     let parentId = id;
     while (parentId) {
@@ -272,7 +308,9 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
     ({ active, collisionRect, droppableRects, droppableContainers }) => {
       const collisions: CollisionDescriptor[] = [];
 
-      const parentDict: { [key: string]: string } = {};
+      const parentDict: {
+        [key: string]: string;
+      } = {};
 
       if (active.data?.current?.isLayer) {
         const root = droppableContainers.find(item => item.data?.current?.dndType === 'root');
@@ -526,7 +564,10 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
   }
 
   function redirectToPreview() {
-    setLocation(`/preview/?file=${currentFile}`);
+    if (!currentProject) {
+      return;
+    }
+    setLocation(`/preview/${currentProject.id}`);
   }
 
   async function handleOnDo(e: PageActionEvent) {
@@ -559,14 +600,11 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
     createFile().then();
   }
 
-  useEffect(() => {
-    if (currentFile) {
-      openFileProxy(currentFile);
+  async function openFile(page: string) {
+    if (!currentProject) {
+      return;
     }
-  }, [currentFile]);
-
-  async function openFileProxy(page: string) {
-    const content = await fileManager.openFile(page);
+    const content = await fileManager.openFile(page, currentProject.id);
     if (content) {
       dslStore.initDSL(JSON.parse(content));
     } else {
@@ -576,6 +614,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
 
   function handleSelectingPageOrFolder(page: DataNode) {
     if (page.isLeaf) {
+      openFile(page.key as string).then();
       setCurrentFile(page.key as string);
     } else {
       setSelectedFolder(page.key as string);

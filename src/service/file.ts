@@ -17,7 +17,7 @@ import { open } from '@tauri-apps/api/dialog';
 import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import * as typescript from 'prettier/parser-typescript';
-import AppData, { ProjectInfo } from '@/types/app-data';
+import AppData, { OpenedProject, ProjectInfo } from '@/types/app-data';
 import { documentDir, join, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
@@ -41,7 +41,6 @@ interface EntryTree {
 }
 
 const initialCache = {
-  currentFile: '',
   currentProject: '',
   openedProjects: {},
   recentProjects: {},
@@ -114,9 +113,6 @@ class FileManager {
       delete this.cache.recentProjects[project.id];
       delete this.cache.pathToProjectDict[project.path];
       delete this.cache.openedProjects[project.id];
-      if (project.id === this.cache.currentProject) {
-        this.cache.currentFile = '';
-      }
       if (deleteFolder) {
         await removeDir(project.path, { recursive: true });
       }
@@ -303,10 +299,6 @@ class FileManager {
     return recursiveMap([project]);
   }
 
-  fetchCurrentFile() {
-    return this.cache.currentFile;
-  }
-
   fetchOpenedProjects() {
     return this.cache.openedProjects;
   }
@@ -320,9 +312,14 @@ class FileManager {
     return this.cache.currentProject;
   }
 
-  async openFile(file: string): Promise<string> {
-    await FileManager.appDataStore.setItem('currentFile', file);
-    this.cache.currentFile = file;
+  fetchOpenedProject(projectId: string): Promise<OpenedProject> {
+    return FileManager.openedProjectsStore.getItem(projectId) as unknown as Promise<OpenedProject>;
+  }
+
+  async openFile(file: string, projectId: string): Promise<string> {
+    const openedProject = (await FileManager.openedProjectsStore.getItem(projectId)) as OpenedProject;
+    openedProject.openedFile = file;
+    await FileManager.openedProjectsStore.setItem(projectId, openedProject);
     return readTextFile(file);
   }
   /**
