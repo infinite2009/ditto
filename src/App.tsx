@@ -83,6 +83,12 @@ function App() {
     fetchOpenedProjects();
   }
 
+  function handleDeletingProject(projectId: string) {
+    fetchOpenedProjects();
+  }
+
+  function handleRenamingProject(projectId: string) {}
+
   return showUI ? (
     <div>
       <CustomTitleBar
@@ -99,7 +105,11 @@ function App() {
           <Editor onPreview={handlePreviewProject} onPreviewClose={handlePreviewProjectClose} />
         </Route>
         <Route path="/home">
-          <Home onOpenProject={handleOpeningProject} />
+          <Home
+            onOpenProject={handleOpeningProject}
+            onDeleteProject={handleDeletingProject}
+            onRenameProject={handleRenamingProject}
+          />
         </Route>
         <Route path="/preview/:pageId">
           <Preview />

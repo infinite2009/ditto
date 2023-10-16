@@ -10,9 +10,11 @@ import style from './index.module.less';
 
 export interface IHomeProps {
   onOpenProject: (projectId: string) => void;
+  onDeleteProject: (projectId: string) => void;
+  onRenameProject: (projectId: string) => void;
 }
 
-export default function Home({ onOpenProject }: IHomeProps) {
+export default function Home({ onOpenProject, onDeleteProject, onRenameProject }: IHomeProps) {
   const [, setLocation] = useLocation();
   const [recentProjects, setRecentProjects] = useState<any[]>([]);
   const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(null);
@@ -55,6 +57,9 @@ export default function Home({ onOpenProject }: IHomeProps) {
     }
     try {
       await fileManager.renameProject(selectedProject, e.target.value.trim());
+      if (onRenameProject) {
+        onRenameProject(selectedProject.id);
+      }
       await fetchRecentProjects();
     } catch (err: any) {
       message.error(err.toString());
@@ -233,6 +238,9 @@ export default function Home({ onOpenProject }: IHomeProps) {
         title: '已删除',
         content: '请重新'
       });
+      if (onDeleteProject) {
+        onDeleteProject(data.id);
+      }
       await fetchRecentProjects();
       return Promise.resolve(data);
     } catch (e) {

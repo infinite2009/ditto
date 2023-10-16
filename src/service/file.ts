@@ -103,9 +103,20 @@ class FileManager {
 
   async deleteProject(project: ProjectInfo, deleteFolder = false): Promise<void> {
     try {
-      await FileManager.recentProjectsStore.removeItem(project.id);
+      const tasks = [
+        FileManager.recentProjectsStore.removeItem(project.id),
+        FileManager.openedProjectsStore.removeItem(project.id)
+      ];
+      if (project.id === this.cache.currentProject) {
+        tasks.push(FileManager.appDataStore.removeItem('currentProject'));
+      }
+      await Promise.all(tasks);
       delete this.cache.recentProjects[project.id];
       delete this.cache.pathToProjectDict[project.path];
+      delete this.cache.openedProjects[project.id];
+      if (project.id === this.cache.currentProject) {
+        this.cache.currentFile = '';
+      }
       if (deleteFolder) {
         await removeDir(project.path, { recursive: true });
       }
