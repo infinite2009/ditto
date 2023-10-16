@@ -159,7 +159,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
                   <Input
                     ref={inputRef}
                     value={temporaryProjectName}
-                    onInput={(e: any) => setTemporaryProjectName(e.target.value.trim())}
+                    onInput={(e: any) => setTemporaryProjectName(e.target.value)}
                     onClick={e => e.stopPropagation()}
                     onPressEnter={changeText}
                     onBlur={changeText}
