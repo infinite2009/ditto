@@ -34,7 +34,7 @@ function App() {
     setOpenedProjects(Object.values(openedProjectsDict));
   }
 
-  function fetchCurrentProject() {
+  function fetchAndOpenCurrentProject() {
     const currentProject = fileManager.fetchCurrentProject();
     setCurrentProject(currentProject);
     if (currentProject) {
@@ -45,7 +45,7 @@ function App() {
   async function init() {
     await fileManager.initAppData();
     fetchOpenedProjects();
-    fetchCurrentProject();
+    fetchAndOpenCurrentProject();
     setShowUI(true);
   }
 
@@ -68,18 +68,18 @@ function App() {
       return;
     }
     await fileManager.setCurrentProject(projectId);
-    fetchCurrentProject();
+    fetchAndOpenCurrentProject();
   }
 
   async function handleOpeningProject(projectId: string) {
     await Promise.all([fileManager.openProject(projectId), fileManager.setCurrentProject(projectId)]);
     fetchOpenedProjects();
-    fetchCurrentProject();
+    fetchAndOpenCurrentProject();
   }
 
   async function handleClosingProject(projectId: string) {
     await fileManager.closeProject(projectId);
-    fetchCurrentProject();
+    fetchAndOpenCurrentProject();
     fetchOpenedProjects();
   }
 
