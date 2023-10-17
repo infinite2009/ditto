@@ -127,7 +127,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
 
   useEffect(() => {
     if (currentProject) {
-      let currentFile = currentProject.openedFile;
+      const currentFile = currentProject.openedFile;
       if (currentFile) {
         openFile(currentFile).then();
       }
