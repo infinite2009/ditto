@@ -96,6 +96,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
   const [projectData, setProjectData] = useState<any[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
   const [selectedFolder, setSelectedFolder] = useState<string>('');
+  const [leftPanelType, setLeftPanelType] = useState<PanelType>(PanelType.file);
 
   const [form] = useForm();
 
@@ -626,6 +627,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
 
   function handleTogglePanel(type: PanelType) {
     // TODO:
+    setLeftPanelType(type);
   }
 
   function handleCancelSelectingComponent(componentId: ComponentId) {
@@ -634,6 +636,47 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
 
   function handleSelectingComponent(componentId: ComponentId) {
     // TODO：待实现
+  }
+
+  /**
+   * 渲染项目的文件目录，当前文件的组件树
+   */
+  function renderProjectPanel() {
+    return (
+      <>
+        <div className={styles.pagePanel}>
+          <PagePanel data={projectData} onSelect={handleSelectingPageOrFolder} selected={currentFile} />
+        </div>
+        <div className={styles.componentTree}>
+          <ComponentTree
+            data={[]}
+            onSelect={handleSelectingComponent}
+            onCancelSelect={handleCancelSelectingComponent}
+          />
+        </div>
+      </>
+    );
+  }
+
+  /**
+   * 渲染模板、组件托盘
+   */
+  function renderComponentPanel() {
+    return <ComponentPanel />;
+  }
+
+  /**
+   * 渲染左侧托盘
+   */
+  function renderLeftPanel() {
+    switch (leftPanelType) {
+      case PanelType.file:
+        return renderProjectPanel();
+      case PanelType.component:
+        return renderComponentPanel();
+      default:
+        return null;
+    }
   }
 
   return (
@@ -659,18 +702,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
             onDragCancel={handleDraggingCancel}
           >
             <div className={styles.draggableArea}>
-              <div className={styles.panel}>
-                <div className={styles.pagePanel}>
-                  <PagePanel data={projectData} onSelect={handleSelectingPageOrFolder} selected={currentFile} />
-                </div>
-                <div className={styles.componentTree}>
-                  <ComponentTree
-                    data={[]}
-                    onSelect={handleSelectingComponent}
-                    onCancelSelect={handleCancelSelectingComponent}
-                  />
-                </div>
-              </div>
+              <div className={styles.panel}>{renderLeftPanel()}</div>
               <div className={styles.canvas}>
                 <div className={styles.canvasInner}>{currentFile ? <PageRenderer mode="edit" /> : <Empty />}</div>
               </div>
