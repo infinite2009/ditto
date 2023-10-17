@@ -1,7 +1,7 @@
 import { useLocation } from 'wouter';
 
 import { FileFilled, PlusOutlined, SelectOutlined, SortAscendingOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Dropdown, Input, InputRef, message, Modal } from 'antd';
+import { Button, Dropdown, Input, InputRef, message, Modal } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import fileManager from '@/service/file';
 import { ProjectInfo } from '@/types/app-data';
@@ -212,9 +212,9 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
       content: (
         <div className={style.deleteProject}>
           <p className={style.deleteLateral}>这个操作无法进行复原，确认要删除 “{data.name}” 吗？</p>
-          <Checkbox onChange={e => (deleteFolder.current = e.target.checked)}>
-            <span className={style.deleteLateral}>把文件移至系统废纸篓</span>
-          </Checkbox>
+          <span className={style.deleteLateral}>删除后文件将被移至系统废纸篓</span>
+          {/*<Checkbox onChange={e => (deleteFolder.current = e.target.checked)}>*/}
+          {/*</Checkbox>*/}
         </div>
       ),
       onOk() {
