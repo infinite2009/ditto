@@ -1,6 +1,6 @@
 import { useLocation } from 'wouter';
 
-import { FileFilled, PlusOutlined, SelectOutlined, SortAscendingOutlined } from '@ant-design/icons';
+import { CloseOutlined, FileFilled, PlusOutlined, SelectOutlined, SortAscendingOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Input, InputRef, message, Modal } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import fileManager from '@/service/file';
@@ -207,12 +207,16 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
 
   function openProjectDeletingModal(data: ProjectInfo) {
     Modal.confirm({
-      title: '删除项目',
+      title: (
+        <div className={style.modalTitleWrapper}>
+          <h3 className={style.modalTitle}>删除项目</h3>
+          <CloseOutlined className={style.modalCloseIcon} />
+        </div>
+      ),
       icon: null,
       content: (
         <div className={style.deleteProject}>
-          <p className={style.deleteLateral}>这个操作无法进行复原，确认要删除 “{data.name}” 吗？</p>
-          <span className={style.deleteLateral}>删除后文件将被移至系统废纸篓</span>
+          <p className={style.deleteLateral}>确认要删除 “{data.name}” 吗？删除后文件将被移至系统废纸篓</p>
           {/*<Checkbox onChange={e => (deleteFolder.current = e.target.checked)}>*/}
           {/*</Checkbox>*/}
         </div>
