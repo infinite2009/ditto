@@ -3,22 +3,13 @@ import * as prettier from 'prettier/standalone';
 import prettierConfig from '@/config/.prettierrc.json';
 import * as babel from 'prettier/parser-babel';
 import { RequiredOptions } from 'prettier';
-import {
-  BaseDirectory,
-  createDir,
-  exists,
-  FileEntry,
-  readDir,
-  readTextFile,
-  removeDir,
-  writeTextFile
-} from '@tauri-apps/api/fs';
+import { BaseDirectory, createDir, exists, FileEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/api/fs';
 import { open } from '@tauri-apps/api/dialog';
 import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import * as typescript from 'prettier/parser-typescript';
 import AppData, { OpenedProject, ProjectInfo } from '@/types/app-data';
-import { documentDir, join, sep } from '@tauri-apps/api/path';
+import { documentDir, homeDir, join, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
 import cloneDeep from 'lodash/cloneDeep';
@@ -114,7 +105,7 @@ class FileManager {
       delete this.cache.pathToProjectDict[project.path];
       delete this.cache.openedProjects[project.id];
       if (deleteFolder) {
-        await removeDir(project.path, { recursive: true });
+        await new Command('mv folder or file', [project.path, await join(await homeDir(), '.Trash')]).execute();
       }
     } catch (err) {
       console.error(err);
