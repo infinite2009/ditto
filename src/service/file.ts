@@ -79,6 +79,8 @@ class FileManager {
   async closeProject(projectId: string) {
     const projectInfo = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
     projectInfo.isOpen = false;
+    await FileManager.recentProjectsStore.setItem(projectId, projectInfo);
+    this.cache.recentProjects[projectId] = projectInfo;
     if (projectId === this.cache.currentProject) {
       await FileManager.appDataStore.removeItem('currentProject');
       this.cache.currentProject = '';
@@ -163,6 +165,7 @@ class FileManager {
   async openProject(projectId: string) {
     const openedProject = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
     openedProject.isOpen = true;
+    await FileManager.recentProjectsStore.setItem(projectId, openedProject);
     this.cache.recentProjects[projectId] = openedProject;
     await FileManager.appDataStore.setItem('currentProject', projectId);
     this.cache.currentProject = projectId;
@@ -198,7 +201,7 @@ class FileManager {
               name: selected.split(sep).pop() as string,
               path: selected,
               lastModified: new Date().getTime(),
-              isOpen: false,
+              isOpen: true,
               openedFile: ''
             };
             await FileManager.recentProjectsStore.setItem(project.id, project);
@@ -306,6 +309,8 @@ class FileManager {
   async openFile(file: string, projectId: string): Promise<string> {
     const openedProject = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
     openedProject.openedFile = file;
+    await FileManager.recentProjectsStore.setItem(projectId, openedProject);
+    this.cache.recentProjects[projectId] = openedProject;
     return readTextFile(file);
   }
   /**
@@ -389,6 +394,9 @@ class FileManager {
       projectInfo.name = newName;
       projectInfo.path = newPath;
       projectInfo.lastModified = new Date().getTime();
+
+      await FileManager.recentProjectsStore.setItem(projectInfo.id, projectInfo);
+      this.cache.recentProjects[projectInfo.id] = projectInfo;
 
       delete this.cache.pathToProjectDict[project.path];
       this.cache.pathToProjectDict[projectInfo.path] = projectInfo;
