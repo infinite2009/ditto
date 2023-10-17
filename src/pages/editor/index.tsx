@@ -14,7 +14,7 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core';
-import { Form, Input, message, Modal, Tabs } from 'antd';
+import { Form, Input, message, Modal } from 'antd';
 
 import Toolbar, { PageActionEvent } from '@/pages/editor/toolbar';
 import PagePanel from '@/pages/editor/page-panel';
@@ -45,6 +45,8 @@ import { useLocation, useParams } from 'wouter';
 import { DSLStoreContext } from '@/hooks/context';
 import { OpenedProject } from '@/types/app-data';
 import PanelTab, { PanelType } from '@/pages/editor/panel-tab';
+import { ComponentId } from '@/types';
+import ComponentTree from '@/pages/editor/component-tree';
 
 const collisionOffset = 4;
 
@@ -626,6 +628,14 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
     // TODO:
   }
 
+  function handleCancelSelectingComponent(componentId: ComponentId) {
+    // TODO: 待实现
+  }
+
+  function handleSelectingComponent(componentId: ComponentId) {
+    // TODO：待实现
+  }
+
   return (
     <div className={styles.main}>
       <div className={styles.topBar}>
@@ -653,8 +663,12 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
                 <div className={styles.pagePanel}>
                   <PagePanel data={projectData} onSelect={handleSelectingPageOrFolder} selected={currentFile} />
                 </div>
-                <div className={styles.componentPanel}>
-                  <Tabs items={tabsItems} />
+                <div className={styles.componentTree}>
+                  <ComponentTree
+                    data={[]}
+                    onSelect={handleSelectingComponent}
+                    onCancelSelect={handleCancelSelectingComponent}
+                  />
                 </div>
               </div>
               <div className={styles.canvas}>
