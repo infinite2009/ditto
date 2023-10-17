@@ -136,9 +136,9 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
   }, [currentProject]);
 
   function fetchCurrentProject() {
-    const projectId = fileManager.fetchCurrentProject();
-    const openedProjectInfo = fileManager.fetchProjectInfo(projectId);
-    setCurrentProject(openedProjectInfo);
+    const projectId = fileManager.fetchCurrentProjectId();
+    const currentProject = fileManager.fetchProjectInfo(projectId);
+    setCurrentProject(currentProject);
   }
 
   async function fetchProjectData() {

@@ -299,7 +299,7 @@ class FileManager {
     this.cache.currentProject = projectId;
   }
 
-  fetchCurrentProject() {
+  fetchCurrentProjectId() {
     return this.cache.currentProject;
   }
 

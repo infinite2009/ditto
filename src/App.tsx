@@ -35,7 +35,7 @@ function App() {
   }
 
   function fetchAndOpenCurrentProject() {
-    const currentProject = fileManager.fetchCurrentProject();
+    const currentProject = fileManager.fetchCurrentProjectId();
     setCurrentProject(currentProject);
     if (currentProject) {
       setLocation(`/edit/${currentProject}`);
