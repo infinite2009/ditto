@@ -43,10 +43,10 @@ import { debounce } from 'lodash';
 import { DataNode } from 'antd/es/tree';
 import { useLocation, useParams } from 'wouter';
 import { DSLStoreContext } from '@/hooks/context';
-import { OpenedProject } from '@/types/app-data';
 import PanelTab, { PanelType } from '@/pages/editor/panel-tab';
 import { ComponentId } from '@/types';
 import ComponentTree from '@/pages/editor/component-tree';
+import { ProjectInfo } from '@/types/app-data';
 
 const collisionOffset = 4;
 
@@ -92,7 +92,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
 
   const [, setActiveId] = useState<string>('');
   const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
-  const [currentProject, setCurrentProject] = useState<OpenedProject>();
+  const [currentProject, setCurrentProject] = useState<ProjectInfo>();
   const [projectData, setProjectData] = useState<any[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
   const [selectedFolder, setSelectedFolder] = useState<string>('');
@@ -122,7 +122,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
       defaultPathRef.current = p;
     });
     fetchProjectData().then();
-    fetchCurrentProject().then();
+    fetchCurrentProject();
   }, [params]);
 
   useEffect(() => {
@@ -135,9 +135,9 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
     }
   }, [currentProject]);
 
-  async function fetchCurrentProject() {
+  function fetchCurrentProject() {
     const projectId = fileManager.fetchCurrentProject();
-    const openedProjectInfo = await fileManager.fetchOpenedProject(projectId);
+    const openedProjectInfo = fileManager.fetchProjectInfo(projectId);
     setCurrentProject(openedProjectInfo);
   }
 
