@@ -207,17 +207,20 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
 
   function openProjectDeletingModal(data: ProjectInfo) {
     Modal.confirm({
-      title: `是否删除 ${selectedProject?.name}`,
+      title: '删除项目',
       icon: null,
       content: (
         <div className={style.deleteProject}>
-          <Checkbox onChange={e => (deleteFolder.current = e.target.checked)}>删除后文件将被移至系统废纸篓</Checkbox>
+          <p className={style.deleteLateral}>这个操作无法进行复原，确认要删除 “{data.name}” 吗？</p>
+          <Checkbox onChange={e => (deleteFolder.current = e.target.checked)}>
+            <span className={style.deleteLateral}>把文件移至系统废纸篓</span>
+          </Checkbox>
         </div>
       ),
       onOk() {
         return deleteProject(data);
       },
-      okText: '删除',
+      okText: '确认删除',
       okButtonProps: { style: { borderRadius: 8, backgroundColor: '#F85A54' } },
       cancelText: '取消',
       cancelButtonProps: {},
