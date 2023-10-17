@@ -22,7 +22,7 @@
   height: @tabHeight;
   cursor: pointer;
   &:hover {
-    .outBorder(#f8f9fa, 9, 9);
+    .outBorder(#f8f9fa, 10);
     .closeIcon {
       opacity: 1;
     }
@@ -58,7 +58,7 @@
   }
 }
 
-.outBorder(@color, @zIndex, @zIndex) {
+.outBorder(@color, @zIndex) {
   position: relative;
   border-top-left-radius: @radius;
   border-top-right-radius: @radius;
@@ -93,7 +93,7 @@
 }
 
 .selected {
-  .outBorder(#fff, 1, 1);
+  .outBorder(#fff, 9);
 }
 
 .titleWrapper {
@@ -110,7 +110,7 @@
     pointer-events: none;
   }
   &:hover {
-    .outBorder(#f8f9fa, 9, 9);
+    .outBorder(#f8f9fa, 10);
     .closeIcon {
       opacity: 1;
       pointer-events: initial;
