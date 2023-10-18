@@ -5,6 +5,7 @@ import { DownOutlined, FileOutlined, FolderOpenOutlined, FolderOutlined } from '
 import ProjectToolBar from '@/pages/editor/project-tool-bar';
 
 import styles from './index.module.less';
+import { findNodePath } from '@/util';
 
 interface PageData {
   key: string;
@@ -25,20 +26,7 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
 
   useEffect(() => {
     if (selected && data.length) {
-      let q = data;
-      while (q.length) {
-        const item = q.shift();
-        if (item?.children) {
-          if (item.children.some(child => child.key === selected)) {
-            const newState = [...expandedKeys];
-            newState.push(item.key);
-            setExpandedKeys(newState);
-            return;
-          } else {
-            q = q.concat(item.children);
-          }
-        }
-      }
+      setExpandedKeys(findNodePath({ key: undefined, children: data }, selected));
     }
   }, [selected, data]);
 
