@@ -83,7 +83,7 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
 
   function handleCreatingPage() {}
 
-  function handleCreatingProject() {}
+  function handleCreatingDirectory() {}
 
   function handleSearchingPage() {}
 
@@ -91,7 +91,7 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
     <div>
       <ProjectToolBar
         onCreatingPage={handleCreatingPage}
-        onCreatingProject={handleCreatingProject}
+        onCreatingDirectory={handleCreatingDirectory}
         onSearch={handleSearchingPage}
       />
       {dataWithIcon?.length > 0 ? (
