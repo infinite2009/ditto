@@ -59,7 +59,7 @@ export default function ComponentPanel() {
           title={item.title}
         >
           <div className={styles.componentItem} key={item.key}>
-            <ComponentIcon className={styles.componentIcon} />
+            <div className={styles.componentIcon} />
             <p className={styles.componentTitle}>{item.title}</p>
           </div>
         </DraggableComponent>
@@ -69,7 +69,7 @@ export default function ComponentPanel() {
   }
 
   return (
-    <div>
+    <div className={styles.main}>
       <Input.Search placeholder="请输入组件名" onSearch={handleSearching} />
       {renderComponentList()}
     </div>

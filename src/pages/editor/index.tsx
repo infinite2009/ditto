@@ -47,6 +47,7 @@ import PanelTab, { PanelType } from '@/pages/editor/panel-tab';
 import { ComponentId } from '@/types';
 import ComponentTree from '@/pages/editor/component-tree';
 import { ProjectInfo } from '@/types/app-data';
+import CompositionPanel from '@/pages/editor/composition-panel';
 
 const collisionOffset = 4;
 
@@ -662,7 +663,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
    * 渲染模板、组件托盘
    */
   function renderComponentPanel() {
-    return <ComponentPanel />;
+    return <CompositionPanel />;
   }
 
   /**
