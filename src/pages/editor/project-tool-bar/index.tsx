@@ -6,11 +6,11 @@ import styles from './index.module.less';
 
 export interface IProjectToolBarProps {
   onSearch: (keyword: string) => void;
-  onCreatingProject: () => void;
+  onCreatingDirectory: () => void;
   onCreatingPage: () => void;
 }
 
-export default function ProjectToolBar({ onSearch, onCreatingProject, onCreatingPage }: IProjectToolBarProps) {
+export default function ProjectToolBar({ onSearch, onCreatingDirectory, onCreatingPage }: IProjectToolBarProps) {
   function handleSearch(e: any) {
     if (onSearch) {
       onSearch(e.target.value.trim());
@@ -18,8 +18,8 @@ export default function ProjectToolBar({ onSearch, onCreatingProject, onCreating
   }
 
   function handleClickingCreateProject() {
-    if (onCreatingProject) {
-      onCreatingProject();
+    if (onCreatingDirectory) {
+      onCreatingDirectory();
     }
   }
 
