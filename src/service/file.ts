@@ -26,7 +26,6 @@ import { platform } from '@tauri-apps/api/os';
 interface EntryTree {
   key: string;
   title: string;
-  selectable?: boolean;
   children?: EntryTree[];
   isLeaf?: boolean;
 }
@@ -269,7 +268,6 @@ class FileManager {
           files.push(entry.path);
           if (entry.children) {
             r.children = recursiveMap(entry.children);
-            r.selectable = false;
           } else {
             r.isLeaf = true;
           }
