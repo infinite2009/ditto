@@ -358,6 +358,22 @@ class FileManager {
     }
   }
 
+  async addDirectory(parentPath: string, name: string) {
+    try {
+      return createDir(await join(parentPath, name));
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
+  async addFile(parentPath: string, name: string, content = '') {
+    try {
+      return await writeTextFile(await join(parentPath, name), content);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
   async renameProject(project: ProjectInfo, newName: string) {
     const projectInfo = (await FileManager.recentProjectsStore.getItem(project.id)) as ProjectInfo;
     if (projectInfo) {
