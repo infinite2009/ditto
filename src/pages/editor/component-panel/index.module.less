@@ -2,14 +2,41 @@
   padding: 8px 0 8px 8px;
 }
 
+.componentWrapper {
+  overflow: auto;
+  width: 200px;
+  max-height: calc(100vh - 172px);
+  :global {
+    .ant-collapse-content-box {
+      padding: 0 !important;
+    }
+    .ant-collapse-header {
+      height: 32px;
+      align-items: center !important;
+      padding: 4px 0 !important;
+    }
+    .ant-collapse-expand-icon {
+      padding-inline-end: 0;
+      padding-right: 0;
+    }
+    .ant-collapse-header-text {
+      padding: 4px;
+      color: #18191C;
+      font-family: PingFang SC, serif;
+      font-size: 12px;
+      line-height: 12px;
+      user-select: none;
+      -webkit-user-select: none; /* Safari */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* IE/Edge */
+    }
+  }
+}
+
 .componentList {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  margin-top: 8px;
-  overflow: auto;
-  width: 200px;
-  max-height: calc(100vh - 172px);
 }
 
 .componentItem {
