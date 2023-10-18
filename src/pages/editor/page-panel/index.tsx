@@ -99,6 +99,7 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
           <Tree.DirectoryTree
             switcherIcon={<DownOutlined />}
             showIcon
+            expandAction="doubleClick"
             selectedKeys={[selected]}
             onExpand={handleExpand}
             expandedKeys={expandedKeys}
