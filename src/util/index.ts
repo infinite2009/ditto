@@ -59,13 +59,19 @@ export function toProgressive(verb: string) {
   }
 }
 
+export function hyphenToCamelCase(input: string) {
+  return input.replace(/-([a-z])/g, function (match, group1) {
+    return group1.toUpperCase();
+  });
+}
+
 export function findNodePath(root: any, target: string, key = 'key'): string[] {
   if (root[key] === target) {
     return [target];
   }
 
   if (root?.children?.length) {
-    for (let child of root.children) {
+    for (const child of root.children) {
       const path = findNodePath(child, target, key);
       if (path.length) {
         return [root[key], ...path];

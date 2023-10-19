@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
-import { fetchComponentConfig, generateId, generateSlotId, typeOf } from '@/util';
+import { fetchComponentConfig, generateId, generateSlotId, hyphenToCamelCase, typeOf } from '@/util';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 import cloneDeep from 'lodash/cloneDeep';
 import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
@@ -137,7 +137,7 @@ export default class DSLStore {
       componentId = customId;
     } else {
       this.updateComponentStats(name);
-      componentId = `${name}${this.dsl.componentStats[name]}`;
+      componentId = hyphenToCamelCase(`${name}${this.dsl.componentStats[name]}`);
     }
 
     const componentConfig = fetchComponentConfig(name, dependency);

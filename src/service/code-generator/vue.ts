@@ -8,7 +8,8 @@ import TypeScriptCodeGenerator, {
 import IComponentSchema from '@/types/component.schema';
 import { ImportType } from '@/types';
 import IPropsSchema from '@/types/props.schema';
-import ReactCodeGenerator, { IPropsOptions, IUseCallbackOptions, IUseEffectOptions, IUseMemoOptions, IUseRefOptions, IUseStateOptions } from './react';
+import ReactCodeGenerator, { IDSLStatsInfo, IImportInfo, IPropsOptions, ITSXOptions, IUseCallbackOptions, IUseEffectOptions, IUseMemoOptions, IUseRefOptions, IUseStateOptions } from './react';
+import ComponentSchemaRef from '@/types/component-schema-ref';
 
 
 export default class VueCodeGenerator extends ReactCodeGenerator {
@@ -27,6 +28,11 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
    */
   generatePropsStrWithLiteral(opt: IPropsOptions): string {
     const { name, variableType, value } = opt;
+
+    // 插槽属性 TODO 待优化 使用variableType = 'slotName'
+    if (name.startsWith('#') && value == '') {
+      return `${name}`;
+    }
     if (variableType === 'string') {
       return `${name}="${value}"`;
     }
@@ -37,6 +43,9 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
    */
   generatePropAssignmentExpWithVariable(opt: IPropsOptions): string {
     const { name, variableName } = opt;
+    if (name.startsWith('#')) {
+      return `${name}`;
+    }
     return `:${name}="${variableName}"`;
   }
   /**
@@ -94,6 +103,38 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
       valueType === 'string' ? `'${initialValueStr}'` : initialValueStr
     });`;
   }
+  generateCamelotRegister(importInfo: IImportInfo) {
+    const newImportInfo = {
+      '@camelot/rsc-register': {
+        object: ['register']
+      }
+    } as IImportInfo;
+    // delete importInfo.camelot;
+    return newImportInfo;
+  }
+  generateVueImportInfo(importInfo: IImportInfo) {
+    const newImportInfo =  {
+      'vue': {
+        default: [],
+        object: importInfo.react.object.map(name => {
+          const map = {
+            useEffect: 'watch',
+            useState: 'ref'
+          };
+          return map[name as keyof typeof map];
+        })
+      }
+    } as IImportInfo;
+
+    delete importInfo.react;
+    return newImportInfo;
+  }
+  generateCamelotImportSentence(importNames: string[]) {
+    const regiterListStr = importNames.map((name) => {
+      return `{ name: '${name.slice(2)}', version: 'last', env: 'uat'}`;
+    }).join(',');
+    return `register([${regiterListStr}])`;
+  }
   /**
    * @override
    */
@@ -110,6 +151,8 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
       tsxInfo
     } = this.analysisDsl();
 
+    Object.assign(importInfo, this.generateVueImportInfo(importInfo));
+    Object.assign(importInfo, this.generateCamelotRegister(importInfo));
 
     const functionInfo = {
       functionName: toUpperCase(pageName),
@@ -151,9 +194,15 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
     }
     // result = result.concat(this.tsCodeGenerator.generateFunctionDefinition(functionInfo as IFunctionOptions));
     result.push(`<script lang="ts" setup>`);
+
     // 生成导入语句
     Object.entries(importInfo).forEach(([importPath, item]) => {
       Object.entries(item).forEach(([importType, importNames]) => {
+
+        if (importPath === 'camelot') {
+          // 暂时忽略，最后处理
+          return;
+        } 
         const importSentence = this.tsCodeGenerator.generateImportSentence({
           importNames,
           importPath,
@@ -164,10 +213,17 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
         }
       });
     });
+    // 异步加载/注册 camelot组件
+    if (importInfo.camelot) {
+      const importSentence = this.generateCamelotImportSentence(importInfo.camelot.object);
+      if (importSentence) {
+        result.push(importSentence);
+      }
+    }
     result = result.concat(functionInfo.body);
     result.push(`</script>`);
 
     return result;
   }
-
+  
 }

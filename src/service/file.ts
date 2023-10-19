@@ -2,6 +2,7 @@ import IPageSchema from '@/types/page.schema';
 import * as prettier from 'prettier/standalone';
 import prettierConfig from '@/config/.prettierrc.json';
 import * as babel from 'prettier/parser-babel';
+import parserHtml from 'prettier/parser-html';
 import { RequiredOptions } from 'prettier';
 import { BaseDirectory, createDir, exists, FileEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/api/fs';
 import { open } from '@tauri-apps/api/dialog';
@@ -139,7 +140,7 @@ class FileManager {
       prettier.format(vue.generatePageCode().join('\n'), {
         ...prettierConfig,
         parser: 'vue',
-        plugins: [typescript]
+        plugins: [typescript, parserHtml]
       } as unknown as Partial<RequiredOptions>)
     );
     await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });

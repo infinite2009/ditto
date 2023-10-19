@@ -632,7 +632,7 @@ export default class ReactCodeGenerator {
     return result;
   }
 
-  private mergeImportInfo(source: IImportInfo, target: IImportInfo) {
+  mergeImportInfo(source: IImportInfo, target: IImportInfo) {
     Object.entries(target).forEach(
       ([importPath, importInfo]: [
         string,
