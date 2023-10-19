@@ -54,7 +54,6 @@ import {
 } from 'antd';
 import { CodeSandboxOutlined } from '@ant-design/icons';
 import IComponentConfig from '@/types/component-config';
-import PageRoot from '@/components/page-root';
 import { createCamelotComponent } from '@/components/camelot';
 
 const Search = Input.Search;
@@ -185,14 +184,308 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       category: 'children'
     }
   },
-  Typography: {
-    configName: 'Typography',
+  Text: {
+    configName: 'Text',
+    callingName: 'Typography.Text',
     dependency: 'antd',
-    component: Typography,
+    component: Typography.Text,
     category: '常用',
     title: '文字',
     icon: CodeSandboxOutlined,
-    propsConfig: {}
+    propsConfig: {
+      copyable: {
+        id: 'copyable',
+        schemaType: 'props',
+        name: '可复制',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      delete: {
+        id: 'delete',
+        schemaType: 'props',
+        name: '删除线',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      disabled: {
+        id: 'disabled',
+        schemaType: 'props',
+        name: '禁用',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      editable: {
+        id: 'editable',
+        name: '可编辑',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      ellipsis: {
+        id: 'ellipsis',
+        name: '自动省略',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      mark: {
+        id: 'mark',
+        name: '是否添加标记',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      strong: {
+        id: 'strong',
+        name: '是否加粗',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      italic: {
+        id: 'italic',
+        name: '斜体',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      underline: {
+        id: 'underline',
+        name: '下划线',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      children: {
+        id: 'children',
+        name: 'children',
+        schemaType: 'props',
+        category: 'children',
+        value: '默认文字',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      }
+    }
+  },
+  Paragraph: {
+    configName: 'Paragraph',
+    callingName: 'Typography.Paragraph',
+    dependency: 'antd',
+    component: Typography.Paragraph,
+    category: '常用',
+    title: '文字',
+    icon: CodeSandboxOutlined,
+    propsConfig: {
+      copyable: {
+        id: 'copyable',
+        schemaType: 'props',
+        name: '可复制',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      delete: {
+        id: 'delete',
+        schemaType: 'props',
+        name: '删除线',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      disabled: {
+        id: 'disabled',
+        schemaType: 'props',
+        name: '禁用',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      editable: {
+        id: 'editable',
+        name: '可编辑',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      ellipsis: {
+        id: 'ellipsis',
+        name: '自动省略',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      mark: {
+        id: 'mark',
+        name: '是否添加标记',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      strong: {
+        id: 'strong',
+        name: '是否加粗',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      italic: {
+        id: 'italic',
+        name: '斜体',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      underline: {
+        id: 'underline',
+        name: '下划线',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      children: {
+        id: 'children',
+        name: 'children',
+        schemaType: 'props',
+        category: 'children',
+        value: '默认文字',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      }
+    }
+  },
+  Title: {
+    configName: 'Title',
+    callingName: 'Typography.Title',
+    dependency: 'antd',
+    component: Typography.Title,
+    category: '常用',
+    title: '文字',
+    icon: CodeSandboxOutlined,
+    propsConfig: {
+      copyable: {
+        id: 'copyable',
+        schemaType: 'props',
+        name: '可复制',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      delete: {
+        id: 'delete',
+        schemaType: 'props',
+        name: '删除线',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      disabled: {
+        id: 'disabled',
+        schemaType: 'props',
+        name: '禁用',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      editable: {
+        id: 'editable',
+        name: '可编辑',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      ellipsis: {
+        id: 'ellipsis',
+        name: '自动省略',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      mark: {
+        id: 'mark',
+        name: '是否添加标记',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      strong: {
+        id: 'strong',
+        name: '是否加粗',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      italic: {
+        id: 'italic',
+        name: '斜体',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      underline: {
+        id: 'underline',
+        name: '下划线',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      children: {
+        id: 'children',
+        name: 'children',
+        schemaType: 'props',
+        category: 'children',
+        value: '默认文字',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      }
+    }
   },
   Divider: {
     configName: 'Divider',
@@ -799,10 +1092,10 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
 const htmlComponentConfig: { [key: string]: IComponentConfig } = {
   pageRoot: {
     configName: 'pageRoot',
-    callingName: 'div',
+    callingName: 'Flex',
     category: 'hidden',
     dependency: 'html',
-    component: PageRoot,
+    component: Flex,
     title: '页面',
     icon: CodeSandboxOutlined,
     propsConfig: {}
