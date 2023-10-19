@@ -67,7 +67,26 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     component: Flex,
     title: '页面',
     icon: CodeSandboxOutlined,
-    propsConfig: {}
+    propsConfig: {
+      vertical: {
+        id: 'vertical',
+        schemaType: 'props',
+        name: '垂直布局',
+        category: 'basic',
+        value: true,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      gap: {
+        id: 'gap',
+        schemaType: 'props',
+        name: '间距',
+        category: 'basic',
+        value: true,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      }
+    }
   },
   Flex: {
     configName: 'Flex',
