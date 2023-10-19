@@ -46,7 +46,7 @@
     "@formily/core": "^2.2.29",
     "@formily/react": "^2.2.29",
     "@tauri-apps/api": "1.4.0",
-    "antd": "^5.9.3",
+    "antd": "^5.10.1",
     "classnames": "^2.3.2",
     "fs-extra": "^11.1.1",
     "localforage": "^1.10.0",
