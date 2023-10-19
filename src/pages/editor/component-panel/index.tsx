@@ -65,7 +65,9 @@ export default function ComponentPanel() {
         >
           <div className={styles.componentItem} key={item.key}>
             <div className={styles.componentIcon} />
-            <p className={styles.componentTitle}>{item.title}</p>
+            <p className={styles.componentTitle} title={item.title}>
+              {item.title}
+            </p>
           </div>
         </DraggableComponent>
       );
