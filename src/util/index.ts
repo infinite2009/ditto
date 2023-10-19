@@ -1,14 +1,5 @@
 import { nanoid } from 'nanoid';
-import { BaseDirectory, writeTextFile } from '@tauri-apps/api/fs';
-import * as prettierConfig from '@/config/.prettierrc.json';
-import * as prettier from 'prettier/standalone';
-import * as babel from 'prettier/parser-babel';
-import * as typescript from 'prettier/parser-typescript';
 import componentConfig from '@/data/component-dict';
-import IPageSchema from '@/types/page.schema';
-import { RequiredOptions } from 'prettier';
-import ReactCodeGenerator from '@/service/code-generator/react';
-import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 
 export function toUpperCase(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -72,4 +63,21 @@ export function hyphenToCamelCase(input: string) {
   return input.replace(/-([a-z])/g, function (match, group1) {
     return group1.toUpperCase();
   });
+}
+
+export function findNodePath(root: any, target: string, key = 'key'): string[] {
+  if (root[key] === target) {
+    return [target];
+  }
+
+  if (root?.children?.length) {
+    for (const child of root.children) {
+      const path = findNodePath(child, target, key);
+      if (path.length) {
+        return [root[key], ...path];
+      }
+    }
+  }
+
+  return [];
 }

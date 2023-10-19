@@ -1,7 +1,19 @@
 import styles from './index.module.less';
-import { Button } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Divider, Radio } from 'antd';
 import PageAction from '@/types/page-action';
+import React from 'react';
+import {
+  ClearOutlined,
+  DesktopOutlined,
+  DownloadOutlined,
+  ExpandOutlined,
+  LayoutOutlined,
+  MobileOutlined,
+  RedoOutlined,
+  TabletOutlined,
+  UndoOutlined,
+  YoutubeOutlined
+} from '@ant-design/icons';
 
 export interface PageActionEvent {
   type: PageAction;
@@ -69,20 +81,79 @@ export default function Toolbar({ onDo }: IToolbarProps) {
     }
   }
 
+  function handleTogglePlatform(platform: 'pc' | 'tablet' | 'phone') {
+    // TODO: 切换平台
+  }
+
+  function handleClear() {
+    // TODO: 清空画布
+  }
+
+  function handleExpand() {
+    // TODO: 关闭左右侧 panel
+  }
+
+  function handleMoreAction() {
+    // TODO: 更多动作
+  }
+
+  function handleShowLayout() {
+    // TODO: 展示布局
+  }
+
+  function handleChangeMode() {
+    // TODO: 切换设计和代码
+  }
+
   return (
     <div className={styles.main}>
-      <div>
-        <Button onClick={handleOpenProject}>打开项目</Button>
-        <Button type="primary" onClick={handleCreatingNewPage}><PlusOutlined />新建页面</Button>
-        <Button onClick={handleSavingFile}>保存页面</Button>
+      <div className={styles.leftBtnWrapper}>
+        <Divider type="vertical" style={{ marginLeft: 0, borderColor: '#F1F2F3' }} />
+        <div className={styles.iconBtnWrapper}>
+          <UndoOutlined className={styles.iconBtn} onClick={handleUndo} />
+        </div>
+        <div className={styles.iconBtnWrapper}>
+          <RedoOutlined className={styles.iconBtn} onClick={handleRedo} />
+        </div>
+        <Divider className={styles.divider} type="vertical" />
+        <div className={styles.iconBtnWrapper}>
+          <DesktopOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('pc')} />
+        </div>
+        <div className={styles.iconBtnWrapper}>
+          <TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('tablet')} />
+        </div>
+        <div className={styles.iconBtnWrapper}>
+          <MobileOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('phone')} />
+        </div>
+        <Divider className={styles.divider} type="vertical" />
+        <div className={styles.iconBtnWrapper}>
+          <ClearOutlined className={styles.iconBtn} onClick={() => handleClear} />
+        </div>
+        <div className={styles.iconBtnWrapper}>
+          <ExpandOutlined className={styles.iconBtn} onClick={() => handleExpand} />
+        </div>
+        <div className={styles.iconBtnWrapper} style={{ marginLeft: 'auto' }}>
+          <LayoutOutlined className={styles.iconBtn} onClick={() => handleShowLayout} />
+        </div>
+        <Divider type="vertical" style={{ marginRight: 0, borderColor: '#F1F2F3' }} />
       </div>
-      <div>
-        <Button className={styles.btn} onClick={handleUndo}>撤销</Button>
-        <Button className={styles.btn} onClick={handleRedo}>重做</Button>
-      </div>
-      <div className={styles.right}>
-        <Button className={styles.btn} onClick={handlePreview}>预览</Button>
-        <Button className={styles.btn} onClick={handleExportingCode}>下载代码</Button>
+      <div className={styles.rightBtnWrapper}>
+        <div className={styles.iconBtnWrapper}>
+          <DownloadOutlined className={styles.iconBtn} onClick={handleExportingCode} />
+        </div>
+        <div className={styles.iconBtnWrapper}>
+          <YoutubeOutlined className={styles.iconBtn} onClick={handlePreview} />
+        </div>
+        <Radio.Group
+          options={[
+            { label: '设计', value: 'design' },
+            { label: '源码', value: 'code' }
+          ]}
+          onChange={handleChangeMode}
+          defaultValue="design"
+          optionType="button"
+          buttonStyle="solid"
+        />
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core';
-import { Form, Input, message, Modal, Tabs } from 'antd';
+import { Form, Input, message, Modal } from 'antd';
 
 import Toolbar, { PageActionEvent } from '@/pages/editor/toolbar';
 import PagePanel from '@/pages/editor/page-panel';
@@ -36,25 +36,19 @@ import IAnchorCoordinates from '@/types/anchor-coordinate';
 import DSLStore from '@/service/dsl-store';
 import { toJS } from 'mobx';
 import { save } from '@tauri-apps/api/dialog';
-import { path } from '@tauri-apps/api';
-import { dirname, join, sep } from '@tauri-apps/api/path';
+import { dirname, documentDir, join, sep } from '@tauri-apps/api/path';
 import ComponentFeature from '@/types/component-feature';
-import {
-  exportReactPageCodeFile,
-  exportVuePageCodeFile,
-  fetchCurrentFile,
-  fetchOpenedFiles,
-  generateProjectData,
-  openFile,
-  openProject,
-  saveAppData,
-  savePageDSLFile
-} from '@/service/file';
-import TabBar, { TabItem } from '@/pages/editor/tab-bar';
+import fileManager from '@/service/file';
 import Empty from '@/pages/editor/empty';
 import { debounce } from 'lodash';
 import { DataNode } from 'antd/es/tree';
-import { useLocation } from 'wouter';
+import { useLocation, useParams } from 'wouter';
+import { DSLStoreContext } from '@/hooks/context';
+import PanelTab, { PanelType } from '@/pages/editor/panel-tab';
+import { ComponentId } from '@/types';
+import ComponentTree from '@/pages/editor/component-tree';
+import { ProjectInfo } from '@/types/app-data';
+import CompositionPanel from '@/pages/editor/composition-panel';
 
 const collisionOffset = 4;
 
@@ -91,21 +85,31 @@ const tabsItems = [
   },
 ];
 
-export default function Editor() {
+const dslStore = DSLStore.createInstance();
+
+export interface IEditorProps {
+  onPreview: (projectId: string) => void;
+  onPreviewClose: (projectId: string) => void;
+}
+
+export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
   const searchParams = new URLSearchParams(window.location.search);
   const [, setLocation] = useLocation();
+  const params = useParams();
 
   const [, setActiveId] = useState<string>('');
   const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
+  const [currentProject, setCurrentProject] = useState<ProjectInfo>();
   const [projectData, setProjectData] = useState<any[]>([]);
-  const [openedFiles, setOpenedFiles] = useState<TabItem[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
   const [selectedFolder, setSelectedFolder] = useState<string>('');
+  const [leftPanelType, setLeftPanelType] = useState<PanelType>(PanelType.file);
 
   const [form] = useForm();
 
   const insertIndexRef = useRef<number>(-1);
   const anchorCoordinatesRef = useRef<IAnchorCoordinates>();
+  // TODO: 文件路径数据需要重构为 indexedDB 存储
   const defaultPathRef = useRef<string>();
   const filePathRef = useRef<string>();
 
@@ -120,39 +124,32 @@ export default function Editor() {
 
   const sensors = useSensors(mouseSensor);
 
-  const dslStore = DSLStore.createInstance();
-
   useEffect(() => {
-    path.documentDir().then(p => {
+    documentDir().then(p => {
       defaultPathRef.current = p;
     });
-    fetchProjectData().then(() => {
-      fetchCurrentFileProxy();
-      fetchOpenedFilesProxy();
-    });
-  }, []);
+    fetchProjectData().then();
+    fetchCurrentProject();
+  }, [params]);
 
-  function fetchCurrentFileProxy() {
-    const currentFile = fetchCurrentFile();
-    if (currentFile) {
-      setCurrentFile(currentFile);
+  useEffect(() => {
+    if (currentProject) {
+      const currentFile = currentProject.openedFile;
+      if (currentFile) {
+        openFile(currentFile).then();
+      }
+      setCurrentFile(currentFile || '');
     }
-  }
+  }, [currentProject]);
 
-  function fetchOpenedFilesProxy() {
-    setOpenedFiles(
-      fetchOpenedFiles().map(file => {
-        const arr = file.split(sep);
-        return {
-          title: arr[arr.length - 1].replace(/\.[^/.]+$/, ''),
-          val: file
-        };
-      })
-    );
+  function fetchCurrentProject() {
+    const projectId = fileManager.fetchCurrentProjectId();
+    const currentProject = fileManager.fetchProjectInfo(projectId);
+    setCurrentProject(currentProject);
   }
 
   async function fetchProjectData() {
-    setProjectData(await generateProjectData());
+    setProjectData(await fileManager.fetchProjectData());
   }
 
   function hideAnchor() {
@@ -210,8 +207,16 @@ export default function Editor() {
   }
 
   function isInRect(
-    point: { top: any; left: any },
-    rect: { top: any; right: any; bottom: any; left: any },
+    point: {
+      top: any;
+      left: any;
+    },
+    rect: {
+      top: any;
+      right: any;
+      bottom: any;
+      left: any;
+    },
     offset = 0
   ) {
     const { top: pointerTop, left: pointerLeft } = point;
@@ -233,8 +238,16 @@ export default function Editor() {
    * return 0 | 1 | 2. 0 表示没有重叠，1 表示左上角落在另一个矩形的内部边缘，2 表示左上角落在另一个矩形的核心区域
    */
   function calcIntersectionType(
-    rect: { top: number; right: number; bottom: number; left: number },
-    collisionRect: { top: number; left: number }
+    rect: {
+      top: number;
+      right: number;
+      bottom: number;
+      left: number;
+    },
+    collisionRect: {
+      top: number;
+      left: number;
+    }
   ) {
     const pointer = {
       top: collisionRect.top,
@@ -249,7 +262,13 @@ export default function Editor() {
     return 1;
   }
 
-  function isDescendant(entry: string, target: string, parentDict: { [key: string]: string }) {
+  function isDescendant(
+    entry: string,
+    target: string,
+    parentDict: {
+      [key: string]: string;
+    }
+  ) {
     let currentParent = parentDict[entry];
     while (currentParent) {
       if (target === currentParent) {
@@ -261,7 +280,12 @@ export default function Editor() {
   }
 
   // 计算当前节点的深度
-  function calculateDepth(id: string, parentDict: { [key: string]: string }) {
+  function calculateDepth(
+    id: string,
+    parentDict: {
+      [key: string]: string;
+    }
+  ) {
     let depth = 0;
     let parentId = id;
     while (parentId) {
@@ -295,7 +319,9 @@ export default function Editor() {
     ({ active, collisionRect, droppableRects, droppableContainers }) => {
       const collisions: CollisionDescriptor[] = [];
 
-      const parentDict: { [key: string]: string } = {};
+      const parentDict: {
+        [key: string]: string;
+      } = {};
 
       if (active.data?.current?.isLayer) {
         const root = droppableContainers.find(item => item.data?.current?.dndType === 'root');
@@ -514,7 +540,7 @@ export default function Editor() {
       });
     }
     if (selectedFile) {
-      await savePageDSLFile(selectedFile, toJS(dslStore.dsl));
+      await fileManager.savePageDSLFile(selectedFile, toJS(dslStore.dsl));
       setCurrentFile(selectedFile);
       fetchProjectData();
     }
@@ -523,13 +549,14 @@ export default function Editor() {
   const saveFile = debounce(async () => {
     if (currentFile) {
       filePathRef.current = await dirname(currentFile);
-      await savePageDSLFile(currentFile, toJS(dslStore.dsl));
+      await fileManager.savePageDSLFile(currentFile, toJS(dslStore.dsl));
     }
   }, 1000);
 
   async function handleExportingPageCodeFile() {
     const extension = codeType === 'react' ? 'tsx' : 'vue';
-    const exportPageCodeFile = codeType === 'react' ? exportReactPageCodeFile : exportVuePageCodeFile;
+    const exportPageCodeFile =
+      codeType === 'react' ? fileManager.exportReactPageCodeFile : fileManager.exportVuePageCodeFile;
     const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, `index.${extension}`);
     const selectedFile = await save({
       title: '导出代码',
@@ -548,7 +575,10 @@ export default function Editor() {
   }
 
   function redirectToPreview() {
-    setLocation(`/preview/?file=${currentFile}`);
+    if (!currentProject) {
+      return;
+    }
+    setLocation(`/preview/${currentProject.id}`);
   }
 
   async function handleOnDo(e: PageActionEvent) {
@@ -570,7 +600,7 @@ export default function Editor() {
         saveFile();
         break;
       case PageAction.openProject:
-        await openProject();
+        await fileManager.openLocalProject();
         await fetchProjectData();
         break;
     }
@@ -581,49 +611,11 @@ export default function Editor() {
     createFile().then();
   }
 
-  useEffect(() => {
-    if (currentFile) {
-      openFileProxy(currentFile);
-      if (!openedFiles.find(item => item.val === currentFile)) {
-        const arr = currentFile.split(sep);
-        openedFiles.push({
-          title: arr[arr.length - 1].replace(/\.[^/.]+$/, ''),
-          val: currentFile
-        });
-        setOpenedFiles([...openedFiles]);
-      }
-      saveAppData({
-        currentFile,
-        openedFiles: openedFiles.map(item => item.val)
-      });
+  async function openFile(page: string) {
+    if (!currentProject) {
+      return;
     }
-  }, [currentFile, openedFiles]);
-
-  function handleClosingTab(selected: string) {
-    const index = openedFiles.findIndex(item => item.val === selected);
-    let newCurrentFile;
-    if (openedFiles.length && index > -1) {
-      if (index === 0) {
-        if (openedFiles[1]) {
-          newCurrentFile = openedFiles[1].val;
-        } else {
-          newCurrentFile = '';
-        }
-      } else {
-        newCurrentFile = openedFiles[index - 1].val;
-      }
-      openedFiles.splice(index, 1);
-      setCurrentFile(newCurrentFile);
-      setOpenedFiles([...openedFiles]);
-      saveAppData({
-        currentFile: newCurrentFile,
-        openedFiles: openedFiles.map(item => item.val)
-      });
-    }
-  }
-
-  async function openFileProxy(page: string) {
-    const content = await openFile(page);
+    const content = await fileManager.openFile(page, currentProject.id);
     if (content) {
       dslStore.initDSL(JSON.parse(content));
     } else {
@@ -631,68 +623,110 @@ export default function Editor() {
     }
   }
 
-  function handleSelectingPage(page: string) {
-    setCurrentFile(page);
-  }
-
   function handleSelectingPageOrFolder(page: DataNode) {
     if (page.isLeaf) {
+      openFile(page.key as string).then();
       setCurrentFile(page.key as string);
     } else {
       setSelectedFolder(page.key as string);
     }
   }
 
+  function handleTogglePanel(type: PanelType) {
+    // TODO:
+    setLeftPanelType(type);
+  }
+
+  function handleCancelSelectingComponent(componentId: ComponentId) {
+    // TODO: 待实现
+  }
+
+  function handleSelectingComponent(componentId: ComponentId) {
+    // TODO：待实现
+  }
+
+  /**
+   * 渲染项目的文件目录，当前文件的组件树
+   */
+  function renderProjectPanel() {
+    return (
+      <>
+        <div className={styles.pagePanel}>
+          <PagePanel data={projectData} onSelect={handleSelectingPageOrFolder} selected={currentFile} />
+        </div>
+        <div className={styles.componentTree}>
+          <ComponentTree
+            data={[]}
+            onSelect={handleSelectingComponent}
+            onCancelSelect={handleCancelSelectingComponent}
+          />
+        </div>
+      </>
+    );
+  }
+
+  /**
+   * 渲染模板、组件托盘
+   */
+  function renderComponentPanel() {
+    return <CompositionPanel />;
+  }
+
+  /**
+   * 渲染左侧托盘
+   */
+  function renderLeftPanel() {
+    switch (leftPanelType) {
+      case PanelType.file:
+        return renderProjectPanel();
+      case PanelType.component:
+        return renderComponentPanel();
+      default:
+        return null;
+    }
+  }
+
   return (
     <div className={styles.main}>
-      <Toolbar onDo={handleOnDo} />
-      <div className={styles.editArea}>
-        <DndContext
-          collisionDetection={customDetection}
-          sensors={sensors}
-          measuring={{
-            droppable: {
-              strategy: MeasuringStrategy.Always
-            }
-          }}
-          modifiers={[snapCenterToCursor]}
-          onDragStart={handleDraggingStart}
-          onDragMove={handleDraggingMove}
-          onDragEnd={handleDraggingEnd}
-          onDragCancel={handleDraggingCancel}
-        >
-          <div className={styles.draggableArea}>
-            <div className={styles.panel}>
-              <div className={styles.pagePanel}>
-                <PagePanel data={projectData} onSelect={handleSelectingPageOrFolder} selected={currentFile} />
-              </div>
-              <div className={styles.componentPanel}>
-                <Tabs items={tabsItems} />
-              </div>
-            </div>
-            <div className={styles.canvas}>
-              <div className={styles.canvasInner}>
-                <TabBar
-                  data={openedFiles}
-                  selected={currentFile}
-                  onSelect={handleSelectingPage}
-                  onClose={handleClosingTab}
-                />
-                {currentFile ? <PageRenderer mode="edit" dslStore={dslStore} /> : <Empty />}
-              </div>
-            </div>
-          </div>
-          {createPortal(
-            <DragOverlay dropAnimation={dropAnimation}>
-              <div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>
-            </DragOverlay>,
-            document.body
-          )}
-        </DndContext>
-        <div className={styles.formPanel}>
-          <FormPanel />
-        </div>
+      <div className={styles.topBar}>
+        <PanelTab onSelect={handleTogglePanel} />
+        <Toolbar onDo={handleOnDo} />
       </div>
+      <DSLStoreContext.Provider value={dslStore}>
+        <div className={styles.editArea}>
+          <DndContext
+            collisionDetection={customDetection}
+            sensors={sensors}
+            measuring={{
+              droppable: {
+                strategy: MeasuringStrategy.Always
+              }
+            }}
+            modifiers={[snapCenterToCursor]}
+            onDragStart={handleDraggingStart}
+            onDragMove={handleDraggingMove}
+            onDragEnd={handleDraggingEnd}
+            onDragCancel={handleDraggingCancel}
+          >
+            <div className={styles.draggableArea}>
+              <div className={styles.panel}>{renderLeftPanel()}</div>
+              <div className={styles.canvas}>
+                <div className={styles.canvasInner}>{currentFile ? <PageRenderer mode="edit" /> : <Empty />}</div>
+              </div>
+            </div>
+            {createPortal(
+              <DragOverlay dropAnimation={dropAnimation}>
+                <div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>
+              </DragOverlay>,
+              document.body
+            )}
+          </DndContext>
+          <div className={styles.formPanel}>
+            <FormPanel />
+          </div>
+        </div>
+      </DSLStoreContext.Provider>
+
       <Modal
         title="创建页面"
         open={pageCreationVisible}

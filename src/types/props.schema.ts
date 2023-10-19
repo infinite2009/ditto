@@ -26,6 +26,8 @@ export default interface IPropsSchema extends ISchema {
   isValue?: boolean;
   // 控制 UI 显隐性
   isVisible?: boolean;
+  // 属性类别
+  category: 'basic' | 'style' | 'event' | 'data' | 'children';
   /**
    * 模板字段路径，如果是空字符串，表明属性本身是就是模板对象
    * path 字段是正则表达式，即便是采用穷举的方式，也要使用正则表达式进行填充

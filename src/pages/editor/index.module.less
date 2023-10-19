@@ -3,7 +3,12 @@
 .main {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 34px);
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
 }
 
 .editArea {
@@ -20,9 +25,7 @@
 }
 
 .panel {
-  padding: 10px;
-  width: 261px;
-  border-right: 1px solid #dbdbdb;
+  width: 200px;
 }
 
 .canvas {
@@ -48,8 +51,7 @@
 
 .formPanel {
   flex-shrink: 0;
-  width: 260px;
-  border-left: 1px solid #dbdbdb;
+  width: 320px;
 }
 
 .pagePanel {
@@ -58,6 +60,6 @@
   overflow: auto;
 }
 
-.componentPanel {
+.componentTree {
   flex-grow: 1;
 }

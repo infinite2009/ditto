@@ -1,3 +1,3 @@
 export default function Empty() {
-  return <div>介绍相关功能</div>;
+  return <div>请选择一个页面文件</div>;
 }

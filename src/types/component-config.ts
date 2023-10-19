@@ -3,7 +3,6 @@ import IComponentSchema from '@/types/component.schema';
 import IPropsSchema from '@/types/props.schema';
 
 export interface IPropsConfigItem extends IPropsSchema {
-  category: 'basic' | 'style' | 'event' | 'children';
   disabled?: boolean;
 }
 
@@ -20,7 +19,7 @@ export default interface IComponentConfig {
   isContainer?: boolean;
   title: string;
   icon: React.ForwardRefExoticComponent<any> | null;
-  category: 'basic' | 'layer' | 'hidden' | 'custom';
+  category: string;
   propsConfig: {
     [key: string]: IPropsConfigItem;
   };

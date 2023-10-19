@@ -1,7 +1,6 @@
 import { describe, expect } from '@jest/globals';
 import ReactCodeGenerator, {
   IPropsOptions,
-  ITSXOptions,
   IUseEffectOptions,
   IUseMemoOptions,
   IUseRefOptions,
@@ -25,42 +24,6 @@ describe('react', () => {
       variableValueSource: 'editorInput'
     };
     expect(react.generatePropAssignmentExpWithVariable(propsOpt)).toStrictEqual('title={buttonTitle}');
-  });
-  test('should return template sentences array', () => {
-    const tsx: ITSXOptions = {
-      componentName: 'div',
-      children: [
-        {
-          componentName: 'Button',
-          propsStrArr: ['title={buttonTitle}', 'onClick={handleClicking}']
-        },
-        {
-          componentName: 'Input.Search',
-          propsStrArr: ['value={inputValue}']
-        },
-        {
-          componentName: 'div',
-          children: [
-            {
-              componentName: 'div'
-            },
-            {
-              componentName: 'p'
-            }
-          ]
-        }
-      ]
-    };
-    expect(react.generateTSX(tsx)).toStrictEqual([
-      '<div >',
-      '<Button title={buttonTitle} onClick={handleClicking} />',
-      '<Input.Search value={inputValue} />',
-      '<div >',
-      '<div />',
-      '<p />',
-      '</div>',
-      '</div>'
-    ]);
   });
   test('should return use effect hook sentence array', () => {
     const effectOpt: IUseEffectOptions = {
@@ -152,7 +115,7 @@ describe('dsl analysis', () => {
         object: ['useEffect', 'useState']
       },
       antd: {
-        object: ['Tabs', "Button", 'Table', 'Input', 'Select']
+        object: ['Tabs', 'Button', 'Table', 'Input', 'Select']
       }
     });
   });

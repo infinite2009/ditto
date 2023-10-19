@@ -1,10 +1,9 @@
-import React, { FC, PropsWithChildren, Reducer, useReducer } from 'react';
+import React, { CSSProperties, FC, PropsWithChildren, Reducer, useContext, useReducer } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
 import EditWrapper from '@/pages/editor/edit-wrapper';
 import ComponentFeature from '@/types/component-feature';
-import DSLStore from '../../../service/dsl-store';
 import { observer } from 'mobx-react-lite';
 import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
@@ -14,10 +13,11 @@ import IActionSchema from '@/types/action.schema';
 import ActionType from '@/types/action-type';
 import { open } from '@tauri-apps/api/shell';
 import { useLocation } from 'wouter';
+import { DSLStoreContext } from '@/hooks/context';
+import cloneDeep from 'lodash/cloneDeep';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
-  dslStore: DSLStore;
 }
 
 export default observer((props: IPageRendererProps) => {
@@ -25,7 +25,9 @@ export default observer((props: IPageRendererProps) => {
     return null;
   }
 
-  const { mode = 'preview', dslStore } = props;
+  const dslStore = useContext(DSLStoreContext);
+
+  const { mode = 'preview' } = props;
 
   const dslObj = toJS(dslStore.dsl);
 
@@ -69,7 +71,8 @@ export default observer((props: IPageRendererProps) => {
         if (payload.isExternal) {
           open(payload.href);
         } else {
-          setLocation(`/preview?file=${payload.href}`);
+          // TODO: 这里 href 是页面的 id，需要用户填，得找个地方展示页面的 id
+          setLocation(`/preview/${payload.href}`);
         }
         break;
       case ActionType.visibilityToggle:
@@ -268,8 +271,22 @@ export default observer((props: IPageRendererProps) => {
       };
     }
 
+    const componentPropsWithoutMargin = cloneDeep(componentProps);
+    const marginStyleNames: (keyof CSSProperties)[] = [
+      'margin',
+      'marginTop',
+      'marginRight',
+      'marginBottom',
+      'marginLeft'
+    ];
+    marginStyleNames.forEach(name => {
+      if (componentPropsWithoutMargin?.style) {
+        delete componentPropsWithoutMargin?.style[name];
+      }
+    });
+
     const tpl = (
-      <Component key={componentId} {...componentProps} {...rootProps}>
+      <Component key={componentId} {...componentPropsWithoutMargin} {...rootProps}>
         {childrenTemplate}
       </Component>
     );
@@ -282,8 +299,18 @@ export default observer((props: IPageRendererProps) => {
       feature = ComponentFeature.solid;
     }
 
+    const parentProps = dslStore.dsl.props[parentId];
+
     return mode === 'edit' && !isRoot ? (
-      <EditWrapper key={componentId} id={componentId} parentId={parentId} childrenId={childrenId} feature={feature}>
+      <EditWrapper
+        key={componentId}
+        id={componentId}
+        parentId={parentId}
+        childrenId={childrenId}
+        feature={feature}
+        childrenStyle={componentProps?.style}
+        parentStyle={parentProps?.style.value as CSSProperties}
+      >
         {tpl}
       </EditWrapper>
     ) : (

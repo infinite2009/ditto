@@ -1,9 +1,10 @@
 import componentConfig from '@/data/component-dict';
-import { Input } from 'antd';
+import { Collapse, Input } from 'antd';
 import { FC, ForwardedRef, useEffect, useState } from 'react';
 
 import styles from './index.module.less';
 import DraggableComponent from '@/pages/editor/component-panel/draggable-component-item';
+import { CaretRightOutlined } from '@ant-design/icons';
 
 interface IComponentIconProps {
   className: string;
@@ -16,10 +17,11 @@ interface IComponentInfo {
   name: string;
   icon: ForwardedRef<any>;
   dependency: string;
+  category: string;
 }
 
 export default function ComponentPanel() {
-  const [componentList, setComponentList] = useState<IComponentInfo[]>([]);
+  const [componentListByCategory, setComponentListByCategory] = useState<Record<string, IComponentInfo[]>>({});
 
   useEffect(() => {
     fetchComponentList();
@@ -31,24 +33,27 @@ export default function ComponentPanel() {
 
   function fetchComponentList() {
     const components = Object.values(componentConfig).map(item => Object.values(item));
-    const result = components
-      .flat(1)
-      .filter(item => item.category === 'basic')
-      .map(item => {
-        return {
-          key: item.configName,
-          title: item.title,
-          icon: item.icon,
-          isLayer: item.isLayer,
-          name: item.configName,
-          dependency: item.dependency
-        } as unknown as IComponentInfo;
-      });
-    setComponentList(result);
+    const list = components.flat(1).map(item => {
+      return {
+        key: item.configName,
+        title: item.title,
+        icon: item.icon,
+        isLayer: item.isLayer,
+        name: item.configName,
+        dependency: item.dependency,
+        category: item.category
+      } as unknown as IComponentInfo;
+    });
+    const result: Record<string, IComponentInfo[]> = {};
+    list.forEach((item: IComponentInfo) => {
+      result[item.category] = result[item.category] || [];
+      result[item.category].push(item);
+    });
+    setComponentListByCategory(result);
   }
 
-  function renderComponentList() {
-    const tpl = componentList.map(item => {
+  function renderComponentList(list: IComponentInfo[]) {
+    const tpl = list.map(item => {
       const ComponentIcon = item.icon as FC<IComponentIconProps>;
       return (
         <DraggableComponent
@@ -59,8 +64,10 @@ export default function ComponentPanel() {
           title={item.title}
         >
           <div className={styles.componentItem} key={item.key}>
-            <ComponentIcon className={styles.componentIcon} />
-            <p className={styles.componentTitle}>{item.title}</p>
+            <div className={styles.componentIcon} />
+            <p className={styles.componentTitle} title={item.title}>
+              {item.title}
+            </p>
           </div>
         </DraggableComponent>
       );
@@ -68,10 +75,23 @@ export default function ComponentPanel() {
     return <div className={styles.componentList}>{tpl}</div>;
   }
 
+  function renderComponentPanelBody() {
+    const items = (Object.entries(componentListByCategory) as [string, IComponentInfo[]][]).map(([key, val]) => {
+      return {
+        key,
+        label: key,
+        children: renderComponentList(val)
+      };
+    });
+    return (
+      <Collapse items={items} ghost expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />} />
+    );
+  }
+
   return (
-    <div>
+    <div className={styles.main}>
       <Input.Search placeholder="请输入组件名" onSearch={handleSearching} />
-      {renderComponentList()}
+      <div className={styles.componentWrapper}>{renderComponentPanelBody()}</div>
     </div>
   );
 }

@@ -9,16 +9,20 @@ import { open } from '@tauri-apps/api/dialog';
 import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import * as typescript from 'prettier/parser-typescript';
-import { createAsyncTask, fetchComponentConfig, getFileName } from '@/util';
-import AppData from '@/types/app-data';
-import initialAppData from '@/config/app-data.json';
-import { documentDir, sep } from '@tauri-apps/api/path';
+import AppData, { ProjectInfo } from '@/types/app-data';
+import { documentDir, homeDir, join, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
 import cloneDeep from 'lodash/cloneDeep';
-import ActionType from '@/types/action-type';
 import { PropsId } from '@/types';
 import { isEqual } from 'lodash';
+import { createAsyncTask, fetchComponentConfig, getFileName } from '@/util';
+import ActionType from '@/types/action-type';
+import * as localforage from 'localforage';
+import { nanoid } from 'nanoid';
+import DSLStore from '@/service/dsl-store';
+import { Command } from '@tauri-apps/api/shell';
+import { platform } from '@tauri-apps/api/os';
 
 interface EntryTree {
   key: string;
@@ -27,17 +31,81 @@ interface EntryTree {
   isLeaf?: boolean;
 }
 
+const initialCache = {
+  currentProject: '',
+  recentProjects: {},
+  pathToProjectDict: {}
+};
+
 class FileManager {
+  static APP_DATA_STORE_NAME = 'appData';
+  static RECENT_PROJECTS_STORE_NAME = 'recentProjects';
+  // Danger: 不要改数据库的名字
+  static appDataStore = localforage.createInstance({
+    name: 'Ditto',
+    storeName: FileManager.APP_DATA_STORE_NAME
+  });
+  static recentProjectsStore = localforage.createInstance({
+    name: 'Ditto',
+    storeName: FileManager.RECENT_PROJECTS_STORE_NAME
+  });
   private static instance = new FileManager();
   cache: AppData;
   appDataPath = 'appData.json';
 
-  private constructor() {
-    this.cache = initialAppData;
-  }
-
   static getInstance() {
     return FileManager.instance;
+  }
+
+  /**
+   * 根据输入字符串生成一个同目录下的文件夹副本的名字，永不重复
+   * @param folderName
+   * @private
+   */
+  private static async generateNewFolderName(folderName: string): Promise<string> {
+    let newFolderName = folderName;
+    let suffix = 0;
+    let whetherExists = false;
+    do {
+      whetherExists = await exists(newFolderName, { dir: BaseDirectory.Document });
+      if (whetherExists) {
+        suffix++;
+        newFolderName = `${folderName} ${suffix}`;
+      }
+    } while (whetherExists);
+    return newFolderName;
+  }
+
+  async closeProject(projectId: string) {
+    const projectInfo = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
+    projectInfo.isOpen = false;
+    await FileManager.recentProjectsStore.setItem(projectId, projectInfo);
+    this.cache.recentProjects[projectId] = projectInfo;
+    if (projectId === this.cache.currentProject) {
+      await FileManager.appDataStore.removeItem('currentProject');
+      this.cache.currentProject = '';
+    }
+  }
+
+  async deleteProject(project: ProjectInfo, deleteFolder = false): Promise<void> {
+    try {
+      const tasks = [FileManager.recentProjectsStore.removeItem(project.id)];
+      if (project.id === this.cache.currentProject) {
+        tasks.push(FileManager.appDataStore.removeItem('currentProject'));
+      }
+      await Promise.all(tasks);
+      delete this.cache.recentProjects[project.id];
+      delete this.cache.pathToProjectDict[project.path];
+      if (deleteFolder) {
+        await new Command('mv folder or file', [project.path, await join(await homeDir(), '.Trash')]).execute();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  fetchProjectInfo(projectId: string) {
+    return this.cache.recentProjects[projectId];
   }
 
   async savePageDSLFile(filePath: string, dsl: IPageSchema) {
@@ -63,6 +131,291 @@ class FileManager {
       } as unknown as Partial<RequiredOptions>)
     );
     await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
+  }
+
+  async exportVuePageCodeFile(filePath: string, dsl: IPageSchema) {
+    const vueDslTransformer = new VueTransformer(dsl as unknown as IPageSchema);
+    const vue = new VueCodeGenerator(vueDslTransformer.transformDsl(), new TypeScriptCodeGenerator());
+    const formattedContent = await createAsyncTask(() =>
+      prettier.format(vue.generatePageCode().join('\n'), {
+        ...prettierConfig,
+        parser: 'vue',
+        plugins: [typescript, parserHtml]
+      } as unknown as Partial<RequiredOptions>)
+    );
+    await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
+  }
+
+  async initAppData() {
+    try {
+      this.cache = initialCache;
+      await Promise.all([
+        FileManager.appDataStore.iterate((val, key) => {
+          this.cache[key] = val;
+        }),
+        FileManager.recentProjectsStore.iterate((val: ProjectInfo, key: string) => {
+          this.cache.recentProjects[key] = val;
+          this.cache.pathToProjectDict[val.path] = val;
+        })
+      ]);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  async openProject(projectId: string) {
+    const openedProject = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
+    openedProject.isOpen = true;
+    await FileManager.recentProjectsStore.setItem(projectId, openedProject);
+    this.cache.recentProjects[projectId] = openedProject;
+    await FileManager.appDataStore.setItem('currentProject', projectId);
+    this.cache.currentProject = projectId;
+  }
+
+  async openLocalProject() {
+    try {
+      const documentDirPath = await documentDir();
+      const selected = (await open({
+        title: '打开文件夹',
+        directory: true,
+        defaultPath: documentDirPath
+      })) as string;
+      if (selected) {
+        // 检查是否是一个已经存在的项目
+        if (this.cache.pathToProjectDict[selected]) {
+          return this.cache.pathToProjectDict[selected];
+        } else {
+          // 没有命中缓存，查一下数据库
+          let project;
+          await FileManager.recentProjectsStore.iterate(async val => {
+            // 如果查到了，更新缓存，并且返回
+            if ((val as ProjectInfo).path === selected) {
+              project = val as ProjectInfo;
+            }
+          });
+          if (project) {
+            this.cache.pathToProjectDict[selected] = project;
+            return project;
+          } else {
+            const project = {
+              id: nanoid(),
+              name: selected.split(sep).pop() as string,
+              path: selected,
+              lastModified: new Date().getTime(),
+              isOpen: true,
+              openedFile: ''
+            };
+            await FileManager.recentProjectsStore.setItem(project.id, project);
+            // 更新缓存
+            this.cache.recentProjects[project.id] = project;
+            this.cache.pathToProjectDict[project.path] = project;
+            return project;
+          }
+        }
+      }
+      return null;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }
+
+  async copyProject(project: ProjectInfo): Promise<ProjectInfo | null> {
+    try {
+      const documentPath = await documentDir();
+      const folder = await FileManager.generateNewFolderName(project.path.split(sep).pop() as string);
+      const cpPath = await join(documentPath, folder);
+      const log = await new Command('cp', ['-r', project.path, cpPath]).execute();
+      const projectCp = {
+        id: nanoid(),
+        name: folder,
+        path: cpPath,
+        lastModified: new Date().getTime(),
+        isOpen: false,
+        openedFile: ''
+      };
+      await FileManager.recentProjectsStore.setItem(projectCp.id, projectCp);
+      // 更新缓存
+      this.cache.recentProjects[projectCp.id] = projectCp;
+      this.cache.pathToProjectDict[projectCp.path] = projectCp;
+      return projectCp;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }
+
+  async fetchProjectData() {
+    if (!this.cache.currentProject) {
+      return [];
+    }
+    const currentProjectPath = this.cache.recentProjects[this.cache.currentProject].path;
+    const doesExist = await exists(currentProjectPath);
+    if (!doesExist) {
+      return [];
+    }
+
+    const entries: FileEntry[] = await readDir(currentProjectPath, { recursive: true });
+
+    const files: string[] = [];
+
+    const recursiveMap = (entries: FileEntry[]) => {
+      return entries
+        .filter(entry => (entry.name as string).endsWith('.ditto') || entry.children)
+        .map(entry => {
+          const r: EntryTree = {
+            key: entry.path,
+            title: getFileName(entry.name as string)
+          };
+          files.push(entry.path);
+          if (entry.children) {
+            r.children = recursiveMap(entry.children);
+          } else {
+            r.isLeaf = true;
+          }
+          return r;
+        });
+    };
+
+    const arr = currentProjectPath.split(sep);
+    const projectName = arr[arr.length - 1];
+    const project = {
+      name: projectName,
+      path: currentProjectPath,
+      children: entries
+    };
+    return recursiveMap([project]);
+  }
+
+  fetchOpenedProjects() {
+    const result: Record<string, ProjectInfo> = {};
+    (Object.values(this.cache.recentProjects) as unknown as ProjectInfo[]).forEach((project: ProjectInfo) => {
+      if (project.isOpen) {
+        result[project.id] = project;
+      }
+    });
+    return result;
+  }
+
+  async setCurrentProject(projectId: string) {
+    await FileManager.appDataStore.setItem('currentProject', projectId);
+    this.cache.currentProject = projectId;
+  }
+
+  fetchCurrentProjectId() {
+    return this.cache.currentProject;
+  }
+
+  async openFile(file: string, projectId: string): Promise<string> {
+    const openedProject = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
+    openedProject.openedFile = file;
+    await FileManager.recentProjectsStore.setItem(projectId, openedProject);
+    this.cache.recentProjects[projectId] = openedProject;
+    return readTextFile(file);
+  }
+  /**
+   * 获取用户的全部项目
+   */
+  async fetchRecentProjects(): Promise<ProjectInfo[]> {
+    if (Object.keys(this.cache.recentProjects).length > 0) {
+      return Object.values(this.cache.recentProjects);
+    }
+    const recentProjects: ProjectInfo[] = [];
+    await FileManager.recentProjectsStore.iterate(val => {
+      recentProjects.push(val as ProjectInfo);
+      this.cache.pathToProjectDict[(val as ProjectInfo).path] = val as ProjectInfo;
+    });
+    return recentProjects;
+  }
+
+  /**
+   * 创建一个新项目，需要用户选择文件夹
+   */
+  async createProject(): Promise<ProjectInfo | null> {
+    try {
+      const folder = await FileManager.generateNewFolderName('未命名文件夹');
+      await createDir(folder, { dir: BaseDirectory.Document });
+      const documentPath = await documentDir();
+      const projectPath = await join(documentPath, folder);
+      const dslStoreService = DSLStore.createInstance();
+      const fileName = '未命名页面';
+      dslStoreService.createEmptyPage(fileName, '');
+      const filePath = await join(folder, `${fileName}.ditto`);
+      await writeTextFile(filePath, JSON.stringify(dslStoreService.dsl), { dir: BaseDirectory.Document });
+      const project = {
+        id: nanoid(),
+        name: folder,
+        path: projectPath,
+        lastModified: new Date().getTime(),
+        isOpen: false,
+        openedFile: ''
+      };
+      await FileManager.recentProjectsStore.setItem(project.id, project);
+      this.cache.recentProjects[project.id] = project;
+      this.cache.pathToProjectDict[project.path] = project;
+      return project;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }
+
+  async addDirectory(parentPath: string, name: string) {
+    try {
+      return createDir(await join(parentPath, name));
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
+  async addFile(parentPath: string, name: string, content = '') {
+    try {
+      return await writeTextFile(await join(parentPath, name), content);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
+  async renameProject(project: ProjectInfo, newName: string) {
+    const projectInfo = (await FileManager.recentProjectsStore.getItem(project.id)) as ProjectInfo;
+    if (projectInfo) {
+      const documentPath = await documentDir();
+      const newPath = await join(documentPath, newName);
+      const existNewPath = await exists(newPath);
+      if (existNewPath) {
+        throw new Error('文件夹已存在，请重新输入');
+      }
+      const os = await platform();
+      if (os === 'win32') {
+        try {
+          const log = await new Command('Rename folder on win32', [
+            'Rename-Item',
+            '-Path',
+            `${projectInfo.path}`,
+            '-NewName',
+            `${newPath}`
+          ]).execute();
+        } catch (err) {
+          console.log(err);
+          throw new Error('系统错误');
+        }
+      } else {
+        // await createDir(newPath);
+        const log = await new Command('mv', [projectInfo.path, newPath]).execute();
+        if (log.code !== 0) {
+          throw new Error(log.stderr);
+        }
+      }
+
+      projectInfo.name = newName;
+      projectInfo.path = newPath;
+      projectInfo.lastModified = new Date().getTime();
+
+      await FileManager.recentProjectsStore.setItem(projectInfo.id, projectInfo);
+      this.cache.recentProjects[projectInfo.id] = projectInfo;
+
+      delete this.cache.pathToProjectDict[project.path];
+      this.cache.pathToProjectDict[projectInfo.path] = projectInfo;
+    }
   }
 
   /**
@@ -112,234 +465,8 @@ class FileManager {
     });
     return dslClone;
   }
-
-  async exportVuePageCodeFile(filePath: string, dsl: IPageSchema) {
-    const vueDslTransformer = new VueTransformer(dsl as unknown as IPageSchema);
-    const vue = new VueCodeGenerator(vueDslTransformer.transformDsl(), new TypeScriptCodeGenerator());
-    const formattedContent = await createAsyncTask(() =>
-      prettier.format(vue.generatePageCode().join('\n'), {
-        ...prettierConfig,
-        parser: 'vue',
-        plugins: [typescript, parserHtml]
-      } as unknown as Partial<RequiredOptions>)
-    );
-    await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
-  }
-
-  async initAppData() {
-    try {
-      const appDataPath = this.appDataPath;
-      const doesExist = await exists(appDataPath, { dir: BaseDirectory.AppData });
-      if (!doesExist) {
-        const text = await createAsyncTask(() =>
-          prettier.format(JSON.stringify(initialAppData), {
-            ...prettierConfig,
-            parser: 'json',
-            plugins: [babel]
-          } as unknown as Partial<RequiredOptions>)
-        );
-        await createDir('', { dir: BaseDirectory.AppData, recursive: true });
-        writeTextFile(appDataPath, text, { dir: BaseDirectory.AppData });
-      } else {
-        const text = await readTextFile(appDataPath, { dir: BaseDirectory.AppData });
-        this.cache = JSON.parse(text);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async saveAppData(
-    data: Partial<{
-      currentFile: string;
-      currentProject: string;
-      recentProjects: string;
-      openedFiles: string[];
-    }>
-  ) {
-    try {
-      const appDataPath = this.appDataPath;
-      const configText = await readTextFile(appDataPath, { dir: BaseDirectory.AppData });
-      let config: Partial<AppData> = {};
-      if (configText) {
-        config = JSON.parse(configText);
-      }
-
-      Object.assign(config, data);
-
-      config.recentProjects = config.recentProjects || [];
-      const index = config.recentProjects.findIndex(item => item === data.currentProject);
-      // 找到的话，就先剔除
-      if (index > -1) {
-        config.recentProjects.splice(index, 1);
-      }
-      if (data.currentProject) {
-        config.recentProjects.unshift(data.currentProject);
-      }
-      this.cache = Object.assign(this.cache, config);
-      writeTextFile(appDataPath, JSON.stringify(config), { dir: BaseDirectory.AppData });
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async openProject() {
-    const documentDirPath = await documentDir();
-    const selected = (await open({
-      title: '打开文件夹',
-      directory: true,
-      defaultPath: documentDirPath
-    })) as string;
-    if (selected) {
-      await this.saveAppData({ currentProject: selected });
-    }
-  }
-
-  async fetchProjectData() {
-    if (!this.cache.currentProject) {
-      return [];
-    }
-    const doesExist = await exists(this.cache.currentProject);
-    if (!doesExist) {
-      return [];
-    }
-
-    const entries: FileEntry[] = await readDir(this.cache.currentProject, { recursive: true });
-
-    const files: string[] = [];
-
-    const recursiveMap = (entries: FileEntry[]) => {
-      return entries
-        .filter(entry => (entry.name as string).endsWith('.ditto') || entry.children)
-        .map(entry => {
-          const r: EntryTree = {
-            key: entry.path,
-            title: getFileName(entry.name as string)
-          };
-          files.push(entry.path);
-          if (entry.children) {
-            r.children = recursiveMap(entry.children);
-          } else {
-            r.isLeaf = true;
-          }
-          return r;
-        });
-    };
-
-    const arr = this.cache.currentProject.split(sep);
-    const projectName = arr[arr.length - 1];
-    const project = {
-      name: projectName,
-      path: this.cache.currentProject,
-      children: entries
-    };
-
-    const result = recursiveMap([project]);
-    this.cache.openedFiles = this.cache.openedFiles.filter(f => files.includes(f));
-    this.saveAppData({
-      openedFiles: this.cache.openedFiles
-    });
-    return result;
-  }
-
-  async closeOpenedFile(file: string) {
-    const index = this.cache.openedFiles.findIndex(item => item === file);
-    if (this.cache.openedFiles.length && index > -1) {
-      if (index === 0) {
-        this.cache.currentFile = this.cache.openedFiles[1];
-      } else {
-        this.cache.currentFile = this.cache.openedFiles[index - 1];
-      }
-      this.cache.openedFiles.splice(index, 1);
-      await this.saveAppData({
-        currentFile: this.cache.currentFile,
-        openedFiles: this.cache.openedFiles
-      });
-    }
-  }
-
-  fetchOpenedFiles() {
-    return this.cache.openedFiles;
-  }
-
-  fetchCurrentFile() {
-    return this.cache.currentFile;
-  }
-
-  openFile(file: string): Promise<string> | undefined {
-    this.cache.currentFile = file;
-    if (!this.cache.openedFiles.includes(file)) {
-      this.cache.openedFiles.push(file);
-    }
-    this.saveAppData({
-      openedFiles: this.cache.openedFiles,
-      currentFile: this.cache.currentFile
-    });
-    return readTextFile(file);
-  }
-
-  selectFile(file: string): Promise<string> {
-    this.cache.currentFile = file;
-    this.saveAppData({
-      currentFile: this.cache.currentFile
-    });
-    return readTextFile(file);
-  }
 }
 
 const fileManager = FileManager.getInstance();
 
-export function initAppData() {
-  return fileManager.initAppData();
-}
-
-export function saveAppData(
-  data: Partial<{
-    currentFile: string;
-    currentProject: string;
-    recentProjects: string;
-    openedFiles: string[];
-  }>
-) {
-  return fileManager.saveAppData(data);
-}
-
-export function generateProjectData() {
-  return fileManager.fetchProjectData();
-}
-
-export function openProject() {
-  return fileManager.openProject();
-}
-
-export function exportReactPageCodeFile(filePath: string, dsl: IPageSchema) {
-  return fileManager.exportReactPageCodeFile(filePath, dsl);
-}
-
-export function exportVuePageCodeFile(filePath: string, dsl: IPageSchema) {
-  return fileManager.exportVuePageCodeFile(filePath, dsl);
-}
-
-export function savePageDSLFile(filePath: string, dsl: IPageSchema) {
-  return fileManager.savePageDSLFile(filePath, dsl);
-}
-
-export function closeOpenedFile(file: string) {
-  return fileManager.closeOpenedFile(file);
-}
-
-export function fetchCurrentFile() {
-  return fileManager.fetchCurrentFile();
-}
-
-export function fetchOpenedFiles() {
-  return fileManager.fetchOpenedFiles();
-}
-
-export function openFile(file: string) {
-  return fileManager.openFile(file);
-}
-
-export function selectFile(file: string) {
-  return fileManager.selectFile(file);
-}
+export default fileManager;

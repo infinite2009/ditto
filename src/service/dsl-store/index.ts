@@ -7,19 +7,72 @@ import cloneDeep from 'lodash/cloneDeep';
 import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import { ComponentId, TemplateInfo } from '@/types';
-import { TemplateKeyPathsReg } from '@/types/props.schema';
+import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
+import IFormConfig from '@/types/form-config';
+import { CSSProperties, ReactNode } from 'react';
+
+type FormValue = {
+  style: CSSProperties;
+  basic: Record<string, any>;
+  event: Record<string, any>;
+  data: Record<string, any>;
+  children: ReactNode;
+};
 
 export default class DSLStore {
   private static instance = new DSLStore();
   dsl: IPageSchema;
+  selectedComponent: IComponentSchema;
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
   currentParentNode: IComponentSchema | IPageSchema | null = null;
+  private totalFormConfig: Record<string, IFormConfig>;
 
   private constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
     if (dsl) {
       this.initDSL(dsl);
     }
+  }
+
+  get formConfigOfSelectedComponent() {
+    if (!this.totalFormConfig) {
+      return null;
+    }
+    if (!this.selectedComponent) {
+      return null;
+    }
+    const { configName, name } = this.selectedComponent;
+    return this.totalFormConfig[configName || name];
+  }
+
+  get valueOfSelectedComponent() {
+    if (!this.selectedComponent) {
+      return null;
+    }
+    const props = this.dsl.props[this.selectedComponent.id];
+    const result: Partial<FormValue> = {
+      style: {},
+      basic: {},
+      event: {},
+      data: {}
+    };
+    Object.keys(props).forEach(key => {
+      const propSchema: IPropsSchema = props[key];
+      const { value, category } = propSchema;
+      if (result[category]) {
+        // style 需要特殊处理
+        if (category === 'style') {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          result[category] = value;
+        } else {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          result[category][key] = value;
+        }
+      }
+    });
+    return result;
   }
 
   static createInstance(dsl: IPageSchema | undefined = undefined) {
@@ -39,7 +92,7 @@ export default class DSLStore {
     this.anchor = anchor;
   }
 
-  createEmptyPage(name: string, desc: string) {
+  createEmptyPage(name: string, desc = '') {
     const pageId = generateId();
     this.dsl = {
       actions: {},
@@ -144,7 +197,7 @@ export default class DSLStore {
       // 针对某些特殊情形
       if (extProps) {
         if (typeOf(props[name].value) === 'object') {
-          Object.assign(props[name].value, extProps[name]);
+          Object.assign(props[name].value as object, extProps[name]);
         } else {
           props[name].value = extProps[name];
         }
@@ -198,6 +251,7 @@ export default class DSLStore {
    * 由于 DSL 的设计特性，嵌套的 template 之间一定会有一层容器作为插槽，所以删除插槽内的节点，只需要遍历插槽的 children
    *
    * @param id
+   * @param removeIndex
    */
   deleteComponent(id: ComponentId, removeIndex = true): IComponentSchema | null {
     const { componentIndexes } = this.dsl;
@@ -248,8 +302,13 @@ export default class DSLStore {
     }
   }
 
-  updateComponentProps(id: string, propsPartial: { [key: string]: any }) {
-    console.log('update component props works');
+  updateComponentProps(propsPartial: Record<string, any>) {
+    const props = this.dsl.props[this.selectedComponent.id];
+    Object.keys(propsPartial).forEach(key => {
+      if (props[key]) {
+        props[key].value = propsPartial[key];
+      }
+    });
   }
 
   exportAsTemplate(id: string) {
@@ -367,6 +426,14 @@ export default class DSLStore {
     } else {
       this.dsl.componentStats[componentName]++;
     }
+  }
+
+  selectComponent(componentId: ComponentId) {
+    this.selectedComponent = this.dsl.componentIndexes[componentId];
+  }
+
+  initTotalFormConfig(formConfig: Record<string, IFormConfig>) {
+    this.totalFormConfig = formConfig;
   }
 
   private calculateComponentName(config: IComponentConfig) {
