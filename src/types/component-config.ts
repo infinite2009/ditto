@@ -20,7 +20,7 @@ export default interface IComponentConfig {
   isContainer?: boolean;
   title: string;
   icon: React.ForwardRefExoticComponent<any> | null;
-  category: 'basic' | 'layer' | 'hidden';
+  category: 'basic' | 'layer' | 'hidden' | 'custom';
   propsConfig: {
     [key: string]: IPropsConfigItem;
   };

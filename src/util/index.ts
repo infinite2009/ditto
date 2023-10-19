@@ -67,3 +67,9 @@ export function toProgressive(verb: string) {
     return `${verb}ing`;
   }
 }
+
+export function hyphenToCamelCase(input: string) {
+  return input.replace(/-([a-z])/g, function (match, group1) {
+    return group1.toUpperCase();
+  });
+}

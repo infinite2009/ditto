@@ -49,6 +49,7 @@ export default class VueTransformer {
     this.breadthFirstTraversal(root, (node) => {
       const componentHanlderMap = this.componentHanlderMap;
       const nodeName = node.name as keyof typeof this.componentHanlderMap;
+
       if (componentHanlderMap[nodeName] && Array.isArray(node.propsRefs) && node.propsRefs.length > 0) {
         node.propsRefs.forEach(propsName => {
           if (componentHanlderMap[nodeName][propsName]) {

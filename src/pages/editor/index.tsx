@@ -20,6 +20,7 @@ import Toolbar, { PageActionEvent } from '@/pages/editor/toolbar';
 import PagePanel from '@/pages/editor/page-panel';
 import ComponentPanel from '@/pages/editor/component-panel';
 import TemplatePanel from '@/pages/editor/template-panel';
+import CustomComponentPanel from '@/pages/editor/custom-component-panel';
 import FormPanel from '@/pages/editor/form-panel';
 import PageRenderer from '@/pages/components/page-renderer';
 
@@ -82,7 +83,12 @@ const tabsItems = [
     key: 'template',
     label: '模板',
     children: <TemplatePanel />
-  }
+  },
+  {
+    key: 'custom',
+    label: '业务组件',
+    children: <CustomComponentPanel />
+  },
 ];
 
 export default function Editor() {

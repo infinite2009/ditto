@@ -57,6 +57,7 @@ import IComponentConfig from '@/types/component-config';
 import EditableText from '@/components/editable-text';
 import Container from '@/components/container';
 import PageRoot from '@/components/page-root';
+import { createCamelotComponent } from '@/components/camelot';
 
 const Search = Input.Search;
 
@@ -78,6 +79,17 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         valueType: 'string',
         valueSource: 'editorInput',
         category: 'style'
+      },
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        value: {
+          minHeight: '40px',
+        },
+        valueType: 'object',
+        valueSource: 'editorInput',
+        category: 'style'
       }
     }
   },
@@ -90,6 +102,17 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     component: Col,
     icon: CodeSandboxOutlined,
     propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        value: {
+          minHeight: '40px',
+        },
+        valueType: 'object',
+        valueSource: 'editorInput',
+        category: 'style'
+      },
       paddingTop: {
         id: 'paddingTop',
         schemaType: 'props',
@@ -881,6 +904,83 @@ const htmlComponentConfig: { [key: string]: IComponentConfig } = {
   }
 };
 
-export default { antd: antdComponentConfig, html: htmlComponentConfig } as {
+const camelotComponentConfig: { [key: string]: IComponentConfig } = {
+  'b-oa-user-select': {
+    configName: 'b-oa-user-select',
+    dependency: 'camelot',
+    component: createCamelotComponent('b-oa-user-select', 'https://s1.hdslb.com/bfs/live/oa-user-select/last/oa-user-select.mjs'),
+    category: 'custom',
+    title: '用户查询',
+    icon: CodeSandboxOutlined,
+    propsConfig: {
+      selected: {
+        id: 'selected',
+        schemaType: 'props',
+        name: 'selected',
+        valueSource: 'editorInput',
+        valueType: 'string',
+        category: 'basic',
+        value: 'guwenjia'
+      }
+    }
+  },
+  'b-oa-department-select': {
+    configName: 'b-oa-department-select',
+    dependency: 'camelot',
+    component: createCamelotComponent('b-oa-department-select', 'https://s1.hdslb.com/bfs/live/oa-department-select/last/oa-department-select.mjs?t=1697615352271'),
+    category: 'custom',
+    title: '部门查询',
+    icon: CodeSandboxOutlined,
+    propsConfig: {
+      dids: {
+        id: 'dids',
+        schemaType: 'props',
+        name: 'dids',
+        valueSource: 'editorInput',
+        valueType: 'string',
+        category: 'basic',
+        value: '-10613,-10675'
+      },
+      selected: {
+        id: 'selected',
+        schemaType: 'props',
+        name: 'selected',
+        valueSource: 'editorInput',
+        valueType: 'number',
+        category: 'basic',
+        value: -10712
+      }
+    }
+  },
+  'b-tree-select': {
+    configName: 'b-tree-select',
+    dependency: 'camelot',
+    component: createCamelotComponent('b-tree-select', 'https://s1.hdslb.com/bfs/live/tree-select/last/tree-select.mjs?t=1697615352272'),
+    category: 'custom',
+    title: '服务树',
+    icon: CodeSandboxOutlined,
+    propsConfig: {}
+  },
+  'b-audit-log': {
+    configName: 'b-audit-log',
+    dependency: 'camelot',
+    component: createCamelotComponent('b-audit-log', 'https://s1.hdslb.com/bfs/live/audit-log/last/audit-log.mjs'),
+    category: 'custom',
+    title: '日志组件',
+    icon: CodeSandboxOutlined,
+    propsConfig: {}
+  },
+  'b-tapd-select': {
+    configName: 'b-tapd-select',
+    dependency: 'camelot',
+    component: createCamelotComponent('b-tapd-select', 'https://s1.hdslb.com/bfs/live/tapd-select/last/tapd-select.mjs?t=1697615352271'),
+    category: 'custom',
+    title: 'TAPD组件',
+    icon: CodeSandboxOutlined,
+    propsConfig: {}
+  },
+};
+export default { antd: antdComponentConfig, html: htmlComponentConfig, camelot: camelotComponentConfig  } as {
   [key: string]: { [key: string]: IComponentConfig };
 };
+
