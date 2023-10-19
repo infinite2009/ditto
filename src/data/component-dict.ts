@@ -12,7 +12,6 @@ import {
   Carousel,
   Cascader,
   Checkbox,
-  Col,
   Collapse,
   ColorPicker,
   DatePicker,
@@ -21,6 +20,7 @@ import {
   Drawer,
   Dropdown,
   Empty,
+  Flex,
   FloatButton,
   Form,
   Input,
@@ -35,7 +35,6 @@ import {
   Radio,
   Rate,
   Result,
-  Row,
   Select,
   Slider,
   Space,
@@ -50,81 +49,33 @@ import {
   Transfer,
   Tree,
   TreeSelect,
+  Typography,
   Upload
 } from 'antd';
 import { CodeSandboxOutlined } from '@ant-design/icons';
 import IComponentConfig from '@/types/component-config';
-import EditableText from '@/components/editable-text';
-import Container from '@/components/container';
 import PageRoot from '@/components/page-root';
 
 const Search = Input.Search;
 
 const antdComponentConfig: { [key: string]: IComponentConfig } = {
-  Row: {
-    configName: 'Row',
+  Flex: {
+    configName: 'Flex',
     dependency: 'antd',
     isContainer: true,
-    category: 'basic',
-    title: '行容器',
+    category: '常用',
+    title: '弹性布局',
     icon: CodeSandboxOutlined,
-    component: Row,
+    component: Flex,
     propsConfig: {
-      align: {
-        id: 'align',
+      type: {
+        id: 'type',
         schemaType: 'props',
-        name: 'align',
-        value: 'middle',
+        name: 'type',
+        category: 'basic',
+        value: 'primary',
         valueType: 'string',
-        valueSource: 'editorInput',
-        category: 'style'
-      }
-    }
-  },
-  Col: {
-    configName: 'Col',
-    dependency: 'antd',
-    isContainer: true,
-    category: 'basic',
-    title: '列容器',
-    component: Col,
-    icon: CodeSandboxOutlined,
-    propsConfig: {
-      paddingTop: {
-        id: 'paddingTop',
-        schemaType: 'props',
-        name: 'paddingTop',
-        value: 8,
-        valueType: 'number',
-        valueSource: 'editorInput',
-        category: 'style'
-      },
-      paddingRight: {
-        id: 'paddingRight',
-        schemaType: 'props',
-        name: 'paddingRight',
-        value: 8,
-        valueType: 'number',
-        valueSource: 'editorInput',
-        category: 'style'
-      },
-      paddingBottom: {
-        id: 'paddingBottom',
-        schemaType: 'props',
-        name: 'paddingBottom',
-        value: 8,
-        valueType: 'number',
-        valueSource: 'editorInput',
-        category: 'style'
-      },
-      paddingLeft: {
-        id: 'paddingLeft',
-        schemaType: 'props',
-        name: 'paddingLeft',
-        value: 8,
-        valueType: 'number',
-        valueSource: 'editorInput',
-        category: 'style'
+        valueSource: 'editorInput'
       }
     }
   },
@@ -132,7 +83,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Button',
     dependency: 'antd',
     component: Button,
-    category: 'basic',
+    category: '常用',
     title: '按钮',
     icon: CodeSandboxOutlined,
     propsConfig: {
@@ -232,6 +183,15 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       value: '按钮',
       category: 'children'
     }
+  },
+  Typography: {
+    configName: 'Typography',
+    dependency: 'antd',
+    component: Typography,
+    category: '常用',
+    title: '文字',
+    icon: CodeSandboxOutlined,
+    propsConfig: {}
   },
   Divider: {
     configName: 'Divider',
@@ -836,111 +796,6 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
 };
 
 const htmlComponentConfig: { [key: string]: IComponentConfig } = {
-  column: {
-    configName: 'column',
-    callingName: 'div',
-    dependency: 'html',
-    isContainer: true,
-    component: Container,
-    category: 'basic',
-    title: '列容器',
-    icon: CodeSandboxOutlined,
-    propsConfig: {
-      style: {
-        id: 'style',
-        schemaType: 'props',
-        name: 'style',
-        value: {
-          flexDirection: 'column',
-          flexBasis: 'auto',
-          height: 'auto',
-          width: 'auto',
-          flexGrow: 0,
-          flexShrink: 0,
-          alignItems: 'stretch',
-          justifyContent: 'flex-start',
-          margin: 10,
-          padding: 10,
-          backgroundColor: 'transparent'
-        },
-        valueType: 'object',
-        valueSource: 'editorInput',
-        category: 'style'
-      }
-    },
-    children: {
-      name: 'children',
-      value: [],
-      category: 'children'
-    }
-  },
-  row: {
-    configName: 'row',
-    callingName: 'div',
-    dependency: 'html',
-    isContainer: true,
-    component: Container,
-    category: 'basic',
-    title: '行容器',
-    icon: CodeSandboxOutlined,
-    propsConfig: {
-      style: {
-        id: 'style',
-        schemaType: 'props',
-        name: 'style',
-        value: {
-          flexDirection: 'row',
-          flexBasis: 'auto',
-          height: 'auto',
-          width: 'auto',
-          flexGrow: 0,
-          flexShrink: 0,
-          alignItems: 'flex-start',
-          justifyContent: 'flex-start',
-          margin: 10,
-          padding: 10,
-          backgroundColor: 'transparent'
-        },
-        valueType: 'object',
-        valueSource: 'editorInput',
-        category: 'style'
-      }
-    },
-    children: {
-      name: 'children',
-      value: [],
-      category: 'children'
-    }
-  },
-  p: {
-    configName: 'p',
-    dependency: 'html',
-    component: EditableText,
-    category: 'basic',
-    title: '文字',
-    icon: CodeSandboxOutlined,
-    propsConfig: {
-      style: {
-        id: 'style',
-        schemaType: 'props',
-        name: 'style',
-        valueSource: 'editorInput',
-        valueType: 'object',
-        category: 'style',
-        value: {
-          fontSize: 14,
-          fontWeight: 500,
-          lineHeight: '30px',
-          color: '#000'
-        }
-      }
-    },
-    children: {
-      name: 'children',
-      value: '默认文字',
-      category: 'children'
-    }
-  },
   pageRoot: {
     configName: 'pageRoot',
     callingName: 'div',
