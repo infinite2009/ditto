@@ -55,6 +55,7 @@ import {
 import { CodeSandboxOutlined } from '@ant-design/icons';
 import IComponentConfig from '@/types/component-config';
 import { createCamelotComponent } from '@/components/camelot';
+import PageRoot from '@/components/page-root';
 
 const Search = Input.Search;
 
@@ -65,7 +66,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     category: '常用',
     isHidden: true,
     dependency: 'antd',
-    component: Flex,
+    component: PageRoot,
     title: '页面',
     icon: CodeSandboxOutlined,
     propsConfig: {
@@ -321,7 +322,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     dependency: 'antd',
     component: Typography.Paragraph,
     category: '常用',
-    title: '文字',
+    title: '段落',
     icon: CodeSandboxOutlined,
     propsConfig: {
       copyable: {
@@ -422,7 +423,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     dependency: 'antd',
     component: Typography.Title,
     category: '常用',
-    title: '文字',
+    title: '标题',
     icon: CodeSandboxOutlined,
     propsConfig: {
       copyable: {
