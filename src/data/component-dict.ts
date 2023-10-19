@@ -59,6 +59,16 @@ import { createCamelotComponent } from '@/components/camelot';
 const Search = Input.Search;
 
 const antdComponentConfig: { [key: string]: IComponentConfig } = {
+  pageRoot: {
+    configName: 'pageRoot',
+    callingName: 'Flex',
+    category: 'hidden',
+    dependency: 'antd',
+    component: Flex,
+    title: '页面',
+    icon: CodeSandboxOutlined,
+    propsConfig: {}
+  },
   Flex: {
     configName: 'Flex',
     dependency: 'antd',
@@ -1089,18 +1099,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   }
 };
 
-const htmlComponentConfig: { [key: string]: IComponentConfig } = {
-  pageRoot: {
-    configName: 'pageRoot',
-    callingName: 'Flex',
-    category: 'hidden',
-    dependency: 'html',
-    component: Flex,
-    title: '页面',
-    icon: CodeSandboxOutlined,
-    propsConfig: {}
-  }
-};
+const htmlComponentConfig: { [key: string]: IComponentConfig } = {};
 
 const camelotComponentConfig: { [key: string]: IComponentConfig } = {
   'b-oa-user-select': {
