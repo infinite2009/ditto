@@ -813,7 +813,10 @@ const camelotComponentConfig: { [key: string]: IComponentConfig } = {
   'b-oa-user-select': {
     configName: 'b-oa-user-select',
     dependency: 'camelot',
-    component: createCamelotComponent('b-oa-user-select', 'https://s1.hdslb.com/bfs/live/oa-user-select/last/oa-user-select.mjs'),
+    component: createCamelotComponent(
+      'b-oa-user-select',
+      'https://s1.hdslb.com/bfs/live/oa-user-select/last/oa-user-select.mjs'
+    ),
     category: 'custom',
     title: '用户查询',
     icon: CodeSandboxOutlined,
@@ -832,7 +835,10 @@ const camelotComponentConfig: { [key: string]: IComponentConfig } = {
   'b-oa-department-select': {
     configName: 'b-oa-department-select',
     dependency: 'camelot',
-    component: createCamelotComponent('b-oa-department-select', 'https://s1.hdslb.com/bfs/live/oa-department-select/last/oa-department-select.mjs?t=1697615352271'),
+    component: createCamelotComponent(
+      'b-oa-department-select',
+      'https://s1.hdslb.com/bfs/live/oa-department-select/last/oa-department-select.mjs?t=1697615352271'
+    ),
     category: 'custom',
     title: '部门查询',
     icon: CodeSandboxOutlined,
@@ -860,7 +866,10 @@ const camelotComponentConfig: { [key: string]: IComponentConfig } = {
   'b-tree-select': {
     configName: 'b-tree-select',
     dependency: 'camelot',
-    component: createCamelotComponent('b-tree-select', 'https://s1.hdslb.com/bfs/live/tree-select/last/tree-select.mjs?t=1697615352272'),
+    component: createCamelotComponent(
+      'b-tree-select',
+      'https://s1.hdslb.com/bfs/live/tree-select/last/tree-select.mjs?t=1697615352272'
+    ),
     category: 'custom',
     title: '服务树',
     icon: CodeSandboxOutlined,
@@ -878,14 +887,16 @@ const camelotComponentConfig: { [key: string]: IComponentConfig } = {
   'b-tapd-select': {
     configName: 'b-tapd-select',
     dependency: 'camelot',
-    component: createCamelotComponent('b-tapd-select', 'https://s1.hdslb.com/bfs/live/tapd-select/last/tapd-select.mjs?t=1697615352271'),
+    component: createCamelotComponent(
+      'b-tapd-select',
+      'https://s1.hdslb.com/bfs/live/tapd-select/last/tapd-select.mjs?t=1697615352271'
+    ),
     category: 'custom',
     title: 'TAPD组件',
     icon: CodeSandboxOutlined,
     propsConfig: {}
-  },
+  }
 };
-export default { antd: antdComponentConfig, html: htmlComponentConfig, camelot: camelotComponentConfig  } as {
+export default { antd: antdComponentConfig, html: htmlComponentConfig, camelot: camelotComponentConfig } as {
   [key: string]: { [key: string]: IComponentConfig };
 };
-
