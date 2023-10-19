@@ -7,6 +7,8 @@ export interface IPropsConfigItem extends IPropsSchema {
 }
 
 export default interface IComponentConfig {
+  // 隐藏组件配置
+  isHidden?: boolean;
   configName: string;
   // 此等优先级
   importName?: string;

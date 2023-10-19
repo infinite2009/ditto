@@ -62,7 +62,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   pageRoot: {
     configName: 'pageRoot',
     callingName: 'Flex',
-    category: 'hidden',
+    category: '常用',
+    isHidden: true,
     dependency: 'antd',
     component: Flex,
     title: '页面',
