@@ -20,7 +20,6 @@ import {
   Drawer,
   Dropdown,
   Empty,
-  Flex,
   FloatButton,
   Form,
   Input,
@@ -56,6 +55,7 @@ import { CodeSandboxOutlined } from '@ant-design/icons';
 import IComponentConfig from '@/types/component-config';
 import { createCamelotComponent } from '@/components/camelot';
 import PageRoot from '@/components/page-root';
+import Container from '@/components/container';
 
 const Search = Input.Search;
 
@@ -97,7 +97,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     category: '常用',
     title: '弹性布局',
     icon: CodeSandboxOutlined,
-    component: Flex,
+    component: Container,
     propsConfig: {
       type: {
         id: 'type',
