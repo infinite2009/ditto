@@ -452,7 +452,7 @@ export default class DSLStore {
       this.dsl.componentStats.pageRoot++;
     }
     const componentId = `pageRoot${this.dsl.componentStats.pageRoot}`;
-    const componentConfig = fetchComponentConfig('pageRoot', 'html');
+    const componentConfig = fetchComponentConfig('pageRoot', 'antd');
 
     this.dsl.componentIndexes[componentId] = {
       id: componentId,

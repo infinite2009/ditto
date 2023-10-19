@@ -1,26 +1,24 @@
-import { CSSProperties, ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 
 import styles from './index.module.less';
 import classNames from 'classnames';
+import { Flex } from 'antd';
 
 export interface IContainerProps {
-  style: CSSProperties;
+  // style: CSSProperties;
   children: ReactNode[];
+  vertical: boolean;
+  wrap: 'nowrap' | 'wrap';
+  align: 'start' | 'center' | 'end' | 'stretch';
+  justify: 'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly' | 'stretch';
+  gap: number;
 }
 
-export default function Container({ children, style }: IContainerProps) {
-  const inlineStyle: CSSProperties = useMemo(() => {
-    return {
-      display: 'flex',
-      ...style,
-      backgroundColor: children?.length ? style.backgroundColor : '#eee',
-    };
-  }, [style, children]);
-
+export default function Container({ children, vertical = true, gap = 8 }: IContainerProps) {
   const classes = useMemo(() => {
     return classNames({
-      [styles.rowWithoutChildren]: (style.flexDirection as string) === 'row',
-      [styles.columnWithoutChildren]: (style.flexDirection as string) === 'column'
+      [styles.rowWithoutChildren]: !vertical,
+      [styles.columnWithoutChildren]: vertical
     });
   }, [children]);
 
@@ -31,5 +29,9 @@ export default function Container({ children, style }: IContainerProps) {
     return <div className={classes}>请拖入任意元素</div>;
   }
 
-  return <div style={inlineStyle}>{renderChildren()}</div>;
+  return (
+    <Flex vertical={vertical} gap={gap}>
+      {renderChildren()}
+    </Flex>
+  );
 }
