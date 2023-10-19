@@ -83,9 +83,18 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         id: 'gap',
         schemaType: 'props',
         name: '间距',
-        category: 'basic',
-        value: true,
-        valueType: 'boolean',
+        category: 'style',
+        value: 8,
+        valueType: 'number',
+        valueSource: 'editorInput'
+      },
+      align: {
+        id: 'align',
+        schemaType: 'props',
+        name: '主轴对齐',
+        category: 'style',
+        value: 'start',
+        valueType: 'string',
         valueSource: 'editorInput'
       }
     }
@@ -99,12 +108,30 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     icon: CodeSandboxOutlined,
     component: Container,
     propsConfig: {
-      type: {
-        id: 'type',
+      vertical: {
+        id: 'vertical',
         schemaType: 'props',
-        name: 'type',
+        name: '垂直布局',
         category: 'basic',
-        value: 'primary',
+        value: true,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      gap: {
+        id: 'gap',
+        schemaType: 'props',
+        name: '间距',
+        category: 'style',
+        value: 8,
+        valueType: 'number',
+        valueSource: 'editorInput'
+      },
+      align: {
+        id: 'align',
+        schemaType: 'props',
+        name: '主轴对齐',
+        category: 'style',
+        value: 'start',
         valueType: 'string',
         valueSource: 'editorInput'
       }

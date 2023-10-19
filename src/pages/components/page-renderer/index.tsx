@@ -309,7 +309,7 @@ export default observer((props: IPageRendererProps) => {
         childrenId={childrenId}
         feature={feature}
         childrenStyle={componentProps?.style}
-        parentStyle={parentProps?.style.value as CSSProperties}
+        parentStyle={parentProps?.style?.value as CSSProperties}
       >
         {tpl}
       </EditWrapper>
