@@ -1214,7 +1214,8 @@ const camelotComponentConfig: { [key: string]: IComponentConfig } = {
         valueSource: 'editorInput',
         valueType: 'string',
         category: 'basic',
-        value: 'guwenjia'
+        value: 'guwenjia',
+        title: '已选择'
       }
     }
   },
@@ -1236,7 +1237,8 @@ const camelotComponentConfig: { [key: string]: IComponentConfig } = {
         valueSource: 'editorInput',
         valueType: 'string',
         category: 'basic',
-        value: '-10613,-10675'
+        value: '-10613,-10675',
+        title: '部门ID'
       },
       selected: {
         id: 'selected',
@@ -1245,7 +1247,8 @@ const camelotComponentConfig: { [key: string]: IComponentConfig } = {
         valueSource: 'editorInput',
         valueType: 'number',
         category: 'basic',
-        value: -10712
+        value: -10712,
+        title: '已选择'
       }
     }
   },
