@@ -82,7 +82,7 @@ const tabsItems = [
     key: 'custom',
     label: '业务组件',
     children: <CustomComponentPanel />
-  },
+  }
 ];
 
 const dslStore = DSLStore.createInstance();
@@ -391,7 +391,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
       const result = collisions.sort(sortCollisionsDesc);
 
       if (result.length) {
-        const { direction, childrenId = [] } = result[0].data;
+        const { vertical, childrenId = [] } = result[0].data;
 
         // 从结果中过滤出子节点
         const childrenRects = childrenId
@@ -414,7 +414,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
             const { top, right, bottom, left, height, width } = childrenRects[i];
             const { top: collisionTop, left: collisionLeft } = collisionRect;
             // 判断碰撞左上角和这些矩形的位置关系，落在两者之间的，设下一个 index 为插入位置
-            if (direction === 'row') {
+            if (!vertical) {
               // 如果在当前矩形同行
               if (collisionTop >= top && collisionTop <= bottom) {
                 style.top = top;
@@ -481,7 +481,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
           const rect = droppableRects.get(result[0].id);
           if (rect) {
             let style;
-            if (direction === 'row') {
+            if (!vertical) {
               style = {
                 top: rect.top,
                 width: 2,

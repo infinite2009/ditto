@@ -1,19 +1,18 @@
 import { useCombinedRefs } from '@dnd-kit/utilities';
-import React, { CSSProperties, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { CSSProperties, useContext, useEffect, useMemo, useState } from 'react';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import ComponentFeature from '@/types/component-feature';
 import { DSLStoreContext } from '@/hooks/context';
-import { toJS } from 'mobx';
 
 export interface IEditorProps {
   id: string;
   parentId: string;
   childrenId?: string[];
   children: React.ReactNode;
-  direction?: 'row' | 'column';
   feature?: ComponentFeature;
   parentStyle?: CSSProperties;
   childrenStyle?: CSSProperties;
+  parentVertical?: boolean;
 }
 
 export default function EditWrapper({
@@ -30,21 +29,21 @@ export default function EditWrapper({
   const [styleState, setStyleState] = useState<CSSProperties>({});
   const dslStore = useContext(DSLStoreContext);
 
-  const direction = useMemo(() => {
-    const wrapperElement = document.getElementById(id);
-    if (!wrapperElement) {
-      return;
+  const vertical = useMemo(() => {
+    if (React.isValidElement(children)) {
+      return children.props.vertical;
     }
-    const childElement: HTMLElement = wrapperElement.children?.[0] as HTMLElement;
-    return childElement.style.flexDirection;
+    return true;
   }, [children]);
+
+  console.log('vertical: ', vertical);
 
   const { isOver, setNodeRef: setDroppableNodeRef } = useDroppable({
     id,
     data: {
       childrenId,
       parentId,
-      direction: direction || 'column',
+      vertical,
       feature: feature || ComponentFeature.solid,
       dndType: 'move'
     }

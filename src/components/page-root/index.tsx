@@ -18,7 +18,7 @@ export default function PageRoot({ id, childrenId, parentId, children }: IPageRo
     data: {
       childrenId,
       parentId,
-      direction: 'column',
+      vertical: true,
       feature: ComponentFeature.slot,
       dndType: 'root'
     }
