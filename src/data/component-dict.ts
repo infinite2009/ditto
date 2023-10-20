@@ -134,7 +134,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       vertical: {
         id: 'vertical',
         schemaType: 'props',
-        name: '',
+        name: 'vertical',
         title: '布局方向',
         category: 'style',
         value: true,
@@ -142,7 +142,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         valueSource: 'editorInput'
       },
       wrap: {
-        id: 'vertical',
+        id: 'wrap',
         schemaType: 'props',
         title: '自动换行',
         name: 'wrap',
