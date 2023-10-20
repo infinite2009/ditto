@@ -14,7 +14,7 @@ export interface IContainerProps {
   gap: number;
 }
 
-export default function Container({ children, vertical = true, gap = 8 }: IContainerProps) {
+export default function Container({ children, vertical, gap, wrap, justify, align }: IContainerProps) {
   const classes = useMemo(() => {
     return classNames({
       [styles.rowWithoutChildren]: !vertical,
@@ -30,7 +30,7 @@ export default function Container({ children, vertical = true, gap = 8 }: IConta
   }
 
   return (
-    <Flex vertical={vertical} gap={gap}>
+    <Flex vertical={vertical} gap={gap} wrap={wrap} justify={justify} align={align}>
       {renderChildren()}
     </Flex>
   );
