@@ -73,28 +73,51 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       vertical: {
         id: 'vertical',
         schemaType: 'props',
-        name: '垂直布局',
-        category: 'basic',
+        name: 'vertical',
+        title: '布局方向',
+        category: 'style',
         value: true,
         valueType: 'boolean',
         valueSource: 'editorInput'
       },
-      gap: {
-        id: 'gap',
+      wrap: {
+        id: 'wrap',
         schemaType: 'props',
-        name: '间距',
+        name: 'wrap',
+        title: '自动换行',
         category: 'style',
-        value: 8,
-        valueType: 'number',
+        value: true,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      justify: {
+        id: 'justify',
+        name: 'justify',
+        title: '主轴对齐',
+        schemaType: 'props',
+        category: 'style',
+        value: 'start',
+        valueType: 'string',
         valueSource: 'editorInput'
       },
       align: {
         id: 'align',
         schemaType: 'props',
-        name: '主轴对齐',
+        name: 'align',
+        title: '副轴对齐',
         category: 'style',
         value: 'start',
         valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      gap: {
+        id: 'gap',
+        schemaType: 'props',
+        name: 'gap',
+        title: '间距',
+        category: 'style',
+        value: 8,
+        valueType: 'number',
         valueSource: 'editorInput'
       }
     }
@@ -111,28 +134,51 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       vertical: {
         id: 'vertical',
         schemaType: 'props',
-        name: '垂直布局',
-        category: 'basic',
+        name: '',
+        title: '布局方向',
+        category: 'style',
         value: true,
         valueType: 'boolean',
         valueSource: 'editorInput'
       },
-      gap: {
-        id: 'gap',
+      wrap: {
+        id: 'vertical',
         schemaType: 'props',
-        name: '间距',
+        title: '自动换行',
+        name: 'wrap',
         category: 'style',
-        value: 8,
-        valueType: 'number',
+        value: true,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      justify: {
+        id: 'justify',
+        title: '主轴对齐',
+        name: 'justify',
+        schemaType: 'props',
+        category: 'style',
+        value: 'space-evenly',
+        valueType: 'string',
         valueSource: 'editorInput'
       },
       align: {
         id: 'align',
         schemaType: 'props',
-        name: '主轴对齐',
+        title: '副轴对齐',
+        name: 'align',
         category: 'style',
         value: 'start',
         valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      gap: {
+        id: 'gap',
+        schemaType: 'props',
+        name: 'gap',
+        title: '间距',
+        category: 'style',
+        value: 8,
+        valueType: 'number',
         valueSource: 'editorInput'
       }
     }

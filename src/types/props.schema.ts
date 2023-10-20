@@ -1,5 +1,4 @@
 import ISchema from '@/types/schema';
-import { EventId } from '@/types/index';
 
 export interface TemplateKeyPathsReg {
   path: string;
@@ -33,6 +32,9 @@ export default interface IPropsSchema extends ISchema {
    * path 字段是正则表达式，即便是采用穷举的方式，也要使用正则表达式进行填充
    */
   templateKeyPathsReg?: TemplateKeyPathsReg[];
+
+  // 属性的表单名称
+  title: string;
 
   // 属性的名字
   name: string;
