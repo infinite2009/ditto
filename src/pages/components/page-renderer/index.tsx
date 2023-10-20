@@ -322,7 +322,5 @@ export default observer((props: IPageRendererProps) => {
     return recursivelyRenderTemplate(dslObj.child, true, true);
   }
 
-  console.log('dslStore.dsl: ', toJS(dslStore.dsl));
-
   return dslStore.dsl ? <>{render()}</> : <div>未获得有效的DSL</div>;
 });

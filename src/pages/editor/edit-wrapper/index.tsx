@@ -36,8 +36,6 @@ export default function EditWrapper({
     return true;
   }, [children]);
 
-  console.log('vertical: ', vertical);
-
   const { isOver, setNodeRef: setDroppableNodeRef } = useDroppable({
     id,
     data: {
