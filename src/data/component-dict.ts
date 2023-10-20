@@ -96,7 +96,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '主轴对齐',
         schemaType: 'props',
         category: 'style',
-        value: 'start',
+        value: 'normal',
         valueType: 'string',
         valueSource: 'editorInput'
       },
@@ -106,7 +106,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'align',
         title: '副轴对齐',
         category: 'style',
-        value: 'start',
+        value: 'normal',
         valueType: 'string',
         valueSource: 'editorInput'
       },
@@ -157,7 +157,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'justify',
         schemaType: 'props',
         category: 'style',
-        value: 'space-evenly',
+        value: 'normal',
         valueType: 'string',
         valueSource: 'editorInput'
       },
@@ -167,7 +167,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '副轴对齐',
         name: 'align',
         category: 'style',
-        value: 'start',
+        value: 'normal',
         valueType: 'string',
         valueSource: 'editorInput'
       },

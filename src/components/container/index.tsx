@@ -9,8 +9,8 @@ export interface IContainerProps {
   children: ReactNode[];
   vertical: boolean;
   wrap: 'nowrap' | 'wrap';
-  align: 'start' | 'center' | 'end' | 'stretch';
-  justify: 'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly' | 'stretch';
+  align: 'normal' | 'start' | 'center' | 'end' | 'stretch';
+  justify: 'normal' | 'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly' | 'stretch';
   gap: number;
 }
 
@@ -30,7 +30,7 @@ export default function Container({ children, vertical, gap, wrap, justify, alig
   }
 
   return (
-    <Flex vertical={vertical} gap={gap} wrap={wrap} justify={justify} align={align}>
+    <Flex vertical={vertical} gap={gap} wrap={wrap} justify={justify} align={align} style={{ padding: 8 }}>
       {renderChildren()}
     </Flex>
   );
