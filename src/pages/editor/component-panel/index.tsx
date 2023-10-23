@@ -33,17 +33,20 @@ export default function ComponentPanel() {
 
   function fetchComponentList() {
     const components = Object.values(componentConfig).map(item => Object.values(item));
-    const list = components.flat(1).map(item => {
-      return {
-        key: item.configName,
-        title: item.title,
-        icon: item.icon,
-        isLayer: item.isLayer,
-        name: item.configName,
-        dependency: item.dependency,
-        category: item.category
-      } as unknown as IComponentInfo;
-    });
+    const list = components
+      .flat(1)
+      .filter(item => !item.isHidden)
+      .map(item => {
+        return {
+          key: item.configName,
+          title: item.title,
+          icon: item.icon,
+          isLayer: item.isLayer,
+          name: item.configName,
+          dependency: item.dependency,
+          category: item.category
+        } as unknown as IComponentInfo;
+      });
     const result: Record<string, IComponentInfo[]> = {};
     list.forEach((item: IComponentInfo) => {
       result[item.category] = result[item.category] || [];
