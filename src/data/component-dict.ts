@@ -300,7 +300,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       copyable: {
         id: 'copyable',
         schemaType: 'props',
-        name: '可复制',
+        name: 'copyable',
+        title: '可复制',
         category: 'basic',
         value: false,
         valueType: 'boolean',
@@ -309,7 +310,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       delete: {
         id: 'delete',
         schemaType: 'props',
-        name: '删除线',
+        name: 'delete',
+        title: '删除线',
         category: 'basic',
         value: false,
         valueType: 'boolean',
@@ -318,7 +320,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       disabled: {
         id: 'disabled',
         schemaType: 'props',
-        name: '禁用',
+        name: 'disabled',
+        title: '禁用',
         category: 'basic',
         value: false,
         valueType: 'boolean',
@@ -326,7 +329,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       editable: {
         id: 'editable',
-        name: '可编辑',
+        name: 'editable',
+        title: '可编辑',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -335,7 +339,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       ellipsis: {
         id: 'ellipsis',
-        name: '自动省略',
+        name: 'ellipsis',
+        title: '自动省略',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -344,7 +349,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       mark: {
         id: 'mark',
-        name: '是否添加标记',
+        name: 'mark',
+        title: '添加标记',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -353,7 +359,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       strong: {
         id: 'strong',
-        name: '是否加粗',
+        name: 'strong',
+        title: '加粗',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -362,7 +369,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       italic: {
         id: 'italic',
-        name: '斜体',
+        name: 'italic',
+        title: '斜体',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -371,7 +379,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       underline: {
         id: 'underline',
-        name: '下划线',
+        title: '下划线',
+        name: 'underline',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -381,6 +390,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       children: {
         id: 'children',
         name: 'children',
+        title: '子节点',
         schemaType: 'props',
         category: 'children',
         value: '默认文字',
@@ -401,7 +411,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       copyable: {
         id: 'copyable',
         schemaType: 'props',
-        name: '可复制',
+        name: 'copyable',
+        title: '可复制',
         category: 'basic',
         value: false,
         valueType: 'boolean',
@@ -410,7 +421,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       delete: {
         id: 'delete',
         schemaType: 'props',
-        name: '删除线',
+        name: 'delete',
+        title: '删除线',
         category: 'basic',
         value: false,
         valueType: 'boolean',
@@ -419,7 +431,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       disabled: {
         id: 'disabled',
         schemaType: 'props',
-        name: '禁用',
+        name: 'disabled',
+        title: '禁用',
         category: 'basic',
         value: false,
         valueType: 'boolean',
@@ -427,7 +440,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       editable: {
         id: 'editable',
-        name: '可编辑',
+        name: 'editable',
+        title: '可编辑',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -436,7 +450,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       ellipsis: {
         id: 'ellipsis',
-        name: '自动省略',
+        name: 'ellipsis',
+        title: '自动省略',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -445,7 +460,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       mark: {
         id: 'mark',
-        name: '是否添加标记',
+        name: 'mark',
+        title: '添加标记',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -454,7 +470,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       strong: {
         id: 'strong',
-        name: '是否加粗',
+        name: 'strong',
+        title: '加粗',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -463,7 +480,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       italic: {
         id: 'italic',
-        name: '斜体',
+        name: 'italic',
+        title: '斜体',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -472,7 +490,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       underline: {
         id: 'underline',
-        name: '下划线',
+        title: '下划线',
+        name: 'underline',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -482,6 +501,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       children: {
         id: 'children',
         name: 'children',
+        title: '子节点',
         schemaType: 'props',
         category: 'children',
         value: '默认文字',
@@ -502,7 +522,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       copyable: {
         id: 'copyable',
         schemaType: 'props',
-        name: '可复制',
+        name: 'copyable',
+        title: '可复制',
         category: 'basic',
         value: false,
         valueType: 'boolean',
@@ -511,7 +532,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       delete: {
         id: 'delete',
         schemaType: 'props',
-        name: '删除线',
+        name: 'delete',
+        title: '删除线',
         category: 'basic',
         value: false,
         valueType: 'boolean',
@@ -520,7 +542,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       disabled: {
         id: 'disabled',
         schemaType: 'props',
-        name: '禁用',
+        name: 'disabled',
+        title: '禁用',
         category: 'basic',
         value: false,
         valueType: 'boolean',
@@ -528,7 +551,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       editable: {
         id: 'editable',
-        name: '可编辑',
+        name: 'editable',
+        title: '可编辑',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -537,7 +561,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       ellipsis: {
         id: 'ellipsis',
-        name: '自动省略',
+        name: 'ellipsis',
+        title: '自动省略',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -546,7 +571,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       mark: {
         id: 'mark',
-        name: '是否添加标记',
+        name: 'mark',
+        title: '添加标记',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -555,7 +581,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       strong: {
         id: 'strong',
-        name: '是否加粗',
+        name: 'strong',
+        title: '加粗',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -564,7 +591,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       italic: {
         id: 'italic',
-        name: '斜体',
+        name: 'italic',
+        title: '斜体',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -573,7 +601,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       },
       underline: {
         id: 'underline',
-        name: '下划线',
+        title: '下划线',
+        name: 'underline',
         schemaType: 'props',
         category: 'basic',
         value: false,
@@ -583,6 +612,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       children: {
         id: 'children',
         name: 'children',
+        title: '子节点',
         schemaType: 'props',
         category: 'children',
         value: '默认文字',
