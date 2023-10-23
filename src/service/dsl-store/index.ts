@@ -142,6 +142,9 @@ export default class DSLStore {
 
     const componentConfig = fetchComponentConfig(name, dependency);
     let children: ComponentSchemaRef[];
+    if (!componentConfig) {
+      debugger;
+    }
     if (componentConfig.isContainer) {
       children = [];
     } else if (componentConfig.children) {
@@ -321,7 +324,7 @@ export default class DSLStore {
   }
 
   createEmptyContainer(customId = '', ext: { [key: string]: any } | undefined = undefined) {
-    return this.createComponent('column', 'html', customId, ext);
+    return this.createComponent('Flex', 'antd', customId, ext);
   }
 
   setTemplateTo(tplInfo: TemplateInfo, propsConfig: { [key: string]: IPropsConfigItem }) {
