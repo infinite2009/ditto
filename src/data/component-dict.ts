@@ -386,17 +386,12 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
-      },
-      children: {
-        id: 'children',
-        name: 'children',
-        title: '子节点',
-        schemaType: 'props',
-        category: 'children',
-        value: '默认文字',
-        valueType: 'string',
-        valueSource: 'editorInput'
       }
+    },
+    children: {
+      name: 'children',
+      value: '默认文字',
+      category: 'children'
     }
   },
   Paragraph: {
@@ -497,17 +492,12 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
-      },
-      children: {
-        id: 'children',
-        name: 'children',
-        title: '子节点',
-        schemaType: 'props',
-        category: 'children',
-        value: '默认文字',
-        valueType: 'string',
-        valueSource: 'editorInput'
       }
+    },
+    children: {
+      name: 'children',
+      value: '默认段落',
+      category: 'children'
     }
   },
   Title: {
@@ -608,17 +598,12 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
-      },
-      children: {
-        id: 'children',
-        name: 'children',
-        title: '子节点',
-        schemaType: 'props',
-        category: 'children',
-        value: '默认文字',
-        valueType: 'string',
-        valueSource: 'editorInput'
       }
+    },
+    children: {
+      name: 'children',
+      value: '默认标题',
+      category: 'children'
     }
   },
   Divider: {
