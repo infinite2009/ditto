@@ -50,7 +50,7 @@ class FileManager {
     storeName: FileManager.RECENT_PROJECTS_STORE_NAME
   });
   private static instance = new FileManager();
-  cache: AppData;
+  cache: AppData = {} as AppData;
   appDataPath = 'appData.json';
 
   static getInstance() {
