@@ -14,6 +14,7 @@ import {
   UndoOutlined,
   YoutubeOutlined
 } from '@ant-design/icons';
+import classNames from 'classnames';
 
 export interface PageActionEvent {
   type: PageAction;
@@ -25,7 +26,7 @@ interface IToolbarProps {
   disabledButtons: string[];
 }
 
-export default function Toolbar({ onDo }: IToolbarProps) {
+export default function Toolbar({ onDo, disabledButtons }: IToolbarProps) {
   function handleUndo() {
     if (onDo) {
       onDo({
@@ -116,14 +117,19 @@ export default function Toolbar({ onDo }: IToolbarProps) {
     }
   }
 
-  function isDisabled(btnName: string) {}
+  function calClassNames(btnName: string) {
+    return classNames({
+      [styles.iconBtn]: true,
+      [styles.disabled]: disabledButtons?.includes(btnName)
+    });
+  }
 
   return (
     <div className={styles.main}>
       <div className={styles.leftBtnWrapper}>
         <Divider type="vertical" style={{ marginLeft: 0, borderColor: '#F1F2F3' }} />
-        <UndoOutlined className={styles.iconBtn} onClick={handleUndo} />
-        <RedoOutlined className={styles.iconBtn} onClick={handleRedo} />
+        <UndoOutlined className={calClassNames('undo')} onClick={handleUndo} />
+        <RedoOutlined className={calClassNames('redo')} onClick={handleRedo} />
         <Divider className={styles.divider} type="vertical" />
         <DesktopOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('pc')} />
         <TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('tablet')} />
