@@ -126,6 +126,28 @@ export default function Toolbar({ onDo, disabledButtons }: IToolbarProps) {
     });
   }
 
+  function handleChangePageSize(data: number) {
+    if (onDo) {
+      onDo({
+        type: PageAction.changePageSize,
+        payload: {
+          size: data
+        }
+      });
+    }
+  }
+
+  function handleChangeScale(data: number) {
+    if (onDo) {
+      onDo({
+        type: PageAction.changeScale,
+        payload: {
+          scale: data
+        }
+      });
+    }
+  }
+
   return (
     <div className={styles.main}>
       <div className={styles.leftBtnWrapper}>
@@ -142,6 +164,7 @@ export default function Toolbar({ onDo, disabledButtons }: IToolbarProps) {
           bordered={false}
           optionLabelProp="label"
           dropdownStyle={{ width: 140 }}
+          onChange={handleChangePageSize}
         >
           <Option value={900} label="900px">
             <Space>
@@ -165,6 +188,33 @@ export default function Toolbar({ onDo, disabledButtons }: IToolbarProps) {
             <Space>
               <span>显示器</span>
               <span>1920 px</span>
+            </Space>
+          </Option>
+        </Select>
+        <Select
+          value={1}
+          style={{ width: 100 }}
+          bordered={false}
+          optionLabelProp="label"
+          dropdownStyle={{ width: 140 }}
+          onChange={handleChangeScale}
+        >
+          <Option value={0.5} label="50%">
+            <Space>
+              <span>调整至</span>
+              <span>50%</span>
+            </Space>
+          </Option>
+          <Option value={1} label="100%">
+            <Space>
+              <span>调整至</span>
+              <span>100%</span>
+            </Space>
+          </Option>
+          <Option value={2} label="200%">
+            <Space>
+              <span>调整至</span>
+              <span>200%</span>
             </Space>
           </Option>
         </Select>
