@@ -1035,6 +1035,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         id: 'columns',
         schemaType: 'props',
         name: 'columns',
+        title: '列',
         category: 'basic',
         valueType: 'array',
         valueSource: 'editorInput',
@@ -1073,6 +1074,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         id: 'dataSource',
         schemaType: 'props',
         name: 'dataSource',
+        title: '数据源',
         category: 'basic',
         valueType: 'array',
         valueSource: 'editorInput',
@@ -1117,6 +1119,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         id: 'items',
         schemaType: 'props',
         name: 'items',
+        title: '数据项',
         valueSource: 'editorInput',
         valueType: 'object',
         templateKeyPathsReg: [
@@ -1142,6 +1145,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         id: 'tabBarExtraContent',
         schemaType: 'props',
         name: 'tabBarExtraContent',
+        title: 'tabBarExtraContent',
         valueSource: 'editorInput',
         valueType: 'object',
         templateKeyPathsReg: [
