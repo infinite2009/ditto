@@ -1,5 +1,5 @@
 import styles from './index.module.less';
-import { Divider, Radio } from 'antd';
+import { Divider, Radio, Select, Space } from 'antd';
 import PageAction from '@/types/page-action';
 import React from 'react';
 import {
@@ -25,6 +25,8 @@ interface IToolbarProps {
   onDo: (e: PageActionEvent) => void;
   disabledButtons: string[];
 }
+
+const { Option } = Select;
 
 export default function Toolbar({ onDo, disabledButtons }: IToolbarProps) {
   function handleUndo() {
@@ -134,6 +136,38 @@ export default function Toolbar({ onDo, disabledButtons }: IToolbarProps) {
         <DesktopOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('pc')} />
         <TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('tablet')} />
         <MobileOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('phone')} />
+        <Select
+          value={1280}
+          style={{ width: 100 }}
+          bordered={false}
+          optionLabelProp="label"
+          dropdownStyle={{ width: 140 }}
+        >
+          <Option value={900} label="900px">
+            <Space>
+              <span>企微窗口</span>
+              <span>900 px</span>
+            </Space>
+          </Option>
+          <Option value={1280} label="1280px">
+            <Space>
+              <span>Win</span>
+              <span>1280 px</span>
+            </Space>
+          </Option>
+          <Option value={1440} label="1440px">
+            <Space>
+              <span>Mac</span>
+              <span>1440 px</span>
+            </Space>
+          </Option>
+          <Option value={1920} label="1920px">
+            <Space>
+              <span>显示器</span>
+              <span>1920 px</span>
+            </Space>
+          </Option>
+        </Select>
         <Divider className={styles.divider} type="vertical" />
         <ClearOutlined className={styles.iconBtn} onClick={() => handleClear} />
         <ExpandOutlined className={styles.iconBtn} onClick={() => handleExpand} />
