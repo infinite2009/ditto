@@ -1281,7 +1281,7 @@ const camelotComponentConfig: { [key: string]: IComponentConfig } = {
       'b-oa-user-select',
       'https://s1.hdslb.com/bfs/live/oa-user-select/last/oa-user-select.mjs'
     ),
-    category: 'custom',
+    category: '用户技术中心专用',
     title: '用户查询',
     icon: CodeSandboxOutlined,
     propsConfig: {
@@ -1304,7 +1304,7 @@ const camelotComponentConfig: { [key: string]: IComponentConfig } = {
       'b-oa-department-select',
       'https://s1.hdslb.com/bfs/live/oa-department-select/last/oa-department-select.mjs?t=1697615352271'
     ),
-    category: 'custom',
+    category: '用户技术中心专用',
     title: '部门查询',
     icon: CodeSandboxOutlined,
     propsConfig: {
@@ -1337,7 +1337,7 @@ const camelotComponentConfig: { [key: string]: IComponentConfig } = {
       'b-tree-select',
       'https://s1.hdslb.com/bfs/live/tree-select/last/tree-select.mjs?t=1697615352272'
     ),
-    category: 'custom',
+    category: '用户技术中心专用',
     title: '服务树',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1346,7 +1346,7 @@ const camelotComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'b-audit-log',
     dependency: 'camelot',
     component: createCamelotComponent('b-audit-log', 'https://s1.hdslb.com/bfs/live/audit-log/last/audit-log.mjs'),
-    category: 'custom',
+    category: '用户技术中心专用',
     title: '日志组件',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1358,7 +1358,7 @@ const camelotComponentConfig: { [key: string]: IComponentConfig } = {
       'b-tapd-select',
       'https://s1.hdslb.com/bfs/live/tapd-select/last/tapd-select.mjs?t=1697615352271'
     ),
-    category: 'custom',
+    category: '用户技术中心专用',
     title: 'TAPD组件',
     icon: CodeSandboxOutlined,
     propsConfig: {}
