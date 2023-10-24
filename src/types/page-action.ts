@@ -5,7 +5,12 @@ enum PageAction {
   preview,
   exportCode,
   saveFile,
-  openProject
+  openProject,
+  clear,
+  changePlatform,
+  expandCanvas,
+  // 切换画布、设计视图
+  changeView
 }
 
 export default PageAction;

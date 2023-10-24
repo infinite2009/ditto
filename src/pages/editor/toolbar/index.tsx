@@ -22,6 +22,7 @@ export interface PageActionEvent {
 
 interface IToolbarProps {
   onDo: (e: PageActionEvent) => void;
+  disabledButtons: string[];
 }
 
 export default function Toolbar({ onDo }: IToolbarProps) {
@@ -82,19 +83,27 @@ export default function Toolbar({ onDo }: IToolbarProps) {
   }
 
   function handleTogglePlatform(platform: 'pc' | 'tablet' | 'phone') {
-    // TODO: 切换平台
+    if (onDo) {
+      onDo({
+        type: PageAction.changePlatform
+      });
+    }
   }
 
   function handleClear() {
-    // TODO: 清空画布
+    if (onDo) {
+      onDo({
+        type: PageAction.clear
+      });
+    }
   }
 
   function handleExpand() {
-    // TODO: 关闭左右侧 panel
-  }
-
-  function handleMoreAction() {
-    // TODO: 更多动作
+    if (onDo) {
+      onDo({
+        type: PageAction.expandCanvas
+      });
+    }
   }
 
   function handleShowLayout() {
@@ -102,8 +111,12 @@ export default function Toolbar({ onDo }: IToolbarProps) {
   }
 
   function handleChangeMode() {
-    // TODO: 切换设计和代码
+    if (onDo) {
+      onDo({ type: PageAction.changeView });
+    }
   }
+
+  function isDisabled(btnName: string) {}
 
   return (
     <div className={styles.main}>
@@ -116,15 +129,6 @@ export default function Toolbar({ onDo }: IToolbarProps) {
         <TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('tablet')} />
         <MobileOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('phone')} />
         <Divider className={styles.divider} type="vertical" />
-        <div className={styles.iconBtnWrapper}>
-          <ClearOutlined className={styles.iconBtn} onClick={() => handleClear} />
-        </div>
-        <div className={styles.iconBtnWrapper}>
-          <ExpandOutlined className={styles.iconBtn} onClick={() => handleExpand} />
-        </div>
-        <div className={styles.iconBtnWrapper} style={{ marginLeft: 'auto' }}>
-          <LayoutOutlined className={styles.iconBtn} onClick={() => handleShowLayout} />
-        </div>
         <ClearOutlined className={styles.iconBtn} onClick={() => handleClear} />
         <ExpandOutlined className={styles.iconBtn} onClick={() => handleExpand} />
         <LayoutOutlined className={styles.iconBtn} style={{ marginLeft: 'auto' }} onClick={() => handleShowLayout} />
