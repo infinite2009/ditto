@@ -142,9 +142,6 @@ export default class DSLStore {
 
     const componentConfig = fetchComponentConfig(name, dependency);
     let children: ComponentSchemaRef[];
-    if (!componentConfig) {
-      debugger;
-    }
     if (componentConfig.isContainer) {
       children = [];
     } else if (componentConfig.children) {
