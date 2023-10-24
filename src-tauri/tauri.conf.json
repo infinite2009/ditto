@@ -84,6 +84,15 @@
                 "validator": "\\S+"
               }
             ]
+          },
+          {
+            "name": "open Finder",
+            "cmd": "open",
+            "args": [
+              {
+                "validator": "\\S+"
+              }
+            ]
           }
         ]
       },

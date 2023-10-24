@@ -162,6 +162,7 @@ class FileManager {
       console.error(err);
     }
   }
+
   async openProject(projectId: string) {
     const openedProject = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
     openedProject.isOpen = true;
@@ -312,6 +313,7 @@ class FileManager {
     this.cache.recentProjects[projectId] = openedProject;
     return readTextFile(file);
   }
+
   /**
    * 获取用户的全部项目
    */
@@ -372,6 +374,21 @@ class FileManager {
       return await writeTextFile(await join(parentPath, name), content);
     } catch (err) {
       return Promise.reject(err);
+    }
+  }
+
+  /**
+   * 打开本地文件所在位置
+   * @param project
+   */
+  async openLocalFileDirectory(project: ProjectInfo) {
+    const os = await platform();
+    switch (os) {
+      case 'darwin':
+        await new Command('open Finder', project.path).execute();
+        break;
+      default:
+        return Promise.reject(`暂不支持的系统：${os}`);
     }
   }
 
