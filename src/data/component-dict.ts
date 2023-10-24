@@ -168,7 +168,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '副轴对齐',
         name: 'align',
         category: 'style',
-        value: 'normal',
+        value: 'start',
         valueType: 'string',
         valueSource: 'editorInput'
       },
