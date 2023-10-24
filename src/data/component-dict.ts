@@ -122,12 +122,75 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       }
     }
   },
-  Flex: {
-    configName: 'Flex',
+  HorizontalFlex: {
+    configName: 'HorizontalFlex',
+    callingName: 'Flex',
     dependency: 'antd',
     isContainer: true,
     category: '常用',
-    title: '弹性布局',
+    title: '水平弹性布局',
+    icon: CodeSandboxOutlined,
+    component: Container,
+    propsConfig: {
+      vertical: {
+        id: 'vertical',
+        schemaType: 'props',
+        name: 'vertical',
+        title: '布局方向',
+        category: 'style',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      wrap: {
+        id: 'wrap',
+        schemaType: 'props',
+        title: '自动换行',
+        name: 'wrap',
+        category: 'style',
+        value: true,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      justify: {
+        id: 'justify',
+        title: '主轴对齐',
+        name: 'justify',
+        schemaType: 'props',
+        category: 'style',
+        value: 'normal',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      align: {
+        id: 'align',
+        schemaType: 'props',
+        title: '副轴对齐',
+        name: 'align',
+        category: 'style',
+        value: 'normal',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      gap: {
+        id: 'gap',
+        schemaType: 'props',
+        name: 'gap',
+        title: '间距',
+        category: 'style',
+        value: 8,
+        valueType: 'number',
+        valueSource: 'editorInput'
+      }
+    }
+  },
+  VerticalFlex: {
+    configName: 'VerticalFlex',
+    callingName: 'Flex',
+    dependency: 'antd',
+    isContainer: true,
+    category: '常用',
+    title: '垂直弹性布局',
     icon: CodeSandboxOutlined,
     component: Container,
     propsConfig: {
