@@ -92,10 +92,19 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
           )
         },
         {
+          key: '2',
+          label: (
+            <div className={style.dropDownItem} onClick={() => openFinder(data)}>
+              <span>打开文件所在位置</span>
+              <span className={style.shortKey}>⌘ O</span>
+            </div>
+          )
+        },
+        {
           type: 'divider'
         },
         {
-          key: '2',
+          key: '3',
           label: (
             <div className={style.dropDownItem} onClick={() => createCopy(data)}>
               <span>创建副本</span>
@@ -104,7 +113,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
           )
         },
         {
-          key: '3',
+          key: '4',
           label: (
             <div className={style.dropDownItem} onClick={() => handleClickRenameBtn(data)}>
               <span>重命名</span>
@@ -116,7 +125,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
           type: 'divider' as unknown as any
         },
         {
-          key: '4',
+          key: '5',
           label: (
             <div className={style.dropDownItem} onClick={() => openProjectDeletingModal(data)}>
               <span>删除</span>
@@ -182,6 +191,18 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
       onOpenProject(data.id);
     }
     setLocation(`/edit/${data.id}`);
+  }
+
+  /**
+   * 打开文件所在位置
+   * @param data
+   */
+  async function openFinder(data: ProjectInfo) {
+    try {
+      await fileManager.openLocalFileDirectory(data);
+    } catch (error) {
+      message.error(error as string);
+    }
   }
 
   /**
