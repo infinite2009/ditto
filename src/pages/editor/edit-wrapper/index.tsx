@@ -10,7 +10,6 @@ export interface IEditorProps {
   childrenId?: string[];
   children: React.ReactNode;
   feature?: ComponentFeature;
-  parentStyle?: CSSProperties;
   childrenStyle?: CSSProperties;
   parentVertical?: boolean;
 }
@@ -22,9 +21,7 @@ export default function EditWrapper({
   children,
   feature,
   // 不要赋值默认值
-  childrenStyle,
-  // 不要赋值默认值
-  parentStyle
+  childrenStyle
 }: IEditorProps) {
   const [styleState, setStyleState] = useState<CSSProperties>({});
   const dslStore = useContext(DSLStoreContext);
@@ -60,7 +57,7 @@ export default function EditWrapper({
 
   useEffect(() => {
     setStyleState(processBFC());
-  }, [childrenStyle, parentStyle, feature]);
+  }, [childrenStyle, feature]);
 
   function processBFC(): CSSProperties {
     const result: CSSProperties = {};
@@ -148,18 +145,23 @@ export default function EditWrapper({
           break;
         case 'inline-block':
           result.display = 'inline-block';
-          if (parentStyle?.alignItems === 'stretch') {
-            result.alignSelf = 'flex-start';
-          } else if (wrapperElement.parentElement) {
-            const computedParentStyle = getComputedStyle(wrapperElement.parentElement);
-            if (computedParentStyle.getPropertyValue('alignItems') === 'stretch') {
-              result.alignSelf = 'flex-start';
-            }
-          }
           break;
         default:
           result.display = 'inline';
           break;
+      }
+    }
+
+    // 处理Flex布局的拉伸问题
+    if (wrapperElement.parentElement) {
+      const computedParentStyle = getComputedStyle(wrapperElement.parentElement);
+      const alignItems = computedParentStyle.alignItems;
+      if (alignItems === 'stretch' || alignItems === 'normal') {
+        if (computedParentStyle.flexDirection === 'column') {
+          childElement.style.width = '100%';
+        } else {
+          childElement.style.height = '100%';
+        }
       }
     }
 
