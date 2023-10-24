@@ -109,22 +109,12 @@ export default function Toolbar({ onDo }: IToolbarProps) {
     <div className={styles.main}>
       <div className={styles.leftBtnWrapper}>
         <Divider type="vertical" style={{ marginLeft: 0, borderColor: '#F1F2F3' }} />
-        <div className={styles.iconBtnWrapper}>
-          <UndoOutlined className={styles.iconBtn} onClick={handleUndo} />
-        </div>
-        <div className={styles.iconBtnWrapper}>
-          <RedoOutlined className={styles.iconBtn} onClick={handleRedo} />
-        </div>
+        <UndoOutlined className={styles.iconBtn} onClick={handleUndo} />
+        <RedoOutlined className={styles.iconBtn} onClick={handleRedo} />
         <Divider className={styles.divider} type="vertical" />
-        <div className={styles.iconBtnWrapper}>
-          <DesktopOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('pc')} />
-        </div>
-        <div className={styles.iconBtnWrapper}>
-          <TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('tablet')} />
-        </div>
-        <div className={styles.iconBtnWrapper}>
-          <MobileOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('phone')} />
-        </div>
+        <DesktopOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('pc')} />
+        <TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('tablet')} />
+        <MobileOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('phone')} />
         <Divider className={styles.divider} type="vertical" />
         <div className={styles.iconBtnWrapper}>
           <ClearOutlined className={styles.iconBtn} onClick={() => handleClear} />
@@ -135,15 +125,14 @@ export default function Toolbar({ onDo }: IToolbarProps) {
         <div className={styles.iconBtnWrapper} style={{ marginLeft: 'auto' }}>
           <LayoutOutlined className={styles.iconBtn} onClick={() => handleShowLayout} />
         </div>
+        <ClearOutlined className={styles.iconBtn} onClick={() => handleClear} />
+        <ExpandOutlined className={styles.iconBtn} onClick={() => handleExpand} />
+        <LayoutOutlined className={styles.iconBtn} style={{ marginLeft: 'auto' }} onClick={() => handleShowLayout} />
         <Divider type="vertical" style={{ marginRight: 0, borderColor: '#F1F2F3' }} />
       </div>
       <div className={styles.rightBtnWrapper}>
-        <div className={styles.iconBtnWrapper}>
-          <DownloadOutlined className={styles.iconBtn} onClick={handleExportingCode} />
-        </div>
-        <div className={styles.iconBtnWrapper}>
-          <YoutubeOutlined className={styles.iconBtn} onClick={handlePreview} />
-        </div>
+        <DownloadOutlined className={styles.iconBtn} onClick={handleExportingCode} />
+        <YoutubeOutlined className={styles.iconBtn} onClick={handlePreview} />
         <Radio.Group
           options={[
             { label: '设计', value: 'design' },
