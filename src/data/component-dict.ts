@@ -63,7 +63,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   pageRoot: {
     configName: 'pageRoot',
     callingName: 'Flex',
-    category: '常用',
+    category: '通用',
     isHidden: true,
     dependency: 'antd',
     component: PageRoot,
@@ -127,7 +127,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     callingName: 'Flex',
     dependency: 'antd',
     isContainer: true,
-    category: '常用',
+    category: '布局',
     title: '水平弹性布局',
     icon: CodeSandboxOutlined,
     component: Container,
@@ -189,7 +189,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     callingName: 'Flex',
     dependency: 'antd',
     isContainer: true,
-    category: '常用',
+    category: '布局',
     title: '垂直弹性布局',
     icon: CodeSandboxOutlined,
     component: Container,
@@ -250,7 +250,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Button',
     dependency: 'antd',
     component: Button,
-    category: '常用',
+    category: '通用',
     title: '按钮',
     icon: CodeSandboxOutlined,
     propsConfig: {
@@ -356,7 +356,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     callingName: 'Typography.Text',
     dependency: 'antd',
     component: Typography.Text,
-    category: '常用',
+    category: '通用',
     title: '文字',
     icon: CodeSandboxOutlined,
     propsConfig: {
@@ -462,7 +462,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     callingName: 'Typography.Paragraph',
     dependency: 'antd',
     component: Typography.Paragraph,
-    category: '常用',
+    category: '通用',
     title: '段落',
     icon: CodeSandboxOutlined,
     propsConfig: {
@@ -568,7 +568,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     callingName: 'Typography.Title',
     dependency: 'antd',
     component: Typography.Title,
-    category: '常用',
+    category: '通用',
     title: '标题',
     icon: CodeSandboxOutlined,
     propsConfig: {
@@ -673,7 +673,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Divider',
     dependency: 'antd',
     component: Divider,
-    category: 'basic',
+    category: '布局',
     title: '分割线',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -682,7 +682,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Space',
     dependency: 'antd',
     component: Space,
-    category: 'basic',
+    category: '布局',
     title: '间距',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -691,7 +691,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Anchor',
     dependency: 'antd',
     component: Anchor,
-    category: 'basic',
+    category: '导航',
     title: '锚点',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -700,7 +700,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Breadcrumb',
     dependency: 'antd',
     component: Breadcrumb,
-    category: 'basic',
+    category: '导航',
     title: '面包屑',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -709,7 +709,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Dropdown',
     dependency: 'antd',
     component: Dropdown,
-    category: 'basic',
+    category: '导航',
     title: '下拉菜单',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -718,7 +718,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Menu',
     dependency: 'antd',
     component: Menu,
-    category: 'basic',
+    category: '导航',
     title: '菜单导航',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -727,7 +727,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Pagination',
     dependency: 'antd',
     component: Pagination,
-    category: 'basic',
+    category: '导航',
     title: '分页',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -736,7 +736,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Steps',
     dependency: 'antd',
     component: Steps,
-    category: 'basic',
+    category: '导航',
     title: '步骤条',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -745,7 +745,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Cascader',
     dependency: 'antd',
     component: Cascader,
-    category: 'basic',
+    category: '数据录入',
     title: '级联选择',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -754,7 +754,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Checkbox',
     dependency: 'antd',
     component: Checkbox,
-    category: 'basic',
+    category: '数据录入',
     title: '多选框',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -763,7 +763,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'ColorPicker',
     dependency: 'antd',
     component: ColorPicker,
-    category: 'basic',
+    category: '数据录入',
     title: '颜色选择器',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -772,7 +772,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'DatePicker',
     dependency: 'antd',
     component: DatePicker as unknown as FC,
-    category: 'basic',
+    category: '数据录入',
     title: '日期选择器',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -780,7 +780,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   Form: {
     configName: 'Form',
     component: Form,
-    category: 'basic',
+    category: '数据录入',
     title: '表单',
     dependency: 'antd',
     icon: CodeSandboxOutlined,
@@ -791,7 +791,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     callingName: 'Input.Search',
     dependency: 'antd',
     component: Search,
-    category: 'basic',
+    category: '数据录入',
     title: '搜索框',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -800,7 +800,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Input.TextArea',
     dependency: 'antd',
     component: Input.TextArea,
-    category: 'basic',
+    category: '数据录入',
     title: '多行文本',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -809,7 +809,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'InputNumber',
     dependency: 'antd',
     component: InputNumber,
-    category: 'basic',
+    category: '数据录入',
     title: '数字输入框',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -818,7 +818,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Mentions',
     dependency: 'antd',
     component: Mentions,
-    category: 'basic',
+    category: '数据录入',
     title: '提及',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -827,7 +827,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Radio',
     dependency: 'antd',
     component: Radio,
-    category: 'basic',
+    category: '数据录入',
     title: '单选框',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -835,7 +835,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   Rate: {
     configName: 'Rate',
     component: Rate,
-    category: 'basic',
+    category: '数据录入',
     title: '评分',
     dependency: 'antd',
     icon: CodeSandboxOutlined,
@@ -845,7 +845,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Select',
     dependency: 'antd',
     component: Select,
-    category: 'basic',
+    category: '数据录入',
     title: '选择器',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -854,7 +854,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Slider',
     dependency: 'antd',
     component: Slider,
-    category: 'basic',
+    category: '数据录入',
     title: '滑动输入条',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -863,7 +863,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Switch',
     dependency: 'antd',
     component: Switch,
-    category: 'basic',
+    category: '数据录入',
     title: '开关',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -872,7 +872,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'TimePicker',
     dependency: 'antd',
     component: TimePicker,
-    category: 'basic',
+    category: '数据录入',
     title: '时间选择器',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -881,7 +881,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Transfer',
     dependency: 'antd',
     component: Transfer,
-    category: 'basic',
+    category: '数据录入',
     title: '穿梭框',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -890,7 +890,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'TreeSelect',
     dependency: 'antd',
     component: TreeSelect,
-    category: 'basic',
+    category: '数据录入',
     title: '树选择',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -899,7 +899,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Upload',
     dependency: 'antd',
     component: Upload,
-    category: 'basic',
+    category: '数据录入',
     title: '上传',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -908,7 +908,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Avatar',
     dependency: 'antd',
     component: Avatar,
-    category: 'basic',
+    category: '数据展示',
     title: '头像',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -918,7 +918,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Badge',
     dependency: 'antd',
     component: Badge,
-    category: 'basic',
+    category: '数据展示',
     title: '徽标数',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -927,7 +927,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Calendar',
     dependency: 'antd',
     component: Calendar,
-    category: 'basic',
+    category: '数据展示',
     title: '日历',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -935,7 +935,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   Card: {
     configName: 'Card',
     component: Card,
-    category: 'basic',
+    category: '数据展示',
     title: '卡片',
     dependency: 'antd',
     icon: CodeSandboxOutlined,
@@ -945,7 +945,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Carousel',
     dependency: 'antd',
     component: Carousel,
-    category: 'basic',
+    category: '数据展示',
     title: '走马灯',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -954,7 +954,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Collapse',
     dependency: 'antd',
     component: Collapse,
-    category: 'basic',
+    category: '数据展示',
     title: '折叠面板',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -963,7 +963,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Descriptions',
     dependency: 'antd',
     component: Descriptions,
-    category: 'basic',
+    category: '数据展示',
     title: '描述列表',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -972,7 +972,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Empty',
     dependency: 'antd',
     component: Empty,
-    category: 'basic',
+    category: '数据展示',
     title: '空状态',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -981,7 +981,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Image',
     dependency: 'antd',
     component: Image as unknown as FC,
-    category: 'basic',
+    category: '数据展示',
     title: '图片',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -989,7 +989,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   List: {
     configName: 'List',
     component: List,
-    category: 'basic',
+    category: '数据展示',
     title: '列表',
     dependency: 'antd',
     icon: CodeSandboxOutlined,
@@ -999,7 +999,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Popover',
     dependency: 'antd',
     component: Popover,
-    category: 'basic',
+    category: '数据展示',
     title: '气泡卡片',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1008,7 +1008,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Statistic',
     dependency: 'antd',
     component: Statistic,
-    category: 'basic',
+    category: '数据展示',
     title: '统计数值',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1017,7 +1017,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Table',
     dependency: 'antd',
     component: Table,
-    category: 'basic',
+    category: '数据展示',
     title: '表格',
     icon: CodeSandboxOutlined,
     propsConfig: {
@@ -1099,7 +1099,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Tabs',
     dependency: 'antd',
     component: Tabs,
-    category: 'basic',
+    category: '数据展示',
     title: '标签页',
     icon: CodeSandboxOutlined,
     propsConfig: {
@@ -1148,7 +1148,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   Tag: {
     configName: 'Tag',
     component: Tag,
-    category: 'basic',
+    category: '数据展示',
     title: '标签',
     dependency: 'antd',
     icon: CodeSandboxOutlined,
@@ -1158,7 +1158,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Tooltip',
     dependency: 'antd',
     component: Tooltip,
-    category: 'basic',
+    category: '数据展示',
     title: '文字提示',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1167,7 +1167,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Tree',
     dependency: 'antd',
     component: Tree,
-    category: 'basic',
+    category: '数据展示',
     title: '树形控件',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1176,7 +1176,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Alert',
     dependency: 'antd',
     component: Alert,
-    category: 'basic',
+    category: '反馈',
     title: '警告提示',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1185,7 +1185,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Drawer',
     dependency: 'antd',
     component: Drawer,
-    category: 'layer',
+    category: '反馈',
     title: '抽屉',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1194,7 +1194,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Modal',
     dependency: 'antd',
     component: Modal,
-    category: 'layer',
+    category: '反馈',
     title: '模态框',
     isLayer: true,
     icon: CodeSandboxOutlined,
@@ -1228,7 +1228,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Notification',
     dependency: 'antd',
     component: Notification as unknown as FC,
-    category: 'layer',
+    category: '反馈',
     title: '通知提醒框',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1237,7 +1237,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Popconfirm',
     dependency: 'antd',
     component: Popconfirm as unknown as FC,
-    category: 'basic',
+    category: '反馈',
     title: '气泡确认框',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1246,7 +1246,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Result',
     dependency: 'antd',
     component: Result,
-    category: 'basic',
+    category: '反馈',
     title: '结果',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1255,7 +1255,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Affix',
     dependency: 'antd',
     component: Affix as unknown as FC,
-    category: 'basic',
+    category: '其他',
     title: '固定',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1264,7 +1264,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'FloatButton',
     dependency: 'antd',
     component: FloatButton as unknown as FC,
-    category: 'basic',
+    category: '通用',
     title: '浮动按钮',
     icon: CodeSandboxOutlined,
     propsConfig: {}
