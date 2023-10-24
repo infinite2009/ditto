@@ -334,10 +334,6 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
               打开
             </Button>
           </div>
-          <div className={style.right}>
-            <PlusOutlined className={style.feedbackIcon} />
-            <span className={style.feedbackTitle}>问题反馈</span>
-          </div>
         </div>
         <h3 className={style.title}>最近项目</h3>
         <div className={style.projectList}>
