@@ -11,7 +11,6 @@ export interface IEditorProps {
   children: React.ReactNode;
   feature?: ComponentFeature;
   childrenStyle?: CSSProperties;
-  parentVertical?: boolean;
 }
 
 export default function EditWrapper({
