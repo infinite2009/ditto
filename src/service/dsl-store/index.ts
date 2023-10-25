@@ -21,11 +21,11 @@ type FormValue = {
 
 export default class DSLStore {
   private static instance = new DSLStore();
+  private totalFormConfig: Record<string, IFormConfig>;
   dsl: IPageSchema;
   selectedComponent: IComponentSchema;
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
   currentParentNode: IComponentSchema | IPageSchema | null = null;
-  private totalFormConfig: Record<string, IFormConfig>;
 
   private constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
