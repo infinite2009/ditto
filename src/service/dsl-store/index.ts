@@ -10,6 +10,7 @@ import { ComponentId, TemplateInfo } from '@/types';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IFormConfig from '@/types/form-config';
 import { CSSProperties, ReactNode } from 'react';
+import { isArray, isObject, mergeWith } from 'lodash';
 
 type FormValue = {
   style: CSSProperties;
@@ -20,11 +21,13 @@ type FormValue = {
 };
 
 export default class DSLStore {
-  private totalFormConfig: Record<string, IFormConfig>;
   dsl: IPageSchema;
   selectedComponent: IComponentSchema;
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
   currentParentNode: IComponentSchema | IPageSchema | null = null;
+  private totalFormConfig: Record<string, IFormConfig>;
+  private undoList: any[] = [];
+  private redoList: any[] = [];
 
   constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
@@ -473,11 +476,65 @@ export default class DSLStore {
    * 撤销
    * @private
    */
-  private undo() {}
+  private undo() {
+    const diff = this.undoList.pop();
+    if (!diff) {
+      return;
+    }
+    this.mergeDiff(diff);
+  }
 
   /**
    * 重做
    * @private
    */
-  private redo() {}
+  private redo() {
+    const diff = this.redoList.pop();
+    if (!diff) {
+      return;
+    }
+    this.mergeDiff(diff);
+  }
+
+  private mergeDiff(diff: {
+    added?: Record<string, any>;
+    updated?: Record<string, any>;
+    deleted?: Record<string, any>;
+  }) {
+    const { added, updated, deleted } = diff;
+    if (added) {
+      mergeWith(this.dsl, diff, (objValue: any, srcValue: any) => {
+        debugger;
+        if (isArray(objValue)) {
+          Object.keys(srcValue).forEach(key => {
+            objValue[key as unknown as number] = srcValue[key];
+          });
+          return objValue;
+        }
+      });
+    }
+    if (updated) {
+      mergeWith(this.dsl, diff, (objValue: any, srcValue: any, key: string, obj: any, src: any, stack: any[]) => {
+        if (isArray(objValue)) {
+          Object.keys(srcValue).forEach(key => {
+            objValue[key as unknown as number] = srcValue[key];
+          });
+          return objValue;
+        }
+      });
+    }
+    if (deleted) {
+      mergeWith(this.dsl, diff, (objValue: any, srcValue: any, key: string, obj: any, src: any, stack: any[]) => {
+        if (isArray(objValue)) {
+          return objValue.filter((item, index) => !(index in srcValue));
+        } else if (isObject(objValue)) {
+          Object.keys(srcValue).forEach(key => {
+            if (srcValue[key] === undefined) {
+              delete (objValue as Record<string, any>)[key];
+            }
+          });
+        }
+      });
+    }
+  }
 }
