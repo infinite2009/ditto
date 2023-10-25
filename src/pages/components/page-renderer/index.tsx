@@ -12,7 +12,6 @@ import { toJS } from 'mobx';
 import IActionSchema from '@/types/action.schema';
 import ActionType from '@/types/action-type';
 import { open } from '@tauri-apps/api/shell';
-import { useLocation } from 'wouter';
 import { DSLStoreContext } from '@/hooks/context';
 import cloneDeep from 'lodash/cloneDeep';
 
@@ -37,8 +36,6 @@ export default observer((props: IPageRendererProps) => {
   const [componentVisibilityState, componentVisibilityDispatch] = useReducer<
     Reducer<Record<ComponentId, boolean>, any>
   >(componentHiddenReducer, {});
-
-  const [, setLocation] = useLocation();
 
   function stateTransitionReducer(
     state: Record<ComponentId, Record<PropsId, any>>,
@@ -72,7 +69,6 @@ export default observer((props: IPageRendererProps) => {
           open(payload.href);
         } else {
           // TODO: 这里 href 是页面的 id，需要用户填，得找个地方展示页面的 id
-          setLocation(`/preview/${payload.href}`);
         }
         break;
       case ActionType.visibilityToggle:
@@ -298,8 +294,6 @@ export default observer((props: IPageRendererProps) => {
     } else {
       feature = ComponentFeature.solid;
     }
-
-    const parentProps = dslStore.dsl.props[parentId];
 
     return mode === 'edit' && !isRoot ? (
       <EditWrapper

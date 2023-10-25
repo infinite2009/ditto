@@ -1,7 +1,6 @@
 import { CloseOutlined, HomeOutlined, VideoCameraOutlined } from '@ant-design/icons';
-import style from './index.module.less';
-import { useLocation } from 'wouter';
 import classNames from 'classnames';
+import style from './index.module.less';
 
 interface ProjectItem {
   id: string;
@@ -13,22 +12,20 @@ export interface ICustomTitleBarProps {
   data?: ProjectItem[];
   selectedProjectId?: string;
   onClose?: (project: string) => Promise<void>;
-  onSelect?: (projectId: string | null) => Promise<void>;
+  onSelect?: (projectId: string) => Promise<void>;
 }
 
 export default function CustomTitleBar({ selectedProjectId, data, onSelect, onClose }: ICustomTitleBarProps) {
-  const [location, setLocation] = useLocation();
-
   function handleClickHome() {
-    if (location !== '/home') {
-      setLocation('/home');
+    if (onSelect) {
+      onSelect('');
     }
   }
 
   const homeClass = classNames({
     [style.home]: true,
-    [style.selected]: location === '/home',
-    [style.unselected]: !(location === '/home')
+    [style.selected]: !selectedProjectId,
+    [style.unselected]: !!selectedProjectId
   });
 
   async function handleCloseProject(e: any, projectItem: ProjectItem) {
@@ -50,10 +47,9 @@ export default function CustomTitleBar({ selectedProjectId, data, onSelect, onCl
         } else if (index > 0) {
           nextSelectedId = data[index - 1].id;
         } else {
-          nextSelectedId = null;
+          nextSelectedId = '';
         }
-        if (nextSelectedId === null) {
-          setLocation('/home');
+        if (nextSelectedId === '') {
           return;
         }
         if (onSelect) {
@@ -73,8 +69,8 @@ export default function CustomTitleBar({ selectedProjectId, data, onSelect, onCl
     return data?.map(item => {
       const titleWrapperClass = classNames({
         [style.titleWrapper]: true,
-        [style.selected]: item.id === selectedProjectId && location !== '/home',
-        [style.unselected]: item.id !== selectedProjectId || location === '/home'
+        [style.selected]: item.id === selectedProjectId,
+        [style.unselected]: item.id !== selectedProjectId
       });
       return (
         <div key={item.id} className={titleWrapperClass} onClick={() => handleClickTab(item)}>

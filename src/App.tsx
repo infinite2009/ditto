@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Redirect, Route, Switch, useLocation } from 'wouter';
 import Editor from '@/pages/editor';
 import Home from '@/pages/home';
-import Preview from '@/pages/preview';
 import fileManager from '@/service/file';
 import CustomTitleBar from '@/components/custom-title-bar';
 import { ProjectInfo } from '@/types/app-data';
@@ -14,8 +12,6 @@ function App() {
   const [currentProject, setCurrentProject] = useState<string>('');
   const [previewProjects, setPreviewProjects] = useState<string[]>([]);
   const [editorDict, setEditorDict] = useState<Record<string, any>>({});
-
-  const [location, setLocation] = useLocation();
 
   useEffect(() => {
     init();
@@ -43,7 +39,6 @@ function App() {
       if (!(currentProject in editorDict)) {
         setEditorDict(Object.assign({ ...editorDict }, { [currentProject]: new DSLStore() }));
       }
-      setLocation(`/edit/${currentProject}`);
     }
   }
 
@@ -67,13 +62,14 @@ function App() {
     }
   }
 
-  async function handleSelectingProject(projectId: string | null) {
-    if (projectId === null) {
-      setLocation('/home');
+  async function handleSelectingProject(projectId: string) {
+    if (!projectId) {
+      setCurrentProject('');
       return;
     }
     await fileManager.setCurrentProject(projectId);
     fetchAndOpenCurrentProject();
+    setCurrentProject(projectId);
   }
 
   async function handleOpeningProject(projectId: string) {
@@ -104,10 +100,23 @@ function App() {
           onPreview={handlePreviewProject}
           onPreviewClose={handlePreviewProjectClose}
           store={value}
-          style={`/edit/${key}` === location ? undefined : { display: 'none' }}
+          style={key === currentProject ? undefined : { display: 'none' }}
         />
       );
     });
+  }
+
+  function renderHome() {
+    if (currentProject) {
+      return null;
+    }
+    return (
+      <Home
+        onOpenProject={handleOpeningProject}
+        onDeleteProject={handleDeletingProject}
+        onRenameProject={handleRenamingProject}
+      />
+    );
   }
 
   return showUI ? (
@@ -118,23 +127,8 @@ function App() {
         onSelect={handleSelectingProject}
         onClose={handleClosingProject}
       />
-      <Switch>
-        <Route path="/">
-          <Redirect to="/home" />
-        </Route>
-        <Route path="/edit/:projectId">{renderEditorTabs()}</Route>
-        <Route path="/home">
-          <Home
-            onOpenProject={handleOpeningProject}
-            onDeleteProject={handleDeletingProject}
-            onRenameProject={handleRenamingProject}
-          />
-        </Route>
-        <Route path="/preview/:pageId">
-          <Preview />
-        </Route>
-        <Route>404</Route>
-      </Switch>
+      {renderHome()}
+      {renderEditorTabs()}
     </div>
   ) : null;
 }

@@ -1,5 +1,3 @@
-import { useLocation } from 'wouter';
-
 import { CloseOutlined, FileFilled, PlusOutlined, SelectOutlined, SortAscendingOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Input, InputRef, message, Modal } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
@@ -15,7 +13,6 @@ export interface IHomeProps {
 }
 
 export default function Home({ onOpenProject, onDeleteProject, onRenameProject }: IHomeProps) {
-  const [, setLocation] = useLocation();
   const [recentProjects, setRecentProjects] = useState<any[]>([]);
   const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -190,7 +187,6 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
     if (onOpenProject) {
       onOpenProject(data.id);
     }
-    setLocation(`/edit/${data.id}`);
   }
 
   /**

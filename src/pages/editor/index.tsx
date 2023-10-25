@@ -42,7 +42,6 @@ import fileManager from '@/service/file';
 import Empty from '@/pages/editor/empty';
 import { debounce } from 'lodash';
 import { DataNode } from 'antd/es/tree';
-import { useLocation, useParams } from 'wouter';
 import { DSLStoreContext } from '@/hooks/context';
 import PanelTab, { PanelType } from '@/pages/editor/panel-tab';
 import { ComponentId } from '@/types';
