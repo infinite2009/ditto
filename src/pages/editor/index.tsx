@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 import {
   CollisionDescriptor,
   CollisionDetection,
@@ -85,14 +85,14 @@ const tabsItems = [
   }
 ];
 
-const dslStore = DSLStore.createInstance();
-
 export interface IEditorProps {
   onPreview: (projectId: string) => void;
   onPreviewClose: (projectId: string) => void;
+  store: DSLStore;
+  style?: CSSProperties;
 }
 
-export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
+export default function Editor({ onPreview, onPreviewClose, store: dslStore, style }: IEditorProps) {
   const searchParams = new URLSearchParams(window.location.search);
   const [, setLocation] = useLocation();
   const params = useParams();
@@ -130,7 +130,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
     });
     fetchProjectData().then();
     fetchCurrentProject();
-  }, [params]);
+  }, []);
 
   useEffect(() => {
     if (currentProject) {
@@ -687,7 +687,7 @@ export default function Editor({ onPreview, onPreviewClose }: IEditorProps) {
   }
 
   return (
-    <div className={styles.main}>
+    <div className={styles.main} style={style}>
       <div className={styles.topBar}>
         <PanelTab onSelect={handleTogglePanel} />
         <Toolbar onDo={handleOnDo} />

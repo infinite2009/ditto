@@ -20,14 +20,13 @@ type FormValue = {
 };
 
 export default class DSLStore {
-  private static instance = new DSLStore();
   private totalFormConfig: Record<string, IFormConfig>;
   dsl: IPageSchema;
   selectedComponent: IComponentSchema;
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
   currentParentNode: IComponentSchema | IPageSchema | null = null;
 
-  private constructor(dsl: IPageSchema | undefined = undefined) {
+  constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
     if (dsl) {
       this.initDSL(dsl);
@@ -73,13 +72,6 @@ export default class DSLStore {
       }
     });
     return result;
-  }
-
-  static createInstance(dsl: IPageSchema | undefined = undefined) {
-    if (dsl) {
-      DSLStore.instance.initDSL(dsl);
-    }
-    return DSLStore.instance;
   }
 
   initDSL(dsl: IPageSchema) {
@@ -476,4 +468,16 @@ export default class DSLStore {
 
     return componentSchema;
   }
+
+  /**
+   * 撤销
+   * @private
+   */
+  private undo() {}
+
+  /**
+   * 重做
+   * @private
+   */
+  private redo() {}
 }

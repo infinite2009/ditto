@@ -1,14 +1,11 @@
 import React, { useEffect } from 'react';
 import PageRenderer from '@/pages/components/page-renderer';
-import DSLStore from '@/service/dsl-store';
 import fileManager from '@/service/file';
 import { message } from 'antd';
 import { useSearch } from 'wouter/use-location';
 
 export default function Preview() {
   const search = useSearch();
-
-  const dslStore = DSLStore.createInstance();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

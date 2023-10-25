@@ -6,14 +6,16 @@ import Preview from '@/pages/preview';
 import fileManager from '@/service/file';
 import CustomTitleBar from '@/components/custom-title-bar';
 import { ProjectInfo } from '@/types/app-data';
+import DSLStore from '@/service/dsl-store';
 
 function App() {
   const [showUI, setShowUI] = useState<boolean>(false);
   const [openedProjects, setOpenedProjects] = useState<ProjectInfo[]>([]);
   const [currentProject, setCurrentProject] = useState<string>('');
   const [previewProjects, setPreviewProjects] = useState<string[]>([]);
+  const [editorDict, setEditorDict] = useState<Record<string, any>>({});
 
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
 
   useEffect(() => {
     init();
@@ -38,6 +40,9 @@ function App() {
     const currentProject = fileManager.fetchCurrentProjectId();
     setCurrentProject(currentProject);
     if (currentProject) {
+      if (!(currentProject in editorDict)) {
+        setEditorDict(Object.assign({ ...editorDict }, { [currentProject]: new DSLStore() }));
+      }
       setLocation(`/edit/${currentProject}`);
     }
   }
@@ -91,6 +96,20 @@ function App() {
     fetchOpenedProjects();
   }
 
+  function renderEditorTabs() {
+    return Object.entries(editorDict).map(([key, value]) => {
+      return (
+        <Editor
+          key={key}
+          onPreview={handlePreviewProject}
+          onPreviewClose={handlePreviewProjectClose}
+          store={value}
+          style={`/edit/${key}` === location ? undefined : { display: 'none' }}
+        />
+      );
+    });
+  }
+
   return showUI ? (
     <div>
       <CustomTitleBar
@@ -103,9 +122,7 @@ function App() {
         <Route path="/">
           <Redirect to="/home" />
         </Route>
-        <Route path="/edit/:projectId">
-          <Editor onPreview={handlePreviewProject} onPreviewClose={handlePreviewProjectClose} />
-        </Route>
+        <Route path="/edit/:projectId">{renderEditorTabs()}</Route>
         <Route path="/home">
           <Home
             onOpenProject={handleOpeningProject}

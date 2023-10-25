@@ -338,7 +338,7 @@ class FileManager {
       await createDir(folder, { dir: BaseDirectory.Document });
       const documentPath = await documentDir();
       const projectPath = await join(documentPath, folder);
-      const dslStoreService = DSLStore.createInstance();
+      const dslStoreService = new DSLStore();
       const fileName = '未命名页面';
       dslStoreService.createEmptyPage(fileName, '');
       const filePath = await join(folder, `${fileName}.ditto`);
