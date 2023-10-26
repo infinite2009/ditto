@@ -1,7 +1,7 @@
 import styles from './index.module.less';
 import { Divider, Radio, Select, Space } from 'antd';
 import PageAction from '@/types/page-action';
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   ClearOutlined,
   DesktopOutlined,
@@ -15,6 +15,8 @@ import {
   YoutubeOutlined
 } from '@ant-design/icons';
 import classNames from 'classnames';
+import { DSLStoreContext } from '@/hooks/context';
+import { observer } from 'mobx-react-lite';
 
 export interface PageActionEvent {
   type: PageAction;
@@ -23,12 +25,13 @@ export interface PageActionEvent {
 
 interface IToolbarProps {
   onDo: (e: PageActionEvent) => void;
-  disabledButtons: string[];
 }
 
 const { Option } = Select;
 
-export default function Toolbar({ onDo, disabledButtons }: IToolbarProps) {
+export default observer(({ onDo }: IToolbarProps) => {
+  const dslStore = useContext(DSLStoreContext);
+
   function handleUndo() {
     if (onDo) {
       onDo({
@@ -119,10 +122,10 @@ export default function Toolbar({ onDo, disabledButtons }: IToolbarProps) {
     }
   }
 
-  function calClassNames(btnName: string) {
+  function calClassNames(disabled: boolean) {
     return classNames({
       [styles.iconBtn]: true,
-      [styles.disabled]: disabledButtons?.includes(btnName)
+      [styles.disabled]: disabled
     });
   }
 
@@ -152,8 +155,8 @@ export default function Toolbar({ onDo, disabledButtons }: IToolbarProps) {
     <div className={styles.main}>
       <div className={styles.leftBtnWrapper}>
         <Divider type="vertical" style={{ marginLeft: 0, borderColor: '#F1F2F3' }} />
-        <UndoOutlined className={calClassNames('undo')} onClick={handleUndo} />
-        <RedoOutlined className={calClassNames('redo')} onClick={handleRedo} />
+        <UndoOutlined className={calClassNames(!dslStore.canUndo)} onClick={handleUndo} />
+        <RedoOutlined className={calClassNames(!dslStore.canRedo)} onClick={handleRedo} />
         <Divider className={styles.divider} type="vertical" />
         <DesktopOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('pc')} />
         <TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('tablet')} />
@@ -240,4 +243,4 @@ export default function Toolbar({ onDo, disabledButtons }: IToolbarProps) {
       </div>
     </div>
   );
-}
+});

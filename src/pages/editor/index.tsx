@@ -93,8 +93,6 @@ export interface IEditorProps {
 
 export default function Editor({ onPreview, onPreviewClose, store: dslStore, style }: IEditorProps) {
   const searchParams = new URLSearchParams(window.location.search);
-  const [, setLocation] = useLocation();
-  const params = useParams();
 
   const [, setActiveId] = useState<string>('');
   const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
@@ -577,7 +575,6 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
     if (!currentProject) {
       return;
     }
-    setLocation(`/preview/${currentProject.id}`);
   }
 
   async function handleOnDo(e: PageActionEvent) {
@@ -586,8 +583,10 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
         openPageCreationModal();
         break;
       case PageAction.redo:
+        dslStore.redo();
         break;
       case PageAction.undo:
+        dslStore.undo();
         break;
       case PageAction.exportCode:
         handleExportingPageCodeFile().then();
@@ -687,11 +686,11 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
 
   return (
     <div className={styles.main} style={style}>
-      <div className={styles.topBar}>
-        <PanelTab onSelect={handleTogglePanel} />
-        <Toolbar onDo={handleOnDo} />
-      </div>
       <DSLStoreContext.Provider value={dslStore}>
+        <div className={styles.topBar}>
+          <PanelTab onSelect={handleTogglePanel} />
+          <Toolbar onDo={handleOnDo} />
+        </div>
         <div className={styles.editArea}>
           <DndContext
             collisionDetection={customDetection}

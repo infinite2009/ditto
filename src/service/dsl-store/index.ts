@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, toJS } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateId, generateSlotId, hyphenToCamelCase, typeOf } from '@/util';
@@ -11,6 +11,7 @@ import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IFormConfig from '@/types/form-config';
 import { CSSProperties, ReactNode } from 'react';
 import { isArray, isObject, mergeWith } from 'lodash';
+import { detailedDiff } from 'deep-object-diff';
 
 type FormValue = {
   style: CSSProperties;
@@ -20,20 +21,46 @@ type FormValue = {
   children: ReactNode;
 };
 
+function execute(target: any, name: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+  descriptor.value = function (...args: any[]) {
+    const oldDsl = toJS(this.dsl);
+    const result = originalMethod.apply(this, args);
+    const newDsl = toJS(this.dsl);
+    const diff = detailedDiff(newDsl, oldDsl);
+    if (diff && Object.keys(diff).length > 0) {
+      this.undoStack.push(diff);
+    }
+    this.snapshotList.push(oldDsl);
+    this.redoStack = [];
+    return result;
+  };
+}
+
 export default class DSLStore {
   dsl: IPageSchema;
   selectedComponent: IComponentSchema;
   anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
   currentParentNode: IComponentSchema | IPageSchema | null = null;
   private totalFormConfig: Record<string, IFormConfig>;
-  private undoList: any[] = [];
-  private redoList: any[] = [];
+  private undoStack: any[] = [];
+  private redoStack: any[] = [];
+
+  private snapshotList: any[] = [];
 
   constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
     if (dsl) {
       this.initDSL(dsl);
     }
+  }
+
+  get canUndo() {
+    return this.undoStack.length > 0;
+  }
+
+  get canRedo() {
+    return this.redoStack.length > 0;
   }
 
   get formConfigOfSelectedComponent() {
@@ -221,6 +248,7 @@ export default class DSLStore {
   /**
    * 插入一个新的组件
    */
+  @execute
   insertComponent(parentId: string, name: string, dependency: string, insertIndex = -1) {
     this.currentParentNode = this.fetchComponentInDSL(parentId);
     if (this.currentParentNode) {
@@ -248,6 +276,7 @@ export default class DSLStore {
    * @param id
    * @param removeIndex
    */
+  @execute
   deleteComponent(id: ComponentId, removeIndex = true): IComponentSchema | null {
     const { componentIndexes } = this.dsl;
     const component = componentIndexes[id];
@@ -262,6 +291,7 @@ export default class DSLStore {
     return null;
   }
 
+  @execute
   moveComponent(parentId: string, childId: string, insertIndex = -1) {
     this.currentParentNode = this.fetchComponentInDSL(parentId);
     if (this.currentParentNode) {
@@ -297,6 +327,7 @@ export default class DSLStore {
     }
   }
 
+  @execute
   updateComponentProps(propsPartial: Record<string, any>) {
     const props = this.dsl.props[this.selectedComponent.id];
     Object.keys(propsPartial).forEach(key => {
@@ -474,38 +505,39 @@ export default class DSLStore {
 
   /**
    * 撤销
-   * @private
    */
-  private undo() {
-    const diff = this.undoList.pop();
+  undo() {
+    const diff = this.undoStack.pop();
     if (!diff) {
       return;
     }
-    this.mergeDiff(diff);
+    this.mergeDiffAndProcessNewDiff(diff, this.redoStack);
   }
 
   /**
    * 重做
-   * @private
    */
-  private redo() {
-    const diff = this.redoList.pop();
+  redo() {
+    const diff = this.redoStack.pop();
     if (!diff) {
       return;
     }
-    this.mergeDiff(diff);
+    this.mergeDiffAndProcessNewDiff(diff, this.undoStack);
   }
 
-  private mergeDiff(diff: {
-    added?: Record<string, any>;
-    updated?: Record<string, any>;
-    deleted?: Record<string, any>;
-  }) {
-    const { added, updated, deleted } = diff;
+  private mergeDiffAndProcessNewDiff(
+    diff: {
+      added?: Record<string, any>;
+      updated?: Record<string, any>;
+      deleted?: Record<string, any>;
+    },
+    diffStack: any[]
+  ) {
+    const oldDsl = toJS(this.dsl);
+    const { added, updated, deleted } = toJS(diff);
     if (added) {
-      mergeWith(this.dsl, diff, (objValue: any, srcValue: any) => {
-        debugger;
-        if (isArray(objValue)) {
+      mergeWith(this.dsl, added, (objValue: any, srcValue: any) => {
+        if (isArray(objValue) && !isObject(srcValue)) {
           Object.keys(srcValue).forEach(key => {
             objValue[key as unknown as number] = srcValue[key];
           });
@@ -513,28 +545,47 @@ export default class DSLStore {
         }
       });
     }
+
     if (updated) {
-      mergeWith(this.dsl, diff, (objValue: any, srcValue: any, key: string, obj: any, src: any, stack: any[]) => {
-        if (isArray(objValue)) {
-          Object.keys(srcValue).forEach(key => {
-            objValue[key as unknown as number] = srcValue[key];
-          });
-          return objValue;
+      mergeWith(
+        this.dsl,
+        updated,
+        function customizer(objValue: any, srcValue: any, objKey: string, obj: any, src: any, stack: any[]) {
+          if (isArray(objValue) && isObject(srcValue)) {
+            Object.keys(srcValue).forEach(key => {
+              objValue[key as unknown as number] = mergeWith(
+                objValue[key as unknown as number],
+                srcValue[key],
+                customizer
+              );
+            });
+            return objValue;
+          }
         }
-      });
+      );
     }
     if (deleted) {
-      mergeWith(this.dsl, diff, (objValue: any, srcValue: any, key: string, obj: any, src: any, stack: any[]) => {
-        if (isArray(objValue)) {
-          return objValue.filter((item, index) => !(index in srcValue));
-        } else if (isObject(objValue)) {
-          Object.keys(srcValue).forEach(key => {
-            if (srcValue[key] === undefined) {
-              delete (objValue as Record<string, any>)[key];
-            }
-          });
+      mergeWith(
+        this.dsl,
+        deleted,
+        function customizer(objValue: any, srcValue: any, objKey: string, obj: any, src: any, stack: any[]) {
+          if (isArray(objValue)) {
+            return objValue.filter((item, index) => !(index in srcValue));
+          } else if (isObject(objValue) && isObject(srcValue)) {
+            Object.keys(srcValue).forEach(key => {
+              if (srcValue[key] === undefined) {
+                delete (objValue as Record<string, any>)[key];
+              } else {
+                mergeWith(objValue[key], srcValue[key], customizer);
+              }
+            });
+            return objValue;
+          }
         }
-      });
+      );
     }
+    const newDsl = toJS(this.dsl);
+    const newDiff = detailedDiff(newDsl, oldDsl);
+    diffStack.push(newDiff);
   }
 }
