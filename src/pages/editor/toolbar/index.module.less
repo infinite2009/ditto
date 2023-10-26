@@ -39,6 +39,12 @@
 //  }
 //}
 
+.disabled() {
+  color: #C9CCD0;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
 .iconBtn {
   margin: 0 8px;
   padding: 0 4px;
@@ -57,8 +63,7 @@
     }
   }
   &.disabled {
-    color: #C9CCD0;
-    pointer-events: none;
+    .disabled();
   }
   &:hover {
     background-color: #F6F7F8;
@@ -69,6 +74,11 @@
   .lateral();
   flex-grow: 1;
   flex-shrink: 0;
+  &.disabled {
+    .iconBtn {
+      .disabled();
+    }
+  }
 }
 
 .rightBtnWrapper {

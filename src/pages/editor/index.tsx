@@ -101,6 +101,9 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
   const [currentFile, setCurrentFile] = useState<string>('');
   const [selectedFolder, setSelectedFolder] = useState<string>('');
   const [leftPanelType, setLeftPanelType] = useState<PanelType>(PanelType.file);
+  const [leftPanelVisible, setLeftPanelVisible] = useState<boolean>(true);
+  const [rightPanelVisible, setRightPanelVisible] = useState<boolean>(true);
+  const [showDesign, setShowDesign] = useState<boolean>(true);
 
   const [form] = useForm();
 
@@ -577,6 +580,15 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
     }
   }
 
+  function toggleExpandingCanvas() {
+    setLeftPanelVisible(!leftPanelVisible);
+    setRightPanelVisible(!rightPanelVisible);
+  }
+
+  function toggleDesignAndCode(showDesign: boolean) {
+    setShowDesign(showDesign);
+  }
+
   async function handleOnDo(e: PageActionEvent) {
     switch (e.type) {
       case PageAction.createPage:
@@ -603,6 +615,12 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
       case PageAction.openProject:
         await fileManager.openLocalProject();
         await fetchProjectData();
+        break;
+      case PageAction.expandCanvas:
+        toggleExpandingCanvas();
+        break;
+      case PageAction.changeView:
+        toggleDesignAndCode(e?.payload?.showDesign);
         break;
     }
   }
@@ -687,45 +705,62 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
     }
   }
 
+  function renderDesignSection() {
+    return (
+      <>
+        <DndContext
+          collisionDetection={customDetection}
+          sensors={sensors}
+          measuring={{
+            droppable: {
+              strategy: MeasuringStrategy.Always
+            }
+          }}
+          modifiers={[snapCenterToCursor]}
+          onDragStart={handleDraggingStart}
+          onDragMove={handleDraggingMove}
+          onDragEnd={handleDraggingEnd}
+          onDragCancel={handleDraggingCancel}
+        >
+          <div className={styles.draggableArea}>
+            <div className={styles.panel} style={leftPanelVisible ? undefined : { width: 0, overflow: 'hidden' }}>
+              {renderLeftPanel()}
+            </div>
+            <div className={styles.canvas}>
+              <div className={styles.canvasInner}>{currentFile ? <PageRenderer mode="edit" /> : <Empty />}</div>
+            </div>
+          </div>
+          {createPortal(
+            <DragOverlay dropAnimation={dropAnimation}>
+              <div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>
+            </DragOverlay>,
+            document.body
+          )}
+        </DndContext>
+        <div className={styles.formPanel} style={rightPanelVisible ? undefined : { width: 0, overflow: 'hidden' }}>
+          <FormPanel />
+        </div>
+      </>
+    );
+  }
+
+  function renderCodeSection() {
+    return <div>code works!</div>;
+  }
+
   return (
     <div className={styles.main} style={style}>
       <DSLStoreContext.Provider value={dslStore}>
         <div className={styles.topBar}>
-          <PanelTab onSelect={handleTogglePanel} />
+          {showDesign ? (
+            <PanelTab
+              onSelect={handleTogglePanel}
+              style={leftPanelVisible ? undefined : { width: 0, overflow: 'hidden', margin: 0, padding: 0 }}
+            />
+          ) : null}
           <Toolbar onDo={handleOnDo} />
         </div>
-        <div className={styles.editArea}>
-          <DndContext
-            collisionDetection={customDetection}
-            sensors={sensors}
-            measuring={{
-              droppable: {
-                strategy: MeasuringStrategy.Always
-              }
-            }}
-            modifiers={[snapCenterToCursor]}
-            onDragStart={handleDraggingStart}
-            onDragMove={handleDraggingMove}
-            onDragEnd={handleDraggingEnd}
-            onDragCancel={handleDraggingCancel}
-          >
-            <div className={styles.draggableArea}>
-              <div className={styles.panel}>{renderLeftPanel()}</div>
-              <div className={styles.canvas}>
-                <div className={styles.canvasInner}>{currentFile ? <PageRenderer mode="edit" /> : <Empty />}</div>
-              </div>
-            </div>
-            {createPortal(
-              <DragOverlay dropAnimation={dropAnimation}>
-                <div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>
-              </DragOverlay>,
-              document.body
-            )}
-          </DndContext>
-          <div className={styles.formPanel}>
-            <FormPanel />
-          </div>
-        </div>
+        <div className={styles.editArea}>{showDesign ? renderDesignSection() : renderCodeSection()}</div>
       </DSLStoreContext.Provider>
 
       <Modal

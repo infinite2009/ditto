@@ -1,4 +1,5 @@
 @gap: 10px;
+@panelWidth: 200px;
 
 .main {
   display: flex;
@@ -25,7 +26,8 @@
 }
 
 .panel {
-  width: 200px;
+  width: @panelWidth;
+  transition: width .25s ease-in-out;
 }
 
 .canvas {
@@ -52,9 +54,11 @@
 .formPanel {
   flex-shrink: 0;
   width: 320px;
+  transition: width .25s ease-in-out;
 }
 
 .pagePanel {
+  width: @panelWidth;
   height: 240px;
   border-bottom: 1px solid #dbdbdb;
   overflow: auto;

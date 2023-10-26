@@ -1,7 +1,7 @@
 import styles from './index.module.less';
 import { Divider, Radio, Select, Space } from 'antd';
 import PageAction from '@/types/page-action';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   ClearOutlined,
   DownloadOutlined,
@@ -14,6 +14,7 @@ import {
 import classNames from 'classnames';
 import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react-lite';
+import { RadioChangeEvent } from 'antd/es/radio/interface';
 
 export interface PageActionEvent {
   type: PageAction;
@@ -28,6 +29,8 @@ const { Option } = Select;
 
 export default observer(({ onDo }: IToolbarProps) => {
   const dslStore = useContext(DSLStoreContext);
+
+  const [view, setView] = useState<'code' | 'design'>('design');
 
   function handleUndo() {
     if (onDo) {
@@ -113,10 +116,16 @@ export default observer(({ onDo }: IToolbarProps) => {
     // TODO: 展示布局
   }
 
-  function handleChangeMode() {
+  function handleChangeView({ target: { value } }: RadioChangeEvent) {
     if (onDo) {
-      onDo({ type: PageAction.changeView });
+      onDo({
+        type: PageAction.changeView,
+        payload: {
+          showDesign: value === 'design'
+        }
+      });
     }
+    setView(value);
   }
 
   function calClassNames(disabled: boolean) {
@@ -148,9 +157,16 @@ export default observer(({ onDo }: IToolbarProps) => {
     }
   }
 
+  function calcIconClassNames() {
+    return classNames({
+      [styles.leftBtnWrapper]: true,
+      [styles.disabled]: view === 'code'
+    });
+  }
+
   return (
     <div className={styles.main}>
-      <div className={styles.leftBtnWrapper}>
+      <div className={calcIconClassNames()}>
         <Divider type="vertical" style={{ marginLeft: 0, borderColor: '#F1F2F3' }} />
         <UndoOutlined className={calClassNames(!dslStore.canUndo)} onClick={handleUndo} />
         <RedoOutlined className={calClassNames(!dslStore.canRedo)} onClick={handleRedo} />
@@ -159,6 +175,7 @@ export default observer(({ onDo }: IToolbarProps) => {
         {/*<TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('tablet')} />*/}
         {/*<MobileOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('phone')} />*/}
         <Select
+          disabled={view !== 'design'}
           value={1280}
           style={{ width: 100 }}
           bordered={false}
@@ -192,6 +209,7 @@ export default observer(({ onDo }: IToolbarProps) => {
           </Option>
         </Select>
         <Select
+          disabled={view !== 'design'}
           value={1}
           style={{ width: 100 }}
           bordered={false}
@@ -232,7 +250,7 @@ export default observer(({ onDo }: IToolbarProps) => {
             { label: '设计', value: 'design' },
             { label: '源码', value: 'code' }
           ]}
-          onChange={handleChangeMode}
+          onChange={handleChangeView}
           defaultValue="design"
           optionType="button"
           buttonStyle="solid"
