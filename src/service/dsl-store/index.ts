@@ -28,9 +28,14 @@ function execute(target: any, name: string, descriptor: PropertyDescriptor) {
     const result = originalMethod.apply(this, args);
     const newDsl = toJS(this.dsl);
     const diff = detailedDiff(newDsl, oldDsl);
-    if (diff && Object.keys(diff).length > 0) {
-      this.undoStack.push(diff);
+    if (!diff) {
+      return;
     }
+    const { added, updated, deleted } = diff;
+    if (Object.keys(added).length === 0 && Object.keys(updated).length === 0 && Object.keys(deleted).length === 0) {
+      return;
+    }
+    this.undoStack.push(diff);
     this.snapshotList.push(oldDsl);
     this.redoStack = [];
     return result;
