@@ -4,13 +4,10 @@ import PageAction from '@/types/page-action';
 import React, { useContext } from 'react';
 import {
   ClearOutlined,
-  DesktopOutlined,
   DownloadOutlined,
   ExpandOutlined,
   LayoutOutlined,
-  MobileOutlined,
   RedoOutlined,
-  TabletOutlined,
   UndoOutlined,
   YoutubeOutlined
 } from '@ant-design/icons';
@@ -158,9 +155,9 @@ export default observer(({ onDo }: IToolbarProps) => {
         <UndoOutlined className={calClassNames(!dslStore.canUndo)} onClick={handleUndo} />
         <RedoOutlined className={calClassNames(!dslStore.canRedo)} onClick={handleRedo} />
         <Divider className={styles.divider} type="vertical" />
-        <DesktopOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('pc')} />
-        <TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('tablet')} />
-        <MobileOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('phone')} />
+        {/*<DesktopOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('pc')} />*/}
+        {/*<TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('tablet')} />*/}
+        {/*<MobileOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('phone')} />*/}
         <Select
           value={1280}
           style={{ width: 100 }}
