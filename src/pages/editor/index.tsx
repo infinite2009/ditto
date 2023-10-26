@@ -588,6 +588,9 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
       case PageAction.undo:
         dslStore.undo();
         break;
+      case PageAction.clear:
+        dslStore.clearPage();
+        break;
       case PageAction.exportCode:
         handleExportingPageCodeFile().then();
         break;

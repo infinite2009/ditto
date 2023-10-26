@@ -219,9 +219,9 @@ export default observer(({ onDo }: IToolbarProps) => {
           </Option>
         </Select>
         <Divider className={styles.divider} type="vertical" />
-        <ClearOutlined className={styles.iconBtn} onClick={() => handleClear} />
-        <ExpandOutlined className={styles.iconBtn} onClick={() => handleExpand} />
-        <LayoutOutlined className={styles.iconBtn} style={{ marginLeft: 'auto' }} onClick={() => handleShowLayout} />
+        <ClearOutlined className={styles.iconBtn} onClick={handleClear} />
+        <ExpandOutlined className={styles.iconBtn} onClick={handleExpand} />
+        <LayoutOutlined className={styles.iconBtn} style={{ marginLeft: 'auto' }} onClick={handleShowLayout} />
         <Divider type="vertical" style={{ marginRight: 0, borderColor: '#F1F2F3' }} />
       </div>
       <div className={styles.rightBtnWrapper}>

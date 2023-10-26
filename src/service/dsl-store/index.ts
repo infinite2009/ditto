@@ -119,6 +119,18 @@ export default class DSLStore {
     this.anchor = anchor;
   }
 
+  /**
+   *
+   */
+  @execute
+  clearPage() {
+    if (Object.keys(this.dsl.componentIndexes).length === 1) {
+      console.log('画布已清空，不再执行');
+      return;
+    }
+    this.createEmptyPage(this.dsl.name);
+  }
+
   createEmptyPage(name: string, desc = '') {
     const pageId = generateId();
     this.dsl = {
