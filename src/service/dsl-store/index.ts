@@ -36,7 +36,6 @@ function execute(target: any, name: string, descriptor: PropertyDescriptor) {
       return;
     }
     this.undoStack.push(diff);
-    this.snapshotList.push(oldDsl);
     this.redoStack = [];
     return result;
   };
@@ -50,9 +49,6 @@ export default class DSLStore {
   private totalFormConfig: Record<string, IFormConfig>;
   private undoStack: any[] = [];
   private redoStack: any[] = [];
-
-  private snapshotList: any[] = [];
-
   constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
     if (dsl) {
