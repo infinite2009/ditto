@@ -17,6 +17,7 @@ import cloneDeep from 'lodash/cloneDeep';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
+  scale?: number;
 }
 
 export default observer((props: IPageRendererProps) => {
@@ -26,7 +27,7 @@ export default observer((props: IPageRendererProps) => {
 
   const dslStore = useContext(DSLStoreContext);
 
-  const { mode = 'preview' } = props;
+  const { mode = 'preview', scale } = props;
 
   const dslObj = toJS(dslStore.dsl);
 
@@ -263,7 +264,8 @@ export default observer((props: IPageRendererProps) => {
       rootProps = {
         id: componentId,
         childrenId,
-        parentId: dslObj.id
+        parentId: dslObj.id,
+        scale
       };
     }
 

@@ -210,7 +210,7 @@ export default observer(({ onDo }: IToolbarProps) => {
         </Select>
         <Select
           disabled={view !== 'design'}
-          value={1}
+          defaultValue={1}
           style={{ width: 100 }}
           bordered={false}
           optionLabelProp="label"

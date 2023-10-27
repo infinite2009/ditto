@@ -104,6 +104,7 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
   const [leftPanelVisible, setLeftPanelVisible] = useState<boolean>(true);
   const [rightPanelVisible, setRightPanelVisible] = useState<boolean>(true);
   const [showDesign, setShowDesign] = useState<boolean>(true);
+  const [scale, setScale] = useState<number>(1);
 
   const [form] = useForm();
 
@@ -589,6 +590,10 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
     setShowDesign(showDesign);
   }
 
+  function togglePageScale(scale: number) {
+    setScale(scale || 1);
+  }
+
   async function handleOnDo(e: PageActionEvent) {
     switch (e.type) {
       case PageAction.createPage:
@@ -621,6 +626,9 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
         break;
       case PageAction.changeView:
         toggleDesignAndCode(e?.payload?.showDesign);
+        break;
+      case PageAction.changeScale:
+        togglePageScale(e?.payload?.scale);
         break;
     }
   }
@@ -727,7 +735,9 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
               {renderLeftPanel()}
             </div>
             <div className={styles.canvas}>
-              <div className={styles.canvasInner}>{currentFile ? <PageRenderer mode="edit" /> : <Empty />}</div>
+              <div className={styles.canvasInner}>
+                {currentFile ? <PageRenderer mode="edit" scale={scale} /> : <Empty />}
+              </div>
             </div>
           </div>
           {createPortal(
