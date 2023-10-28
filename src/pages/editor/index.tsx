@@ -1,4 +1,4 @@
-import React, { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
+import React, { CSSProperties, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import {
   CollisionDescriptor,
   CollisionDetection,
@@ -33,8 +33,6 @@ import { snapCenterToCursor } from '@dnd-kit/modifiers';
 import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
-import DSLStore from '@/service/dsl-store';
-import { toJS } from 'mobx';
 import { save } from '@tauri-apps/api/dialog';
 import { dirname, documentDir, join, sep } from '@tauri-apps/api/path';
 import ComponentFeature from '@/types/component-feature';
@@ -42,12 +40,13 @@ import fileManager from '@/service/file';
 import Empty from '@/pages/editor/empty';
 import { debounce } from 'lodash';
 import { DataNode } from 'antd/es/tree';
-import { DSLStoreContext } from '@/hooks/context';
 import PanelTab, { PanelType } from '@/pages/editor/panel-tab';
 import { ComponentId } from '@/types';
 import ComponentTree from '@/pages/editor/component-tree';
 import { ProjectInfo } from '@/types/app-data';
 import CompositionPanel from '@/pages/editor/composition-panel';
+import { DSLStoreContext } from '@/hooks/context';
+import { observer } from 'mobx-react-lite';
 
 const collisionOffset = 4;
 
@@ -87,11 +86,10 @@ const tabsItems = [
 export interface IEditorProps {
   onPreview: (projectId: string) => void;
   onPreviewClose: (projectId: string) => void;
-  store: DSLStore;
   style?: CSSProperties;
 }
 
-export default function Editor({ onPreview, onPreviewClose, store: dslStore, style }: IEditorProps) {
+export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => {
   const searchParams = new URLSearchParams(window.location.search);
 
   const [, setActiveId] = useState<string>('');
@@ -107,6 +105,8 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
   const [scale, setScale] = useState<number>(1);
 
   const [form] = useForm();
+
+  const dslStore = useContext(DSLStoreContext);
 
   const insertIndexRef = useRef<number>(-1);
   const anchorCoordinatesRef = useRef<IAnchorCoordinates>();
@@ -541,7 +541,7 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
       });
     }
     if (selectedFile) {
-      await fileManager.savePageDSLFile(selectedFile, toJS(dslStore.dsl));
+      await fileManager.savePageDSLFile(selectedFile, dslStore.dsl);
       setCurrentFile(selectedFile);
       fetchProjectData();
     }
@@ -550,7 +550,7 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
   const saveFile = debounce(async () => {
     if (currentFile) {
       filePathRef.current = await dirname(currentFile);
-      await fileManager.savePageDSLFile(currentFile, toJS(dslStore.dsl));
+      await fileManager.savePageDSLFile(currentFile, dslStore.dsl);
     }
   }, 1000);
 
@@ -571,7 +571,7 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
     });
     if (selectedFile) {
       filePathRef.current = await dirname(selectedFile);
-      await exportPageCodeFile(selectedFile, toJS(dslStore.dsl));
+      await exportPageCodeFile(selectedFile, dslStore.dsl);
     }
   }
 
@@ -760,18 +760,16 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
 
   return (
     <div className={styles.main} style={style}>
-      <DSLStoreContext.Provider value={dslStore}>
-        <div className={styles.topBar}>
-          {showDesign ? (
-            <PanelTab
-              onSelect={handleTogglePanel}
-              style={leftPanelVisible ? undefined : { width: 0, overflow: 'hidden', margin: 0, padding: 0 }}
-            />
-          ) : null}
-          <Toolbar onDo={handleOnDo} />
-        </div>
-        <div className={styles.editArea}>{showDesign ? renderDesignSection() : renderCodeSection()}</div>
-      </DSLStoreContext.Provider>
+      <div className={styles.topBar}>
+        {showDesign ? (
+          <PanelTab
+            onSelect={handleTogglePanel}
+            style={leftPanelVisible ? undefined : { width: 0, overflow: 'hidden', margin: 0, padding: 0 }}
+          />
+        ) : null}
+        <Toolbar onDo={handleOnDo} />
+      </div>
+      <div className={styles.editArea}>{showDesign ? renderDesignSection() : renderCodeSection()}</div>
 
       <Modal
         title="创建页面"
@@ -794,4 +792,4 @@ export default function Editor({ onPreview, onPreviewClose, store: dslStore, sty
       <DropAnchor store={dslStore} />
     </div>
   );
-}
+});

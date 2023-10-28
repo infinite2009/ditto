@@ -8,12 +8,11 @@ import { observer } from 'mobx-react-lite';
 import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import { ComponentId, PropsId, TemplateInfo } from '@/types';
-import { toJS } from 'mobx';
 import IActionSchema from '@/types/action.schema';
 import ActionType from '@/types/action-type';
 import { open } from '@tauri-apps/api/shell';
-import { DSLStoreContext } from '@/hooks/context';
 import cloneDeep from 'lodash/cloneDeep';
+import { DSLStoreContext } from '@/hooks/context';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -28,8 +27,6 @@ export default observer((props: IPageRendererProps) => {
   const dslStore = useContext(DSLStoreContext);
 
   const { mode = 'preview', scale } = props;
-
-  const dslObj = toJS(dslStore.dsl);
 
   const [transferredComponentState, componentStateDispatch] = useReducer<
     Reducer<Record<ComponentId, Record<PropsId, any>>, any>
@@ -114,11 +111,11 @@ export default observer((props: IPageRendererProps) => {
       }
     } else if (valueSource === 'handler') {
       // 获取 eventSchema
-      const eventSchema = dslObj.events[value as string];
+      const eventSchema = dslStore.dsl.events[value as string];
       if (eventSchema) {
-        const handlerSchema = dslObj.handlers[eventSchema.handlerRef];
+        const handlerSchema = dslStore.dsl.handlers[eventSchema.handlerRef];
         if (handlerSchema) {
-          const actionsSchema = handlerSchema.actionRefs.map(ref => dslObj.actions[ref]);
+          const actionsSchema = handlerSchema.actionRefs.map(ref => dslStore.dsl.actions[ref]);
           wrapper.value = () => {
             actionsSchema.forEach(action => {
               executeComponentEvent(action);
@@ -217,7 +214,7 @@ export default observer((props: IPageRendererProps) => {
     if (nodeRef.isText) {
       return nodeRef.current;
     }
-    const node = dslObj.componentIndexes[nodeRef.current];
+    const node = dslStore.dsl.componentIndexes[nodeRef.current];
 
     // 检查组件的运行时显隐情况，如果是隐藏状态，则不予渲染。（通过组件 props 控制的组件不在此列）
     if (componentVisibilityState[node.id] === false) {
@@ -225,7 +222,7 @@ export default observer((props: IPageRendererProps) => {
     }
 
     // 处理组件
-    const { props = {} } = dslObj;
+    const { props = {} } = dslStore.dsl;
     const {
       parentId,
       configName,
@@ -264,7 +261,7 @@ export default observer((props: IPageRendererProps) => {
       rootProps = {
         id: componentId,
         childrenId,
-        parentId: dslObj.id,
+        parentId: dslStore.dsl.id,
         scale
       };
     }
@@ -314,7 +311,7 @@ export default observer((props: IPageRendererProps) => {
   }
 
   function render() {
-    return recursivelyRenderTemplate(dslObj.child, true, true);
+    return recursivelyRenderTemplate(dslStore.dsl.child, true, true);
   }
 
   return dslStore.dsl ? <>{render()}</> : <div>未获得有效的DSL</div>;

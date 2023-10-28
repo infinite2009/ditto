@@ -5,6 +5,7 @@ import fileManager from '@/service/file';
 import CustomTitleBar from '@/components/custom-title-bar';
 import { ProjectInfo } from '@/types/app-data';
 import DSLStore from '@/service/dsl-store';
+import { DSLStoreContext } from '@/hooks/context';
 
 function App() {
   const [showUI, setShowUI] = useState<boolean>(false);
@@ -95,13 +96,13 @@ function App() {
   function renderEditorTabs() {
     return Object.entries(editorDict).map(([key, value]) => {
       return (
-        <Editor
-          key={key}
-          onPreview={handlePreviewProject}
-          onPreviewClose={handlePreviewProjectClose}
-          store={value}
-          style={key === currentProject ? undefined : { display: 'none' }}
-        />
+        <DSLStoreContext.Provider key={key} value={value}>
+          <Editor
+            onPreview={handlePreviewProject}
+            onPreviewClose={handlePreviewProjectClose}
+            style={key === currentProject ? undefined : { display: 'none' }}
+          />
+        </DSLStoreContext.Provider>
       );
     });
   }
