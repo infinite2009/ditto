@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import componentConfig from '@/data/component-dict';
+import { platform } from '@tauri-apps/api/os';
 
 export function toUpperCase(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -80,4 +81,9 @@ export function findNodePath(root: any, target: string, key = 'key'): string[] {
   }
 
   return [];
+}
+
+export async function isMac() {
+  const os = await platform();
+  return os === 'darwin';
 }
