@@ -789,7 +789,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
           </Form.Item>
         </Form>
       </Modal>
-      <DropAnchor store={dslStore} />
+      <DropAnchor />
     </div>
   );
 });

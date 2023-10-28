@@ -1,16 +1,13 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useContext } from 'react';
 import { observer } from 'mobx-react-lite';
-import DSLStore from '@/service/dsl-store';
+import { DSLStoreContext } from '@/hooks/context';
 
-export interface IDropAnchorProps {
-  store: DSLStore;
-}
-
-export default observer(({ store }: IDropAnchorProps) => {
+export default observer(() => {
+  const dslStore = useContext(DSLStoreContext);
   const style: CSSProperties = {
     position: 'fixed',
     zIndex: 99,
-    ...store.anchor,
+    ...dslStore!.anchor,
     backgroundColor: '#f00'
   };
   return <div style={style} />;
