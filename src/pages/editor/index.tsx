@@ -573,7 +573,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     });
     if (selectedFile) {
       filePathRef.current = await dirname(selectedFile);
-      await exportPageCodeFile(selectedFile, dslStore.dsl);
+      await exportPageCodeFile.apply(fileManager, [selectedFile, dslStore.dsl]);
     }
   }
 
