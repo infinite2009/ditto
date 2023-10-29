@@ -8,6 +8,7 @@ import {
   ExpandOutlined,
   LayoutOutlined,
   RedoOutlined,
+  SaveOutlined,
   UndoOutlined,
   YoutubeOutlined
 } from '@ant-design/icons';
@@ -164,10 +165,19 @@ export default observer(({ onDo }: IToolbarProps) => {
     });
   }
 
+  function handleSave() {
+    if (onDo) {
+      onDo({
+        type: PageAction.saveFile
+      });
+    }
+  }
+
   return (
     <div className={styles.main}>
       <div className={calcIconClassNames()}>
         <Divider type="vertical" style={{ marginLeft: 0, borderColor: '#F1F2F3' }} />
+        <SaveOutlined className={styles.iconBtn} onClick={handleSave} />
         <UndoOutlined className={calClassNames(!dslStore.canUndo)} onClick={handleUndo} />
         <RedoOutlined className={calClassNames(!dslStore.canRedo)} onClick={handleRedo} />
         <Divider className={styles.divider} type="vertical" />
