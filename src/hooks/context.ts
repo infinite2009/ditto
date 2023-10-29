@@ -1,4 +1,6 @@
 import React from 'react';
 import DSLStore from '@/service/dsl-store';
 
-export const DSLStoreContext = React.createContext<DSLStore | undefined>(undefined);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+export const DSLStoreContext = React.createContext<DSLStore>();

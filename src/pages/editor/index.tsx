@@ -48,6 +48,7 @@ import CompositionPanel from '@/pages/editor/composition-panel';
 import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react-lite';
 import ComponentSchemaRef from '@/types/component-schema-ref';
+import IComponentSchema from '@/types/component.schema';
 
 const collisionOffset = 4;
 
@@ -178,7 +179,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   function handleDraggingMove({ over }: DragOverEvent) {
     if (over) {
       if (anchorCoordinatesRef.current) {
-        dslStore?.setAnchorCoordinates(anchorCoordinatesRef.current);
+        dslStore.setAnchorCoordinates(anchorCoordinatesRef.current);
       }
     } else {
       hideAnchor();
@@ -190,12 +191,12 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       const { dndType, name, dependency } = active.data.current;
       if (dndType === 'insert') {
         try {
-          dslStore?.insertComponent(over.id as string, name, dependency, insertIndexRef.current);
+          dslStore.insertComponent(over.id as string, name, dependency, insertIndexRef.current);
         } catch (e) {
           message.error((e as any).toString()).then();
         }
       } else {
-        dslStore?.moveComponent(over.id as string, active.id as string, insertIndexRef.current);
+        dslStore.moveComponent(over.id as string, active.id as string, insertIndexRef.current);
       }
     }
     resetInsertIndexRef();
@@ -519,7 +520,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   async function createFile() {
     const { name = '新建页面', desc } = form.getFieldsValue();
-    dslStore?.createEmptyPage(name, desc);
+    dslStore.createEmptyPage(name, desc);
     let selectedFile;
     if (selectedFolder) {
       selectedFile = [selectedFolder, sep, name, '.ditto'].join('');
@@ -542,7 +543,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       });
     }
     if (selectedFile) {
-      await fileManager.savePageDSLFile(selectedFile, dslStore!.dsl);
+      await fileManager.savePageDSLFile(selectedFile, dslStore.dsl);
       setCurrentFile(selectedFile);
       fetchProjectData();
     }
@@ -551,7 +552,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const saveFile = debounce(async () => {
     if (currentFile) {
       filePathRef.current = await dirname(currentFile);
-      await fileManager.savePageDSLFile(currentFile, dslStore!.dsl);
+      await fileManager.savePageDSLFile(currentFile, dslStore.dsl);
     }
   }, 1000);
 
@@ -572,7 +573,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     });
     if (selectedFile) {
       filePathRef.current = await dirname(selectedFile);
-      await exportPageCodeFile(selectedFile, dslStore!.dsl);
+      await exportPageCodeFile(selectedFile, dslStore.dsl);
     }
   }
 
@@ -601,13 +602,13 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         openPageCreationModal();
         break;
       case PageAction.redo:
-        dslStore?.redo();
+        dslStore.redo();
         break;
       case PageAction.undo:
-        dslStore?.undo();
+        dslStore.undo();
         break;
       case PageAction.clear:
-        dslStore?.clearPage();
+        dslStore.clearPage();
         break;
       case PageAction.exportCode:
         handleExportingPageCodeFile().then();
@@ -645,7 +646,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     }
     const content = await fileManager.openFile(page, currentProject.id);
     if (content) {
-      dslStore?.initDSL(JSON.parse(content));
+      dslStore.initDSL(JSON.parse(content));
     } else {
       message.error('文件已损坏!');
     }
@@ -674,10 +675,18 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     console.log('选中的节点: ', componentId);
   }
 
+  /**
+   * 由于技术上文字节点具有特殊性（会被当作文字组件的 children props 处理），故不会在组件树里出现
+   */
   function generateComponentTreeData(): any[] {
-    if (!dslStore?.dsl) {
+    if (!dslStore.dsl) {
       return [];
     }
+
+    const hasNonTextChild = (node: IComponentSchema) => {
+      return node.children?.some(item => !item.isText);
+    };
+
     const recursiveMap = (data: any[]) => {
       return data
         .filter((item: ComponentSchemaRef) => !item.isText)
@@ -685,23 +694,18 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
           const componentSchema = dsl.componentIndexes[item.current];
           const node: Record<string, any> = {
             key: componentSchema.id,
-            title: componentSchema.name,
-            isLeaf: !(componentSchema.children?.length > 0)
+            title: componentSchema.name
           };
-          if (componentSchema.children?.length > 0) {
+          if (hasNonTextChild(componentSchema)) {
             node.children = recursiveMap(componentSchema.children);
+          } else {
+            node.isLeaf = true;
           }
           return node;
         });
     };
-    const { dsl } = dslStore!;
-    return [
-      {
-        key: dsl.id,
-        title: dsl.name,
-        children: recursiveMap([dsl.child])
-      }
-    ];
+    const { dsl } = dslStore;
+    return recursiveMap([dsl.child]);
   }
 
   /**

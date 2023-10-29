@@ -7,7 +7,7 @@ export default observer(() => {
   const style: CSSProperties = {
     position: 'fixed',
     zIndex: 99,
-    ...dslStore!.anchor,
+    ...dslStore.anchor,
     backgroundColor: '#f00'
   };
   return <div style={style} />;
