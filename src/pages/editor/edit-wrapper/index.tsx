@@ -3,6 +3,10 @@ import React, { CSSProperties, useContext, useEffect, useMemo, useState } from '
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import ComponentFeature from '@/types/component-feature';
 import { DSLStoreContext } from '@/hooks/context';
+import classNames from 'classnames';
+
+import styles from './index.module.less';
+import { observer } from 'mobx-react-lite';
 
 export interface IEditorProps {
   id: string;
@@ -13,7 +17,7 @@ export interface IEditorProps {
   childrenStyle?: CSSProperties;
 }
 
-export default function EditWrapper({
+export default observer(function EditWrapper({
   id,
   parentId,
   childrenId,
@@ -223,10 +227,8 @@ export default function EditWrapper({
 
     return {
       opacity: isDragging ? 0.5 : 1,
-      outline: isOver ? '2px solid #7193f1' : undefined,
-      outlineOffset: isOver ? -2 : undefined,
-      transition: 'border 0.5s ease-in-out',
-      boxSizing: 'border-box',
+      // outline: isOver ? '2px solid #7193f1' : undefined,
+      // outlineOffset: isOver ? -2 : undefined,
       backgroundColor,
       ...result
     } as CSSProperties;
@@ -246,13 +248,28 @@ export default function EditWrapper({
       break;
   }
 
-  function handleClick() {
+  function handleClick(e: { stopPropagation: () => void }) {
     dslStore.selectComponent(id);
+    e.stopPropagation();
   }
 
+  const className = classNames({
+    [styles.selected]: id === dslStore.selectedComponent?.id,
+    [styles.isOver]: isOver,
+    [styles.main]: true
+  });
+
   return (
-    <div id={id} ref={setNodeRef} {...listeners} {...attributes} style={styleState} onClick={handleClick}>
+    <div
+      className={className}
+      id={id}
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      style={styleState}
+      onClick={handleClick}
+    >
       {children}
     </div>
   );
-}
+});
