@@ -86,7 +86,7 @@ export default class DSLStore {
       event: {},
       data: {}
     };
-    Object.keys(props).forEach(key => {
+    Object.keys(props || {}).forEach(key => {
       const propSchema: IPropsSchema = props[key];
       const { value, category } = propSchema;
       if (result[category]) {
@@ -108,6 +108,7 @@ export default class DSLStore {
   initDSL(dsl: IPageSchema) {
     if (dsl) {
       this.dsl = dsl;
+      this.selectComponent(this.dsl.child.current);
     }
   }
 
@@ -511,35 +512,7 @@ export default class DSLStore {
   }
 
   private createPageRoot() {
-    if (this.dsl.componentStats.pageRoot === undefined) {
-      this.dsl.componentStats.pageRoot = 0;
-    } else {
-      this.dsl.componentStats.pageRoot++;
-    }
-    const componentId = `pageRoot${this.dsl.componentStats.pageRoot}`;
-    const componentConfig = fetchComponentConfig('pageRoot', 'antd');
-
-    this.dsl.componentIndexes[componentId] = {
-      id: componentId,
-      parentId: (this.currentParentNode?.id || this.dsl.id) as string,
-      schemaType: 'component',
-      name: this.calculateComponentName(componentConfig),
-      configName: componentConfig.configName,
-      dependency: componentConfig.dependency,
-      propsRefs: [],
-      children: []
-    };
-
-    const componentSchema = this.dsl.componentIndexes[componentId];
-
-    if (componentConfig.importName) {
-      componentSchema.importName = componentConfig.importName;
-    }
-    if (componentConfig.callingName) {
-      componentSchema.callingName = componentConfig.callingName;
-    }
-
-    return componentSchema;
+    return this.createComponent('pageRoot', 'antd');
   }
 
   private mergeDiffAndProcessNewDiff(

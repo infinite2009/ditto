@@ -1,6 +1,7 @@
 import { ComponentId } from '@/types';
 import { Tree } from 'antd';
-import { Key } from 'react';
+import { Key, useContext } from 'react';
+import { DSLStoreContext } from '@/hooks/context';
 
 export interface IComponentTreeProps {
   data: any[];
@@ -9,6 +10,8 @@ export interface IComponentTreeProps {
 }
 
 export default function ComponentTree({ data, onSelect, onCancelSelect }: IComponentTreeProps) {
+  const dslStore = useContext(DSLStoreContext);
+
   function handleSelectingComponent(selectedKeys: Key[], e: { selected: boolean; node: any }) {
     // TODO: 待实现
     if (selectedKeys.length) {
@@ -22,5 +25,5 @@ export default function ComponentTree({ data, onSelect, onCancelSelect }: ICompo
     }
   }
 
-  return <Tree treeData={data} onSelect={handleSelectingComponent} />;
+  return <Tree selectedKeys={[dslStore.selectedComponent?.id]} treeData={data} onSelect={handleSelectingComponent} />;
 }
