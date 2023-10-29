@@ -5,10 +5,8 @@ import IComponentSchema from '@/types/component.schema';
 import { ComponentId, ImportType, PropsId } from '@/types';
 import IPropsSchema from '@/types/props.schema';
 import ComponentSchemaRef from '@/types/component-schema-ref';
-import IActionSchema from '@/types/action.schema';
 import ActionType from '@/types/action-type';
 import IHandlerSchema from '@/types/handler.schema';
-import IEventSchema from '@/types/event.schema';
 import EventTrigger from '@/types/event-trigger';
 
 export interface ITSXOptions {
@@ -503,17 +501,19 @@ export default class ReactCodeGenerator {
         }
       } else if (valueSource === 'handler') {
         const eventSchema = this.dsl.events[value as string];
-        const handlerSchema = this.dsl.handlers[eventSchema.handlerRef];
-        const handlerInfo = this.generateHandlerInfo(handlerSchema, eventSchema.triggerType, result.stateInfo);
-        // 添加 props 赋值
-        result.propsStrArr.push(
-          this.generatePropAssignmentExpWithVariable({
-            name: ref,
-            variableName: handlerInfo.functionName,
-            variableType: valueType
-          })
-        );
-        result.handlerInfo[handlerInfo.functionName] = handlerInfo;
+        if (eventSchema) {
+          const handlerSchema = this.dsl.handlers[eventSchema.handlerRef];
+          const handlerInfo = this.generateHandlerInfo(handlerSchema, eventSchema.triggerType, result.stateInfo);
+          // 添加 props 赋值
+          result.propsStrArr.push(
+            this.generatePropAssignmentExpWithVariable({
+              name: ref,
+              variableName: handlerInfo.functionName,
+              variableType: valueType
+            })
+          );
+          result.handlerInfo[handlerInfo.functionName] = handlerInfo;
+        }
       } else if (valueSource === 'computed') {
         // TODO:  生成 useMemo
         const variableName = this.generateVariableName(componentId, name, 'state');
