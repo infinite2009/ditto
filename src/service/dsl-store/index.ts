@@ -471,8 +471,34 @@ export default class DSLStore {
     this.selectedComponent = this.dsl.componentIndexes[componentId];
   }
 
+  unselectComponent() {
+    this.selectComponent(this.dsl.child.current);
+  }
+
   initTotalFormConfig(formConfig: Record<string, IFormConfig>) {
     this.totalFormConfig = formConfig;
+  }
+
+  /**
+   * 撤销
+   */
+  undo() {
+    const diff = this.undoStack.pop();
+    if (!diff) {
+      return;
+    }
+    this.mergeDiffAndProcessNewDiff(diff, this.redoStack);
+  }
+
+  /**
+   * 重做
+   */
+  redo() {
+    const diff = this.redoStack.pop();
+    if (!diff) {
+      return;
+    }
+    this.mergeDiffAndProcessNewDiff(diff, this.undoStack);
   }
 
   private calculateComponentName(config: IComponentConfig) {
@@ -514,28 +540,6 @@ export default class DSLStore {
     }
 
     return componentSchema;
-  }
-
-  /**
-   * 撤销
-   */
-  undo() {
-    const diff = this.undoStack.pop();
-    if (!diff) {
-      return;
-    }
-    this.mergeDiffAndProcessNewDiff(diff, this.redoStack);
-  }
-
-  /**
-   * 重做
-   */
-  redo() {
-    const diff = this.redoStack.pop();
-    if (!diff) {
-      return;
-    }
-    this.mergeDiffAndProcessNewDiff(diff, this.undoStack);
   }
 
   private mergeDiffAndProcessNewDiff(
