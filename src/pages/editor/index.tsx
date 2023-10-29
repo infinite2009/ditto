@@ -666,13 +666,12 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     setLeftPanelType(type);
   }
 
-  function handleCancelSelectingComponent(componentId: ComponentId) {
-    // TODO: 待实现
+  function handleCancelSelectingComponent() {
+    dslStore.unselectComponent();
   }
 
   function handleSelectingComponent(componentId: ComponentId) {
-    // TODO：待实现
-    console.log('选中的节点: ', componentId);
+    dslStore.selectComponent(componentId);
   }
 
   /**
