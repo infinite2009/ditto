@@ -6,10 +6,9 @@ import BasicForm from '@/pages/editor/form-panel/basic-form';
 import EventForm from '@/pages/editor/form-panel/event-form';
 import DataForm from '@/pages/editor/form-panel/data-form';
 import StyleForm from '@/pages/editor/form-panel/style-form';
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react';
 import { DSLStoreContext } from '@/hooks/context';
 import styles from './index.module.less';
-import { toJS } from 'mobx';
 
 export default observer(() => {
   const dslStore = useContext(DSLStoreContext);

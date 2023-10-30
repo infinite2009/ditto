@@ -1,5 +1,5 @@
 import React, { CSSProperties, useContext } from 'react';
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react';
 import { DSLStoreContext } from '@/hooks/context';
 
 export default observer(() => {
