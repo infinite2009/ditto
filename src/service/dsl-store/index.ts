@@ -209,6 +209,7 @@ export default class DSLStore {
       parentId: (this.currentParentNode?.id || this.dsl.id) as string,
       schemaType: 'component',
       name: this.calculateComponentName(componentConfig),
+      displayName: `${componentConfig.title}${this.dsl.componentStats[name]}`,
       configName: componentConfig.configName,
       dependency: componentConfig.dependency,
       propsRefs: [],

@@ -693,7 +693,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
           const componentSchema = dsl.componentIndexes[item.current];
           const node: Record<string, any> = {
             key: componentSchema.id,
-            title: componentSchema.name
+            title: componentSchema.displayName || componentSchema.name
           };
           if (hasNonTextChild(componentSchema)) {
             node.children = recursiveMap(componentSchema.children);
