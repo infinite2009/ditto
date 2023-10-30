@@ -362,7 +362,7 @@ export default class DSLStore {
   }
 
   createEmptyContainer(customId = '', ext: { [key: string]: any } | undefined = undefined) {
-    return this.createComponent('Flex', 'antd', customId, ext);
+    return this.createComponent('VerticalFlex', 'antd', customId, ext);
   }
 
   setTemplateTo(tplInfo: TemplateInfo, propsConfig: { [key: string]: IPropsConfigItem }) {
@@ -422,6 +422,9 @@ export default class DSLStore {
         }
       } else {
         const node = this.createEmptyContainer();
+        if (!node) {
+          debugger;
+        }
         parent[key] = {
           current: node.id,
           isText: false
