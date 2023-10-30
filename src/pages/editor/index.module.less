@@ -1,6 +1,12 @@
 @gap: 10px;
 @panelWidth: 200px;
 
+.lateral() {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
 .main {
   display: flex;
   flex-direction: column;
@@ -67,4 +73,39 @@
 .componentTree {
   flex-grow: 1;
   overflow: auto;
+}
+
+.shortKey {
+  color: #9499A0;
+}
+
+.dropdownContainer {
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.10), 0 0 4px 0 rgba(0, 0, 0, 0.06);
+  background-color: #fff;
+  :global {
+    .ant-dropdown-menu {
+      all: initial;
+      .ant-dropdown-menu-item {
+        all: initial;
+      }
+    }
+  }
+}
+
+.dropDownItem {
+  .lateral();
+  justify-content: space-between;
+  border-radius: 6px;
+  padding: 6px 8px;
+  width: 164px;
+  font-size: 12px;
+  line-height: 20px;
+  //font-family: PingFang SC, serif;
+  color: #18191C;
+  &:hover {
+    background-color: #F6F7F8;
+    cursor: pointer;
+  }
 }

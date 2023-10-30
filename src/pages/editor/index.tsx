@@ -14,7 +14,7 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core';
-import { Form, Input, message, Modal } from 'antd';
+import { Dropdown, Form, Input, message, Modal } from 'antd';
 
 import Toolbar, { PageActionEvent } from '@/pages/editor/toolbar';
 import PagePanel from '@/pages/editor/page-panel';
@@ -674,6 +674,26 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     dslStore.selectComponent(componentId);
   }
 
+  function handleClickDropDownMenu(key: string, componentSchema: IComponentSchema) {
+    // TODO
+    switch (key) {
+      case 'copy':
+        message.warning('复制待实现');
+        break;
+      case 'paste':
+        message.warning('粘贴待实现');
+        break;
+      case 'rename':
+        message.warning('重命名待实现');
+        break;
+      case 'delete':
+        message.warning('删除待实现');
+        break;
+      default:
+        break;
+    }
+  }
+
   /**
    * 由于技术上文字节点具有特殊性（会被当作文字组件的 children props 处理），故不会在组件树里出现
    */
@@ -686,6 +706,66 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       return node.children?.some(item => !item.isText);
     };
 
+    const generateDropDownMenu = (componentSchema: IComponentSchema) => {
+      return {
+        items: [
+          {
+            key: 'copy',
+            label: (
+              <div className={styles.dropDownItem}>
+                <span>复制</span>
+                <span className={styles.shortKey}>⌘ C</span>
+              </div>
+            )
+          },
+          {
+            key: 'paste',
+            label: (
+              <div className={styles.dropDownItem}>
+                <span>粘贴</span>
+                <span className={styles.shortKey}>⌘ V</span>
+              </div>
+            )
+          },
+          {
+            key: 'rename',
+            label: (
+              <div className={styles.dropDownItem}>
+                <span>重命名</span>
+                <span className={styles.shortKey}>⌘ R</span>
+              </div>
+            )
+          },
+          {
+            type: 'divider' as unknown as any
+          },
+          {
+            key: 'delete',
+            label: (
+              <div className={styles.dropDownItem}>
+                <span>删除</span>
+                <span className={styles.shortKey}>Del</span>
+              </div>
+            )
+          }
+        ],
+        onClick: ({ key }: { key: string }) => handleClickDropDownMenu(key, componentSchema)
+      };
+    };
+
+    const renderTreeNodeTitle = (componentSchema: IComponentSchema) => {
+      return (
+        <Dropdown
+          menu={generateDropDownMenu(componentSchema)}
+          overlayClassName={styles.dropdownContainer}
+          destroyPopupOnHide
+          trigger={['contextMenu']}
+        >
+          <div>{componentSchema.displayName || componentSchema.name}</div>
+        </Dropdown>
+      );
+    };
+
     const recursiveMap = (data: any[]) => {
       return data
         .filter((item: ComponentSchemaRef) => !item.isText)
@@ -693,7 +773,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
           const componentSchema = dsl.componentIndexes[item.current];
           const node: Record<string, any> = {
             key: componentSchema.id,
-            title: componentSchema.displayName || componentSchema.name
+            title: renderTreeNodeTitle(componentSchema)
           };
           if (hasNonTextChild(componentSchema)) {
             node.children = recursiveMap(componentSchema.children);
