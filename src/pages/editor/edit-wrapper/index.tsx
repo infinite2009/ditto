@@ -6,7 +6,7 @@ import { DSLStoreContext } from '@/hooks/context';
 import classNames from 'classnames';
 
 import styles from './index.module.less';
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react';
 
 export interface IEditorProps {
   id: string;

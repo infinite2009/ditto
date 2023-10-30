@@ -46,7 +46,7 @@ import ComponentTree from '@/pages/editor/component-tree';
 import { ProjectInfo } from '@/types/app-data';
 import CompositionPanel from '@/pages/editor/composition-panel';
 import { DSLStoreContext } from '@/hooks/context';
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import IComponentSchema from '@/types/component.schema';
 
