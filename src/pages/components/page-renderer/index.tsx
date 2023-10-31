@@ -1,3 +1,4 @@
+import { toJS } from 'mobx';
 import React, { CSSProperties, FC, PropsWithChildren, Reducer, useContext, useReducer } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
@@ -24,7 +25,7 @@ export default observer((props: IPageRendererProps) => {
     return null;
   }
 
-  const dslStore = useContext(DSLStoreContext);
+  const dslStore = toJS(useContext(DSLStoreContext));
 
   const { mode = 'preview', scale } = props;
 
