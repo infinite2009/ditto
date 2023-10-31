@@ -5,8 +5,12 @@ import ComponentFeature from '@/types/component-feature';
 import { DSLStoreContext } from '@/hooks/context';
 import classNames from 'classnames';
 
-import styles from './index.module.less';
 import { observer } from 'mobx-react';
+import ComponentContextMenu from '@/pages/editor/component-context-menu';
+import IComponentSchema from '@/types/component.schema';
+import { message } from 'antd';
+import { COMPONENT_DROPDOWN_CONTEXT_MENUS_WITHOUT_DELETE } from '@/data/constant';
+import styles from './index.module.less';
 
 export interface IEditorProps {
   id: string;
@@ -15,6 +19,7 @@ export interface IEditorProps {
   children: React.ReactNode;
   feature?: ComponentFeature;
   childrenStyle?: CSSProperties;
+  undeletable?: boolean;
 }
 
 export default observer(function EditWrapper({
@@ -24,7 +29,8 @@ export default observer(function EditWrapper({
   children,
   feature,
   // 不要赋值默认值
-  childrenStyle
+  childrenStyle,
+  undeletable = false
 }: IEditorProps) {
   const [styleState, setStyleState] = useState<CSSProperties>({});
   const dslStore = useContext(DSLStoreContext);
@@ -259,17 +265,42 @@ export default observer(function EditWrapper({
     [styles.main]: true
   });
 
+  function handleClickContextMenu(key: string, data: IComponentSchema) {
+    switch (key) {
+      case 'copy':
+        message.warning('复制待实现');
+        break;
+      case 'paste':
+        message.warning('粘贴待实现');
+        break;
+      case 'rename':
+        message.warning('重命名待实现');
+        break;
+      case 'delete':
+        dslStore.deleteComponent(data.id);
+        break;
+      default:
+        break;
+    }
+  }
+
   return (
-    <div
-      className={className}
-      id={id}
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
-      style={styleState}
-      onClick={handleClick}
+    <ComponentContextMenu
+      data={dslStore.dsl.componentIndexes[id]}
+      onClick={handleClickContextMenu}
+      items={COMPONENT_DROPDOWN_CONTEXT_MENUS_WITHOUT_DELETE}
     >
-      {children}
-    </div>
+      <div
+        className={className}
+        id={id}
+        ref={setNodeRef}
+        {...listeners}
+        {...attributes}
+        style={styleState}
+        onClick={handleClick}
+      >
+        {children}
+      </div>
+    </ComponentContextMenu>
   );
 });

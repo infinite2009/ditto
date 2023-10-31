@@ -302,6 +302,7 @@ export default observer((props: IPageRendererProps) => {
         childrenId={childrenId}
         feature={feature}
         childrenStyle={componentProps?.style}
+        undeletable={isSlot}
       >
         {tpl}
       </EditWrapper>
