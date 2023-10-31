@@ -19,7 +19,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
   const [temporaryProjectName, setTemporaryProjectName] = useState<string>('');
 
   const inputRef = useRef<InputRef>(null);
-  const deleteFolder = useRef<boolean>(false);
+  const deleteFolder = useRef<boolean>(true);
 
   useEffect(() => {
     fetchRecentProjects();
