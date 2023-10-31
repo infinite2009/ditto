@@ -105,6 +105,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [rightPanelVisible, setRightPanelVisible] = useState<boolean>(true);
   const [showDesign, setShowDesign] = useState<boolean>(true);
   const [scale, setScale] = useState<number>(1);
+  const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
 
   const [form] = useForm();
 
@@ -165,7 +166,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       height: 0,
       width: 0
     };
-    dslStore.setAnchorCoordinates(anchorCoordinatesRef.current);
+    setAnchorStyle(anchorCoordinatesRef.current);
   }
 
   function resetInsertIndexRef() {
@@ -179,7 +180,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   function handleDraggingMove({ over }: DragOverEvent) {
     if (over) {
       if (anchorCoordinatesRef.current) {
-        dslStore.setAnchorCoordinates(anchorCoordinatesRef.current);
+        setAnchorStyle(anchorCoordinatesRef.current);
       }
     } else {
       hideAnchor();
@@ -873,6 +874,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     return <div>code works!</div>;
   }
 
+  console.log('editor rendered');
+
   return (
     <div className={styles.main} style={style}>
       <div className={styles.topBar}>
@@ -904,7 +907,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
           </Form.Item>
         </Form>
       </Modal>
-      <DropAnchor />
+      <DropAnchor style={anchorStyle} />
     </div>
   );
 });

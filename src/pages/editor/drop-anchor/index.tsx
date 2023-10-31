@@ -1,14 +1,15 @@
-import React, { CSSProperties, useContext } from 'react';
-import { observer } from 'mobx-react';
-import { DSLStoreContext } from '@/hooks/context';
+import React, { CSSProperties } from 'react';
 
-export default observer(() => {
-  const dslStore = useContext(DSLStoreContext);
-  const style: CSSProperties = {
+export interface IDropAnchorProps {
+  style: CSSProperties | undefined;
+}
+
+export default function DropAnchor({ style }: IDropAnchorProps) {
+  const syntheticStyle: CSSProperties = {
     position: 'fixed',
     zIndex: 99,
-    ...dslStore.anchor,
+    ...style,
     backgroundColor: '#f00'
   };
-  return <div style={style} />;
-});
+  return <div style={syntheticStyle} />;
+}
