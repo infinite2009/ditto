@@ -2,14 +2,14 @@
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
 import IPropsSchema from '@/types/props.schema';
-import { generateId, typeOf } from '@/util';
+import { generateId, hyphenToCamelCase, typeOf } from '@/util';
 import ComponentSchemaRef from '@/types/component-schema-ref';
-
+import { toJS } from 'mobx';
 export default class VueTransformer {
   dsl: IPageSchema;
   componentHanlderMap: Record<string, Record<string, (child: IComponentSchema) => void>>;
   constructor(dsl: IPageSchema) {
-    this.dsl = dsl;
+    this.dsl = toJS(dsl);
     // 处理不同组件，不同props处理方法的映射
     this.componentHanlderMap = {
       Tabs: {
@@ -37,9 +37,13 @@ export default class VueTransformer {
       },
     };
   }
+  generateId() {
+    return hyphenToCamelCase(generateId());
+  }
   transformDsl() {
     const { child, componentIndexes } = this.dsl;
     this.transformChildDsl(child);
+    // console.log(this.dsl);
     // writeFile(resolve(__dirname, './data.json'), JSON.stringify(this.dsl, null, 2), () => {
     //   console.log('writeFile');
     // });
@@ -50,8 +54,12 @@ export default class VueTransformer {
       const componentHanlderMap = this.componentHanlderMap;
       const nodeName = node.name as keyof typeof this.componentHanlderMap;
 
+
       if (componentHanlderMap[nodeName] && Array.isArray(node.propsRefs) && node.propsRefs.length > 0) {
         node.propsRefs.forEach(propsName => {
+          if (node.propsRefs) {
+            console.log(nodeName, propsName);
+          }
           if (componentHanlderMap[nodeName][propsName]) {
             componentHanlderMap[nodeName][propsName](node);
           }
@@ -114,7 +122,7 @@ export default class VueTransformer {
         if (!keyPathMatchResult) {
           return item;
         }
-        const newId = generateId();
+        const newId = this.generateId();
         // key 差异映射
         const itemProps = {
           key: item.key,
@@ -141,8 +149,7 @@ export default class VueTransformer {
       // 删除特定的数据
       delete componentProps.items.templateKeyPathsReg;
       componentProps.items.value = []; 
-
-      this.removeProps(node.propsRefs || [], 'items');
+      this.removeProps(node.propsRefs, 'items');
       return node.children;
     }
     return [];
@@ -164,7 +171,7 @@ export default class VueTransformer {
       const bodyCellProps = {
         "#bodyCell": "{ column, record }"
       };
-      const bodyCellId = `bodyCell_${generateId()}`;
+      const bodyCellId = `bodyCell_${this.generateId()}`;
       const bodyCell = this.createComponentDsl(bodyCellId, 'template', bodyCellProps);
       props[bodyCellId] =  this.createSimplePropsDsl(bodyCellId, bodyCellProps);
       componentIndexes[bodyCellId] = bodyCell;
@@ -178,7 +185,7 @@ export default class VueTransformer {
         if (!keyPathMatchResult) {
           return item;
         }
-        const newId = generateId();
+        const newId = this.generateId();
         // key 差异映射
         const itemProps = {
           'v-if': `column.key === '${item.key}'`,
@@ -216,7 +223,7 @@ export default class VueTransformer {
     const { props, componentIndexes } = this.dsl;
     const componentProps = props[node.id];
     const templateKeyPathsReg = componentProps[name].templateKeyPathsReg;
-    // console.log(node, templateKeyPathsReg, componentProps[name].value);
+    console.log(11111, name);
     if (!templateKeyPathsReg || templateKeyPathsReg.length === 0) {
       return;
     }
@@ -227,10 +234,11 @@ export default class VueTransformer {
       const keyPathMatchResult = templateKeyPathsReg.length > 0 && templateKeyPathsReg.find(pathObj => {
         return new RegExp(pathObj.path).test(currentKeyPath);
       });
+
       if (!keyPathMatchResult) {
         return;
       }
-      const newId = generateId();
+      const newId = this.generateId();
       // key 差异映射
       const itemProps = {
         [`#${name}`]: ``,
@@ -240,7 +248,9 @@ export default class VueTransformer {
       componentIndexes[newId] = template;
       node.children.push({current: newId, isText: false});
       template.children.push(item as ComponentSchemaRef);
+
       this.removeProps(node.propsRefs, name);
+      // console.log(node.propsRefs, name);
       delete componentProps[name];
     });
   }
@@ -267,7 +277,10 @@ export default class VueTransformer {
       node.dependency = 'ant-design-vue';
     }
   }
-  removeProps(props: string[], propsName: string) {
+  removeProps(props: string[] | undefined, propsName: string) {
+    if (!props) {
+      return;
+    }
     const index = props.findIndex(item => item === propsName);
     if (index > - 1) {
       props.splice(index, 1);
@@ -292,6 +305,7 @@ export default class VueTransformer {
         const value = props[key];
         newProps[key] = {
           "id": id,
+          "title": "",
           "schemaType": "props",
           "name": key,
           "category": "basic",
