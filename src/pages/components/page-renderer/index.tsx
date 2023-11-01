@@ -1,10 +1,10 @@
+import { toJS } from 'mobx';
 import React, { CSSProperties, FC, PropsWithChildren, Reducer, useContext, useReducer } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
 import EditWrapper from '@/pages/editor/edit-wrapper';
 import ComponentFeature from '@/types/component-feature';
-import { observer } from 'mobx-react-lite';
 import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import { ComponentId, PropsId, TemplateInfo } from '@/types';
@@ -13,6 +13,7 @@ import ActionType from '@/types/action-type';
 import { open } from '@tauri-apps/api/shell';
 import cloneDeep from 'lodash/cloneDeep';
 import { DSLStoreContext } from '@/hooks/context';
+import { observer } from 'mobx-react';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -24,7 +25,7 @@ export default observer((props: IPageRendererProps) => {
     return null;
   }
 
-  const dslStore = useContext(DSLStoreContext);
+  const dslStore = toJS(useContext(DSLStoreContext));
 
   const { mode = 'preview', scale } = props;
 
@@ -302,6 +303,7 @@ export default observer((props: IPageRendererProps) => {
         childrenId={childrenId}
         feature={feature}
         childrenStyle={componentProps?.style}
+        undeletable={isSlot}
       >
         {tpl}
       </EditWrapper>
@@ -313,6 +315,8 @@ export default observer((props: IPageRendererProps) => {
   function render() {
     return recursivelyRenderTemplate(dslStore.dsl.child, true, true);
   }
+
+  console.log('page rendered');
 
   return dslStore.dsl ? <>{render()}</> : <div>未获得有效的DSL</div>;
 });

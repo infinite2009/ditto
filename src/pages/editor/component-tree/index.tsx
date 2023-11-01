@@ -2,6 +2,7 @@ import { ComponentId } from '@/types';
 import { Tree } from 'antd';
 import { Key, useContext } from 'react';
 import { DSLStoreContext } from '@/hooks/context';
+import { observer } from 'mobx-react';
 
 export interface IComponentTreeProps {
   data: any[];
@@ -9,7 +10,7 @@ export interface IComponentTreeProps {
   onCancelSelect: (componentId: ComponentId) => void;
 }
 
-export default function ComponentTree({ data, onSelect, onCancelSelect }: IComponentTreeProps) {
+export default observer(function ComponentTree({ data, onSelect, onCancelSelect }: IComponentTreeProps) {
   const dslStore = useContext(DSLStoreContext);
 
   function handleSelectingComponent(selectedKeys: Key[], e: { selected: boolean; node: any }) {
@@ -26,4 +27,4 @@ export default function ComponentTree({ data, onSelect, onCancelSelect }: ICompo
   }
 
   return <Tree selectedKeys={[dslStore.selectedComponent?.id]} treeData={data} onSelect={handleSelectingComponent} />;
-}
+});

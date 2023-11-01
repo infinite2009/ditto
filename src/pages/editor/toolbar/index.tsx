@@ -14,7 +14,7 @@ import {
 } from '@ant-design/icons';
 import classNames from 'classnames';
 import { DSLStoreContext } from '@/hooks/context';
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react';
 import { RadioChangeEvent } from 'antd/es/radio/interface';
 
 export interface PageActionEvent {

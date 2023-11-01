@@ -9,6 +9,7 @@ import ComponentSchemaRef from '@/types/component-schema-ref';
 export default interface IComponentSchema extends ISchema {
   parentId: string;
   desc?: string;
+  displayName: string;
   configName?: string;
   importName?: string;
   // 调用名，如果导入的名字和调用的名字不一样，调用时用这个

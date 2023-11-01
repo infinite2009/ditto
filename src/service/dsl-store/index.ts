@@ -2,7 +2,6 @@ import { makeAutoObservable, toJS } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateId, generateSlotId, hyphenToCamelCase, typeOf } from '@/util';
-import IAnchorCoordinates from '@/types/anchor-coordinate';
 import cloneDeep from 'lodash/cloneDeep';
 import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
@@ -44,7 +43,6 @@ function execute(target: any, name: string, descriptor: PropertyDescriptor) {
 export default class DSLStore {
   dsl: IPageSchema;
   selectedComponent: IComponentSchema;
-  anchor: IAnchorCoordinates = { top: 0, left: 0, width: 0, height: 0 };
   currentParentNode: IComponentSchema | IPageSchema | null = null;
   private totalFormConfig: Record<string, IFormConfig>;
   private undoStack: any[] = [];
@@ -111,11 +109,6 @@ export default class DSLStore {
       this.selectComponent(this.dsl.child.current);
     }
   }
-
-  setAnchorCoordinates(anchor: IAnchorCoordinates) {
-    this.anchor = anchor;
-  }
-
   /**
    *
    */
@@ -209,6 +202,7 @@ export default class DSLStore {
       parentId: (this.currentParentNode?.id || this.dsl.id) as string,
       schemaType: 'component',
       name: this.calculateComponentName(componentConfig),
+      displayName: `${componentConfig.title}${this.dsl.componentStats[name]}`,
       configName: componentConfig.configName,
       dependency: componentConfig.dependency,
       propsRefs: [],
@@ -361,7 +355,7 @@ export default class DSLStore {
   }
 
   createEmptyContainer(customId = '', ext: { [key: string]: any } | undefined = undefined) {
-    return this.createComponent('Flex', 'antd', customId, ext);
+    return this.createComponent('VerticalFlex', 'antd', customId, ext);
   }
 
   setTemplateTo(tplInfo: TemplateInfo, propsConfig: { [key: string]: IPropsConfigItem }) {
@@ -421,6 +415,9 @@ export default class DSLStore {
         }
       } else {
         const node = this.createEmptyContainer();
+        if (!node) {
+          debugger;
+        }
         parent[key] = {
           current: node.id,
           isText: false

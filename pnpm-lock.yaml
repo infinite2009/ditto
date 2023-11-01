@@ -47,9 +47,9 @@ dependencies:
   mobx:
     specifier: ^6.10.2
     version: 6.10.2
-  mobx-react-lite:
-    specifier: ^4.0.5
-    version: 4.0.5(mobx@6.10.2)(react-dom@18.2.0)(react@18.2.0)
+  mobx-react:
+    specifier: ^9.0.1
+    version: 9.0.1(mobx@6.10.2)(react-dom@18.2.0)(react@18.2.0)
   nanoid:
     specifier: ^4.0.2
     version: 4.0.2
@@ -5436,6 +5436,25 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       use-sync-external-store: 1.2.0(react@18.2.0)
+    dev: false
+
+  /mobx-react@9.0.1(mobx@6.10.2)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-0idiElBgNMJg20YqGgHvYEnlqIJpPDQaOkxj2dHJIZeqCvUh+zBkBkMkpUFw/uEd1OdPUvT0y+AFBqsWIUAXww==}
+    peerDependencies:
+      mobx: ^6.9.0
+      react: ^16.8.0 || ^17 || ^18
+      react-dom: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      mobx: 6.10.2
+      mobx-react-lite: 4.0.5(mobx@6.10.2)(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /mobx@6.10.2:
