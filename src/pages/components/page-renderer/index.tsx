@@ -267,7 +267,7 @@ export default observer((props: IPageRendererProps) => {
       };
     }
 
-    const componentPropsWithoutMargin = cloneDeep(componentProps);
+    const componentPropsWithoutMargin = { ...componentProps, style: cloneDeep(componentProps.style) };
     const marginStyleNames: (keyof CSSProperties)[] = [
       'margin',
       'marginTop',
