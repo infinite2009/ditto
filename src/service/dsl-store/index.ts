@@ -286,8 +286,38 @@ export default class DSLStore {
    */
   @execute
   deleteComponent(id: ComponentId, removeIndex = true): IComponentSchema | null {
+    return this.deleteSubtree(id, removeIndex);
+  }
+
+  private deleteSubtree(id: ComponentId, removeIndex = true): IComponentSchema | null {
     const { componentIndexes } = this.dsl;
     const component = componentIndexes[id];
+    // 1. 如果存在子树，递归地删除子树
+    if (component.children.length) {
+      component.children.forEach(item => {
+        // 如果不是文本节点，递归地删除子树
+        if (!item.isText) {
+          this.deleteSubtree(item.current);
+        }
+      });
+    }
+
+    const flatKey = () => {};
+
+    // 2. 如果存在插槽，递归删除以插槽为根节点的子树
+    const propsDict = this.dsl.props[id];
+    component.propsRefs.forEach(ref => {
+      const propsSchema: IPropsSchema = propsDict[ref];
+      const { templateKeyPathsReg, name, valueType, value, valueSource } = propsSchema;
+      if (templateKeyPathsReg?.length) {
+      }
+    });
+    // 3. 删除 props
+    // 4. 删除 componentIndex
+    // 4. TODO: 删除 event
+    // 5. TODO: 删除 handler
+    // 6. TODO: 删除 action
+
     const parent = componentIndexes[component.parentId];
     if (parent) {
       parent.children = parent.children.filter(item => item.current !== id);
