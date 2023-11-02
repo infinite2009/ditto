@@ -1,7 +1,7 @@
 import { makeAutoObservable, toJS } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
-import { fetchComponentConfig, generateId, generateSlotId, hyphenToCamelCase, typeOf } from '@/util';
+import { fetchComponentConfig, flattenObject, generateId, generateSlotId, hyphenToCamelCase, typeOf } from '@/util';
 import cloneDeep from 'lodash/cloneDeep';
 import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
@@ -285,48 +285,8 @@ export default class DSLStore {
    * @param removeIndex
    */
   @execute
-  deleteComponent(id: ComponentId, removeIndex = true): IComponentSchema | null {
-    return this.deleteSubtree(id, removeIndex);
-  }
-
-  private deleteSubtree(id: ComponentId, removeIndex = true): IComponentSchema | null {
-    const { componentIndexes } = this.dsl;
-    const component = componentIndexes[id];
-    // 1. 如果存在子树，递归地删除子树
-    if (component.children.length) {
-      component.children.forEach(item => {
-        // 如果不是文本节点，递归地删除子树
-        if (!item.isText) {
-          this.deleteSubtree(item.current);
-        }
-      });
-    }
-
-    const flatKey = () => {};
-
-    // 2. 如果存在插槽，递归删除以插槽为根节点的子树
-    const propsDict = this.dsl.props[id];
-    component.propsRefs.forEach(ref => {
-      const propsSchema: IPropsSchema = propsDict[ref];
-      const { templateKeyPathsReg, name, valueType, value, valueSource } = propsSchema;
-      if (templateKeyPathsReg?.length) {
-      }
-    });
-    // 3. 删除 props
-    // 4. 删除 componentIndex
-    // 4. TODO: 删除 event
-    // 5. TODO: 删除 handler
-    // 6. TODO: 删除 action
-
-    const parent = componentIndexes[component.parentId];
-    if (parent) {
-      parent.children = parent.children.filter(item => item.current !== id);
-      if (removeIndex) {
-        delete componentIndexes[id];
-      }
-      return component;
-    }
-    return null;
+  deleteComponent(id: ComponentId): IComponentSchema | null {
+    return this.deleteSubtree(id);
   }
 
   @execute
@@ -345,8 +305,9 @@ export default class DSLStore {
           children.splice(insertIndex, 0, child);
         }
       } else {
-        const childComponent = this.deleteComponent(childId, false);
+        const childComponent = this.dsl.componentIndexes[childId];
         if (childComponent) {
+          this.removeReferenceFromParent(childId);
           const ref = {
             current: childComponent.id,
             isText: false
@@ -362,6 +323,92 @@ export default class DSLStore {
       }
     } else {
       throw new Error(`未找到有效的父节点：${parentId}`);
+    }
+  }
+
+  private deleteSubtree(id: ComponentId): IComponentSchema | null {
+    const { componentIndexes } = this.dsl;
+    const component = componentIndexes[id];
+
+    if (!component) {
+      return null;
+    }
+
+    // 1. 如果存在子树，递归地删除子树
+    if (component.children.length) {
+      component.children.forEach(item => {
+        // 如果不是文本节点，递归地删除子树
+        if (!item.isText) {
+          this.deleteSubtree(item.current);
+        }
+      });
+    }
+
+    // 2. 遍历每一个 prop，如果它存在插槽，递归删除以插槽为根节点的子树
+    const propsDict = this.dsl.props[id];
+    component.propsRefs.forEach(ref => {
+      const propsSchema: IPropsSchema = propsDict[ref];
+      const { templateKeyPathsReg, value } = propsSchema;
+      if (templateKeyPathsReg?.length) {
+        const flattenedObject = flattenObject(value);
+        Object.entries(flattenedObject).forEach(([key, val]) => {
+          const matchKeyPath = templateKeyPathsReg.some(regInfo => {
+            return new RegExp(regInfo.path).test(key);
+          });
+          if (matchKeyPath) {
+            this.deleteSubtree(val.id);
+          }
+        });
+      }
+    });
+
+    // 3. 删除 props
+    delete this.dsl.props[id];
+
+    // 4. 删除 action
+    const relatedActionIds = Object.entries(this.dsl.actions)
+      .filter(([actionId, action]) => {
+        return action.relatedComponentIds.includes(id);
+      })
+      .map(([actionId]) => actionId);
+    relatedActionIds.forEach(actionId => {
+      delete this.dsl.actions[actionId];
+    });
+
+    // 5. 删除 handler
+    const relatedHandlerIds = Object.entries(this.dsl.handlers)
+      .filter(([handlerId, handler]) => {
+        return relatedActionIds.some(actionId => {
+          return handler.actionRefs.includes(actionId);
+        });
+      })
+      .map(([handlerId]) => handlerId);
+    relatedHandlerIds.forEach(handlerId => delete this.dsl.handlers[handlerId]);
+
+    // 6. 删除 event
+    const relatedEventIds = Object.entries(this.dsl.events)
+      .filter(([eventId, event]) => {
+        return relatedHandlerIds.includes(eventId);
+      })
+      .map(([eventId, event]) => eventId);
+    relatedEventIds.forEach(eventId => delete this.dsl.events[eventId]);
+
+    // 7. 从父节点的 children 中删除对这个组件的引用
+    this.removeReferenceFromParent(id);
+
+    // 8. 从索引中删除组件信息
+    delete componentIndexes[id];
+
+    return component;
+  }
+
+  private removeReferenceFromParent(id: ComponentId): void {
+    const { componentIndexes } = this.dsl;
+    const component = componentIndexes[id];
+    // 从父节点的 children 中删除对这个组件的引用
+    const parent = componentIndexes[component.parentId];
+    if (parent) {
+      parent.children = parent.children.filter(item => item.current !== id);
     }
   }
 

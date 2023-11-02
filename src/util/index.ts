@@ -87,3 +87,20 @@ export async function isMac() {
   const os = await platform();
   return os === 'darwin';
 }
+
+export function flattenObject(obj: any, prefix = ''): Record<string, any> {
+  if (Array.isArray(obj)) {
+    return obj.reduce((acc, item, index) => {
+      const key = `${prefix}[${index}]`;
+      return { ...acc, ...flattenObject(item, key) };
+    }, {});
+  } else if (typeof obj === 'object' && obj !== null) {
+    return Object.keys(obj).reduce((acc, key) => {
+      const value = obj[key];
+      const newKey = prefix ? `${prefix}.${key}` : key;
+      return { ...acc, ...flattenObject(value, newKey) };
+    }, {});
+  } else {
+    return { [prefix]: obj };
+  }
+}
