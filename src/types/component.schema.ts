@@ -19,7 +19,7 @@ export default interface IComponentSchema extends ISchema {
   // 导入的相对路径，缺失时系统默认为 ''
   importRelativePath?: string;
   /**
-   * 导入类型：如果导入类型缺失，依照依照以下两种情况处理：
+   * 导入类型：如果导入类型缺失，依照以下两种情况处理：
    * 1. 如果导入相对路径缺失，按照 object 处理
    * 2. 如果导入相对路径存在，按照 default 处理
    */
