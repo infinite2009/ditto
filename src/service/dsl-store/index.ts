@@ -165,8 +165,7 @@ export default class DSLStore {
     if (customId) {
       componentId = customId;
     } else {
-      this.updateComponentStats(name);
-      componentId = hyphenToCamelCase(`${name}${this.dsl.componentStats[name]}`);
+      componentId = this.generateComponentIdByName(name);
     }
 
     const componentConfig = fetchComponentConfig(name, dependency);
@@ -648,5 +647,10 @@ export default class DSLStore {
     const newDsl = toJS(this.dsl);
     const newDiff = detailedDiff(newDsl, oldDsl);
     diffStack.push(newDiff);
+  }
+
+  private generateComponentIdByName(name: string): string {
+    this.updateComponentStats(name);
+    return hyphenToCamelCase(`${name}${this.dsl.componentStats[name]}`);
   }
 }
