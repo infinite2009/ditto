@@ -88,6 +88,12 @@ export async function isMac() {
   return os === 'darwin';
 }
 
+/**
+ * 扁平化对象，得到所有属性的 keyPath
+ *
+ * @param obj
+ * @param prefix
+ */
 export function flattenObject(obj: any, prefix = ''): Record<string, any> {
   if (Array.isArray(obj)) {
     return obj.reduce((acc, item, index) => {
