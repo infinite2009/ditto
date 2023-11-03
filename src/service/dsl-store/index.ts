@@ -492,9 +492,6 @@ export default class DSLStore {
         }
       } else {
         const node = this.createEmptyContainer();
-        if (!node) {
-          debugger;
-        }
         parent[key] = {
           current: node.id,
           isText: false
