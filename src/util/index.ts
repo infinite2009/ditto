@@ -110,3 +110,42 @@ export function flattenObject(obj: any, prefix = ''): Record<string, any> {
     return { [prefix]: obj };
   }
 }
+
+/**
+ * 根据 keyPath 获取引用
+ *
+ * @param obj
+ * @param keyPath
+ */
+export function getValueByPath(obj: any, keyPath: string) {
+  if (keyPath === '') {
+    return obj;
+  }
+
+  return keyPath.split('.').reduce((acc, key) => {
+    if (key.includes('[')) {
+      const index = key.match(/\[(\d+)\]/)[1];
+      return acc[key.split('[')[0]][index];
+    } else {
+      return acc[key];
+    }
+  }, obj);
+}
+
+/**
+ * 计算上级路径
+ *
+ * @param keyPath
+ */
+export function getParentKeyPath(keyPath: string) {
+  const lastIndex = keyPath.lastIndexOf('.');
+  if (lastIndex === -1) {
+    return '';
+  }
+  const lastChar = keyPath[lastIndex - 1];
+  if (lastChar === ']') {
+    const startIndex = keyPath.lastIndexOf('[', lastIndex - 1);
+    return keyPath.substring(0, startIndex);
+  }
+  return keyPath.substring(0, lastIndex);
+}

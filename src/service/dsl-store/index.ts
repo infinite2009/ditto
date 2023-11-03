@@ -289,6 +289,70 @@ export default class DSLStore {
   }
 
   @execute
+  cloneComponent(id: ComponentId): IComponentSchema | null {
+    return this.cloneSubtree(id);
+  }
+
+  private cloneSubtree(id: ComponentId) {
+    const componentSchema = this.dsl.componentIndexes[id];
+    if (!componentSchema) {
+      return null;
+    }
+    // 1. TODO: 复制 component schema 本身
+    const clonedComponentSchema = cloneDeep(componentSchema);
+    // 生成新的 component id
+    clonedComponentSchema.id = this.generateComponentIdByName(clonedComponentSchema.name);
+    // 2. TODO: 复制子树，并重新替换父组件的 children
+    clonedComponentSchema.children = clonedComponentSchema.children.map(child => {
+      if (child.isText) {
+        return cloneDeep(child);
+      } else {
+        const clonedSubtree = this.cloneSubtree(child.current);
+        if (!clonedSubtree) {
+          return {
+            current: '',
+            isText: false
+          };
+        }
+        return {
+          current: clonedSubtree.id,
+          isText: false
+        };
+      }
+    });
+    // 3. TODO: 复制 props
+    this.dsl.props[clonedComponentSchema.id] = cloneDeep(this.dsl.props[id]);
+    // 4. 遍历每一个 prop，如果它存在插槽，递归删除以插槽为根节点的子树
+    const propsDict = this.dsl.props[clonedComponentSchema.id];
+    clonedComponentSchema.propsRefs.forEach(ref => {
+      const propsSchema: IPropsSchema = propsDict[ref];
+      const { templateKeyPathsReg, value } = propsSchema;
+      if (templateKeyPathsReg?.length) {
+        const flattenedObject = flattenObject(value);
+        Object.entries(flattenedObject).forEach(([key, val]) => {
+          const matchKeyPath = templateKeyPathsReg.some(regInfo => {
+            return new RegExp(regInfo.path).test(key);
+          });
+          if (matchKeyPath) {
+            const clonedSubtree = this.cloneSubtree((propsSchema.value as unknown as any).id);
+            const newNode = {
+              current: clonedSubtree?.id || '',
+              isText: false
+            };
+            if (key === '') {
+              propsSchema.value = newNode;
+            } else if (key) {
+              // TODO: WIP
+            }
+          }
+        });
+      }
+    });
+
+    return clonedComponentSchema;
+  }
+
+  @execute
   moveComponent(parentId: string, childId: string, insertIndex = -1) {
     this.currentParentNode = this.fetchComponentInDSL(parentId);
     if (this.currentParentNode) {
