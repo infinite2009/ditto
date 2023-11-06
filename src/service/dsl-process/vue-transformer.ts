@@ -198,7 +198,7 @@ export default class VueTransformer {
       },
       TreeSelect: {
         treeData: (node: IComponentSchema) => {
-          this.vnodeToHRender(node, ['[].label', '[].children']);
+          this.vnodeToHRender(node, ['treeData[].title']);
         },
         tagRender: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'tagRender');
@@ -330,6 +330,9 @@ export default class VueTransformer {
         switcherIcon: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'switcherIcon');
         },
+        treeData: (node: IComponentSchema) => {
+          this.vnodeToHRender(node,  ['treeData[].title']);
+        },
       },
       Alert: {
         description: (node: IComponentSchema) => {
@@ -422,15 +425,16 @@ export default class VueTransformer {
     this.breadthFirstTraversal(root, (node) => {
       const componentHanlderMap = this.componentHanlderMap;
       const nodeName = node.name as keyof typeof this.componentHanlderMap;
-
+      
 
       if (componentHanlderMap[nodeName] && Array.isArray(node.propsRefs) && node.propsRefs.length > 0) {
-        let topPropsName = node.propsRefs.shift();
+        const copyPropsRefs = [...node.propsRefs];
+        let topPropsName = copyPropsRefs.shift();
         while(topPropsName) {
           if (componentHanlderMap[nodeName][topPropsName]) {
             componentHanlderMap[nodeName][topPropsName](node);
           }
-          topPropsName = node.propsRefs.shift();
+          topPropsName = copyPropsRefs.shift();
         }
         this.fixDependency(node);
       } else {
@@ -664,11 +668,13 @@ export default class VueTransformer {
     if (!templateKeyPathsReg || templateKeyPathsReg.length === 0) {
       return;
     }
+    console.log(templateKeyPathsReg);
     const values: ComponentSchemaRef[] = Array.isArray(componentProps[name].value) ? componentProps[name].value as any[] : [componentProps[name].value];
     this.templateKeyPathsReg({
       templateKeyPathsReg: templateKeyPathsReg,
       value: values
     }, (item) => {
+     
       if (item.current) {
         const defaultTemplateProps = opts && opts.templateProps ? opts.templateProps : {
           [`#${name}`]: ``,
@@ -714,6 +720,7 @@ export default class VueTransformer {
   }
   /** slot转函数 */
   vnodeToHRender(node: IComponentSchema, propNames: string[]) {
+    console.log(node, propNames);
     //
   }
   /**
