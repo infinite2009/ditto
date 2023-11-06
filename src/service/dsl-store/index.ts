@@ -1,7 +1,16 @@
 import { makeAutoObservable, toJS } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
-import { fetchComponentConfig, flattenObject, generateId, generateSlotId, hyphenToCamelCase, typeOf } from '@/util';
+import {
+  fetchComponentConfig,
+  flattenObject,
+  generateId,
+  generateSlotId,
+  getParentKeyPath,
+  getValueByPath,
+  hyphenToCamelCase,
+  typeOf
+} from '@/util';
 import cloneDeep from 'lodash/cloneDeep';
 import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
@@ -322,32 +331,53 @@ export default class DSLStore {
     });
     // 3. TODO: 复制 props
     this.dsl.props[clonedComponentSchema.id] = cloneDeep(this.dsl.props[id]);
-    // 4. 遍历每一个 prop，如果它存在插槽，递归删除以插槽为根节点的子树
-    const propsDict = this.dsl.props[clonedComponentSchema.id];
+    // 4. TODO: 遍历每一个 prop，如果它存在插槽，递归复制以插槽为根节点的子树
+    const clonedPropsDict = this.dsl.props[clonedComponentSchema.id];
     clonedComponentSchema.propsRefs.forEach(ref => {
-      const propsSchema: IPropsSchema = propsDict[ref];
-      const { templateKeyPathsReg, value } = propsSchema;
+      const clonedPropsSchema: IPropsSchema = clonedPropsDict[ref];
+      const { templateKeyPathsReg, value } = clonedPropsSchema;
       if (templateKeyPathsReg?.length) {
         const flattenedObject = flattenObject(value);
-        Object.entries(flattenedObject).forEach(([key, val]) => {
+        Object.entries(flattenedObject).forEach(([keyPath, val]) => {
           const matchKeyPath = templateKeyPathsReg.some(regInfo => {
-            return new RegExp(regInfo.path).test(key);
+            return new RegExp(regInfo.path).test(keyPath);
           });
           if (matchKeyPath) {
-            const clonedSubtree = this.cloneSubtree((propsSchema.value as unknown as any).id);
-            const newNode = {
+            const clonedSubtree = this.cloneSubtree((clonedPropsSchema.value as IComponentSchema).id);
+            const clonedNode = {
               current: clonedSubtree?.id || '',
               isText: false
             };
-            if (key === '') {
-              propsSchema.value = newNode;
-            } else if (key) {
-              // TODO: WIP
+            if (keyPath === '') {
+              clonedPropsSchema.value = clonedNode;
+            } else if (keyPath) {
+              // 根据当前的 keyPath，计算出它的父路径，然后给在父路径上覆盖这个路径对应的值
+              const parentKeyPath = getParentKeyPath(keyPath);
+              const parent = getValueByPath(clonedPropsSchema.value, parentKeyPath);
+              // 计算出当前这个属性的 key
+              const keyWithAccessOperator = keyPath.substring(0, parentKeyPath.length);
+              let key = keyWithAccessOperator.startsWith('.')
+                ? keyWithAccessOperator.substring(1)
+                : keyWithAccessOperator.substring(1, keyWithAccessOperator.length - 1);
+              // 赋值
+              parent[key] = clonedNode;
             }
           }
         });
       }
     });
+    // 5. 插入到被复制的 component 后边
+    const parent = this.dsl.componentIndexes[clonedComponentSchema.parentId];
+    if (parent.children?.length) {
+      // 找到被复制的组件在父组件子树的位置
+      const index = parent.children.findIndex(child => child.current === id && child.isText);
+      if (index > -1) {
+        parent.children.splice(index, 0, {
+          current: clonedComponentSchema.id,
+          isText: false
+        });
+      }
+    }
 
     return clonedComponentSchema;
   }
