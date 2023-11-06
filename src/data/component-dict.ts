@@ -1126,10 +1126,6 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
           {
             type: 'object',
             path: '\\[\\d+\\]\\.children'
-          },
-          {
-            type: 'object',
-            path: '\\[\\d+\\]\\.children'
           }
         ],
         value: [

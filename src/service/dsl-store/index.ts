@@ -1,7 +1,16 @@
 import { makeAutoObservable, toJS } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
-import { fetchComponentConfig, generateId, generateSlotId, hyphenToCamelCase, typeOf } from '@/util';
+import {
+  fetchComponentConfig,
+  flattenObject,
+  generateId,
+  generateSlotId,
+  getParentKeyPath,
+  getValueByPath,
+  hyphenToCamelCase,
+  typeOf
+} from '@/util';
 import cloneDeep from 'lodash/cloneDeep';
 import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
@@ -165,8 +174,7 @@ export default class DSLStore {
     if (customId) {
       componentId = customId;
     } else {
-      this.updateComponentStats(name);
-      componentId = hyphenToCamelCase(`${name}${this.dsl.componentStats[name]}`);
+      componentId = this.generateComponentIdByName(name);
     }
 
     const componentConfig = fetchComponentConfig(name, dependency);
@@ -285,18 +293,93 @@ export default class DSLStore {
    * @param removeIndex
    */
   @execute
-  deleteComponent(id: ComponentId, removeIndex = true): IComponentSchema | null {
-    const { componentIndexes } = this.dsl;
-    const component = componentIndexes[id];
-    const parent = componentIndexes[component.parentId];
-    if (parent) {
-      parent.children = parent.children.filter(item => item.current !== id);
-      if (removeIndex) {
-        delete componentIndexes[id];
-      }
-      return component;
+  deleteComponent(id: ComponentId): IComponentSchema | null {
+    return this.deleteSubtree(id);
+  }
+
+  @execute
+  cloneComponent(id: ComponentId): IComponentSchema | null {
+    return this.cloneSubtree(id);
+  }
+
+  private cloneSubtree(id: ComponentId) {
+    const componentSchema = this.dsl.componentIndexes[id];
+    if (!componentSchema) {
+      return null;
     }
-    return null;
+    // 1. TODO: 复制 component schema 本身
+    const clonedComponentSchema = cloneDeep(componentSchema);
+    // 生成新的 component id
+    clonedComponentSchema.id = this.generateComponentIdByName(clonedComponentSchema.name);
+    // 2. TODO: 复制子树，并重新替换父组件的 children
+    clonedComponentSchema.children = clonedComponentSchema.children.map(child => {
+      if (child.isText) {
+        return cloneDeep(child);
+      } else {
+        const clonedSubtree = this.cloneSubtree(child.current);
+        if (!clonedSubtree) {
+          return {
+            current: '',
+            isText: false
+          };
+        }
+        return {
+          current: clonedSubtree.id,
+          isText: false
+        };
+      }
+    });
+    // 3. TODO: 复制 props
+    this.dsl.props[clonedComponentSchema.id] = cloneDeep(this.dsl.props[id]);
+    // 4. TODO: 遍历每一个 prop，如果它存在插槽，递归复制以插槽为根节点的子树
+    const clonedPropsDict = this.dsl.props[clonedComponentSchema.id];
+    clonedComponentSchema.propsRefs.forEach(ref => {
+      const clonedPropsSchema: IPropsSchema = clonedPropsDict[ref];
+      const { templateKeyPathsReg, value } = clonedPropsSchema;
+      if (templateKeyPathsReg?.length) {
+        const flattenedObject = flattenObject(value);
+        Object.entries(flattenedObject).forEach(([keyPath, val]) => {
+          const matchKeyPath = templateKeyPathsReg.some(regInfo => {
+            return new RegExp(regInfo.path).test(keyPath);
+          });
+          if (matchKeyPath) {
+            const clonedSubtree = this.cloneSubtree((clonedPropsSchema.value as IComponentSchema).id);
+            const clonedNode = {
+              current: clonedSubtree?.id || '',
+              isText: false
+            };
+            if (keyPath === '') {
+              clonedPropsSchema.value = clonedNode;
+            } else if (keyPath) {
+              // 根据当前的 keyPath，计算出它的父路径，然后给在父路径上覆盖这个路径对应的值
+              const parentKeyPath = getParentKeyPath(keyPath);
+              const parent = getValueByPath(clonedPropsSchema.value, parentKeyPath);
+              // 计算出当前这个属性的 key
+              const keyWithAccessOperator = keyPath.substring(0, parentKeyPath.length);
+              let key = keyWithAccessOperator.startsWith('.')
+                ? keyWithAccessOperator.substring(1)
+                : keyWithAccessOperator.substring(1, keyWithAccessOperator.length - 1);
+              // 赋值
+              parent[key] = clonedNode;
+            }
+          }
+        });
+      }
+    });
+    // 5. 插入到被复制的 component 后边
+    const parent = this.dsl.componentIndexes[clonedComponentSchema.parentId];
+    if (parent.children?.length) {
+      // 找到被复制的组件在父组件子树的位置
+      const index = parent.children.findIndex(child => child.current === id && child.isText);
+      if (index > -1) {
+        parent.children.splice(index, 0, {
+          current: clonedComponentSchema.id,
+          isText: false
+        });
+      }
+    }
+
+    return clonedComponentSchema;
   }
 
   @execute
@@ -315,8 +398,9 @@ export default class DSLStore {
           children.splice(insertIndex, 0, child);
         }
       } else {
-        const childComponent = this.deleteComponent(childId, false);
+        const childComponent = this.dsl.componentIndexes[childId];
         if (childComponent) {
+          this.removeReferenceFromParent(childId);
           const ref = {
             current: childComponent.id,
             isText: false
@@ -332,6 +416,92 @@ export default class DSLStore {
       }
     } else {
       throw new Error(`未找到有效的父节点：${parentId}`);
+    }
+  }
+
+  private deleteSubtree(id: ComponentId): IComponentSchema | null {
+    const { componentIndexes } = this.dsl;
+    const component = componentIndexes[id];
+
+    if (!component) {
+      return null;
+    }
+
+    // 1. 如果存在子树，递归地删除子树
+    if (component.children.length) {
+      component.children.forEach(item => {
+        // 如果不是文本节点，递归地删除子树
+        if (!item.isText) {
+          this.deleteSubtree(item.current);
+        }
+      });
+    }
+
+    // 2. 遍历每一个 prop，如果它存在插槽，递归删除以插槽为根节点的子树
+    const propsDict = this.dsl.props[id];
+    component.propsRefs.forEach(ref => {
+      const propsSchema: IPropsSchema = propsDict[ref];
+      const { templateKeyPathsReg, value } = propsSchema;
+      if (templateKeyPathsReg?.length) {
+        const flattenedObject = flattenObject(value);
+        Object.entries(flattenedObject).forEach(([key, val]) => {
+          const matchKeyPath = templateKeyPathsReg.some(regInfo => {
+            return new RegExp(regInfo.path).test(key);
+          });
+          if (matchKeyPath) {
+            this.deleteSubtree(val.id);
+          }
+        });
+      }
+    });
+
+    // 3. 删除 props
+    delete this.dsl.props[id];
+
+    // 4. 删除 action
+    const relatedActionIds = Object.entries(this.dsl.actions)
+      .filter(([actionId, action]) => {
+        return action.relatedComponentIds.includes(id);
+      })
+      .map(([actionId]) => actionId);
+    relatedActionIds.forEach(actionId => {
+      delete this.dsl.actions[actionId];
+    });
+
+    // 5. 删除 handler
+    const relatedHandlerIds = Object.entries(this.dsl.handlers)
+      .filter(([handlerId, handler]) => {
+        return relatedActionIds.some(actionId => {
+          return handler.actionRefs.includes(actionId);
+        });
+      })
+      .map(([handlerId]) => handlerId);
+    relatedHandlerIds.forEach(handlerId => delete this.dsl.handlers[handlerId]);
+
+    // 6. 删除 event
+    const relatedEventIds = Object.entries(this.dsl.events)
+      .filter(([eventId, event]) => {
+        return relatedHandlerIds.includes(eventId);
+      })
+      .map(([eventId, event]) => eventId);
+    relatedEventIds.forEach(eventId => delete this.dsl.events[eventId]);
+
+    // 7. 从父节点的 children 中删除对这个组件的引用
+    this.removeReferenceFromParent(id);
+
+    // 8. 从索引中删除组件信息
+    delete componentIndexes[id];
+
+    return component;
+  }
+
+  private removeReferenceFromParent(id: ComponentId): void {
+    const { componentIndexes } = this.dsl;
+    const component = componentIndexes[id];
+    // 从父节点的 children 中删除对这个组件的引用
+    const parent = componentIndexes[component.parentId];
+    if (parent) {
+      parent.children = parent.children.filter(item => item.current !== id);
     }
   }
 
@@ -415,9 +585,6 @@ export default class DSLStore {
         }
       } else {
         const node = this.createEmptyContainer();
-        if (!node) {
-          debugger;
-        }
         parent[key] = {
           current: node.id,
           isText: false
@@ -574,5 +741,10 @@ export default class DSLStore {
     const newDsl = toJS(this.dsl);
     const newDiff = detailedDiff(newDsl, oldDsl);
     diffStack.push(newDiff);
+  }
+
+  private generateComponentIdByName(name: string): string {
+    this.updateComponentStats(name);
+    return hyphenToCamelCase(`${name}${this.dsl.componentStats[name]}`);
   }
 }

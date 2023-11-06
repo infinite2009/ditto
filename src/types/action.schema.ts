@@ -8,5 +8,6 @@ export default interface IActionSchema extends ISchema {
    * transfer: 转换和格式化数据
    */
   type: any;
+  relatedComponentIds: string[];
   payload: any;
 }

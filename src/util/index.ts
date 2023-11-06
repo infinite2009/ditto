@@ -87,3 +87,65 @@ export async function isMac() {
   const os = await platform();
   return os === 'darwin';
 }
+
+/**
+ * 扁平化对象，得到所有属性的 keyPath
+ *
+ * @param obj
+ * @param prefix
+ */
+export function flattenObject(obj: any, prefix = ''): Record<string, any> {
+  if (Array.isArray(obj)) {
+    return obj.reduce((acc, item, index) => {
+      const key = `${prefix}[${index}]`;
+      return { ...acc, ...flattenObject(item, key) };
+    }, {});
+  } else if (typeof obj === 'object' && obj !== null) {
+    return Object.keys(obj).reduce((acc, key) => {
+      const value = obj[key];
+      const newKey = prefix ? `${prefix}.${key}` : key;
+      return { ...acc, ...flattenObject(value, newKey) };
+    }, {});
+  } else {
+    return { [prefix]: obj };
+  }
+}
+
+/**
+ * 根据 keyPath 获取引用
+ *
+ * @param obj
+ * @param keyPath
+ */
+export function getValueByPath(obj: any, keyPath: string) {
+  if (keyPath === '') {
+    return obj;
+  }
+
+  return keyPath.split('.').reduce((acc, key) => {
+    if (key.includes('[')) {
+      const index = key.match(/\[(\d+)\]/)[1];
+      return acc[key.split('[')[0]][index];
+    } else {
+      return acc[key];
+    }
+  }, obj);
+}
+
+/**
+ * 计算上级路径
+ *
+ * @param keyPath
+ */
+export function getParentKeyPath(keyPath: string) {
+  const lastIndex = keyPath.lastIndexOf('.');
+  if (lastIndex === -1) {
+    return '';
+  }
+  const lastChar = keyPath[lastIndex - 1];
+  if (lastChar === ']') {
+    const startIndex = keyPath.lastIndexOf('[', lastIndex - 1);
+    return keyPath.substring(0, startIndex);
+  }
+  return keyPath.substring(0, lastIndex);
+}

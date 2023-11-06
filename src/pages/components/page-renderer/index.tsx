@@ -267,7 +267,7 @@ export default observer((props: IPageRendererProps) => {
       };
     }
 
-    const componentPropsWithoutMargin = cloneDeep(componentProps);
+    const componentPropsWithoutMargin = { ...componentProps, style: cloneDeep(componentProps.style) };
     const marginStyleNames: (keyof CSSProperties)[] = [
       'margin',
       'marginTop',
@@ -315,8 +315,6 @@ export default observer((props: IPageRendererProps) => {
   function render() {
     return recursivelyRenderTemplate(dslStore.dsl.child, true, true);
   }
-
-  console.log('page rendered');
 
   return dslStore.dsl ? <>{render()}</> : <div>未获得有效的DSL</div>;
 });
