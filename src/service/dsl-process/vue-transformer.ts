@@ -5,7 +5,6 @@ import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import { generateId, hyphenToCamelCase, typeOf } from '@/util';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import { toJS } from 'mobx';
-import { BaseDirectory, createDir, exists, FileEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/api/fs';
 
 export default class VueTransformer {
   dsl: IPageSchema;
@@ -60,13 +59,21 @@ export default class VueTransformer {
       },
       Dropdown: {
         items: (node: IComponentSchema) => {
-          this.itemsToTemplate(node, 'MenuItem', 'items[].children');
+          this.itemsToTemplateForDropdown(node);
         },
         autoAdjustOverflow: (node: IComponentSchema) => {
           this.ignoreProps(node, 'autoAdjustOverflow');
         },
         autoFocus: (node: IComponentSchema) => {
           this.ignoreProps(node, 'autoFocus');
+        },
+      },
+      Menu: {
+        expandIcon: (node: IComponentSchema) => {
+          this.ignoreProps(node, 'expandIcon');
+        },
+        items: (node: IComponentSchema) => {
+          this.itemsToTemplateForDropdown(node);
         },
       },
       Cascader: {
@@ -190,6 +197,9 @@ export default class VueTransformer {
         },
       },
       TreeSelect: {
+        treeData: (node: IComponentSchema) => {
+          this.vnodeToHRender(node, ['[].label', '[].children']);
+        },
         tagRender: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'tagRender');
         },
@@ -262,7 +272,11 @@ export default class VueTransformer {
       },
       List: {
         renderItem: (node: IComponentSchema) => {
-          this.vnodeToTemplate(node, 'renderItem');
+          this.vnodeToTemplate(node, 'renderItem', {
+            templateProps: {
+              "#renderItem":"{ item }"
+            }
+          });
         },
         header: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'header');
@@ -275,6 +289,17 @@ export default class VueTransformer {
         },
         title: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'title');
+        },
+      },
+      ListItemMeta: {
+        avatar: (node: IComponentSchema) => {
+          this.vnodeToTemplate(node, 'avatar');
+        },
+        title: (node: IComponentSchema) => {
+          this.vnodeToTemplate(node, 'title');
+        },
+        description: (node: IComponentSchema) => {
+          this.vnodeToTemplate(node, 'description');
         },
       },
       Statistic: {
@@ -491,7 +516,7 @@ export default class VueTransformer {
         const resetProps = item;
 
         const [child, newProps] = this.createComponentDsl(node.id, childComponentName, resetProps);
-        this.addComponentToDsl(child, newProps);
+        this.addComponentToDsl(child, newProps); 
         // 因为是副作用，需要提前赋值
         child.children = Array.isArray(slotProps) ? slotProps : [slotProps];
         child.children.forEach((itemChild: any) => {
@@ -513,7 +538,68 @@ export default class VueTransformer {
       return node.children;
     }
     return [];
+  }
+  itemsToTemplateForDropdown(node: IComponentSchema) {
+    const { props, componentIndexes } = this.dsl;
+    const componentProps = props[node.id];
+    const keyPath = 'items[].label';
+    if (!keyPath.includes('[].')) {
+      console.warn('只能处理数组items', node, keyPath);
+    }
+    if (!node.children) {
+      node.children = [];
+    }
+    const [valueKey, itemKey] = keyPath.split('[].');
 
+    if (componentProps[valueKey] && valueKey && itemKey) {
+      this.templateKeyPathsReg({
+        templateKeyPathsReg: componentProps[valueKey].templateKeyPathsReg,
+        value: componentProps[valueKey].value
+      }, (item) => {
+
+        const [template, templateProps] = this.createComponentDsl(node.id, 'template', {
+          '#overlay': ''
+        });
+        this.addComponentToDsl(template, templateProps); 
+        this.appendChildren(node, {
+          current: template.id,
+          isText: false,
+        });
+        const [Menu, MenuProps] = this.createComponentDsl(node.id, 'Menu', {});
+        this.addComponentToDsl(Menu, MenuProps); 
+        this.appendChildren(template, {
+          current: Menu.id,
+          isText: false,
+        });
+        // 先取出插槽数据，剩余的放到子组件
+        const slotProps = item[itemKey];
+        delete item[itemKey];
+        const resetProps = item;
+
+        const [child, newProps] = this.createComponentDsl(node.id, 'MenuItem', resetProps);
+        this.addComponentToDsl(child, newProps); 
+        // 因为是副作用，需要提前赋值
+        child.children = Array.isArray(slotProps) ? slotProps : [slotProps];
+        child.children.forEach((itemChild: any) => {
+          if (typeof itemChild === 'string') {
+            // 不处理
+          } else {
+            this.transformChildDsl(itemChild);
+          } 
+        });
+        this.appendChildren(Menu, {
+          current: child.id,
+          isText: false,
+        });
+        delete item.label;
+      });
+      // 删除特定的数据
+      delete componentProps[valueKey].templateKeyPathsReg;
+      componentProps[valueKey].value = []; 
+      this.removeProps(node.propsRefs, valueKey);
+      return node.children;
+    }
+    return [];
   }
   /**
    * table的column转template#bodyCell + template v-if="column.key=xxx"
@@ -568,7 +654,9 @@ export default class VueTransformer {
     }
     return [];
   }
-  vnodeToTemplate(node: IComponentSchema, name: string) {
+  vnodeToTemplate(node: IComponentSchema, name: string, opts: {
+    templateProps?: Record<string, string>;
+  } = {} as Record<string, string>) {
     const { props, componentIndexes } = this.dsl;
     const componentProps = props[node.id];
     const templateKeyPathsReg = componentProps[name].templateKeyPathsReg;
@@ -582,9 +670,10 @@ export default class VueTransformer {
       value: values
     }, (item) => {
       if (item.current) {
-        const [template, templateProps] = this.createComponentDsl(node.id, 'template', {
+        const defaultTemplateProps = opts && opts.templateProps ? opts.templateProps : {
           [`#${name}`]: ``,
-        });
+        };
+        const [template, templateProps] = this.createComponentDsl(node.id, 'template', defaultTemplateProps);
         this.addComponentToDsl(template, templateProps);
         this.appendChildren(node, {current: template.id, isText: false});
         this.appendChildren(template, item as ComponentSchemaRef);
@@ -624,7 +713,7 @@ export default class VueTransformer {
     }
   }
   /** slot转函数 */
-  vnodeToH(node: IComponentSchema, propNames: string[]) {
+  vnodeToHRender(node: IComponentSchema, propNames: string[]) {
     //
   }
   /**
