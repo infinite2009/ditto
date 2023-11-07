@@ -106,6 +106,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [showDesign, setShowDesign] = useState<boolean>(true);
   const [scale, setScale] = useState<number>(1);
   const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
+  const [selectedComponentForRenaming, setSelectedComponentForRenaming] = useState<ComponentId>('');
 
   const [form] = useForm();
 
@@ -117,6 +118,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const defaultPathRef = useRef<string>();
   const filePathRef = useRef<string>();
   const componentIdToCloneRef = useRef<ComponentId>();
+  const newNameForComponentRef = useRef<string>('');
 
   const codeType = (searchParams.get('codetype') as string) || 'react';
 
@@ -689,6 +691,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         }
         break;
       case 'rename':
+        // dslStore.renameComponent(componentSchema.id, );
         message.warning('重命名待实现');
         break;
       case 'delete':
@@ -697,6 +700,15 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       default:
         break;
     }
+  }
+
+  function handleSelectingComponentForRenaming(componentId: ComponentId) {
+    setSelectedComponentForRenaming(componentId);
+  }
+
+  function handleRenamingComponent(componentId: ComponentId, newName: string) {
+    dslStore.renameComponent(componentId, newName);
+    setSelectedComponentForRenaming('');
   }
 
   /**
@@ -766,7 +778,20 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
           destroyPopupOnHide
           trigger={['contextMenu']}
         >
-          <div>{componentSchema.displayName || componentSchema.name}</div>
+          <div onDoubleClick={() => handleSelectingComponentForRenaming(componentSchema.id)}>
+            {componentSchema.id === selectedComponentForRenaming ? (
+              <Input
+                defaultValue={componentSchema.displayName}
+                onBlur={e => handleRenamingComponent(componentSchema.id, (e.target.value as unknown as string).trim())}
+                onPressEnter={e =>
+                  // @ts-ignore
+                  handleRenamingComponent(componentSchema.id, (e.target.value as unknown as string).trim())
+                }
+              />
+            ) : (
+              componentSchema.displayName || componentSchema.name
+            )}
+          </div>
         </Dropdown>
       );
     };

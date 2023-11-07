@@ -668,6 +668,16 @@ export default class DSLStore {
     this.mergeDiffAndProcessNewDiff(diff, this.undoStack);
   }
 
+  /**
+   * 重命名组件
+   * @param componentId
+   * @param newName
+   */
+  renameComponent(componentId: ComponentId, newName: string) {
+    const componentSchema = this.dsl.componentIndexes[componentId];
+    componentSchema.displayName = newName;
+  }
+
   private calculateComponentName(config: IComponentConfig) {
     const { callingName, importName, configName } = config;
     if (callingName) {
