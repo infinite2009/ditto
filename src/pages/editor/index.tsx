@@ -118,7 +118,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const defaultPathRef = useRef<string>();
   const filePathRef = useRef<string>();
   const componentIdToCloneRef = useRef<ComponentId>();
-  const newNameForComponentRef = useRef<string>('');
 
   const codeType = (searchParams.get('codetype') as string) || 'react';
 
@@ -782,6 +781,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             {componentSchema.id === selectedComponentForRenaming ? (
               <Input
                 defaultValue={componentSchema.displayName}
+                autoFocus
+                onFocus={e => e.target.select()}
                 onBlur={e => handleRenamingComponent(componentSchema.id, (e.target.value as unknown as string).trim())}
                 onPressEnter={e =>
                   // @ts-ignore
