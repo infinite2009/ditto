@@ -257,8 +257,6 @@ class FileManager {
 
     const entries: FileEntry[] = await readDir(currentProjectPath, { recursive: true });
 
-    const files: string[] = [];
-
     const recursiveMap = (entries: FileEntry[]) => {
       return entries
         .filter(entry => (entry.name as string).endsWith('.ditto') || entry.children)
@@ -267,7 +265,6 @@ class FileManager {
             key: entry.path,
             title: getFileName(entry.name as string)
           };
-          files.push(entry.path);
           if (entry.children) {
             r.children = recursiveMap(entry.children);
           } else {
