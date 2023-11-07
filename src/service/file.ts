@@ -22,8 +22,7 @@ import * as localforage from 'localforage';
 import { nanoid } from 'nanoid';
 import DSLStore from '@/service/dsl-store';
 import { Command } from '@tauri-apps/api/shell';
-import { platform } from '@tauri-apps/api/os';
-import { invoke } from '@tauri-apps/api';
+import { Platform, platform } from '@tauri-apps/api/os';
 
 interface EntryTree {
   key: string;
@@ -53,6 +52,13 @@ class FileManager {
   private static instance = new FileManager();
   cache: AppData = {} as AppData;
   appDataPath = 'appData.json';
+  os: Platform;
+
+  constructor() {
+    platform().then(res => {
+      this.os = res;
+    });
+  }
 
   static getInstance() {
     return FileManager.instance;
@@ -380,13 +386,12 @@ class FileManager {
    * @param project
    */
   async openLocalFileDirectory(project: ProjectInfo) {
-    const os = await platform();
-    switch (os) {
+    switch (this.os) {
       case 'darwin':
         await new Command('open Finder', project.path).execute();
         break;
       default:
-        return Promise.reject(`暂不支持的系统：${os}`);
+        return Promise.reject(`暂不支持的系统：${this.os}`);
     }
   }
 
@@ -399,8 +404,7 @@ class FileManager {
       if (existNewPath) {
         throw new Error('文件夹已存在，请重新输入');
       }
-      const os = await platform();
-      if (os === 'win32') {
+      if (this.os === 'win32') {
         try {
           const log = await new Command('Rename folder on win32', [
             'Rename-Item',
@@ -437,10 +441,19 @@ class FileManager {
     console.log('path: ', path);
     console.log('newName: ', newName);
     const dir = await dirname(path);
-    console.log('父路径是：', dir);
-    const ext = await extname(path);
-    console.log('扩展名：', ext);
-    const result = await invoke('execute', { command: `test -d "${path}" && echo "true" || echo "false"` });
+    let newPath;
+    const isDirectory = await new Command('isDirectory', [path]).execute();
+    if (isDirectory) {
+      // 如果是目录，找到上级目录
+      newPath = await join(dir, newName);
+    } else {
+      const ext = await extname(path);
+      newPath = await join(dir, newName, ext);
+    }
+    const log = await new Command('mv', [path, newPath]).execute();
+    if (log.code !== 0) {
+      throw new Error(log.stderr);
+    }
   }
 
   /**
