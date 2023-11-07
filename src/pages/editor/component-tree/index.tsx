@@ -14,7 +14,6 @@ export default observer(function ComponentTree({ data, onSelect, onCancelSelect 
   const dslStore = useContext(DSLStoreContext);
 
   function handleSelectingComponent(selectedKeys: Key[], e: { selected: boolean; node: any }) {
-    // TODO: 待实现
     if (selectedKeys.length) {
       if (onSelect) {
         onSelect(selectedKeys[0] as ComponentId);
