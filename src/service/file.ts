@@ -10,7 +10,7 @@ import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import * as typescript from 'prettier/parser-typescript';
 import AppData, { ProjectInfo } from '@/types/app-data';
-import { documentDir, homeDir, join, sep } from '@tauri-apps/api/path';
+import { dirname, documentDir, extname, homeDir, join, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
 import cloneDeep from 'lodash/cloneDeep';
@@ -23,6 +23,7 @@ import { nanoid } from 'nanoid';
 import DSLStore from '@/service/dsl-store';
 import { Command } from '@tauri-apps/api/shell';
 import { platform } from '@tauri-apps/api/os';
+import { invoke } from '@tauri-apps/api';
 
 interface EntryTree {
   key: string;
@@ -430,6 +431,16 @@ class FileManager {
       delete this.cache.pathToProjectDict[project.path];
       this.cache.pathToProjectDict[projectInfo.path] = projectInfo;
     }
+  }
+
+  async renamePage(path: string, newName: string) {
+    console.log('path: ', path);
+    console.log('newName: ', newName);
+    const dir = await dirname(path);
+    console.log('父路径是：', dir);
+    const ext = await extname(path);
+    console.log('扩展名：', ext);
+    const result = await invoke('execute', { command: `test -d "${path}" && echo "true" || echo "false"` });
   }
 
   /**

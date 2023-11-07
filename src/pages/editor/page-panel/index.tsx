@@ -1,15 +1,17 @@
-import { Tree } from 'antd';
+import { Input, Tree } from 'antd';
 import { DataNode, EventDataNode } from 'antd/es/tree';
-import { Key, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Key, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DownOutlined, FileOutlined, FolderOpenOutlined, FolderOutlined } from '@ant-design/icons';
 import ProjectToolBar from '@/pages/editor/project-tool-bar';
 
 import styles from './index.module.less';
 import { findNodePath } from '@/util';
+import { ComponentId } from '@/types';
+import fileManager from '@/service/file';
 
 interface PageData {
   key: string;
-  title: string;
+  title: string | ReactNode | any;
   children?: PageData[];
   isLeaf?: boolean;
   icon?: any;
@@ -23,6 +25,9 @@ export interface IPagePanel {
 
 export default function PagePanel({ data = [], selected, onSelect }: IPagePanel) {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
+  const [selectedPath, setSelectedPath] = useState<ComponentId>('');
+
+  const clickTimeoutIdRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     if (selected && data.length) {
@@ -31,11 +36,18 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
   }, [selected, data]);
 
   const handlingSelect = useCallback(
-    (_: any, data: any) => {
-      if (onSelect) {
-        const selected = data.selectedNodes[0];
-        onSelect(selected);
+    (_: any, selected: any) => {
+      // 如果已经有值，说明之前点击了一次
+      if (clickTimeoutIdRef.current) {
+        return;
       }
+      clickTimeoutIdRef.current = setTimeout(() => {
+        if (onSelect) {
+          console.log('单击: ', selected.selectedNodes[0]);
+          onSelect(selected.selectedNodes[0]);
+        }
+        clickTimeoutIdRef.current = undefined;
+      }, 200);
     },
     [onSelect, data]
   );
@@ -55,6 +67,35 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
           } else {
             converted.icon = (props: any) => (props.expanded ? <FolderOpenOutlined /> : <FolderOutlined />);
           }
+          if (item.key === selectedPath) {
+            converted.title = (
+              <Input
+                defaultValue={item.title as string}
+                autoFocus
+                onFocus={e => e.target.select()}
+                onBlur={e => handleRenamingPage(item.key, (e.target.value as string).trim())}
+                onPressEnter={e =>
+                  // @ts-ignore
+                  handleRenamingPage(item.key, (e.target.value as unknown as string).trim())
+                }
+              />
+            );
+          } else {
+            converted.title = (
+              <span
+                onDoubleClick={e => {
+                  e.stopPropagation();
+                  if (clickTimeoutIdRef.current !== undefined) {
+                    clearTimeout(clickTimeoutIdRef.current);
+                    clickTimeoutIdRef.current = undefined;
+                  }
+                  setSelectedPath(converted.key);
+                }}
+              >
+                {converted.title}
+              </span>
+            );
+          }
           return converted;
         });
       };
@@ -62,7 +103,12 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
       return recursiveMap(data);
     }
     return [];
-  }, [data]);
+  }, [data, selectedPath]);
+
+  async function handleRenamingPage(path: string, newName: string) {
+    await fileManager.renamePage(path, newName);
+    setSelectedPath('');
+  }
 
   function handleExpand(
     expandedKeys: Key[],
