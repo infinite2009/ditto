@@ -93,6 +93,17 @@
                 "validator": "\\S+"
               }
             ]
+          },
+          {
+            "name": "isDirectory",
+            "cmd": "test",
+            "args": [
+              "-d",
+              {
+                "validator": "\\S+"
+              },
+              " && echo \"true\" || echo \"false\""
+            ]
           }
         ]
       },
