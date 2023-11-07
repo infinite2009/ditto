@@ -51,9 +51,9 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
             converted.children = recursiveMap(item.children);
           }
           if (item.isLeaf) {
-            item.icon = <FileOutlined />;
+            converted.icon = <FileOutlined />;
           } else {
-            item.icon = (props: any) => (props.expanded ? <FolderOpenOutlined /> : <FolderOutlined />);
+            converted.icon = (props: any) => (props.expanded ? <FolderOpenOutlined /> : <FolderOutlined />);
           }
           return converted;
         });
@@ -96,10 +96,9 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
       />
       {dataWithIcon?.length > 0 ? (
         <div className={styles.projectTree}>
-          <Tree.DirectoryTree
+          <Tree
             switcherIcon={<DownOutlined />}
             showIcon
-            expandAction="doubleClick"
             selectedKeys={[selected]}
             onExpand={handleExpand}
             expandedKeys={expandedKeys}
