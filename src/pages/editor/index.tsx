@@ -116,6 +116,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   // TODO: 文件路径数据需要重构为 indexedDB 存储
   const defaultPathRef = useRef<string>();
   const filePathRef = useRef<string>();
+  const componentIdToCloneRef = useRef<ComponentId>();
 
   const codeType = (searchParams.get('codetype') as string) || 'react';
 
@@ -679,10 +680,13 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     // TODO
     switch (key) {
       case 'copy':
-        message.warning('复制待实现');
+        componentIdToCloneRef.current = componentSchema.id;
+        message.success('已复制').then();
         break;
       case 'paste':
-        message.warning('粘贴待实现');
+        if (componentIdToCloneRef.current) {
+          dslStore.cloneComponent(componentIdToCloneRef.current, componentSchema.id, 0);
+        }
         break;
       case 'rename':
         message.warning('重命名待实现');
