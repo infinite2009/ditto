@@ -297,9 +297,24 @@ export default class DSLStore {
     return this.deleteSubtree(id);
   }
 
+  /**
+   * 克隆组件
+   *
+   * @param id
+   * @param parentId
+   * @param index
+   */
   @execute
-  cloneComponent(id: ComponentId): IComponentSchema | null {
-    return this.cloneSubtree(id);
+  cloneComponent(id: ComponentId, parentId: ComponentId, index: number) {
+    const clonedSubtree = this.cloneSubtree(id);
+    const parent = this.dsl.componentIndexes[parentId];
+    if (!clonedSubtree) {
+      return;
+    }
+    parent.children.splice(index, 0, {
+      current: clonedSubtree.id,
+      isText: false
+    });
   }
 
   private cloneSubtree(id: ComponentId) {
@@ -366,19 +381,6 @@ export default class DSLStore {
         });
       }
     });
-    // 5. 插入到被复制的 component 后边
-    const parent = this.dsl.componentIndexes[clonedComponentSchema.parentId];
-    if (parent.children?.length) {
-      // 找到被复制的组件在父组件子树的位置
-      const index = parent.children.findIndex(child => child.current === id && child.isText);
-      if (index > -1) {
-        parent.children.splice(index, 0, {
-          current: clonedComponentSchema.id,
-          isText: false
-        });
-      }
-    }
-
     return clonedComponentSchema;
   }
 
