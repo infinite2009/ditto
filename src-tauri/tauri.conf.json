@@ -49,7 +49,7 @@
             ]
           },
           {
-            "name": "mv folder or file",
+            "name": "mv",
             "cmd": "mv",
             "args": [
               {

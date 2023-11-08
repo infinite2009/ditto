@@ -104,7 +104,7 @@ class FileManager {
       delete this.cache.recentProjects[project.id];
       delete this.cache.pathToProjectDict[project.path];
       if (deleteFolder) {
-        await new Command('mv folder or file', [project.path, await join(await homeDir(), '.Trash')]).execute();
+        await new Command('mv', [project.path, await join(await homeDir(), '.Trash')]).execute();
       }
     } catch (err) {
       console.error(err);
@@ -442,7 +442,7 @@ class FileManager {
     console.log('newName: ', newName);
     const dir = await dirname(path);
     let newPath;
-    const isDirectory = await new Command('isDirectory', [path]).execute();
+    const isDirectory = await new Command('isDirectory', ['-d', path]).execute();
     if (isDirectory) {
       // 如果是目录，找到上级目录
       newPath = await join(dir, newName);
