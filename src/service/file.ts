@@ -441,6 +441,7 @@ class FileManager {
     console.log('path: ', path);
     console.log('newName: ', newName);
     const dir = await dirname(path);
+    console.log('dir: ', dir);
     let newPath;
     const isDirectory = await new Command('isDirectory', ['-d', path]).execute();
     if (isDirectory) {
@@ -450,9 +451,16 @@ class FileManager {
       const ext = await extname(path);
       newPath = await join(dir, newName, ext);
     }
-    const log = await new Command('mv', [path, newPath]).execute();
-    if (log.code !== 0) {
-      throw new Error(log.stderr);
+    if (path === newPath) {
+      return;
+    }
+    try {
+      const log = await new Command('mv', [path, newPath]).execute();
+      if (log.code !== 0) {
+        throw new Error(log.stderr);
+      }
+    } catch (err) {
+      throw new Error(err);
     }
   }
 

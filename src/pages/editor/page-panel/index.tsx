@@ -1,4 +1,4 @@
-import { Input, Tree } from 'antd';
+import { Input, message, Tree } from 'antd';
 import { DataNode, EventDataNode } from 'antd/es/tree';
 import React, { Key, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DownOutlined, FileOutlined, FolderOpenOutlined, FolderOutlined } from '@ant-design/icons';
@@ -106,8 +106,12 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
   }, [data, selectedPath]);
 
   async function handleRenamingPage(path: string, newName: string) {
-    await fileManager.renamePage(path, newName);
-    setSelectedPath('');
+    try {
+      await fileManager.renamePage(path, newName);
+      setSelectedPath('');
+    } catch (e) {
+      message.error(e.toString());
+    }
   }
 
   function handleExpand(
