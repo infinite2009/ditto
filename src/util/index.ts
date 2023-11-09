@@ -68,7 +68,7 @@ export function hyphenToCamelCase(input: string) {
 
 export function findNodePath(root: any, target: string, key = 'key'): string[] {
   if (root[key] === target) {
-    return [target];
+    return [];
   }
 
   if (root?.children?.length) {

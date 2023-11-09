@@ -31,9 +31,19 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
 
   useEffect(() => {
     if (selected && data.length) {
-      setExpandedKeys(findNodePath({ key: undefined, children: data }, selected));
+      setExpandedKeys(mergeExpandedKeys(expandedKeys, findNodePath({ key: undefined, children: data }, selected)));
     }
   }, [selected, data]);
+
+  function mergeExpandedKeys(arr1: string[], arr2: string[]): string[] {
+    const result = [...arr1];
+    arr2.forEach(item => {
+      if (!arr1.includes(item)) {
+        result.push(item);
+      }
+    });
+    return result;
+  }
 
   const handlingSelect = useCallback(
     (_: any, selected: any) => {
@@ -130,6 +140,7 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
       nativeEvent: MouseEvent;
     }
   ) {
+    console.log('expandedKeys: ', expandedKeys);
     setExpandedKeys(expandedKeys as string[]);
   }
 
