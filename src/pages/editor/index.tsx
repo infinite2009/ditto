@@ -826,7 +826,12 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     return (
       <>
         <div className={styles.pagePanel}>
-          <PagePanel data={projectData} onSelect={handleSelectingPageOrFolder} selected={currentFile} />
+          <PagePanel
+            data={projectData}
+            onSelect={handleSelectingPageOrFolder}
+            selected={currentFile}
+            onChange={() => fetchProjectData().then()}
+          />
         </div>
         <div className={styles.componentTree}>
           <ComponentTree

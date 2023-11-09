@@ -21,9 +21,10 @@ export interface IPagePanel {
   data: PageData[];
   selected: string;
   onSelect: (page: DataNode) => void;
+  onChange: () => void;
 }
 
-export default function PagePanel({ data = [], selected, onSelect }: IPagePanel) {
+export default function PagePanel({ data = [], selected, onSelect, onChange }: IPagePanel) {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
   const [selectedPath, setSelectedPath] = useState<ComponentId>('');
 
@@ -121,6 +122,9 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
     try {
       await fileManager.renamePage(path, newName);
       setSelectedPath('');
+      if (onChange) {
+        onChange();
+      }
     } catch (e) {
       message.error(e.toString());
     }
