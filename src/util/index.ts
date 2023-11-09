@@ -66,17 +66,17 @@ export function hyphenToCamelCase(input: string) {
   });
 }
 
-export function findNodePath(root: any, target: string, key = 'key'): string[] {
+export function findNodePath(root: any, target: string, key = 'path'): string[] {
   if (root[key] === target) {
-    return [target];
+    return [root.key];
   }
 
   if (root?.children?.length) {
     for (const child of root.children) {
       const path = findNodePath(child, target, key);
       if (path.length) {
-        if (root[key]) {
-          return [root[key], ...path];
+        if (root.key) {
+          return [root.key, ...path];
         }
         return path;
       }
