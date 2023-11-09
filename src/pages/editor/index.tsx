@@ -556,8 +556,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     if (currentFile) {
       filePathRef.current = await dirname(currentFile);
       await fileManager.savePageDSLFile(currentFile, dslStore.dsl);
+      message.success('保存成功');
     }
-  }, 1000);
+  }, 250);
 
   async function handleExportingPageCodeFile() {
     const extension = codeType === 'react' ? 'tsx' : 'vue';
