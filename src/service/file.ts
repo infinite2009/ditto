@@ -444,18 +444,42 @@ class FileManager {
     console.log('dir: ', dir);
     let newPath;
     const isDirectory = await new Command('isDirectory', ['-d', path]).execute();
-    if (isDirectory) {
+    if (isDirectory.code !== 1) {
       // 如果是目录，找到上级目录
       newPath = await join(dir, newName);
     } else {
       const ext = await extname(path);
-      newPath = await join(dir, newName, ext);
+      newPath = await join(dir, `${newName}.${ext}`);
     }
     if (path === newPath) {
       return;
     }
     try {
       const log = await new Command('mv', [path, newPath]).execute();
+      const currentProject = (await FileManager.recentProjectsStore.getItem(this.cache.currentProject)) as ProjectInfo;
+      const { openedFile, path: projectPath } = currentProject;
+      if (path === projectPath) {
+        // 如果 path 是项目目录，则需要更新数据库
+        const newProjectInfo = {
+          ...currentProject,
+          path: newPath
+        };
+        await FileManager.recentProjectsStore.setItem(currentProject.id, newProjectInfo);
+        this.cache.recentProjects[newProjectInfo.id] = newProjectInfo;
+        this.cache.currentProject = newProjectInfo.id;
+        delete this.cache.pathToProjectDict[path];
+        this.cache.pathToProjectDict[path] = newProjectInfo;
+      } else if (path === openedFile) {
+        // 如果 path 是当前页面目录，则需要更新数据库
+        const newProjectInfo = {
+          ...currentProject,
+          openedFile: newPath
+        };
+        await FileManager.recentProjectsStore.setItem(currentProject.id, newProjectInfo);
+        this.cache.recentProjects[newProjectInfo.id] = newProjectInfo;
+        this.cache.currentProject = newProjectInfo.id;
+      }
+
       if (log.code !== 0) {
         throw new Error(log.stderr);
       }
