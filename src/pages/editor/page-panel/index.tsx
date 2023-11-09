@@ -140,7 +140,6 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
       nativeEvent: MouseEvent;
     }
   ) {
-    console.log('expandedKeys: ', expandedKeys);
     setExpandedKeys(expandedKeys as string[]);
   }
 
