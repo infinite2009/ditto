@@ -1,5 +1,5 @@
 import { toJS } from 'mobx';
-import React, { CSSProperties, FC, PropsWithChildren, Reducer, useContext, useReducer } from 'react';
+import React, { FC, PropsWithChildren, Reducer, useContext, useReducer } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
@@ -11,7 +11,6 @@ import { ComponentId, PropsId, TemplateInfo } from '@/types';
 import IActionSchema from '@/types/action.schema';
 import ActionType from '@/types/action-type';
 import { open } from '@tauri-apps/api/shell';
-import cloneDeep from 'lodash/cloneDeep';
 import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 
@@ -267,22 +266,22 @@ export default observer((props: IPageRendererProps) => {
       };
     }
 
-    const componentPropsWithoutMargin = { ...componentProps, style: cloneDeep(componentProps.style) };
-    const marginStyleNames: (keyof CSSProperties)[] = [
-      'margin',
-      'marginTop',
-      'marginRight',
-      'marginBottom',
-      'marginLeft'
-    ];
-    marginStyleNames.forEach(name => {
-      if (componentPropsWithoutMargin?.style) {
-        delete componentPropsWithoutMargin?.style[name];
-      }
-    });
+    // const componentPropsWithoutMargin = { ...componentProps, style: cloneDeep(componentProps.style) };
+    // const marginStyleNames: (keyof CSSProperties)[] = [
+    //   'margin',
+    //   'marginTop',
+    //   'marginRight',
+    //   'marginBottom',
+    //   'marginLeft'
+    // ];
+    // marginStyleNames.forEach(name => {
+    //   if (componentPropsWithoutMargin?.style) {
+    //     delete componentPropsWithoutMargin?.style[name];
+    //   }
+    // });
 
     const tpl = (
-      <Component key={componentId} {...componentPropsWithoutMargin} {...rootProps}>
+      <Component key={componentId} {...componentProps} {...rootProps}>
         {childrenTemplate}
       </Component>
     );

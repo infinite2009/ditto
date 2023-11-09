@@ -72,11 +72,11 @@ export default observer(function EditWrapper({
     const result: CSSProperties = {};
     const styleNames: (keyof CSSProperties)[] = [
       'display',
-      'margin',
-      'marginLeft',
-      'marginTop',
-      'marginRight',
-      'marginBottom',
+      // 'margin',
+      // 'marginLeft',
+      // 'marginTop',
+      // 'marginRight',
+      // 'marginBottom',
       'position',
       'top',
       'right',
@@ -91,32 +91,32 @@ export default observer(function EditWrapper({
         result[name] = childrenStyle[name];
       }
     });
-    // 额外处理下 margin
-    const { margin, marginLeft, marginTop, marginRight, marginBottom } = result;
-
-    const mergedMarginTop = marginTop || margin;
-
-    if (mergedMarginTop !== undefined) {
-      result.marginTop = mergedMarginTop;
-    }
-
-    const mergedMarginRight = marginRight || margin;
-
-    if (mergedMarginRight !== undefined) {
-      result.marginRight = mergedMarginRight;
-    }
-
-    const mergedMarginBottom = marginBottom || margin;
-
-    if (mergedMarginBottom !== undefined) {
-      result.marginTop = mergedMarginBottom;
-    }
-
-    const mergedMarginLeft = marginLeft || margin;
-
-    if (mergedMarginLeft !== undefined) {
-      result.marginLeft = mergedMarginLeft;
-    }
+    // // 额外处理下 margin
+    // const { margin, marginLeft, marginTop, marginRight, marginBottom } = result;
+    //
+    // const mergedMarginTop = marginTop || margin;
+    //
+    // if (mergedMarginTop !== undefined) {
+    //   result.marginTop = mergedMarginTop;
+    // }
+    //
+    // const mergedMarginRight = marginRight || margin;
+    //
+    // if (mergedMarginRight !== undefined) {
+    //   result.marginRight = mergedMarginRight;
+    // }
+    //
+    // const mergedMarginBottom = marginBottom || margin;
+    //
+    // if (mergedMarginBottom !== undefined) {
+    //   result.marginTop = mergedMarginBottom;
+    // }
+    //
+    // const mergedMarginLeft = marginLeft || margin;
+    //
+    // if (mergedMarginLeft !== undefined) {
+    //   result.marginLeft = mergedMarginLeft;
+    // }
 
     const wrapperElement = document.getElementById(id);
     if (!wrapperElement) {
@@ -200,23 +200,23 @@ export default observer(function EditWrapper({
       childElement.style.left = '0px';
     }
 
-    const marginStyleNames: (keyof CSSProperties)[] = [
-      'margin',
-      'marginTop',
-      'marginRight',
-      'marginBottom',
-      'marginLeft'
-    ];
-    marginStyleNames.forEach(name => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      if (result[name] === undefined && childElement.style[name] !== '') {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        result[name] = childElement.style[name];
-      }
-      childElement.style.margin = '0px';
-    });
+    // const marginStyleNames: (keyof CSSProperties)[] = [
+    //   'margin',
+    //   'marginTop',
+    //   'marginRight',
+    //   'marginBottom',
+    //   'marginLeft'
+    // ];
+    // marginStyleNames.forEach(name => {
+    //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //   // @ts-ignore
+    //   if (result[name] === undefined && childElement.style[name] !== '') {
+    //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //     // @ts-ignore
+    //     result[name] = childElement.style[name];
+    //   }
+    //   childElement.style.margin = '0px';
+    // });
 
     let backgroundColor;
     switch (feature) {
