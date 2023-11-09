@@ -38,6 +38,22 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
     }
   }, [selected, data]);
 
+  const selectedKeys = useMemo(() => {
+    if (selected && data.length) {
+      let q = data;
+      while (q.length) {
+        const node = q.shift();
+        if (node?.path === selected) {
+          return [node?.key];
+        } else if (node?.children?.length) {
+          q = q.concat(node?.children);
+        }
+      }
+      return [];
+    }
+    return [];
+  }, [selected, data]);
+
   function mergeExpandedKeys(arr1: string[], arr2: string[]): string[] {
     const result = [...arr1];
     arr2.forEach(item => {
@@ -169,7 +185,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
             switcherIcon={<DownOutlined />}
             showIcon
             blockNode
-            selectedKeys={[selected]}
+            selectedKeys={selectedKeys}
             onExpand={handleExpand}
             expandedKeys={expandedKeys}
             onSelect={handlingSelect}
