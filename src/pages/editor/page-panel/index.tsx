@@ -42,8 +42,7 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
         return;
       }
       clickTimeoutIdRef.current = setTimeout(() => {
-        if (onSelect) {
-          console.log('单击: ', selected.selectedNodes[0]);
+        if (onSelect && selected.selectedNodes[0]) {
           onSelect(selected.selectedNodes[0]);
         }
         clickTimeoutIdRef.current = undefined;
@@ -78,11 +77,14 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
                   // @ts-ignore
                   handleRenamingPage(item.key, (e.target.value as unknown as string).trim())
                 }
+                size="small"
+                styles={{ input: { width: 100 } }}
               />
             );
           } else {
             converted.title = (
-              <span
+              <div
+                className={styles.nodeTitle}
                 onDoubleClick={e => {
                   e.stopPropagation();
                   if (clickTimeoutIdRef.current !== undefined) {
@@ -93,7 +95,7 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
                 }}
               >
                 {converted.title}
-              </span>
+              </div>
             );
           }
           return converted;
@@ -149,6 +151,7 @@ export default function PagePanel({ data = [], selected, onSelect }: IPagePanel)
           <Tree
             switcherIcon={<DownOutlined />}
             showIcon
+            blockNode
             selectedKeys={[selected]}
             onExpand={handleExpand}
             expandedKeys={expandedKeys}
