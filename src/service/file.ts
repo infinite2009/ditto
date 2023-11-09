@@ -462,6 +462,7 @@ class FileManager {
         // 如果 path 是项目目录，则需要更新数据库
         const newProjectInfo = {
           ...currentProject,
+          name: newName,
           path: newPath
         };
         await FileManager.recentProjectsStore.setItem(currentProject.id, newProjectInfo);
