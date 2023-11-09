@@ -27,6 +27,8 @@ import { Platform, platform } from '@tauri-apps/api/os';
 interface EntryTree {
   key: string;
   title: string;
+  path: string;
+  name: string;
   children?: EntryTree[];
   isLeaf?: boolean;
 }
@@ -264,16 +266,18 @@ class FileManager {
 
     const entries: FileEntry[] = await readDir(currentProjectPath, { recursive: true });
 
-    const recursiveMap = (entries: FileEntry[]) => {
+    const recursiveMap = (entries: FileEntry[], parentKey: string) => {
       return entries
         .filter(entry => (entry.name as string).endsWith('.ditto') || entry.children)
-        .map(entry => {
+        .map((entry, index) => {
           const r: EntryTree = {
-            key: entry.path,
+            key: parentKey ? `${parentKey}-${index}` : index.toString(),
+            path: entry.path,
+            name: entry.name as string,
             title: getFileName(entry.name as string)
           };
           if (entry.children) {
-            r.children = recursiveMap(entry.children);
+            r.children = recursiveMap(entry.children, r.key);
           } else {
             r.isLeaf = true;
           }
@@ -288,7 +292,7 @@ class FileManager {
       path: currentProjectPath,
       children: entries
     };
-    return recursiveMap([project]);
+    return recursiveMap([project], '');
   }
 
   fetchOpenedProjects() {
@@ -438,10 +442,10 @@ class FileManager {
   }
 
   async renamePage(path: string, newName: string) {
-    console.log('path: ', path);
-    console.log('newName: ', newName);
+    if (!(await exists(path))) {
+      throw new Error('文件不存在或文件夹不存在');
+    }
     const dir = await dirname(path);
-    console.log('dir: ', dir);
     let newPath;
     const isDirectory = await new Command('isDirectory', ['-d', path]).execute();
     if (isDirectory.code !== 1) {
@@ -456,6 +460,9 @@ class FileManager {
     }
     try {
       const log = await new Command('mv', [path, newPath]).execute();
+      if (log.code !== 0) {
+        throw new Error(log.stderr);
+      }
       const currentProject = (await FileManager.recentProjectsStore.getItem(this.cache.currentProject)) as ProjectInfo;
       const { openedFile, path: projectPath } = currentProject;
       if (path === projectPath) {
@@ -479,10 +486,6 @@ class FileManager {
         await FileManager.recentProjectsStore.setItem(currentProject.id, newProjectInfo);
         this.cache.recentProjects[newProjectInfo.id] = newProjectInfo;
         this.cache.currentProject = newProjectInfo.id;
-      }
-
-      if (log.code !== 0) {
-        throw new Error(log.stderr);
       }
     } catch (err) {
       throw new Error(err);

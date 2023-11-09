@@ -13,6 +13,8 @@ interface PageData {
   key: string;
   title: string | ReactNode | any;
   children?: PageData[];
+  path: string;
+  name: string;
   isLeaf?: boolean;
   icon?: any;
 }
@@ -77,16 +79,16 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
           } else {
             converted.icon = (props: any) => (props.expanded ? <FolderOpenOutlined /> : <FolderOutlined />);
           }
-          if (item.key === selectedPath) {
+          if (item.path === selectedPath) {
             converted.title = (
               <Input
                 defaultValue={item.title as string}
                 autoFocus
                 onFocus={e => e.target.select()}
-                onBlur={e => handleRenamingPage(item.key, (e.target.value as string).trim())}
+                onBlur={e => handleRenamingPage(item.path, (e.target.value as string).trim())}
                 onPressEnter={e =>
                   // @ts-ignore
-                  handleRenamingPage(item.key, (e.target.value as unknown as string).trim())
+                  handleRenamingPage(item.path, (e.target.value as unknown as string).trim())
                 }
                 size="small"
                 styles={{ input: { width: 100 } }}
@@ -102,7 +104,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
                     clearTimeout(clickTimeoutIdRef.current);
                     clickTimeoutIdRef.current = undefined;
                   }
-                  setSelectedPath(converted.key);
+                  setSelectedPath(converted.path);
                 }}
               >
                 {converted.title}
@@ -121,12 +123,13 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   async function handleRenamingPage(path: string, newName: string) {
     try {
       await fileManager.renamePage(path, newName);
-      setSelectedPath('');
       if (onChange) {
         onChange();
       }
     } catch (e) {
       message.error(e.toString());
+    } finally {
+      setSelectedPath('');
     }
   }
 

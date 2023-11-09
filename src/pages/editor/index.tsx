@@ -656,12 +656,12 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     }
   }
 
-  function handleSelectingPageOrFolder(page: DataNode) {
+  function handleSelectingPageOrFolder(page: { path: string; name: string } & DataNode) {
     if (page.isLeaf) {
-      openFile(page.key as string).then();
-      setCurrentFile(page.key as string);
+      openFile(page.path as string).then();
+      setCurrentFile(page.path as string);
     } else {
-      setSelectedFolder(page.key as string);
+      setSelectedFolder(page.path as string);
     }
   }
 
