@@ -466,23 +466,29 @@ class FileManager {
       const currentProject = (await FileManager.recentProjectsStore.getItem(this.cache.currentProject)) as ProjectInfo;
       const { openedFile, path: projectPath } = currentProject;
       if (path === projectPath) {
+        const newCurrentFile = openedFile.replace(path, newPath);
         // 如果 path 是项目目录，则需要更新数据库
         const newProjectInfo = {
           ...currentProject,
           name: newName,
-          path: newPath
+          path: newPath,
+          openedFile: newCurrentFile
         };
         await FileManager.recentProjectsStore.setItem(currentProject.id, newProjectInfo);
         this.cache.recentProjects[newProjectInfo.id] = newProjectInfo;
         this.cache.currentProject = newProjectInfo.id;
         delete this.cache.pathToProjectDict[path];
         this.cache.pathToProjectDict[path] = newProjectInfo;
-      } else if (path === openedFile) {
+      } else if (openedFile.startsWith(path)) {
         // 如果 path 是当前页面目录，则需要更新数据库
         const newProjectInfo = {
-          ...currentProject,
-          openedFile: newPath
+          ...currentProject
         };
+        if (path === openedFile) {
+          newProjectInfo.openedFile = newPath;
+        } else {
+          newProjectInfo.openedFile = openedFile.replace(path, newPath);
+        }
         await FileManager.recentProjectsStore.setItem(currentProject.id, newProjectInfo);
         this.cache.recentProjects[newProjectInfo.id] = newProjectInfo;
         this.cache.currentProject = newProjectInfo.id;

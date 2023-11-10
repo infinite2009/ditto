@@ -819,6 +819,11 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     return recursiveMap([dsl.child]);
   }
 
+  function handleChangingProject() {
+    fetchProjectData().then();
+    fetchCurrentProject();
+  }
+
   /**
    * 渲染项目的文件目录，当前文件的组件树
    */
@@ -830,7 +835,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             data={projectData}
             onSelect={handleSelectingPageOrFolder}
             selected={currentFile}
-            onChange={() => fetchProjectData().then()}
+            onChange={handleChangingProject}
           />
         </div>
         <div className={styles.componentTree}>
