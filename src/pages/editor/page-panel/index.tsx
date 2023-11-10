@@ -40,7 +40,8 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
 
   const selectedKeys = useMemo(() => {
     if (selected && data.length) {
-      let q = data;
+      // warning: 不能破坏原始数据
+      let q = [...data];
       while (q.length) {
         const node = q.shift();
         if (node?.path === selected) {
