@@ -124,7 +124,6 @@ export default class DSLStore {
   @execute
   clearPage() {
     if (Object.keys(this.dsl.componentIndexes).length === 1) {
-      console.log('画布已清空，不再执行');
       return;
     }
     this.createEmptyPage(this.dsl.name);
@@ -517,9 +516,7 @@ export default class DSLStore {
     });
   }
 
-  exportAsTemplate(id: string) {
-    console.log('export as template works');
-  }
+  exportAsTemplate(id: string) {}
 
   fetchComponentInDSL(id: string) {
     const { componentIndexes } = this.dsl;

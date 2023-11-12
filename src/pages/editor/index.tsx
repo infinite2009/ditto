@@ -915,8 +915,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     return <div>code works!</div>;
   }
 
-  console.log('editor rendered');
-
   return (
     <div className={styles.main} style={style}>
       <div className={styles.topBar}>
