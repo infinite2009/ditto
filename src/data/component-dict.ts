@@ -341,6 +341,10 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '样式',
         category: 'style',
         value: {},
+        composition: {
+          defaultCategory: 'style',
+          options: {}
+        },
         valueType: 'object',
         valueSource: 'editorInput'
       },
