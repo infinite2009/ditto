@@ -290,7 +290,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'href',
         title: '链接',
         category: 'basic',
-        value: '',
+        value: undefined,
         valueType: 'string',
         valueSource: 'editorInput'
       },
