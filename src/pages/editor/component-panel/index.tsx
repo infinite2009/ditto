@@ -27,9 +27,7 @@ export default function ComponentPanel() {
     fetchComponentList();
   }, []);
 
-  function handleSearching() {
-    console.log('handle searching component');
-  }
+  function handleSearching() {}
 
   function fetchComponentList() {
     const components = Object.values(componentConfig).map(item => Object.values(item));

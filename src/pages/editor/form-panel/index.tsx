@@ -51,7 +51,7 @@ export default observer(() => {
   }
 
   function handleChangingStyleForm(value: CSSProperties) {
-    dslStore.updateComponentProps({ style: value });
+    dslStore.updateComponentProps(value);
   }
 
   function handleChangingDataFormValues(value: Record<string, any>) {

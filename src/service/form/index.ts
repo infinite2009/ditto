@@ -9,7 +9,12 @@ export function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
     Button: {
       configName: 'Button',
       schema: {
-        style: [],
+        style: {
+          width: true,
+          height: true,
+          fontSize: true,
+          fontWeight: true
+        },
         basic: {
           type: {
             type: 'string',
@@ -107,6 +112,172 @@ export function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
               ]
             },
             initialValue: 'middle'
+          }
+        }
+      }
+    },
+    HorizontalFlex: {
+      configName: 'HorizontalFlex',
+      schema: {
+        style: {
+          vertical: {
+            type: 'boolean',
+            title: '方向',
+            required: false,
+            component: 'Switch',
+            initialValue: false
+            // 这个 form 配置项将合并到哪个 props 上，此时该 props 是一个对象，如果没有这个配置，则不进行合并
+          },
+          wrap: {
+            type: 'boolean',
+            title: '换行',
+            required: false,
+            component: 'Switch',
+            initialValue: false
+          },
+          justify: {
+            type: 'string',
+            title: '主轴对齐',
+            required: false,
+            component: 'Select',
+            componentProps: {
+              options: [
+                {
+                  value: 'normal',
+                  label: '自动'
+                },
+                {
+                  value: 'start',
+                  label: '头对齐'
+                },
+                {
+                  value: 'center',
+                  label: '居中对齐'
+                },
+                {
+                  value: 'end',
+                  label: '尾对齐'
+                }
+              ]
+            },
+            initialValue: 'start'
+          },
+          align: {
+            type: 'string',
+            title: '副轴对齐',
+            required: false,
+            component: 'Select',
+            componentProps: {
+              options: [
+                {
+                  value: 'normal',
+                  label: '自动'
+                },
+                {
+                  value: 'start',
+                  label: '头对齐'
+                },
+                {
+                  value: 'center',
+                  label: '居中对齐'
+                },
+                {
+                  value: 'end',
+                  label: '尾对齐'
+                }
+              ]
+            },
+            initialValue: 'start'
+          },
+          gap: {
+            type: 'string',
+            title: '间距',
+            required: false,
+            component: 'Input',
+            initialValue: '8px'
+          }
+        }
+      }
+    },
+    VerticalFlex: {
+      configName: 'VerticalFlex',
+      schema: {
+        style: {
+          vertical: {
+            type: 'boolean',
+            title: '方向',
+            required: false,
+            component: 'Switch',
+            initialValue: true
+            // 这个 form 配置项将合并到哪个 props 上，此时该 props 是一个对象，如果没有这个配置，则不进行合并
+          },
+          wrap: {
+            type: 'boolean',
+            title: '换行',
+            required: false,
+            component: 'Switch',
+            initialValue: false
+          },
+          justify: {
+            type: 'string',
+            title: '主轴对齐',
+            required: false,
+            component: 'Select',
+            componentProps: {
+              options: [
+                {
+                  value: 'normal',
+                  label: '自动'
+                },
+                {
+                  value: 'start',
+                  label: '头对齐'
+                },
+                {
+                  value: 'center',
+                  label: '居中对齐'
+                },
+                {
+                  value: 'end',
+                  label: '尾对齐'
+                }
+              ]
+            },
+            initialValue: 'start'
+          },
+          align: {
+            type: 'string',
+            title: '副轴对齐',
+            required: false,
+            component: 'Select',
+            componentProps: {
+              options: [
+                {
+                  value: 'normal',
+                  label: '自动'
+                },
+                {
+                  value: 'start',
+                  label: '头对齐'
+                },
+                {
+                  value: 'center',
+                  label: '居中对齐'
+                },
+                {
+                  value: 'end',
+                  label: '尾对齐'
+                }
+              ]
+            },
+            initialValue: 'start'
+          },
+          gap: {
+            type: 'string',
+            title: '间距',
+            required: false,
+            component: 'Input',
+            initialValue: '8px'
           }
         }
       }

@@ -1,9 +1,13 @@
 import { ColorPicker, Form, Input, InputNumber, Select, Switch } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { CSSProperties, FC, useEffect, useMemo } from 'react';
+import { typeOf } from '@/util';
+import { FormItemSchema } from '@/types/form-config';
 
 export interface IStyleFormProps {
-  config?: string[];
+  config?: {
+    [key: string]: FormItemSchema | boolean;
+  };
   value?: CSSProperties;
   onChange: (style: CSSProperties) => void;
 }
@@ -60,36 +64,85 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     flexBasis: { name: 'flexBasis', label: '基准宽度', component: InputNumber }
   };
 
+  const componentRegDict: Record<string, FC> = {
+    Select: Select,
+    Switch: Switch,
+    Input: Input,
+    ColorPicker: ColorPicker
+  };
+
   useEffect(() => {
     form.setFieldsValue(value);
   }, [value]);
 
   const styleConfig = useMemo(() => {
-    if (config && config.length > 0) {
-      return config;
+    if (config && Object.keys(config).length > 0) {
+      return Object.entries(config);
     }
-    return styleNames;
+    return [];
   }, [config]);
 
   function handleChangingStyle() {
     if (onChange) {
-      onChange(form.getFieldsValue());
+      const originalValueObj = form.getFieldsValue();
+      Object.entries(originalValueObj).forEach(([key, val]) => {
+        if (val === undefined) {
+          delete originalValueObj[key];
+          return;
+        }
+        const config = styleConfig.find(item => item[0] === key);
+        if (config) {
+          if (typeOf(config[1]) === 'object') {
+            if ((config[1] as FormItemSchema).type === 'number') {
+              originalValueObj[key] = {
+                value: +(val as string)
+              };
+            } else {
+              originalValueObj[key] = {
+                value: val
+              };
+            }
+            // 如果该配置项是某个props的一个属性，则把这个 props 的名字写进去
+            if ((config[1] as FormItemSchema).propsToCompose) {
+              originalValueObj[key].propsToCompose = (config[1] as FormItemSchema).propsToCompose;
+            }
+          } else {
+            // 如果配置项是 boolean 值，则默认为 style 的一个属性
+            originalValueObj[key] = {
+              value: val,
+              propsToCompose: 'style'
+            };
+          }
+        }
+      });
+      onChange(originalValueObj);
     }
   }
 
   function renderFormItems() {
-    return styleConfig.map(item => {
-      const Component = defaultStyleConfig[item].component;
+    return styleConfig.map(([key, val]) => {
+      let Component: FC<any>;
+      let label;
+      let componentProps = {};
+      // 如果不是对象
+      if (typeOf(val).toLowerCase() === 'boolean' && styleNames.includes(key)) {
+        Component = defaultStyleConfig[key].component;
+        label = defaultStyleConfig[key].label;
+      } else {
+        Component = componentRegDict[(val as FormItemSchema).component] || Input;
+        label = (val as FormItemSchema).title;
+        componentProps = (val as FormItemSchema).componentProps || {};
+      }
       return (
-        <Form.Item key={item} label={defaultStyleConfig[item].label} name={defaultStyleConfig[item].name}>
-          <Component />
+        <Form.Item key={key} label={label} name={key}>
+          <Component {...componentProps} />
         </Form.Item>
       );
     });
   }
 
   return (
-    <Form form={form} onChange={handleChangingStyle}>
+    <Form form={form} onValuesChange={handleChangingStyle}>
       {renderFormItems()}
     </Form>
   );

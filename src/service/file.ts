@@ -418,7 +418,7 @@ class FileManager {
             `${newPath}`
           ]).execute();
         } catch (err) {
-          console.log(err);
+          console.error(err);
           throw new Error('系统错误');
         }
       } else {
