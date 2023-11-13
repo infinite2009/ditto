@@ -43,7 +43,12 @@ export default observer(function ComponentContextMenu({ data, items, onClick, ch
           )
         };
       }),
-      onClick: ({ key }: { key: string }) => onClick && onClick(key, data)
+      onClick: ({ key, domEvent }: { key: string; domEvent: any }) => {
+        domEvent.stopPropagation();
+        if (onClick) {
+          onClick(key, data);
+        }
+      }
     };
   };
 

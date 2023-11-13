@@ -49,7 +49,10 @@ import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import IComponentSchema from '@/types/component.schema';
-import { COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_HIDE } from '@/data/constant';
+import {
+  COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_HIDE,
+  COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_SHOW
+} from '@/data/constant';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
 
 const collisionOffset = 4;
@@ -109,6 +112,15 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [scale, setScale] = useState<number>(1);
   const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
   const [selectedComponentForRenaming, setSelectedComponentForRenaming] = useState<ComponentId>('');
+  const [componentState, setComponentState] = useState<
+    Record<
+      string,
+      {
+        visible: boolean;
+        [key: string]: any;
+      }
+    >
+  >({});
 
   const [form] = useForm();
 
@@ -685,7 +697,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     switch (key) {
       case 'copy':
         componentIdToCloneRef.current = componentSchema.id;
-        message.success('已复制').then();
         break;
       case 'paste':
         if (componentIdToCloneRef.current) {
@@ -698,6 +709,24 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         break;
       case 'delete':
         message.warning('删除待实现');
+        break;
+      case 'hide':
+        setComponentState({
+          ...componentState,
+          [componentSchema.id]: {
+            ...componentState[componentSchema.id],
+            hidden: true
+          }
+        });
+        break;
+      case 'show':
+        setComponentState({
+          ...componentState,
+          [componentSchema.id]: {
+            ...componentState[componentSchema.id],
+            hidden: false
+          }
+        });
         break;
       default:
         break;
@@ -730,7 +759,11 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         <ComponentContextMenu
           data={componentSchema}
           onClick={handleClickDropDownMenu}
-          items={COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_HIDE}
+          items={
+            componentState[componentSchema.id]?.hidden
+              ? COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_SHOW
+              : COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_HIDE
+          }
         >
           <div onDoubleClick={() => handleSelectingComponentForRenaming(componentSchema.id)}>
             {componentSchema.id === selectedComponentForRenaming ? (
