@@ -4,7 +4,6 @@ import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
 import EditWrapper from '@/pages/editor/edit-wrapper';
-import ComponentFeature from '@/types/component-feature';
 import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import { ComponentId, PropsId, TemplateInfo } from '@/types';
@@ -231,7 +230,8 @@ export default observer((props: IPageRendererProps) => {
       dependency,
       children = [],
       propsRefs = [],
-      id: componentId
+      id: componentId,
+      feature
     } = node as IComponentSchema;
     let Component: string | FC<PropsWithChildren<any>> = callingName || name;
     let componentConfig: IComponentConfig | undefined;
@@ -290,14 +290,14 @@ export default observer((props: IPageRendererProps) => {
         {childrenTemplate}
       </Component>
     );
-    let feature;
-    if (isSlot) {
-      feature = ComponentFeature.slot;
-    } else if (componentConfig?.isContainer) {
-      feature = ComponentFeature.container;
-    } else {
-      feature = ComponentFeature.solid;
-    }
+    // let feature;
+    // if (isSlot) {
+    //   feature = ComponentFeature.slot;
+    // } else if (componentConfig?.isContainer) {
+    //   feature = ComponentFeature.container;
+    // } else {
+    //   feature = ComponentFeature.solid;
+    // }
 
     return mode === 'edit' && !isRoot ? (
       <EditWrapper
