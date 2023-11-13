@@ -892,7 +892,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
               {renderLeftPanel()}
             </div>
             <div className={styles.canvas}>
-              <div id="canvas-inner" className={styles.canvasInner}>
+              <div className={styles.canvasInner}>
                 {currentFile ? <PageRenderer mode="edit" scale={scale} /> : <Empty />}
               </div>
             </div>

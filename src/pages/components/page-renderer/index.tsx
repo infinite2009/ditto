@@ -282,7 +282,7 @@ export default observer((props: IPageRendererProps) => {
 
     // DIRTY: 为模态框
     if (componentConfig?.isLayer) {
-      componentProps.getContainer = () => document.getElementById('canvas-inner');
+      componentProps.getContainer = false;
     }
 
     const tpl = (
