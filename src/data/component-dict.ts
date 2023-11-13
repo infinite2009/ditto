@@ -1199,10 +1199,27 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Drawer',
     dependency: 'antd',
     component: Drawer,
+    isLayer: true,
     category: '反馈',
     title: '抽屉',
     icon: CodeSandboxOutlined,
-    propsConfig: {}
+    propsConfig: {
+      open: {
+        id: 'open',
+        schemaType: 'props',
+        name: 'open',
+        title: '显示',
+        value: true,
+        valueType: 'boolean',
+        valueSource: 'userInput',
+        category: 'basic'
+      }
+    },
+    children: {
+      value: [],
+      name: 'children',
+      category: 'children'
+    }
   },
   Modal: {
     configName: 'Modal',
