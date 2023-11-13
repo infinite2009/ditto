@@ -280,6 +280,11 @@ export default observer((props: IPageRendererProps) => {
     //   }
     // });
 
+    // DIRTY: 为模态框
+    if (componentConfig?.isLayer) {
+      componentProps.getContainer = () => document.getElementById('canvas-inner');
+    }
+
     const tpl = (
       <Component key={componentId} {...componentProps} {...rootProps}>
         {childrenTemplate}
