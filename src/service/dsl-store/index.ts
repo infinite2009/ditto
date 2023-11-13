@@ -20,6 +20,7 @@ import IFormConfig from '@/types/form-config';
 import { CSSProperties, ReactNode } from 'react';
 import { isArray, isObject, mergeWith } from 'lodash';
 import { detailedDiff } from 'deep-object-diff';
+import ComponentFeature from '@/types/component-feature';
 
 type FormValue = {
   style: CSSProperties;
@@ -188,10 +189,11 @@ export default class DSLStore {
     if (componentConfig.isContainer) {
       children = [];
     } else if (componentConfig.children) {
+      // 给当前组件的 children 节点初始化一个空插槽
       const { value } = componentConfig.children;
       const typeOfChildren = typeOf(value);
       if (typeOfChildren === 'array') {
-        const emptyContainer = this.createEmptyContainer();
+        const emptyContainer = this.createEmptyContainer('', { feature: ComponentFeature.slot });
         children = [
           {
             current: emptyContainer.id,
@@ -214,6 +216,8 @@ export default class DSLStore {
     this.dsl.componentIndexes[componentId] = {
       id: componentId,
       parentId: (this.currentParentNode?.id || this.dsl.id) as string,
+      // 默认都设置为 solid
+      feature: ComponentFeature.solid,
       schemaType: 'component',
       name: this.calculateComponentName(componentConfig),
       displayName: `${componentConfig.title}${this.dsl.componentStats[name]}`,
@@ -230,6 +234,11 @@ export default class DSLStore {
     }
     if (componentConfig.callingName) {
       componentSchema.callingName = componentConfig.callingName;
+    }
+
+    if (componentConfig.isContainer) {
+      // 可能有 bug，就是把本该设置为插槽的组件，设置为 container
+      componentSchema.feature = ComponentFeature.container;
     }
 
     const { propsConfig } = componentConfig;
@@ -264,6 +273,9 @@ export default class DSLStore {
       }
       componentSchema.propsRefs.push(name);
     });
+
+    console.log('创建的组件：', componentSchema);
+
     return componentSchema;
   }
 
@@ -386,8 +398,21 @@ export default class DSLStore {
     return componentIndexes[id];
   }
 
-  createEmptyContainer(customId = '', ext: { [key: string]: any } | undefined = undefined) {
-    return this.createComponent('VerticalFlex', 'antd', customId, ext);
+  /**
+   * 创建一个空的容器，可以配置选项来表明它是容器还是插槽
+   *
+   * @param customId
+   * @param opt
+   */
+  createEmptyContainer(
+    customId = '',
+    opt: { feature: ComponentFeature; data?: { [key: string]: any } } | undefined = undefined
+  ) {
+    const component = this.createComponent('VerticalFlex', 'antd', customId, opt?.data);
+    if (opt?.feature === ComponentFeature.slot) {
+      component.feature = ComponentFeature.slot;
+    }
+    return component;
   }
 
   setTemplateTo(tplInfo: TemplateInfo, propsConfig: { [key: string]: IPropsConfigItem }) {
@@ -421,7 +446,9 @@ export default class DSLStore {
         if (dataSourcePropConfig) {
           if (repeatType === 'list' && indexKey) {
             (dataSourcePropConfig.value as any[]).forEach((item, index) => {
-              const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey]));
+              const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey]), {
+                feature: ComponentFeature.slot
+              });
               component.parentId = nodeId;
               // 只保留第一行的render
               if (index === 0) {
@@ -433,7 +460,9 @@ export default class DSLStore {
             });
           } else if (repeatType === 'table' && indexKey && columnKey) {
             (dataSourcePropConfig.value as any[]).forEach((item, index) => {
-              const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey], parent[columnKey]));
+              const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey], parent[columnKey]), {
+                feature: ComponentFeature.slot
+              });
               component.parentId = nodeId;
               // 只保留第一行的render
               if (index === 0) {
@@ -701,7 +730,9 @@ export default class DSLStore {
   }
 
   private createPageRoot() {
-    return this.createComponent('pageRoot', 'antd');
+    const component = this.createComponent('pageRoot', 'antd');
+    component.feature = ComponentFeature.root;
+    return component;
   }
 
   private mergeDiffAndProcessNewDiff(
