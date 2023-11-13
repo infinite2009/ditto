@@ -1,4 +1,4 @@
-export const COMPONENT_DROPDOWN_CONTEXT_MENUS_WITHOUT_DELETE = [
+export const COMPONENT_DROPDOWN_BASIC_CONTEXT_MENUS = [
   [
     {
       key: 'copy',
@@ -18,8 +18,33 @@ export const COMPONENT_DROPDOWN_CONTEXT_MENUS_WITHOUT_DELETE = [
   ]
 ];
 
-export const COMPONENT_DROPDOWN_CONTEXT_MENUS = [
-  ...COMPONENT_DROPDOWN_CONTEXT_MENUS_WITHOUT_DELETE,
+export const COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_HIDE = [
+  ...COMPONENT_DROPDOWN_BASIC_CONTEXT_MENUS,
+  [
+    {
+      key: 'hide',
+      title: '隐藏',
+      shortKey: ['⌘', 'H']
+    }
+  ],
+  [
+    {
+      key: 'delete',
+      title: '删除',
+      shortKey: ['del']
+    }
+  ]
+];
+
+export const COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_SHOW = [
+  ...COMPONENT_DROPDOWN_BASIC_CONTEXT_MENUS,
+  [
+    {
+      key: 'show',
+      title: '显示',
+      shortKey: ['⌘', 'H']
+    }
+  ],
   [
     {
       key: 'delete',

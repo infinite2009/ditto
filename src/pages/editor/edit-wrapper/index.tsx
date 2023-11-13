@@ -9,7 +9,7 @@ import { observer } from 'mobx-react';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
 import IComponentSchema from '@/types/component.schema';
 import { message } from 'antd';
-import { COMPONENT_DROPDOWN_CONTEXT_MENUS_WITHOUT_DELETE } from '@/data/constant';
+import { COMPONENT_DROPDOWN_BASIC_CONTEXT_MENUS } from '@/data/constant';
 import styles from './index.module.less';
 
 export interface IEditorProps {
@@ -288,7 +288,7 @@ export default observer(function EditWrapper({
     <ComponentContextMenu
       data={dslStore.dsl.componentIndexes[id]}
       onClick={handleClickContextMenu}
-      items={COMPONENT_DROPDOWN_CONTEXT_MENUS_WITHOUT_DELETE}
+      items={COMPONENT_DROPDOWN_BASIC_CONTEXT_MENUS}
     >
       <div
         className={className}
