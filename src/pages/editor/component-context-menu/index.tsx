@@ -8,7 +8,7 @@ export interface IComponentContextMenuProps {
   items: {
     key: string;
     title: string;
-    shortKey: string[];
+    shortKey?: string[];
   }[][];
   onClick: (key: string, data: any) => void;
   children: React.ReactNode;

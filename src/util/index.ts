@@ -1,6 +1,16 @@
 import { nanoid } from 'nanoid';
 import componentConfig from '@/data/component-dict';
 import { platform } from '@tauri-apps/api/os';
+import ComponentFeature from '@/types/component-feature';
+import {
+  COPY_MENU,
+  DELETE_MENU,
+  HIDE_MENU,
+  INSERT_MENU_FOR_CONTAINER,
+  INSERT_MENU_FOR_SOLID,
+  RENAME_MENU,
+  SHOW_MENU
+} from '@/data/constant';
 
 export function toUpperCase(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -151,4 +161,17 @@ export function getParentKeyPath(keyPath: string) {
     return keyPath.substring(0, startIndex);
   }
   return keyPath.substring(0, lastIndex);
+}
+
+export function generateContextMenus(feature: ComponentFeature, visible: boolean) {
+  switch (feature) {
+    case ComponentFeature.root:
+      return [[RENAME_MENU]];
+    case ComponentFeature.slot:
+      return [[RENAME_MENU]];
+    case ComponentFeature.container:
+      return [[COPY_MENU, INSERT_MENU_FOR_CONTAINER, RENAME_MENU], [visible ? HIDE_MENU : SHOW_MENU], [DELETE_MENU]];
+    case ComponentFeature.solid:
+      return [[COPY_MENU, INSERT_MENU_FOR_SOLID, RENAME_MENU], [visible ? HIDE_MENU : SHOW_MENU], [DELETE_MENU]];
+  }
 }

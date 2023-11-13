@@ -49,11 +49,8 @@ import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import IComponentSchema from '@/types/component.schema';
-import {
-  COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_HIDE,
-  COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_SHOW
-} from '@/data/constant';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
+import { generateContextMenus } from '@/util';
 
 const collisionOffset = 4;
 
@@ -759,11 +756,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         <ComponentContextMenu
           data={componentSchema}
           onClick={handleClickDropDownMenu}
-          items={
-            componentState[componentSchema.id]?.hidden
-              ? COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_SHOW
-              : COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_HIDE
-          }
+          items={generateContextMenus(componentSchema.feature, !componentState[componentSchema.id]?.hidden)}
         >
           <div onDoubleClick={() => handleSelectingComponentForRenaming(componentSchema.id)}>
             {componentSchema.id === selectedComponentForRenaming ? (
