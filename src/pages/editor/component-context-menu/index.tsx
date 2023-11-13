@@ -21,13 +21,18 @@ export default observer(function ComponentContextMenu({ data, items, onClick, ch
       flattedItems = flattedItems.concat(...item);
       if (index !== items.length - 1) {
         flattedItems.push({
-          type: 'divider'
+          type: 'divider' as 'group'
         });
       }
     });
 
     return {
-      items: flattedItems.map(({ key, title, shortKey }) => {
+      items: flattedItems.map(({ key, title, shortKey, type }) => {
+        if (type === 'divider') {
+          return {
+            type: 'divider' as 'group'
+          };
+        }
         return {
           key,
           label: (

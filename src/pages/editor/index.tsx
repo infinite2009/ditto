@@ -14,7 +14,7 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core';
-import { Dropdown, Form, Input, message, Modal } from 'antd';
+import { Form, Input, message, Modal } from 'antd';
 
 import Toolbar, { PageActionEvent } from '@/pages/editor/toolbar';
 import PagePanel from '@/pages/editor/page-panel';
@@ -49,6 +49,8 @@ import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import IComponentSchema from '@/types/component.schema';
+import { COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_HIDE } from '@/data/constant';
+import ComponentContextMenu from '@/pages/editor/component-context-menu';
 
 const collisionOffset = 4;
 
@@ -723,60 +725,12 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       return node.children?.some(item => !item.isText);
     };
 
-    const generateDropDownMenu = (componentSchema: IComponentSchema) => {
-      return {
-        items: [
-          {
-            key: 'copy',
-            label: (
-              <div className={styles.dropDownItem}>
-                <span>复制</span>
-                <span className={styles.shortKey}>⌘ C</span>
-              </div>
-            )
-          },
-          {
-            key: 'paste',
-            label: (
-              <div className={styles.dropDownItem}>
-                <span>粘贴</span>
-                <span className={styles.shortKey}>⌘ V</span>
-              </div>
-            )
-          },
-          {
-            key: 'rename',
-            label: (
-              <div className={styles.dropDownItem}>
-                <span>重命名</span>
-                <span className={styles.shortKey}>⌘ R</span>
-              </div>
-            )
-          },
-          {
-            type: 'divider' as unknown as any
-          },
-          {
-            key: 'delete',
-            label: (
-              <div className={styles.dropDownItem}>
-                <span>删除</span>
-                <span className={styles.shortKey}>Del</span>
-              </div>
-            )
-          }
-        ],
-        onClick: ({ key }: { key: string }) => handleClickDropDownMenu(key, componentSchema)
-      };
-    };
-
     const renderTreeNodeTitle = (componentSchema: IComponentSchema) => {
       return (
-        <Dropdown
-          menu={generateDropDownMenu(componentSchema)}
-          overlayClassName={styles.dropdownContainer}
-          destroyPopupOnHide
-          trigger={['contextMenu']}
+        <ComponentContextMenu
+          data={componentSchema}
+          onClick={handleClickDropDownMenu}
+          items={COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_HIDE}
         >
           <div onDoubleClick={() => handleSelectingComponentForRenaming(componentSchema.id)}>
             {componentSchema.id === selectedComponentForRenaming ? (
@@ -794,7 +748,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
               componentSchema.displayName || componentSchema.name
             )}
           </div>
-        </Dropdown>
+        </ComponentContextMenu>
       );
     };
 

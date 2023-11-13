@@ -22,7 +22,7 @@ interface PageData {
 export interface IPagePanel {
   data: PageData[];
   selected: string;
-  onSelect: (page: DataNode) => void;
+  onSelect: (page: { path: string; name: string } & DataNode) => void;
   onChange: () => void;
 }
 
@@ -144,6 +144,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
         onChange();
       }
     } catch (e) {
+      // @ts-ignore
       message.error(e.toString());
     } finally {
       setSelectedPath('');
