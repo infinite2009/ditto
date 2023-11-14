@@ -9,8 +9,8 @@ import { observer } from 'mobx-react';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
 import IComponentSchema from '@/types/component.schema';
 import { message } from 'antd';
-import { COMPONENT_DROPDOWN_BASIC_CONTEXT_MENUS } from '@/data/constant';
 import styles from './index.module.less';
+import { generateContextMenus } from '@/util';
 
 export interface IEditorProps {
   id: string;
@@ -18,6 +18,8 @@ export interface IEditorProps {
   childrenId?: string[];
   children: React.ReactNode;
   feature?: ComponentFeature;
+  visible?: boolean;
+  hasCopiedComponent?: boolean;
   childrenStyle?: CSSProperties;
   undeletable?: boolean;
 }
@@ -30,6 +32,8 @@ export default observer(function EditWrapper({
   feature,
   // 不要赋值默认值
   childrenStyle,
+  visible,
+  hasCopiedComponent,
   undeletable = false
 }: IEditorProps) {
   const [styleState, setStyleState] = useState<CSSProperties>({});
@@ -288,7 +292,7 @@ export default observer(function EditWrapper({
     <ComponentContextMenu
       data={dslStore.dsl.componentIndexes[id]}
       onClick={handleClickContextMenu}
-      items={COMPONENT_DROPDOWN_BASIC_CONTEXT_MENUS}
+      items={generateContextMenus(feature, visible, hasCopiedComponent)}
     >
       <div
         className={className}

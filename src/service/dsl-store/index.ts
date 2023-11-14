@@ -21,6 +21,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { isArray, isObject, mergeWith } from 'lodash';
 import { detailedDiff } from 'deep-object-diff';
 import ComponentFeature from '@/types/component-feature';
+import InsertType from '@/types/insert-type';
 
 type FormValue = {
   style: CSSProperties;
@@ -35,8 +36,10 @@ type FormValue = {
 function execute(target: any, name: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
   descriptor.value = function (...args: any[]) {
+    // @ts-ignore
     const oldDsl = toJS(this.dsl);
     const result = originalMethod.apply(this, args);
+    // @ts-ignore
     const newDsl = toJS(this.dsl);
     const diff = detailedDiff(newDsl, oldDsl);
     if (!diff) {
@@ -46,7 +49,9 @@ function execute(target: any, name: string, descriptor: PropertyDescriptor) {
     if (Object.keys(added).length === 0 && Object.keys(updated).length === 0 && Object.keys(deleted).length === 0) {
       return;
     }
+    // @ts-ignore
     this.undoStack.push(diff);
+    // @ts-ignore
     this.redoStack = [];
     return result;
   };
@@ -215,6 +220,7 @@ export default class DSLStore {
 
     this.dsl.componentIndexes[componentId] = {
       id: componentId,
+      visible: true,
       parentId: (this.currentParentNode?.id || this.dsl.id) as string,
       // 默认都设置为 solid
       feature: ComponentFeature.solid,
@@ -315,26 +321,6 @@ export default class DSLStore {
     return this.deleteSubtree(id);
   }
 
-  /**
-   * 克隆组件
-   *
-   * @param id
-   * @param parentId
-   * @param index
-   */
-  @execute
-  cloneComponent(id: ComponentId, parentId: ComponentId, index: number) {
-    const clonedSubtree = this.cloneSubtree(id);
-    const parent = this.dsl.componentIndexes[parentId];
-    if (!clonedSubtree) {
-      return;
-    }
-    parent.children.splice(index, 0, {
-      current: clonedSubtree.id,
-      isText: false
-    });
-  }
-
   @execute
   moveComponent(parentId: string, childId: string, insertIndex = -1) {
     this.currentParentNode = this.fetchComponentInDSL(parentId);
@@ -369,6 +355,65 @@ export default class DSLStore {
       }
     } else {
       throw new Error(`未找到有效的父节点：${parentId}`);
+    }
+  }
+
+  /**
+   * 克隆组件
+   *
+   * @param id
+   * @param relatedId
+   * @param index
+   */
+  @execute
+  cloneComponent(id: ComponentId, relatedId: ComponentId, insertType: InsertType) {
+    const clonedSubtree = this.cloneSubtree(id);
+    if (!clonedSubtree) {
+      return;
+    }
+    let index;
+    let target;
+
+    switch (insertType) {
+      case InsertType.insertAfter:
+        // 插入目标组件的后边，所以先去拿到它在父组件中的位置
+        index = this.findIndexInParent(relatedId) + 1;
+        // 因为是往后插，所以必须要大于 0
+        if (index > 0) {
+          target = this.dsl.componentIndexes[this.dsl.componentIndexes[relatedId].parentId];
+        }
+        break;
+      case InsertType.insertBefore:
+        index = this.findIndexInParent(relatedId);
+        if (index > -1) {
+          target = this.dsl.componentIndexes[this.dsl.componentIndexes[relatedId].parentId];
+        }
+        break;
+      case InsertType.insertInFirst:
+        target = this.dsl.componentIndexes[relatedId];
+        index = 0;
+        break;
+      case InsertType.insertInLast:
+        target = this.dsl.componentIndexes[relatedId];
+        index = target.children.length;
+        break;
+      default:
+        index = 0;
+        break;
+    }
+
+    if (target && index > -1) {
+      target.children.splice(index, 0, {
+        current: clonedSubtree.id,
+        isText: false
+      });
+    }
+  }
+
+  toggleVisible(componentId: ComponentId): void {
+    const component = this.dsl.componentIndexes[componentId];
+    if (component) {
+      component.visible = !component.visible;
     }
   }
 
@@ -735,6 +780,26 @@ export default class DSLStore {
     return component;
   }
 
+  private findIndexInParent(componentId: ComponentId): number {
+    if (!componentId) {
+      return -1;
+    }
+    const component = this.dsl.componentIndexes[componentId];
+    const parent = this.dsl.componentIndexes[component.parentId];
+    if (parent) {
+      if (parent.children?.length > 0) {
+        return parent.children.findIndex(child => child.current === component.id && !child.isText);
+      }
+      return -1;
+    }
+    return -1;
+  }
+
+  private generateComponentIdByName(name: string): string {
+    this.updateComponentStats(name);
+    return hyphenToCamelCase(`${name}${this.dsl.componentStats[name]}`);
+  }
+
   private mergeDiffAndProcessNewDiff(
     diff: {
       added?: Record<string, any>;
@@ -765,6 +830,7 @@ export default class DSLStore {
             Object.keys(srcValue).forEach(key => {
               objValue[key as unknown as number] = mergeWith(
                 objValue[key as unknown as number],
+                // @ts-ignore
                 srcValue[key],
                 customizer
               );
@@ -783,9 +849,11 @@ export default class DSLStore {
             return objValue.filter((item, index) => !(index in srcValue));
           } else if (isObject(objValue) && isObject(srcValue)) {
             Object.keys(srcValue).forEach(key => {
+              // @ts-ignore
               if (srcValue[key] === undefined) {
                 delete (objValue as Record<string, any>)[key];
               } else {
+                // @ts-ignore
                 mergeWith(objValue[key], srcValue[key], customizer);
               }
             });
@@ -797,10 +865,5 @@ export default class DSLStore {
     const newDsl = toJS(this.dsl);
     const newDiff = detailedDiff(newDsl, oldDsl);
     diffStack.push(newDiff);
-  }
-
-  private generateComponentIdByName(name: string): string {
-    this.updateComponentStats(name);
-    return hyphenToCamelCase(`${name}${this.dsl.componentStats[name]}`);
   }
 }

@@ -51,6 +51,7 @@ import ComponentSchemaRef from '@/types/component-schema-ref';
 import IComponentSchema from '@/types/component.schema';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
 import { generateContextMenus } from '@/util';
+import InsertType from '@/types/insert-type';
 
 const collisionOffset = 4;
 
@@ -109,6 +110,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [scale, setScale] = useState<number>(1);
   const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
   const [selectedComponentForRenaming, setSelectedComponentForRenaming] = useState<ComponentId>('');
+  const [componentIdForClone, setComponentIdForClone] = useState<string>('');
   const [componentState, setComponentState] = useState<
     Record<
       string,
@@ -128,7 +130,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   // TODO: 文件路径数据需要重构为 indexedDB 存储
   const defaultPathRef = useRef<string>();
   const filePathRef = useRef<string>();
-  const componentIdToCloneRef = useRef<ComponentId>();
 
   const codeType = (searchParams.get('codetype') as string) || 'react';
 
@@ -690,14 +691,28 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function handleClickDropDownMenu(key: string, componentSchema: IComponentSchema) {
-    // TODO
     switch (key) {
       case 'copy':
-        componentIdToCloneRef.current = componentSchema.id;
+        setComponentIdForClone(componentSchema.id);
         break;
-      case 'paste':
-        if (componentIdToCloneRef.current) {
-          dslStore.cloneComponent(componentIdToCloneRef.current, componentSchema.id, 0);
+      case InsertType.insertBefore:
+        if (componentIdForClone) {
+          dslStore.cloneComponent(componentIdForClone, componentSchema.id, InsertType.insertBefore);
+        }
+        break;
+      case InsertType.insertAfter:
+        if (componentIdForClone) {
+          dslStore.cloneComponent(componentIdForClone, componentSchema.id, InsertType.insertAfter);
+        }
+        break;
+      case InsertType.insertInFirst:
+        if (componentIdForClone) {
+          dslStore.cloneComponent(componentIdForClone, componentSchema.id, InsertType.insertInFirst);
+        }
+        break;
+      case InsertType.insertInLast:
+        if (componentIdForClone) {
+          dslStore.cloneComponent(componentIdForClone, componentSchema.id, InsertType.insertInLast);
         }
         break;
       case 'rename':
@@ -708,22 +723,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         message.warning('删除待实现');
         break;
       case 'hide':
-        setComponentState({
-          ...componentState,
-          [componentSchema.id]: {
-            ...componentState[componentSchema.id],
-            hidden: true
-          }
-        });
-        break;
       case 'show':
-        setComponentState({
-          ...componentState,
-          [componentSchema.id]: {
-            ...componentState[componentSchema.id],
-            hidden: false
-          }
-        });
+        dslStore.toggleVisible(componentSchema.id);
         break;
       default:
         break;
@@ -756,7 +757,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         <ComponentContextMenu
           data={componentSchema}
           onClick={handleClickDropDownMenu}
-          items={generateContextMenus(componentSchema.feature, !componentState[componentSchema.id]?.hidden)}
+          items={generateContextMenus(componentSchema.feature, componentSchema.visible, !!componentIdForClone)}
         >
           <div onDoubleClick={() => handleSelectingComponentForRenaming(componentSchema.id)}>
             {componentSchema.id === selectedComponentForRenaming ? (

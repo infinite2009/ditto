@@ -7,6 +7,8 @@ import {
   DELETE_MENU,
   HIDE_MENU,
   INSERT_MENU_FOR_CONTAINER,
+  INSERT_MENU_FOR_ROOT,
+  INSERT_MENU_FOR_SLOT,
   INSERT_MENU_FOR_SOLID,
   RENAME_MENU,
   SHOW_MENU
@@ -163,15 +165,31 @@ export function getParentKeyPath(keyPath: string) {
   return keyPath.substring(0, lastIndex);
 }
 
-export function generateContextMenus(feature: ComponentFeature, visible: boolean) {
+export function generateContextMenus(
+  feature: ComponentFeature = ComponentFeature.solid,
+  visible: boolean = true,
+  hasCopiedComponent: boolean = false
+) {
   switch (feature) {
     case ComponentFeature.root:
+      if (hasCopiedComponent) {
+        return [[INSERT_MENU_FOR_ROOT], [RENAME_MENU]];
+      }
       return [[RENAME_MENU]];
     case ComponentFeature.slot:
+      if (hasCopiedComponent) {
+        return [[INSERT_MENU_FOR_SLOT], [RENAME_MENU]];
+      }
       return [[RENAME_MENU]];
     case ComponentFeature.container:
-      return [[COPY_MENU, INSERT_MENU_FOR_CONTAINER, RENAME_MENU], [visible ? HIDE_MENU : SHOW_MENU], [DELETE_MENU]];
+      if (hasCopiedComponent) {
+        return [[COPY_MENU, INSERT_MENU_FOR_CONTAINER, RENAME_MENU], [visible ? HIDE_MENU : SHOW_MENU], [DELETE_MENU]];
+      }
+      return [[COPY_MENU, RENAME_MENU], [visible ? HIDE_MENU : SHOW_MENU], [DELETE_MENU]];
     case ComponentFeature.solid:
-      return [[COPY_MENU, INSERT_MENU_FOR_SOLID, RENAME_MENU], [visible ? HIDE_MENU : SHOW_MENU], [DELETE_MENU]];
+      if (hasCopiedComponent) {
+        return [[COPY_MENU, INSERT_MENU_FOR_SOLID, RENAME_MENU], [visible ? HIDE_MENU : SHOW_MENU], [DELETE_MENU]];
+      }
+      return [[COPY_MENU, RENAME_MENU], [visible ? HIDE_MENU : SHOW_MENU], [DELETE_MENU]];
   }
 }

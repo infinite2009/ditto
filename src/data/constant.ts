@@ -1,9 +1,4 @@
 export const COMPONENT_DROPDOWN_BASIC_CONTEXT_MENUS = [[]];
-
-export const COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_HIDE = [...COMPONENT_DROPDOWN_BASIC_CONTEXT_MENUS, [], []];
-
-export const COMPONENT_DROPDOWN_CONTEXT_MENUS_WITH_SHOW = [...COMPONENT_DROPDOWN_BASIC_CONTEXT_MENUS, [], []];
-
 export const RENAME_MENU = {
   key: 'rename',
   title: '重命名',
@@ -42,6 +37,25 @@ export const INSERT_MENU_FOR_CONTAINER = {
     }
   ]
 };
+
+export const INSERT_MENU_FOR_ROOT = {
+  key: 'insert',
+  title: '插入',
+  children: [
+    {
+      key: 'insertInFirst',
+      title: '插入为第一个子组件',
+      shortKey: ['⌘', '⌥', 'F']
+    },
+    {
+      key: 'insertInLast',
+      title: '插入为最后一个子组件',
+      shortKey: ['⌘', '⌥', 'L']
+    }
+  ]
+};
+
+export const INSERT_MENU_FOR_SLOT = INSERT_MENU_FOR_ROOT;
 
 export const INSERT_MENU_FOR_SOLID = {
   key: 'insert',

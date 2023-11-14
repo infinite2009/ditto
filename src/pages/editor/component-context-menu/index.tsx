@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react';
 import { Dropdown } from 'antd';
 import styles from './index.module.less';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 export interface IComponentContextMenuProps {
   data: any;
@@ -27,13 +27,13 @@ export default observer(function ComponentContextMenu({ data, items, onClick, ch
     });
 
     return {
-      items: flattedItems.map(({ key, title, shortKey, type }) => {
+      items: flattedItems.map(({ key, title, children, shortKey, type }) => {
         if (type === 'divider') {
           return {
             type: 'divider' as 'group'
           };
         }
-        return {
+        const item: { key: string; label: ReactNode; children?: any[] } = {
           key,
           label: (
             <div className={styles.dropDownItem}>
@@ -42,6 +42,21 @@ export default observer(function ComponentContextMenu({ data, items, onClick, ch
             </div>
           )
         };
+        if (children?.length) {
+          item.label = <span className={styles.dropDownItemTitle}>{title}</span>;
+          item.children = children.map((child: { key: any; title: string; shortKey: string[] }) => {
+            return {
+              key: child.key,
+              label: (
+                <div className={styles.dropDownChildrenItem}>
+                  <span>{child.title}</span>
+                  <span className={styles.shortKey}>{child.shortKey?.join(' ')}</span>
+                </div>
+              )
+            };
+          });
+        }
+        return item;
       }),
       onClick: ({ key, domEvent }: { key: string; domEvent: any }) => {
         domEvent.stopPropagation();
