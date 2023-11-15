@@ -8,8 +8,6 @@ import ComponentSchemaRef from '@/types/component-schema-ref';
 import ComponentFeature from '@/types/component-feature';
 
 export default interface IComponentSchema extends ISchema {
-  // 是否在编辑模式下展示该组件，不影响预览和生成代码
-  visible: boolean;
   feature: ComponentFeature;
   parentId: string;
   desc?: string;

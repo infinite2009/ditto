@@ -724,7 +724,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         break;
       case 'hide':
       case 'show':
-        dslStore.toggleVisible(componentSchema.id);
+        message.warning('待实现');
         break;
       default:
         break;

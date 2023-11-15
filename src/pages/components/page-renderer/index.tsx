@@ -307,8 +307,6 @@ export default observer((props: IPageRendererProps) => {
         parentId={parentId}
         childrenId={childrenId}
         feature={feature}
-        visible={visible}
-        hasCopiedComponent={hasCopiedComponent}
         childrenStyle={componentProps?.style}
         undeletable={isSlot}
       >

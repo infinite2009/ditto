@@ -220,7 +220,6 @@ export default class DSLStore {
 
     this.dsl.componentIndexes[componentId] = {
       id: componentId,
-      visible: true,
       parentId: (this.currentParentNode?.id || this.dsl.id) as string,
       // 默认都设置为 solid
       feature: ComponentFeature.solid,
@@ -407,13 +406,6 @@ export default class DSLStore {
         current: clonedSubtree.id,
         isText: false
       });
-    }
-  }
-
-  toggleVisible(componentId: ComponentId): void {
-    const component = this.dsl.componentIndexes[componentId];
-    if (component) {
-      component.visible = !component.visible;
     }
   }
 
