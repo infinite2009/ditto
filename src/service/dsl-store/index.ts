@@ -609,11 +609,11 @@ export default class DSLStore {
     if (!componentSchema) {
       return null;
     }
-    // 1. TODO: 复制 component schema 本身
+    // 1. 复制 component schema 本身
     const clonedComponentSchema = cloneDeep(componentSchema);
     // 生成新的 component id
     clonedComponentSchema.id = this.generateComponentIdByName(clonedComponentSchema.name);
-    // 2. TODO: 复制子树，并重新替换父组件的 children
+    // 2. 复制子树，并重新替换父组件的 children
     clonedComponentSchema.children = clonedComponentSchema.children.map(child => {
       if (child.isText) {
         return cloneDeep(child);
@@ -631,9 +631,9 @@ export default class DSLStore {
         };
       }
     });
-    // 3. TODO: 复制 props
+    // 3. 复制 props
     this.dsl.props[clonedComponentSchema.id] = cloneDeep(this.dsl.props[id]);
-    // 4. TODO: 遍历每一个 prop，如果它存在插槽，递归复制以插槽为根节点的子树
+    // 4. 遍历每一个 prop，如果它存在插槽，递归复制以插槽为根节点的子树
     const clonedPropsDict = this.dsl.props[clonedComponentSchema.id];
     clonedComponentSchema.propsRefs.forEach(ref => {
       const clonedPropsSchema: IPropsSchema = clonedPropsDict[ref];
@@ -668,6 +668,8 @@ export default class DSLStore {
         });
       }
     });
+    // 5. 将节点挂载到 componentIndexes
+    this.dsl.componentIndexes[clonedComponentSchema.id] = clonedComponentSchema;
     return clonedComponentSchema;
   }
 

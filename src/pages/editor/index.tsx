@@ -692,28 +692,34 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   function handleClickDropDownMenu(key: string, componentSchema: IComponentSchema) {
     const componentIdForClone = editorStore.componentIdForCopy;
+    if (!componentSchema) {
+      debugger;
+    }
+    const { id: componentId } = componentSchema;
+    console.log('component id: ', componentId);
     switch (key) {
       case 'copy':
-        editorStore.setComponentIdForCopy(componentSchema.id);
+        editorStore.setComponentIdForCopy(componentId);
         break;
       case InsertType.insertBefore:
         if (componentIdForClone) {
-          dslStore.cloneComponent(componentIdForClone, componentSchema.id, InsertType.insertBefore);
+          dslStore.cloneComponent(componentIdForClone, componentId, InsertType.insertBefore);
+          debugger;
         }
         break;
       case InsertType.insertAfter:
         if (componentIdForClone) {
-          dslStore.cloneComponent(componentIdForClone, componentSchema.id, InsertType.insertAfter);
+          dslStore.cloneComponent(componentIdForClone, componentId, InsertType.insertAfter);
         }
         break;
       case InsertType.insertInFirst:
         if (componentIdForClone) {
-          dslStore.cloneComponent(componentIdForClone, componentSchema.id, InsertType.insertInFirst);
+          dslStore.cloneComponent(componentIdForClone, componentId, InsertType.insertInFirst);
         }
         break;
       case InsertType.insertInLast:
         if (componentIdForClone) {
-          dslStore.cloneComponent(componentIdForClone, componentSchema.id, InsertType.insertInLast);
+          dslStore.cloneComponent(componentIdForClone, componentId, InsertType.insertInLast);
         }
         break;
       case 'rename':
@@ -754,26 +760,27 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     };
 
     const renderTreeNodeTitle = (componentSchema: IComponentSchema) => {
+      const { id: componentId } = componentSchema;
       return (
         <ComponentContextMenu
           data={componentSchema}
           onClick={handleClickDropDownMenu}
           items={generateContextMenus(
             componentSchema.feature,
-            editorStore.isVisible(componentSchema.id),
+            editorStore.isVisible(componentId),
             editorStore.hasCopiedComponent
           )}
         >
-          <div onDoubleClick={() => handleSelectingComponentForRenaming(componentSchema.id)}>
-            {componentSchema.id === selectedComponentForRenaming ? (
+          <div onDoubleClick={() => handleSelectingComponentForRenaming(componentId)}>
+            {componentId === selectedComponentForRenaming ? (
               <Input
                 defaultValue={componentSchema.displayName}
                 autoFocus
                 onFocus={e => e.target.select()}
-                onBlur={e => handleRenamingComponent(componentSchema.id, (e.target.value as unknown as string).trim())}
+                onBlur={e => handleRenamingComponent(componentId, (e.target.value as unknown as string).trim())}
                 onPressEnter={e =>
                   // @ts-ignore
-                  handleRenamingComponent(componentSchema.id, (e.target.value as unknown as string).trim())
+                  handleRenamingComponent(componentId, (e.target.value as unknown as string).trim())
                 }
               />
             ) : (
@@ -789,6 +796,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         .filter((item: ComponentSchemaRef) => !item.isText)
         .map((item: ComponentSchemaRef) => {
           const componentSchema = dsl.componentIndexes[item.current];
+          if (!componentSchema) {
+            debugger;
+          }
           const node: Record<string, any> = {
             key: componentSchema.id,
             title: renderTreeNodeTitle(componentSchema)
