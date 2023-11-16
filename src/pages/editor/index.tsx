@@ -45,7 +45,7 @@ import { ComponentId } from '@/types';
 import ComponentTree from '@/pages/editor/component-tree';
 import { ProjectInfo } from '@/types/app-data';
 import CompositionPanel from '@/pages/editor/composition-panel';
-import { DSLStoreContext } from '@/hooks/context';
+import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import IComponentSchema from '@/types/component.schema';
@@ -110,7 +110,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [scale, setScale] = useState<number>(1);
   const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
   const [selectedComponentForRenaming, setSelectedComponentForRenaming] = useState<ComponentId>('');
-  const [componentIdForClone, setComponentIdForClone] = useState<string>('');
   const [componentState, setComponentState] = useState<
     Record<
       string,
@@ -124,6 +123,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [form] = useForm();
 
   const dslStore = useContext(DSLStoreContext);
+  const editorStore = useContext(EditorStoreContext);
 
   const insertIndexRef = useRef<number>(-1);
   const anchorCoordinatesRef = useRef<IAnchorCoordinates>();
@@ -691,9 +691,10 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function handleClickDropDownMenu(key: string, componentSchema: IComponentSchema) {
+    const componentIdForClone = editorStore.componentIdForCopy;
     switch (key) {
       case 'copy':
-        setComponentIdForClone(componentSchema.id);
+        editorStore.setComponentIdForCopy(componentSchema.id);
         break;
       case InsertType.insertBefore:
         if (componentIdForClone) {
@@ -757,7 +758,11 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         <ComponentContextMenu
           data={componentSchema}
           onClick={handleClickDropDownMenu}
-          items={generateContextMenus(componentSchema.feature, componentSchema.visible, !!componentIdForClone)}
+          items={generateContextMenus(
+            componentSchema.feature,
+            editorStore.isVisible(componentSchema.id),
+            editorStore.hasCopiedComponent
+          )}
         >
           <div onDoubleClick={() => handleSelectingComponentForRenaming(componentSchema.id)}>
             {componentSchema.id === selectedComponentForRenaming ? (
