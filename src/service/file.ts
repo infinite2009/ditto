@@ -10,7 +10,7 @@ import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import * as typescript from 'prettier/parser-typescript';
 import AppData, { ProjectInfo } from '@/types/app-data';
-import { documentDir, homeDir, join, sep } from '@tauri-apps/api/path';
+import { dirname, documentDir, extname, homeDir, join, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
 import cloneDeep from 'lodash/cloneDeep';
@@ -22,11 +22,13 @@ import * as localforage from 'localforage';
 import { nanoid } from 'nanoid';
 import DSLStore from '@/service/dsl-store';
 import { Command } from '@tauri-apps/api/shell';
-import { platform } from '@tauri-apps/api/os';
+import { Platform, platform } from '@tauri-apps/api/os';
 
 interface EntryTree {
   key: string;
   title: string;
+  path: string;
+  name: string;
   children?: EntryTree[];
   isLeaf?: boolean;
 }
@@ -52,6 +54,13 @@ class FileManager {
   private static instance = new FileManager();
   cache: AppData = {} as AppData;
   appDataPath = 'appData.json';
+  os: Platform;
+
+  constructor() {
+    platform().then(res => {
+      this.os = res;
+    });
+  }
 
   static getInstance() {
     return FileManager.instance;
@@ -97,7 +106,7 @@ class FileManager {
       delete this.cache.recentProjects[project.id];
       delete this.cache.pathToProjectDict[project.path];
       if (deleteFolder) {
-        await new Command('mv folder or file', [project.path, await join(await homeDir(), '.Trash')]).execute();
+        await new Command('mv', [project.path, await join(await homeDir(), '.Trash')]).execute();
       }
     } catch (err) {
       console.error(err);
@@ -257,19 +266,18 @@ class FileManager {
 
     const entries: FileEntry[] = await readDir(currentProjectPath, { recursive: true });
 
-    const files: string[] = [];
-
-    const recursiveMap = (entries: FileEntry[]) => {
+    const recursiveMap = (entries: FileEntry[], parentKey: string) => {
       return entries
         .filter(entry => (entry.name as string).endsWith('.ditto') || entry.children)
-        .map(entry => {
+        .map((entry, index) => {
           const r: EntryTree = {
-            key: entry.path,
+            key: parentKey ? `${parentKey}-${index}` : index.toString(),
+            path: entry.path,
+            name: entry.name as string,
             title: getFileName(entry.name as string)
           };
-          files.push(entry.path);
           if (entry.children) {
-            r.children = recursiveMap(entry.children);
+            r.children = recursiveMap(entry.children, r.key);
           } else {
             r.isLeaf = true;
           }
@@ -284,7 +292,7 @@ class FileManager {
       path: currentProjectPath,
       children: entries
     };
-    return recursiveMap([project]);
+    return recursiveMap([project], '');
   }
 
   fetchOpenedProjects() {
@@ -382,13 +390,12 @@ class FileManager {
    * @param project
    */
   async openLocalFileDirectory(project: ProjectInfo) {
-    const os = await platform();
-    switch (os) {
+    switch (this.os) {
       case 'darwin':
         await new Command('open Finder', project.path).execute();
         break;
       default:
-        return Promise.reject(`暂不支持的系统：${os}`);
+        return Promise.reject(`暂不支持的系统：${this.os}`);
     }
   }
 
@@ -401,8 +408,7 @@ class FileManager {
       if (existNewPath) {
         throw new Error('文件夹已存在，请重新输入');
       }
-      const os = await platform();
-      if (os === 'win32') {
+      if (this.os === 'win32') {
         try {
           const log = await new Command('Rename folder on win32', [
             'Rename-Item',
@@ -412,7 +418,7 @@ class FileManager {
             `${newPath}`
           ]).execute();
         } catch (err) {
-          console.log(err);
+          console.error(err);
           throw new Error('系统错误');
         }
       } else {
@@ -432,6 +438,63 @@ class FileManager {
 
       delete this.cache.pathToProjectDict[project.path];
       this.cache.pathToProjectDict[projectInfo.path] = projectInfo;
+    }
+  }
+
+  async renamePage(path: string, newName: string) {
+    if (!(await exists(path))) {
+      throw new Error('文件不存在或文件夹不存在');
+    }
+    const dir = await dirname(path);
+    let newPath;
+    const isDirectory = await new Command('isDirectory', ['-d', path]).execute();
+    if (isDirectory.code !== 1) {
+      // 如果是目录，找到上级目录
+      newPath = await join(dir, newName);
+    } else {
+      const ext = await extname(path);
+      newPath = await join(dir, `${newName}.${ext}`);
+    }
+    if (path === newPath) {
+      return;
+    }
+    try {
+      const log = await new Command('mv', [path, newPath]).execute();
+      if (log.code !== 0) {
+        throw new Error(log.stderr);
+      }
+      const currentProject = (await FileManager.recentProjectsStore.getItem(this.cache.currentProject)) as ProjectInfo;
+      const { openedFile, path: projectPath } = currentProject;
+      if (path === projectPath) {
+        const newCurrentFile = openedFile.replace(path, newPath);
+        // 如果 path 是项目目录，则需要更新数据库
+        const newProjectInfo = {
+          ...currentProject,
+          name: newName,
+          path: newPath,
+          openedFile: newCurrentFile
+        };
+        await FileManager.recentProjectsStore.setItem(currentProject.id, newProjectInfo);
+        this.cache.recentProjects[newProjectInfo.id] = newProjectInfo;
+        this.cache.currentProject = newProjectInfo.id;
+        delete this.cache.pathToProjectDict[path];
+        this.cache.pathToProjectDict[path] = newProjectInfo;
+      } else if (openedFile.startsWith(path)) {
+        // 如果 path 是当前页面目录，则需要更新数据库
+        const newProjectInfo = {
+          ...currentProject
+        };
+        if (path === openedFile) {
+          newProjectInfo.openedFile = newPath;
+        } else {
+          newProjectInfo.openedFile = openedFile.replace(path, newPath);
+        }
+        await FileManager.recentProjectsStore.setItem(currentProject.id, newProjectInfo);
+        this.cache.recentProjects[newProjectInfo.id] = newProjectInfo;
+        this.cache.currentProject = newProjectInfo.id;
+      }
+    } catch (err) {
+      throw new Error(err);
     }
   }
 

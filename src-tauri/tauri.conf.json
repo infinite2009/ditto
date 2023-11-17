@@ -49,7 +49,7 @@
             ]
           },
           {
-            "name": "mv folder or file",
+            "name": "mv",
             "cmd": "mv",
             "args": [
               {
@@ -89,6 +89,16 @@
             "name": "open Finder",
             "cmd": "open",
             "args": [
+              {
+                "validator": "\\S+"
+              }
+            ]
+          },
+          {
+            "name": "isDirectory",
+            "cmd": "test",
+            "args": [
+              "-d",
               {
                 "validator": "\\S+"
               }

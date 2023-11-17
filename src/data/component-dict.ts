@@ -290,7 +290,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'href',
         title: '链接',
         category: 'basic',
-        value: '',
+        value: undefined,
         valueType: 'string',
         valueSource: 'editorInput'
       },
@@ -341,6 +341,10 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '样式',
         category: 'style',
         value: {},
+        composition: {
+          defaultCategory: 'style',
+          options: {}
+        },
         valueType: 'object',
         valueSource: 'editorInput'
       },
@@ -1195,10 +1199,27 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     configName: 'Drawer',
     dependency: 'antd',
     component: Drawer,
+    isLayer: true,
     category: '反馈',
     title: '抽屉',
     icon: CodeSandboxOutlined,
-    propsConfig: {}
+    propsConfig: {
+      open: {
+        id: 'open',
+        schemaType: 'props',
+        name: 'open',
+        title: '显示',
+        value: true,
+        valueType: 'boolean',
+        valueSource: 'userInput',
+        category: 'basic'
+      }
+    },
+    children: {
+      value: [],
+      name: 'children',
+      category: 'children'
+    }
   },
   Modal: {
     configName: 'Modal',

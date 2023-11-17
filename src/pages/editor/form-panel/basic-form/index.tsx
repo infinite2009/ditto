@@ -32,6 +32,9 @@ export default function BasicForm({ value, onChange, formSchema }: IBasicFormPro
   }
 
   function renderFormItems() {
+    if (!formSchema) {
+      return null;
+    }
     return Object.entries(formSchema).map(([name, config]) => {
       const Component = formItemDict[config.component];
       return (

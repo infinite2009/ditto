@@ -5,14 +5,23 @@ import fileManager from '@/service/file';
 import CustomTitleBar from '@/components/custom-title-bar';
 import { ProjectInfo } from '@/types/app-data';
 import DSLStore from '@/service/dsl-store';
-import { DSLStoreContext } from '@/hooks/context';
+import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
+import EditorStore from '@/service/editor-store';
 
 function App() {
   const [showUI, setShowUI] = useState<boolean>(false);
   const [openedProjects, setOpenedProjects] = useState<ProjectInfo[]>([]);
   const [currentProject, setCurrentProject] = useState<string>('');
   const [previewProjects, setPreviewProjects] = useState<string[]>([]);
-  const [editorDict, setEditorDict] = useState<Record<string, any>>({});
+  const [editorDict, setEditorDict] = useState<
+    Record<
+      string,
+      {
+        dslStore: DSLStore;
+        editorStore: EditorStore;
+      }
+    >
+  >({});
 
   useEffect(() => {
     init();
@@ -38,7 +47,12 @@ function App() {
     setCurrentProject(currentProject);
     if (currentProject) {
       if (!(currentProject in editorDict)) {
-        setEditorDict(Object.assign({ ...editorDict }, { [currentProject]: new DSLStore() }));
+        setEditorDict(
+          Object.assign(
+            { ...editorDict },
+            { [currentProject]: { dslStore: new DSLStore(), editorStore: new EditorStore() } }
+          )
+        );
       }
     }
   }
@@ -96,12 +110,14 @@ function App() {
   function renderEditorTabs() {
     return Object.entries(editorDict).map(([key, value]) => {
       return (
-        <DSLStoreContext.Provider key={key} value={value}>
-          <Editor
-            onPreview={handlePreviewProject}
-            onPreviewClose={handlePreviewProjectClose}
-            style={key === currentProject ? undefined : { display: 'none' }}
-          />
+        <DSLStoreContext.Provider key={key} value={value.dslStore}>
+          <EditorStoreContext.Provider value={value.editorStore}>
+            <Editor
+              onPreview={handlePreviewProject}
+              onPreviewClose={handlePreviewProjectClose}
+              style={key === currentProject ? undefined : { display: 'none' }}
+            />
+          </EditorStoreContext.Provider>
         </DSLStoreContext.Provider>
       );
     });

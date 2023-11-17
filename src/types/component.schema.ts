@@ -5,8 +5,10 @@
 import ISchema from './schema';
 import { ImportType, PropsId } from '@/types/index';
 import ComponentSchemaRef from '@/types/component-schema-ref';
+import ComponentFeature from '@/types/component-feature';
 
 export default interface IComponentSchema extends ISchema {
+  feature: ComponentFeature;
   parentId: string;
   desc?: string;
   displayName: string;

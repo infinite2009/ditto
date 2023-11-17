@@ -2,15 +2,15 @@ import { useCombinedRefs } from '@dnd-kit/utilities';
 import React, { CSSProperties, useContext, useEffect, useMemo, useState } from 'react';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import ComponentFeature from '@/types/component-feature';
-import { DSLStoreContext } from '@/hooks/context';
+import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import classNames from 'classnames';
 
 import { observer } from 'mobx-react';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
 import IComponentSchema from '@/types/component.schema';
 import { message } from 'antd';
-import { COMPONENT_DROPDOWN_CONTEXT_MENUS_WITHOUT_DELETE } from '@/data/constant';
 import styles from './index.module.less';
+import { generateContextMenus } from '@/util';
 
 export interface IEditorProps {
   id: string;
@@ -29,11 +29,11 @@ export default observer(function EditWrapper({
   children,
   feature,
   // 不要赋值默认值
-  childrenStyle,
-  undeletable = false
+  childrenStyle
 }: IEditorProps) {
   const [styleState, setStyleState] = useState<CSSProperties>({});
   const dslStore = useContext(DSLStoreContext);
+  const editorStore = useContext(EditorStoreContext);
 
   const vertical = useMemo(() => {
     if (React.isValidElement(children)) {
@@ -72,11 +72,11 @@ export default observer(function EditWrapper({
     const result: CSSProperties = {};
     const styleNames: (keyof CSSProperties)[] = [
       'display',
-      'margin',
-      'marginLeft',
-      'marginTop',
-      'marginRight',
-      'marginBottom',
+      // 'margin',
+      // 'marginLeft',
+      // 'marginTop',
+      // 'marginRight',
+      // 'marginBottom',
       'position',
       'top',
       'right',
@@ -91,32 +91,32 @@ export default observer(function EditWrapper({
         result[name] = childrenStyle[name];
       }
     });
-    // 额外处理下 margin
-    const { margin, marginLeft, marginTop, marginRight, marginBottom } = result;
-
-    const mergedMarginTop = marginTop || margin;
-
-    if (mergedMarginTop !== undefined) {
-      result.marginTop = mergedMarginTop;
-    }
-
-    const mergedMarginRight = marginRight || margin;
-
-    if (mergedMarginRight !== undefined) {
-      result.marginRight = mergedMarginRight;
-    }
-
-    const mergedMarginBottom = marginBottom || margin;
-
-    if (mergedMarginBottom !== undefined) {
-      result.marginTop = mergedMarginBottom;
-    }
-
-    const mergedMarginLeft = marginLeft || margin;
-
-    if (mergedMarginLeft !== undefined) {
-      result.marginLeft = mergedMarginLeft;
-    }
+    // // 额外处理下 margin
+    // const { margin, marginLeft, marginTop, marginRight, marginBottom } = result;
+    //
+    // const mergedMarginTop = marginTop || margin;
+    //
+    // if (mergedMarginTop !== undefined) {
+    //   result.marginTop = mergedMarginTop;
+    // }
+    //
+    // const mergedMarginRight = marginRight || margin;
+    //
+    // if (mergedMarginRight !== undefined) {
+    //   result.marginRight = mergedMarginRight;
+    // }
+    //
+    // const mergedMarginBottom = marginBottom || margin;
+    //
+    // if (mergedMarginBottom !== undefined) {
+    //   result.marginTop = mergedMarginBottom;
+    // }
+    //
+    // const mergedMarginLeft = marginLeft || margin;
+    //
+    // if (mergedMarginLeft !== undefined) {
+    //   result.marginLeft = mergedMarginLeft;
+    // }
 
     const wrapperElement = document.getElementById(id);
     if (!wrapperElement) {
@@ -200,23 +200,23 @@ export default observer(function EditWrapper({
       childElement.style.left = '0px';
     }
 
-    const marginStyleNames: (keyof CSSProperties)[] = [
-      'margin',
-      'marginTop',
-      'marginRight',
-      'marginBottom',
-      'marginLeft'
-    ];
-    marginStyleNames.forEach(name => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      if (result[name] === undefined && childElement.style[name] !== '') {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        result[name] = childElement.style[name];
-      }
-      childElement.style.margin = '0px';
-    });
+    // const marginStyleNames: (keyof CSSProperties)[] = [
+    //   'margin',
+    //   'marginTop',
+    //   'marginRight',
+    //   'marginBottom',
+    //   'marginLeft'
+    // ];
+    // marginStyleNames.forEach(name => {
+    //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //   // @ts-ignore
+    //   if (result[name] === undefined && childElement.style[name] !== '') {
+    //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //     // @ts-ignore
+    //     result[name] = childElement.style[name];
+    //   }
+    //   childElement.style.margin = '0px';
+    // });
 
     let backgroundColor;
     switch (feature) {
@@ -284,11 +284,13 @@ export default observer(function EditWrapper({
     }
   }
 
+  console.log('editor store: ', editorStore);
+
   return (
     <ComponentContextMenu
       data={dslStore.dsl.componentIndexes[id]}
       onClick={handleClickContextMenu}
-      items={COMPONENT_DROPDOWN_CONTEXT_MENUS_WITHOUT_DELETE}
+      items={generateContextMenus(feature, editorStore.isVisible(id), editorStore.hasCopiedComponent)}
     >
       <div
         className={className}

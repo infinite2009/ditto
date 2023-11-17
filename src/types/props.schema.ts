@@ -28,6 +28,16 @@ export default interface IPropsSchema extends ISchema {
   // 属性类别
   category: 'basic' | 'style' | 'event' | 'data' | 'children';
   /**
+   * props的组成配置，表示这个 props 是由多个 form 配置项组合出来的。每个属性对应的值是该属性对应的配置项类别。
+   * 例如：style 由各种css 属性组成，这些的属性的类别都是 style
+   */
+  composition?: {
+    defaultCategory: 'basic' | 'style' | 'event' | 'data';
+    options: {
+      [key: string]: 'basic' | 'style' | 'event' | 'data';
+    };
+  };
+  /**
    * 模板字段路径，如果是空字符串，表明属性本身是就是模板对象
    * path 字段是正则表达式，即便是采用穷举的方式，也要使用正则表达式进行填充
    */
@@ -38,7 +48,7 @@ export default interface IPropsSchema extends ISchema {
 
   // 属性的名字
   name: string;
-  // 属性值的类型, 这个是组件要求的，它和 value 本身的类型不完全对等，比如 hasTemplate 为真时，valueType 即便是 function，value 的值也是对象
+  // 属性值的类型, 这个是组件要求的，它和 value 本身的类型不完全对等，比如 templateKeyPathsReg 为真时，valueType 即便是 function，value 的值也是对象
   valueType: 'string' | 'boolean' | 'number' | 'function' | 'object' | 'array';
   /*
    * 这个值的来源

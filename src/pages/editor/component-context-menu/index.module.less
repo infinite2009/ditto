@@ -19,7 +19,8 @@
   }
 }
 
-.dropDownItem {
+.dropDownItem,
+.dropDownChildrenItem {
   .lateral();
   justify-content: space-between;
   border-radius: 6px;
@@ -32,5 +33,22 @@
   &:hover {
     background-color: #F6F7F8;
     cursor: pointer;
+  }
+}
+
+.dropDownChildrenItem {
+  width: 184px;
+}
+
+.dropDownItemTitle {
+  margin-left: -4px;
+  font-size: 12px;
+}
+
+:global {
+  .ant-dropdown-menu-item {
+    &.ant-dropdown-menu-item-only-child {
+      padding: 0 !important;
+    }
   }
 }

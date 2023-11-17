@@ -14,7 +14,7 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core';
-import { Dropdown, Form, Input, message, Modal } from 'antd';
+import { Form, Input, message, Modal } from 'antd';
 
 import Toolbar, { PageActionEvent } from '@/pages/editor/toolbar';
 import PagePanel from '@/pages/editor/page-panel';
@@ -45,10 +45,13 @@ import { ComponentId } from '@/types';
 import ComponentTree from '@/pages/editor/component-tree';
 import { ProjectInfo } from '@/types/app-data';
 import CompositionPanel from '@/pages/editor/composition-panel';
-import { DSLStoreContext } from '@/hooks/context';
+import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import IComponentSchema from '@/types/component.schema';
+import ComponentContextMenu from '@/pages/editor/component-context-menu';
+import { generateContextMenus } from '@/util';
+import InsertType from '@/types/insert-type';
 
 const collisionOffset = 4;
 
@@ -106,10 +109,21 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [showDesign, setShowDesign] = useState<boolean>(true);
   const [scale, setScale] = useState<number>(1);
   const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
+  const [selectedComponentForRenaming, setSelectedComponentForRenaming] = useState<ComponentId>('');
+  const [componentState, setComponentState] = useState<
+    Record<
+      string,
+      {
+        visible: boolean;
+        [key: string]: any;
+      }
+    >
+  >({});
 
   const [form] = useForm();
 
   const dslStore = useContext(DSLStoreContext);
+  const editorStore = useContext(EditorStoreContext);
 
   const insertIndexRef = useRef<number>(-1);
   const anchorCoordinatesRef = useRef<IAnchorCoordinates>();
@@ -554,8 +568,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     if (currentFile) {
       filePathRef.current = await dirname(currentFile);
       await fileManager.savePageDSLFile(currentFile, dslStore.dsl);
+      message.success('保存成功');
     }
-  }, 1000);
+  }, 250);
 
   async function handleExportingPageCodeFile() {
     const extension = codeType === 'react' ? 'tsx' : 'vue';
@@ -653,12 +668,12 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     }
   }
 
-  function handleSelectingPageOrFolder(page: DataNode) {
+  function handleSelectingPageOrFolder(page: { path: string; name: string } & DataNode) {
     if (page.isLeaf) {
-      openFile(page.key as string).then();
-      setCurrentFile(page.key as string);
+      openFile(page.path as string).then();
+      setCurrentFile(page.path as string);
     } else {
-      setSelectedFolder(page.key as string);
+      setSelectedFolder(page.path as string);
     }
   }
 
@@ -676,23 +691,60 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function handleClickDropDownMenu(key: string, componentSchema: IComponentSchema) {
-    // TODO
+    const componentIdForClone = editorStore.componentIdForCopy;
+    if (!componentSchema) {
+      debugger;
+    }
+    const { id: componentId } = componentSchema;
+    console.log('component id: ', componentId);
     switch (key) {
       case 'copy':
-        message.warning('复制待实现');
+        editorStore.setComponentIdForCopy(componentId);
         break;
-      case 'paste':
-        message.warning('粘贴待实现');
+      case InsertType.insertBefore:
+        if (componentIdForClone) {
+          dslStore.cloneComponent(componentIdForClone, componentId, InsertType.insertBefore);
+          debugger;
+        }
+        break;
+      case InsertType.insertAfter:
+        if (componentIdForClone) {
+          dslStore.cloneComponent(componentIdForClone, componentId, InsertType.insertAfter);
+        }
+        break;
+      case InsertType.insertInFirst:
+        if (componentIdForClone) {
+          dslStore.cloneComponent(componentIdForClone, componentId, InsertType.insertInFirst);
+        }
+        break;
+      case InsertType.insertInLast:
+        if (componentIdForClone) {
+          dslStore.cloneComponent(componentIdForClone, componentId, InsertType.insertInLast);
+        }
         break;
       case 'rename':
+        // dslStore.renameComponent(componentSchema.id, );
         message.warning('重命名待实现');
         break;
       case 'delete':
         message.warning('删除待实现');
         break;
+      case 'hide':
+      case 'show':
+        message.warning('待实现');
+        break;
       default:
         break;
     }
+  }
+
+  function handleSelectingComponentForRenaming(componentId: ComponentId) {
+    setSelectedComponentForRenaming(componentId);
+  }
+
+  function handleRenamingComponent(componentId: ComponentId, newName: string) {
+    dslStore.renameComponent(componentId, newName);
+    setSelectedComponentForRenaming('');
   }
 
   /**
@@ -707,63 +759,35 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       return node.children?.some(item => !item.isText);
     };
 
-    const generateDropDownMenu = (componentSchema: IComponentSchema) => {
-      return {
-        items: [
-          {
-            key: 'copy',
-            label: (
-              <div className={styles.dropDownItem}>
-                <span>复制</span>
-                <span className={styles.shortKey}>⌘ C</span>
-              </div>
-            )
-          },
-          {
-            key: 'paste',
-            label: (
-              <div className={styles.dropDownItem}>
-                <span>粘贴</span>
-                <span className={styles.shortKey}>⌘ V</span>
-              </div>
-            )
-          },
-          {
-            key: 'rename',
-            label: (
-              <div className={styles.dropDownItem}>
-                <span>重命名</span>
-                <span className={styles.shortKey}>⌘ R</span>
-              </div>
-            )
-          },
-          {
-            type: 'divider' as unknown as any
-          },
-          {
-            key: 'delete',
-            label: (
-              <div className={styles.dropDownItem}>
-                <span>删除</span>
-                <span className={styles.shortKey}>Del</span>
-              </div>
-            )
-          }
-        ],
-        onClick: ({ key }: { key: string }) => handleClickDropDownMenu(key, componentSchema)
-      };
-    };
-
     const renderTreeNodeTitle = (componentSchema: IComponentSchema) => {
+      const { id: componentId } = componentSchema;
       return (
-        <Dropdown
-          menu={generateDropDownMenu(componentSchema)}
-          overlayClassName={styles.dropdownContainer}
-          destroyPopupOnHide
-          trigger={['contextMenu']}
+        <ComponentContextMenu
+          data={componentSchema}
+          onClick={handleClickDropDownMenu}
+          items={generateContextMenus(
+            componentSchema.feature,
+            editorStore.isVisible(componentId),
+            editorStore.hasCopiedComponent
+          )}
         >
-          <div>{componentSchema.displayName || componentSchema.name}</div>
-        </Dropdown>
+          <div onDoubleClick={() => handleSelectingComponentForRenaming(componentId)}>
+            {componentId === selectedComponentForRenaming ? (
+              <Input
+                defaultValue={componentSchema.displayName}
+                autoFocus
+                onFocus={e => e.target.select()}
+                onBlur={e => handleRenamingComponent(componentId, (e.target.value as unknown as string).trim())}
+                onPressEnter={e =>
+                  // @ts-ignore
+                  handleRenamingComponent(componentId, (e.target.value as unknown as string).trim())
+                }
+              />
+            ) : (
+              componentSchema.displayName || componentSchema.name
+            )}
+          </div>
+        </ComponentContextMenu>
       );
     };
 
@@ -772,6 +796,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         .filter((item: ComponentSchemaRef) => !item.isText)
         .map((item: ComponentSchemaRef) => {
           const componentSchema = dsl.componentIndexes[item.current];
+          if (!componentSchema) {
+            debugger;
+          }
           const node: Record<string, any> = {
             key: componentSchema.id,
             title: renderTreeNodeTitle(componentSchema)
@@ -788,6 +815,11 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     return recursiveMap([dsl.child]);
   }
 
+  function handleChangingProject() {
+    fetchProjectData().then();
+    fetchCurrentProject();
+  }
+
   /**
    * 渲染项目的文件目录，当前文件的组件树
    */
@@ -795,7 +827,12 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     return (
       <>
         <div className={styles.pagePanel}>
-          <PagePanel data={projectData} onSelect={handleSelectingPageOrFolder} selected={currentFile} />
+          <PagePanel
+            data={projectData}
+            onSelect={handleSelectingPageOrFolder}
+            selected={currentFile}
+            onChange={handleChangingProject}
+          />
         </div>
         <div className={styles.componentTree}>
           <ComponentTree
@@ -873,8 +910,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   function renderCodeSection() {
     return <div>code works!</div>;
   }
-
-  console.log('editor rendered');
 
   return (
     <div className={styles.main} style={style}>

@@ -1,6 +1,18 @@
 import { nanoid } from 'nanoid';
 import componentConfig from '@/data/component-dict';
 import { platform } from '@tauri-apps/api/os';
+import ComponentFeature from '@/types/component-feature';
+import {
+  COPY_MENU,
+  DELETE_MENU,
+  HIDE_MENU,
+  INSERT_MENU_FOR_CONTAINER,
+  INSERT_MENU_FOR_ROOT,
+  INSERT_MENU_FOR_SLOT,
+  INSERT_MENU_FOR_SOLID,
+  RENAME_MENU,
+  SHOW_MENU
+} from '@/data/constant';
 
 export function toUpperCase(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -66,16 +78,19 @@ export function hyphenToCamelCase(input: string) {
   });
 }
 
-export function findNodePath(root: any, target: string, key = 'key'): string[] {
+export function findNodePath(root: any, target: string, key = 'path'): string[] {
   if (root[key] === target) {
-    return [target];
+    return [root.key];
   }
 
   if (root?.children?.length) {
     for (const child of root.children) {
       const path = findNodePath(child, target, key);
       if (path.length) {
-        return [root[key], ...path];
+        if (root.key) {
+          return [root.key, ...path];
+        }
+        return path;
       }
     }
   }
@@ -148,4 +163,33 @@ export function getParentKeyPath(keyPath: string) {
     return keyPath.substring(0, startIndex);
   }
   return keyPath.substring(0, lastIndex);
+}
+
+export function generateContextMenus(
+  feature: ComponentFeature = ComponentFeature.solid,
+  visible: boolean = true,
+  hasCopiedComponent: boolean = false
+) {
+  switch (feature) {
+    case ComponentFeature.root:
+      if (hasCopiedComponent) {
+        return [[INSERT_MENU_FOR_ROOT], [RENAME_MENU]];
+      }
+      return [[RENAME_MENU]];
+    case ComponentFeature.slot:
+      if (hasCopiedComponent) {
+        return [[INSERT_MENU_FOR_SLOT], [RENAME_MENU]];
+      }
+      return [[RENAME_MENU]];
+    case ComponentFeature.container:
+      if (hasCopiedComponent) {
+        return [[COPY_MENU, INSERT_MENU_FOR_CONTAINER, RENAME_MENU], [visible ? HIDE_MENU : SHOW_MENU], [DELETE_MENU]];
+      }
+      return [[COPY_MENU, RENAME_MENU], [visible ? HIDE_MENU : SHOW_MENU], [DELETE_MENU]];
+    case ComponentFeature.solid:
+      if (hasCopiedComponent) {
+        return [[COPY_MENU, INSERT_MENU_FOR_SOLID, RENAME_MENU], [visible ? HIDE_MENU : SHOW_MENU], [DELETE_MENU]];
+      }
+      return [[COPY_MENU, RENAME_MENU], [visible ? HIDE_MENU : SHOW_MENU], [DELETE_MENU]];
+  }
 }
