@@ -693,9 +693,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   function handleClickDropDownMenu(key: string, componentSchema: IComponentSchema) {
     const componentIdForClone = editorStore.componentIdForCopy;
-    if (!componentSchema) {
-      debugger;
-    }
     const { id: componentId } = componentSchema;
     console.log('component id: ', componentId);
     switch (key) {
@@ -705,7 +702,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       case InsertType.insertBefore:
         if (componentIdForClone) {
           dslStore.cloneComponent(componentIdForClone, componentId, InsertType.insertBefore);
-          debugger;
         }
         break;
       case InsertType.insertAfter:
@@ -797,9 +793,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         .filter((item: ComponentSchemaRef) => !item.isText)
         .map((item: ComponentSchemaRef) => {
           const componentSchema = dsl.componentIndexes[item.current];
-          if (!componentSchema) {
-            debugger;
-          }
           const node: Record<string, any> = {
             key: componentSchema.id,
             title: renderTreeNodeTitle(componentSchema)
