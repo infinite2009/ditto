@@ -66,6 +66,7 @@ export default class DSLStore {
   private totalFormConfig: Record<string, IFormConfig>;
   private undoStack: any[] = [];
   private redoStack: any[] = [];
+
   constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
     if (dsl) {
@@ -133,6 +134,7 @@ export default class DSLStore {
       this.selectComponent(this.dsl.child.current);
     }
   }
+
   /**
    *
    */
@@ -613,9 +615,14 @@ export default class DSLStore {
     }
     // 1. 复制 component schema 本身
     const clonedComponentSchema = cloneDeep(componentSchema);
-    // 生成新的 component id
+    // 2. 生成新的 component id
     clonedComponentSchema.id = this.generateComponentIdByName(clonedComponentSchema.name);
-    // 2. 复制子树，并重新替换父组件的 children
+    // 3. 生成新的 displayName
+    const componentConfig = fetchComponentConfig(clonedComponentSchema.name, clonedComponentSchema.dependency);
+    clonedComponentSchema.displayName = `${componentConfig.title}${
+      this.dsl.componentStats[clonedComponentSchema.name]
+    }`;
+    // 4. 复制子树，并重新替换父组件的 children
     clonedComponentSchema.children = clonedComponentSchema.children.map(child => {
       if (child.isText) {
         return cloneDeep(child);
@@ -633,9 +640,9 @@ export default class DSLStore {
         };
       }
     });
-    // 3. 复制 props
+    // 5. 复制 props
     this.dsl.props[clonedComponentSchema.id] = cloneDeep(this.dsl.props[id]);
-    // 4. 遍历每一个 prop，如果它存在插槽，递归复制以插槽为根节点的子树
+    // 6. 遍历每一个 prop，如果它存在插槽，递归复制以插槽为根节点的子树
     const clonedPropsDict = this.dsl.props[clonedComponentSchema.id];
     clonedComponentSchema.propsRefs.forEach(ref => {
       const clonedPropsSchema: IPropsSchema = clonedPropsDict[ref];
@@ -660,7 +667,7 @@ export default class DSLStore {
               const parent = getValueByPath(clonedPropsSchema.value, parentKeyPath);
               // 计算出当前这个属性的 key
               const keyWithAccessOperator = keyPath.substring(0, parentKeyPath.length);
-              let key = keyWithAccessOperator.startsWith('.')
+              const key = keyWithAccessOperator.startsWith('.')
                 ? keyWithAccessOperator.substring(1)
                 : keyWithAccessOperator.substring(1, keyWithAccessOperator.length - 1);
               // 赋值
@@ -670,7 +677,7 @@ export default class DSLStore {
         });
       }
     });
-    // 5. 将节点挂载到 componentIndexes
+    // 7. 将节点挂载到 componentIndexes
     this.dsl.componentIndexes[clonedComponentSchema.id] = clonedComponentSchema;
     return clonedComponentSchema;
   }
