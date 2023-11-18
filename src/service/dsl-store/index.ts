@@ -49,8 +49,10 @@ function execute(target: any, name: string, descriptor: PropertyDescriptor) {
     if (Object.keys(added).length === 0 && Object.keys(updated).length === 0 && Object.keys(deleted).length === 0) {
       return;
     }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.undoStack.push(diff);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.redoStack = [];
     return result;
