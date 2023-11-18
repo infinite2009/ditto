@@ -724,7 +724,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         message.warning('重命名待实现');
         break;
       case 'delete':
-        message.warning('删除待实现');
+        dslStore.deleteComponent(componentSchema.id);
         break;
       case 'hide':
       case 'show':
