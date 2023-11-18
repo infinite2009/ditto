@@ -720,8 +720,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         }
         break;
       case 'rename':
-        // dslStore.renameComponent(componentSchema.id, );
-        message.warning('重命名待实现');
+        handleSelectingComponentForRenaming(componentId);
         break;
       case 'delete':
         dslStore.deleteComponent(componentSchema.id);
