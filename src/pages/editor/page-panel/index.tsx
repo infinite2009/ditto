@@ -162,7 +162,12 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
     }
   }
 
-  function handleCreatingDirectory() {}
+  async function handleCreatingDirectory() {
+    await fileManager.createNewDirectory(selected);
+    if (onChange) {
+      onChange();
+    }
+  }
 
   function handleSearchingPage() {}
 

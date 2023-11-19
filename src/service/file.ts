@@ -151,6 +151,23 @@ class FileManager {
     }
   }
 
+  async createNewDirectory(parentPath: string) {
+    const folder = '未命名文件夹';
+    if (!(await exists(`${parentPath}${sep}${folder}`))) {
+      await createDir(`${parentPath}${sep}${folder}`);
+      return;
+    }
+    let suffix = 0;
+    let whetherExists = false;
+    do {
+      whetherExists = await exists(`${parentPath}${sep}${folder} ${suffix}`);
+      if (whetherExists) {
+        suffix++;
+      }
+    } while (whetherExists);
+    await createDir(`${parentPath}${sep}${folder} ${suffix}`);
+  }
+
   async createNewPage(folder: string) {
     const dslStoreService = new DSLStore();
     const fileName = await FileManager.generateNewFileName(folder);
