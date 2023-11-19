@@ -58,7 +58,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   function mergeExpandedKeys(arr1: string[], arr2: string[]): string[] {
     const result = [...arr1];
     arr2.forEach(item => {
-      if (!arr1.includes(item)) {
+      if (!arr1.includes(item) && item.endsWith('.ditto')) {
         result.push(item);
       }
     });

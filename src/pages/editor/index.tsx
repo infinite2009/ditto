@@ -104,6 +104,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [projectData, setProjectData] = useState<any[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
   const [selectedFolder, setSelectedFolder] = useState<string>('');
+  const [selectedPath, setSelectedPath] = useState<string>('');
   const [leftPanelType, setLeftPanelType] = useState<PanelType>(PanelType.file);
   const [leftPanelVisible, setLeftPanelVisible] = useState<boolean>(true);
   const [rightPanelVisible, setRightPanelVisible] = useState<boolean>(true);
@@ -111,15 +112,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [scale, setScale] = useState<number>(1);
   const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
   const [selectedComponentForRenaming, setSelectedComponentForRenaming] = useState<ComponentId>('');
-  const [componentState, setComponentState] = useState<
-    Record<
-      string,
-      {
-        visible: boolean;
-        [key: string]: any;
-      }
-    >
-  >({});
 
   const [form] = useForm();
 
@@ -673,8 +665,10 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     if (page.isLeaf) {
       openFile(page.path as string).then();
       setCurrentFile(page.path as string);
+      setSelectedPath(page.path);
     } else {
       setSelectedFolder(page.path as string);
+      setSelectedPath(page.path);
     }
   }
 
@@ -823,7 +817,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
           <PagePanel
             data={projectData}
             onSelect={handleSelectingPageOrFolder}
-            selected={currentFile}
+            selected={selectedPath}
             onChange={handleChangingProject}
           />
         </div>
