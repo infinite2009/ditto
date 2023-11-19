@@ -1,5 +1,5 @@
 import { Input, message, Tree } from 'antd';
-import { DataNode, EventDataNode } from 'antd/es/tree';
+import { DataNode } from 'antd/es/tree';
 import React, { Key, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DownOutlined, FileOutlined, FolderOpenOutlined, FolderOutlined } from '@ant-design/icons';
 import ProjectToolBar from '@/pages/editor/project-tool-bar';
@@ -151,20 +151,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
     }
   }
 
-  function handleExpand(
-    expandedKeys: Key[],
-    data: {
-      node: EventDataNode<{
-        key: string;
-        title: string;
-        children?: PageData[] | undefined;
-        isLeaf?: boolean | undefined;
-        icon?: any;
-      }>;
-      expanded: boolean;
-      nativeEvent: MouseEvent;
-    }
-  ) {
+  function handleExpand(expandedKeys: Key[]) {
     setExpandedKeys(expandedKeys as string[]);
   }
 
