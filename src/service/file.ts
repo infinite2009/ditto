@@ -69,6 +69,9 @@ class FileManager {
   private static async generateNewFileName(directory: string) {
     const fileName = '未命名文件';
     const ext = '.ditto';
+    if (!(await exists(`${directory}${sep}${fileName}${ext}`))) {
+      return `${fileName}${ext}`;
+    }
     let suffix = 0;
     let whetherExists = false;
     do {
