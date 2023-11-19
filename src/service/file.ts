@@ -66,6 +66,20 @@ class FileManager {
     return FileManager.instance;
   }
 
+  private static async generateNewFileName(directory: string) {
+    const fileName = '未命名文件';
+    const ext = '.ditto';
+    let suffix = 0;
+    let whetherExists = false;
+    do {
+      whetherExists = await exists(`${directory}${sep}${fileName} ${suffix}${ext}`);
+      if (whetherExists) {
+        suffix++;
+      }
+    } while (whetherExists);
+    return `${fileName} ${suffix}${ext}`;
+  }
+
   /**
    * 根据输入字符串生成一个同目录下的文件夹副本的名字，永不重复
    * @param folderName
@@ -137,6 +151,14 @@ class FileManager {
     }
   }
 
+  async createNewPage(folder: string) {
+    const dslStoreService = new DSLStore();
+    const fileName = await FileManager.generateNewFileName(folder);
+    dslStoreService.createEmptyDSL(fileName, '');
+    const filePath = await join(folder, fileName);
+    await writeTextFile(filePath, JSON.stringify(dslStoreService.dsl));
+  }
+
   /**
    * 创建一个新项目，需要用户选择文件夹
    */
@@ -146,11 +168,7 @@ class FileManager {
       await createDir(folder, { dir: BaseDirectory.Document });
       const documentPath = await documentDir();
       const projectPath = await join(documentPath, folder);
-      const dslStoreService = new DSLStore();
-      const fileName = '未命名页面';
-      dslStoreService.createEmptyPage(fileName, '');
-      const filePath = await join(folder, `${fileName}.ditto`);
-      await writeTextFile(filePath, JSON.stringify(dslStoreService.dsl), { dir: BaseDirectory.Document });
+      await this.createNewPage(folder);
       const project = {
         id: nanoid(),
         name: folder,

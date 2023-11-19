@@ -10,20 +10,20 @@ import { ComponentId } from '@/types';
 import fileManager from '@/service/file';
 
 interface PageData {
-  key: string;
-  title: string | ReactNode | any;
   children?: PageData[];
-  path: string;
-  name: string;
-  isLeaf?: boolean;
   icon?: any;
+  isLeaf?: boolean;
+  key: string;
+  name: string;
+  path: string;
+  title: string | ReactNode | any;
 }
 
 export interface IPagePanel {
   data: PageData[];
-  selected: string;
-  onSelect: (page: { path: string; name: string } & DataNode) => void;
   onChange: () => void;
+  onSelect: (page: { path: string; name: string } & DataNode) => void;
+  selected: string;
 }
 
 export default function PagePanel({ data = [], selected, onSelect, onChange }: IPagePanel) {
@@ -155,7 +155,12 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
     setExpandedKeys(expandedKeys as string[]);
   }
 
-  function handleCreatingPage() {}
+  async function handleCreatingPage() {
+    await fileManager.createNewPage(selected);
+    if (onChange) {
+      onChange();
+    }
+  }
 
   function handleCreatingDirectory() {}
 

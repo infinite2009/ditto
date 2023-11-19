@@ -527,7 +527,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   async function createFile() {
     const { name = '新建页面', desc } = form.getFieldsValue();
-    dslStore.createEmptyPage(name, desc);
+    dslStore.createEmptyDSL(name, desc);
     let selectedFile;
     if (selectedFolder) {
       selectedFile = [selectedFolder, sep, name, '.ditto'].join('');
