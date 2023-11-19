@@ -52,7 +52,6 @@ import IComponentSchema from '@/types/component.schema';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
 import { generateContextMenus } from '@/util';
 import InsertType from '@/types/insert-type';
-import { toJS } from 'mobx';
 
 const collisionOffset = 4;
 
@@ -688,7 +687,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   function handleClickDropDownMenu(key: string, componentSchema: IComponentSchema) {
     const componentIdForClone = editorStore.componentIdForCopy;
     const { id: componentId } = componentSchema;
-    console.log('component id: ', componentId);
     switch (key) {
       case 'copy':
         editorStore.setComponentIdForCopy(componentId);
@@ -897,8 +895,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   function renderCodeSection() {
     return <div>code works!</div>;
   }
-
-  console.log('dsl store: ', toJS(dslStore.dsl));
 
   return (
     <div className={styles.main} style={style}>

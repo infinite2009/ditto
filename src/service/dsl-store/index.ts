@@ -283,8 +283,6 @@ export default class DSLStore {
       componentSchema.propsRefs.push(name);
     });
 
-    console.log('创建的组件：', componentSchema);
-
     return componentSchema;
   }
 
