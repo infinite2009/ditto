@@ -171,11 +171,14 @@ class FileManager {
     await createDir(`${parentPath}${sep}${folder} ${suffix}`);
   }
 
-  async createNewPage(folder: string) {
+  /**
+   * @param directory 绝对路径
+   */
+  async createNewPage(directory: string) {
     const dslStoreService = new DSLStore();
-    const fileName = await FileManager.generateNewFileName(folder);
+    const fileName = await FileManager.generateNewFileName(directory);
     dslStoreService.createEmptyDSL(fileName, '');
-    const filePath = await join(folder, fileName);
+    const filePath = await join(directory, fileName);
     await writeTextFile(filePath, JSON.stringify(dslStoreService.dsl));
   }
 
@@ -188,7 +191,7 @@ class FileManager {
       await createDir(folder, { dir: BaseDirectory.Document });
       const documentPath = await documentDir();
       const projectPath = await join(documentPath, folder);
-      await this.createNewPage(folder);
+      await this.createNewPage(projectPath);
       const project = {
         id: nanoid(),
         name: folder,
