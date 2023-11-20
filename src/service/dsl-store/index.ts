@@ -580,7 +580,7 @@ export default class DSLStore {
   }
 
   @execute
-  updateComponentProps(propsPartial: Record<string, { value: any; propsToCompose?: string }>) {
+  updateComponentProps(propsPartial: Record<string, { value: any; propsToCompose?: string }> | CSSProperties) {
     const props = this.dsl.props[this.selectedComponent.id];
     Object.entries(propsPartial).forEach(([key, val]) => {
       // 如果有 propsToCompose，说明当前 props 是一个对象

@@ -231,8 +231,7 @@ export default observer((props: IPageRendererProps) => {
       children = [],
       propsRefs = [],
       id: componentId,
-      feature,
-      visible
+      feature
     } = node as IComponentSchema;
     let Component: string | FC<PropsWithChildren<any>> = callingName || name;
     let componentConfig: IComponentConfig | undefined;

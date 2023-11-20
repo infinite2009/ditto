@@ -97,13 +97,13 @@ export default class VueTransformer {
   itemsChildren(node: IComponentSchema, childComponentName: string) {
     const { props, componentIndexes } = this.dsl;
     const componentProps = props[node.id];
-    
+
     if (!node.children) {
       node.children = [];
     }
     const templateKeyPathsReg = componentProps.items.templateKeyPathsReg;
     if (componentProps.items && templateKeyPathsReg && Array.isArray(componentProps.items.value)) {
-      
+
       // children可能还有
       componentProps.items.value.forEach((item, index) => {
         const currentKeyPath = `[${index}].${item.children ? 'children' : ''}`;
@@ -140,7 +140,7 @@ export default class VueTransformer {
       });
       // 删除特定的数据
       delete componentProps.items.templateKeyPathsReg;
-      componentProps.items.value = []; 
+      componentProps.items.value = [];
 
       this.removeProps(node.propsRefs || [], 'items');
       return node.children;
@@ -154,7 +154,7 @@ export default class VueTransformer {
   tableColumn(node: IComponentSchema) {
     const { props, componentIndexes } = this.dsl;
     const componentProps = props[node.id];
-    
+
     if (!node.children) {
       node.children = [];
     }
@@ -284,12 +284,13 @@ export default class VueTransformer {
       "propsRefs": Object.keys(props),
       "children": []
     } as IComponentSchema;
-  }  
+  }
   createSimplePropsDsl(id: string, props: Record<string, string | number>) {
     const newProps: Record<string, IPropsSchema & {category: string}> = {} as Record<string, IPropsSchema & {category: string}>;
     for (const key in props) {
       if (Object.prototype.hasOwnProperty.call(props, key)) {
         const value = props[key];
+        // @ts-ignore
         newProps[key] = {
           "id": id,
           "schemaType": "props",
@@ -303,5 +304,5 @@ export default class VueTransformer {
     }
     return newProps;
   }
-  
+
 }
