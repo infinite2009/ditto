@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "tauri dev",
-    "build": "tsc && vite build",
+    "build:tsc": "tsc && vite build",
+    "build": "vite build",
     "build:universal": "tauri build --target universal-apple-darwin",
     "build:x86": "tauri build --target x86_64-apple-darwin",
     "build:arm": "tauri build --target aarch64-apple-darwin",
