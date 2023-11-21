@@ -177,7 +177,6 @@ export default observer(({ onDo }: IToolbarProps) => {
     <div className={styles.main}>
       <div className={calcIconClassNames()}>
         <Divider type="vertical" style={{ marginLeft: 0, borderColor: '#F1F2F3' }} />
-        <SaveOutlined className={styles.iconBtn} onClick={handleSave} />
         <UndoOutlined className={calClassNames(!dslStore.canUndo)} onClick={handleUndo} />
         <RedoOutlined className={calClassNames(!dslStore.canRedo)} onClick={handleRedo} />
         <Divider className={styles.divider} type="vertical" />
@@ -253,6 +252,7 @@ export default observer(({ onDo }: IToolbarProps) => {
         <Divider type="vertical" style={{ marginRight: 0, borderColor: '#F1F2F3' }} />
       </div>
       <div className={styles.rightBtnWrapper}>
+        <SaveOutlined className={styles.iconBtn} onClick={handleSave} />
         <DownloadOutlined className={styles.iconBtn} onClick={handleExportingCode} />
         <YoutubeOutlined className={styles.iconBtn} onClick={handlePreview} />
         <Radio.Group
