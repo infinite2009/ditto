@@ -611,7 +611,7 @@ export default class VueTransformer {
   tableColumn(node: IComponentSchema) {
     const { props, componentIndexes } = this.dsl;
     const componentProps = props[node.id];
-    
+
     if (!node.children) {
       node.children = [];
     }
@@ -762,6 +762,7 @@ export default class VueTransformer {
     for (const key in props) {
       if (Object.prototype.hasOwnProperty.call(props, key)) {
         const value = props[key];
+        // @ts-ignore
         newProps[key] = {
           "id": id,
           "title": "",

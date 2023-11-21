@@ -284,8 +284,6 @@ export default observer(function EditWrapper({
     }
   }
 
-  console.log('editor store: ', editorStore);
-
   return (
     <ComponentContextMenu
       data={dslStore.dsl.componentIndexes[id]}

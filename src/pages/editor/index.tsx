@@ -103,6 +103,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [projectData, setProjectData] = useState<any[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
   const [selectedFolder, setSelectedFolder] = useState<string>('');
+  const [selectedPath, setSelectedPath] = useState<string>('');
   const [leftPanelType, setLeftPanelType] = useState<PanelType>(PanelType.file);
   const [leftPanelVisible, setLeftPanelVisible] = useState<boolean>(true);
   const [rightPanelVisible, setRightPanelVisible] = useState<boolean>(true);
@@ -110,15 +111,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [scale, setScale] = useState<number>(1);
   const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
   const [selectedComponentForRenaming, setSelectedComponentForRenaming] = useState<ComponentId>('');
-  const [componentState, setComponentState] = useState<
-    Record<
-      string,
-      {
-        visible: boolean;
-        [key: string]: any;
-      }
-    >
-  >({});
 
   const [form] = useForm();
 
@@ -535,7 +527,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   async function createFile() {
     const { name = '新建页面', desc } = form.getFieldsValue();
-    dslStore.createEmptyPage(name, desc);
+    dslStore.createEmptyDSL(name, desc);
     let selectedFile;
     if (selectedFolder) {
       selectedFile = [selectedFolder, sep, name, '.ditto'].join('');
@@ -672,8 +664,10 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     if (page.isLeaf) {
       openFile(page.path as string).then();
       setCurrentFile(page.path as string);
+      setSelectedPath(page.path);
     } else {
       setSelectedFolder(page.path as string);
+      setSelectedPath(page.path);
     }
   }
 
@@ -692,11 +686,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   function handleClickDropDownMenu(key: string, componentSchema: IComponentSchema) {
     const componentIdForClone = editorStore.componentIdForCopy;
-    if (!componentSchema) {
-      debugger;
-    }
     const { id: componentId } = componentSchema;
-    console.log('component id: ', componentId);
     switch (key) {
       case 'copy':
         editorStore.setComponentIdForCopy(componentId);
@@ -704,7 +694,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       case InsertType.insertBefore:
         if (componentIdForClone) {
           dslStore.cloneComponent(componentIdForClone, componentId, InsertType.insertBefore);
-          debugger;
         }
         break;
       case InsertType.insertAfter:
@@ -723,11 +712,10 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         }
         break;
       case 'rename':
-        // dslStore.renameComponent(componentSchema.id, );
-        message.warning('重命名待实现');
+        handleSelectingComponentForRenaming(componentId);
         break;
       case 'delete':
-        message.warning('删除待实现');
+        dslStore.deleteComponent(componentSchema.id);
         break;
       case 'hide':
       case 'show':
@@ -796,9 +784,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         .filter((item: ComponentSchemaRef) => !item.isText)
         .map((item: ComponentSchemaRef) => {
           const componentSchema = dsl.componentIndexes[item.current];
-          if (!componentSchema) {
-            debugger;
-          }
           const node: Record<string, any> = {
             key: componentSchema.id,
             title: renderTreeNodeTitle(componentSchema)
@@ -830,7 +815,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
           <PagePanel
             data={projectData}
             onSelect={handleSelectingPageOrFolder}
-            selected={currentFile}
+            selected={selectedPath}
             onChange={handleChangingProject}
           />
         </div>

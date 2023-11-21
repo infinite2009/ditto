@@ -1,5 +1,5 @@
 import { Input, message, Tree } from 'antd';
-import { DataNode, EventDataNode } from 'antd/es/tree';
+import { DataNode } from 'antd/es/tree';
 import React, { Key, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DownOutlined, FileOutlined, FolderOpenOutlined, FolderOutlined } from '@ant-design/icons';
 import ProjectToolBar from '@/pages/editor/project-tool-bar';
@@ -10,20 +10,20 @@ import { ComponentId } from '@/types';
 import fileManager from '@/service/file';
 
 interface PageData {
-  key: string;
-  title: string | ReactNode | any;
   children?: PageData[];
-  path: string;
-  name: string;
-  isLeaf?: boolean;
   icon?: any;
+  isLeaf?: boolean;
+  key: string;
+  name: string;
+  path: string;
+  title: string | ReactNode | any;
 }
 
 export interface IPagePanel {
   data: PageData[];
-  selected: string;
-  onSelect: (page: { path: string; name: string } & DataNode) => void;
   onChange: () => void;
+  onSelect: (page: { path: string; name: string } & DataNode) => void;
+  selected: string;
 }
 
 export default function PagePanel({ data = [], selected, onSelect, onChange }: IPagePanel) {
@@ -58,7 +58,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   function mergeExpandedKeys(arr1: string[], arr2: string[]): string[] {
     const result = [...arr1];
     arr2.forEach(item => {
-      if (!arr1.includes(item)) {
+      if (!arr1.includes(item) && item.endsWith('.ditto')) {
         result.push(item);
       }
     });
@@ -151,26 +151,23 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
     }
   }
 
-  function handleExpand(
-    expandedKeys: Key[],
-    data: {
-      node: EventDataNode<{
-        key: string;
-        title: string;
-        children?: PageData[] | undefined;
-        isLeaf?: boolean | undefined;
-        icon?: any;
-      }>;
-      expanded: boolean;
-      nativeEvent: MouseEvent;
-    }
-  ) {
+  function handleExpand(expandedKeys: Key[]) {
     setExpandedKeys(expandedKeys as string[]);
   }
 
-  function handleCreatingPage() {}
+  async function handleCreatingPage() {
+    await fileManager.createNewPage(selected);
+    if (onChange) {
+      onChange();
+    }
+  }
 
-  function handleCreatingDirectory() {}
+  async function handleCreatingDirectory() {
+    await fileManager.createNewDirectory(selected);
+    if (onChange) {
+      onChange();
+    }
+  }
 
   function handleSearchingPage() {}
 

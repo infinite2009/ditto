@@ -49,8 +49,10 @@ function execute(target: any, name: string, descriptor: PropertyDescriptor) {
     if (Object.keys(added).length === 0 && Object.keys(updated).length === 0 && Object.keys(deleted).length === 0) {
       return;
     }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.undoStack.push(diff);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.redoStack = [];
     return result;
@@ -58,12 +60,13 @@ function execute(target: any, name: string, descriptor: PropertyDescriptor) {
 }
 
 export default class DSLStore {
+  currentParentNode: IComponentSchema | IPageSchema | null = null;
   dsl: IPageSchema;
   selectedComponent: IComponentSchema;
-  currentParentNode: IComponentSchema | IPageSchema | null = null;
+  private redoStack: any[] = [];
   private totalFormConfig: Record<string, IFormConfig>;
   private undoStack: any[] = [];
-  private redoStack: any[] = [];
+
   constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
     if (dsl) {
@@ -71,12 +74,23 @@ export default class DSLStore {
     }
   }
 
+  get canRedo() {
+    return this.redoStack.length > 0;
+  }
+
   get canUndo() {
     return this.undoStack.length > 0;
   }
 
-  get canRedo() {
-    return this.redoStack.length > 0;
+  get formConfigOfSelectedComponent() {
+    if (!this.totalFormConfig) {
+      return null;
+    }
+    if (!this.selectedComponent) {
+      return null;
+    }
+    const { configName, name } = this.selectedComponent;
+    return this.totalFormConfig[configName || name];
   }
 
   get valueOfSelectedComponent() {
@@ -114,23 +128,6 @@ export default class DSLStore {
     return result;
   }
 
-  get formConfigOfSelectedComponent() {
-    if (!this.totalFormConfig) {
-      return null;
-    }
-    if (!this.selectedComponent) {
-      return null;
-    }
-    const { configName, name } = this.selectedComponent;
-    return this.totalFormConfig[configName || name];
-  }
-
-  initDSL(dsl: IPageSchema) {
-    if (dsl) {
-      this.dsl = dsl;
-      this.selectComponent(this.dsl.child.current);
-    }
-  }
   /**
    *
    */
@@ -139,33 +136,59 @@ export default class DSLStore {
     if (Object.keys(this.dsl.componentIndexes).length === 1) {
       return;
     }
-    this.createEmptyPage(this.dsl.name);
+    this.createEmptyDSL(this.dsl.name);
   }
 
-  createEmptyPage(name: string, desc = '') {
-    const pageId = generateId();
-    this.dsl = {
-      actions: {},
-      events: {},
-      handlers: {},
-      id: pageId,
-      schemaType: 'page',
-      name,
-      desc,
-      props: {},
-      // 由于类型设计问题，这里需要初始化一个无效节点
-      child: {
-        current: '',
-        isText: true
-      },
-      componentIndexes: {},
-      componentStats: {}
-    };
-    const pageRoot = this.createPageRoot();
-    this.dsl.child = {
-      current: pageRoot.id,
-      isText: false
-    };
+  /**
+   * 克隆组件
+   *
+   * @param id
+   * @param relatedId
+   * @param index
+   */
+  @execute
+  cloneComponent(id: ComponentId, relatedId: ComponentId, insertType: InsertType) {
+    const clonedSubtree = this.cloneSubtree(id);
+    if (!clonedSubtree) {
+      return;
+    }
+    let index;
+    let target;
+
+    switch (insertType) {
+      case InsertType.insertAfter:
+        // 插入目标组件的后边，所以先去拿到它在父组件中的位置
+        index = this.findIndexInParent(relatedId) + 1;
+        // 因为是往后插，所以必须要大于 0
+        if (index > 0) {
+          target = this.dsl.componentIndexes[this.dsl.componentIndexes[relatedId].parentId];
+        }
+        break;
+      case InsertType.insertBefore:
+        index = this.findIndexInParent(relatedId);
+        if (index > -1) {
+          target = this.dsl.componentIndexes[this.dsl.componentIndexes[relatedId].parentId];
+        }
+        break;
+      case InsertType.insertInFirst:
+        target = this.dsl.componentIndexes[relatedId];
+        index = 0;
+        break;
+      case InsertType.insertInLast:
+        target = this.dsl.componentIndexes[relatedId];
+        index = target.children.length;
+        break;
+      default:
+        index = 0;
+        break;
+    }
+
+    if (target && index > -1) {
+      target.children.splice(index, 0, {
+        current: clonedSubtree.id,
+        isText: false
+      });
+    }
   }
 
   /**
@@ -279,9 +302,79 @@ export default class DSLStore {
       componentSchema.propsRefs.push(name);
     });
 
-    console.log('创建的组件：', componentSchema);
-
     return componentSchema;
+  }
+
+  /**
+   * 创建一个空的容器，可以配置选项来表明它是容器还是插槽
+   *
+   * @param customId
+   * @param opt
+   */
+  createEmptyContainer(
+    customId = '',
+    opt: { feature: ComponentFeature; data?: { [key: string]: any } } | undefined = undefined
+  ) {
+    const component = this.createComponent('VerticalFlex', 'antd', customId, opt?.data);
+    if (opt?.feature === ComponentFeature.slot) {
+      component.feature = ComponentFeature.slot;
+    }
+    return component;
+  }
+
+  createEmptyDSL(name: string, desc = '') {
+    const pageId = generateId();
+    this.dsl = {
+      actions: {},
+      events: {},
+      handlers: {},
+      id: pageId,
+      schemaType: 'page',
+      name,
+      desc,
+      props: {},
+      // 由于类型设计问题，这里需要初始化一个无效节点
+      child: {
+        current: '',
+        isText: true
+      },
+      componentIndexes: {},
+      componentStats: {}
+    };
+    const pageRoot = this.createPageRoot();
+    this.dsl.child = {
+      current: pageRoot.id,
+      isText: false
+    };
+  }
+
+  /**
+   * 由于 DSL 的设计特性，嵌套的 template 之间一定会有一层容器作为插槽，所以删除插槽内的节点，只需要遍历插槽的 children
+   *
+   * @param id
+   * @param removeIndex
+   */
+  @execute
+  deleteComponent(id: ComponentId): IComponentSchema | null {
+    return this.deleteSubtree(id);
+  }
+
+  exportAsTemplate(id: string) {}
+
+  fetchComponentInDSL(id: string) {
+    const { componentIndexes } = this.dsl;
+    return componentIndexes[id];
+  }
+
+  initDSL(dsl: IPageSchema) {
+    if (dsl) {
+      this.dsl = dsl;
+      this.selectComponent(this.dsl.child.current);
+    }
+  }
+
+  initTotalFormConfig(formConfig: Record<string, IFormConfig>) {
+    this.totalFormConfig = formConfig;
   }
 
   /**
@@ -307,17 +400,6 @@ export default class DSLStore {
     } else {
       throw new Error(`未找到有效的父节点：${parentId}`);
     }
-  }
-
-  /**
-   * 由于 DSL 的设计特性，嵌套的 template 之间一定会有一层容器作为插槽，所以删除插槽内的节点，只需要遍历插槽的 children
-   *
-   * @param id
-   * @param removeIndex
-   */
-  @execute
-  deleteComponent(id: ComponentId): IComponentSchema | null {
-    return this.deleteSubtree(id);
   }
 
   @execute
@@ -358,98 +440,28 @@ export default class DSLStore {
   }
 
   /**
-   * 克隆组件
-   *
-   * @param id
-   * @param relatedId
-   * @param index
+   * 重做
    */
-  @execute
-  cloneComponent(id: ComponentId, relatedId: ComponentId, insertType: InsertType) {
-    const clonedSubtree = this.cloneSubtree(id);
-    if (!clonedSubtree) {
+  redo() {
+    const diff = this.redoStack.pop();
+    if (!diff) {
       return;
     }
-    let index;
-    let target;
-
-    switch (insertType) {
-      case InsertType.insertAfter:
-        // 插入目标组件的后边，所以先去拿到它在父组件中的位置
-        index = this.findIndexInParent(relatedId) + 1;
-        // 因为是往后插，所以必须要大于 0
-        if (index > 0) {
-          target = this.dsl.componentIndexes[this.dsl.componentIndexes[relatedId].parentId];
-        }
-        break;
-      case InsertType.insertBefore:
-        index = this.findIndexInParent(relatedId);
-        if (index > -1) {
-          target = this.dsl.componentIndexes[this.dsl.componentIndexes[relatedId].parentId];
-        }
-        break;
-      case InsertType.insertInFirst:
-        target = this.dsl.componentIndexes[relatedId];
-        index = 0;
-        break;
-      case InsertType.insertInLast:
-        target = this.dsl.componentIndexes[relatedId];
-        index = target.children.length;
-        break;
-      default:
-        index = 0;
-        break;
-    }
-
-    if (target && index > -1) {
-      target.children.splice(index, 0, {
-        current: clonedSubtree.id,
-        isText: false
-      });
-    }
-  }
-
-  @execute
-  updateComponentProps(propsPartial: Record<string, { value: any; propsToCompose?: string }>) {
-    const props = this.dsl.props[this.selectedComponent.id];
-    Object.entries(propsPartial).forEach(([key, val]) => {
-      // 如果有 propsToCompose，说明当前 props 是一个对象
-      if (val.propsToCompose) {
-        const propsName = val.propsToCompose;
-        if (!props[propsName].value) {
-          props[propsName].value = {};
-        }
-        (props[propsName].value as Record<string, any>)[key] = val.value;
-      } else {
-        if (props[key]) {
-          props[key].value = val.value;
-        }
-      }
-    });
-  }
-
-  exportAsTemplate(id: string) {}
-
-  fetchComponentInDSL(id: string) {
-    const { componentIndexes } = this.dsl;
-    return componentIndexes[id];
+    this.mergeDiffAndProcessNewDiff(diff, this.undoStack);
   }
 
   /**
-   * 创建一个空的容器，可以配置选项来表明它是容器还是插槽
-   *
-   * @param customId
-   * @param opt
+   * 重命名组件
+   * @param componentId
+   * @param newName
    */
-  createEmptyContainer(
-    customId = '',
-    opt: { feature: ComponentFeature; data?: { [key: string]: any } } | undefined = undefined
-  ) {
-    const component = this.createComponent('VerticalFlex', 'antd', customId, opt?.data);
-    if (opt?.feature === ComponentFeature.slot) {
-      component.feature = ComponentFeature.slot;
-    }
-    return component;
+  renameComponent(componentId: ComponentId, newName: string) {
+    const componentSchema = this.dsl.componentIndexes[componentId];
+    componentSchema.displayName = newName;
+  }
+
+  selectComponent(componentId: ComponentId) {
+    this.selectedComponent = this.dsl.componentIndexes[componentId];
   }
 
   setTemplateTo(tplInfo: TemplateInfo, propsConfig: { [key: string]: IPropsConfigItem }) {
@@ -552,26 +564,6 @@ export default class DSLStore {
     }
   }
 
-  updateComponentStats(componentName: string) {
-    if (this.dsl.componentStats[componentName] === undefined) {
-      this.dsl.componentStats[componentName] = 0;
-    } else {
-      this.dsl.componentStats[componentName]++;
-    }
-  }
-
-  selectComponent(componentId: ComponentId) {
-    this.selectedComponent = this.dsl.componentIndexes[componentId];
-  }
-
-  unselectComponent() {
-    this.selectComponent(this.dsl.child.current);
-  }
-
-  initTotalFormConfig(formConfig: Record<string, IFormConfig>) {
-    this.totalFormConfig = formConfig;
-  }
-
   /**
    * 撤销
    */
@@ -583,25 +575,44 @@ export default class DSLStore {
     this.mergeDiffAndProcessNewDiff(diff, this.redoStack);
   }
 
-  /**
-   * 重做
-   */
-  redo() {
-    const diff = this.redoStack.pop();
-    if (!diff) {
-      return;
-    }
-    this.mergeDiffAndProcessNewDiff(diff, this.undoStack);
+  unselectComponent() {
+    this.selectComponent(this.dsl.child.current);
   }
 
-  /**
-   * 重命名组件
-   * @param componentId
-   * @param newName
-   */
-  renameComponent(componentId: ComponentId, newName: string) {
-    const componentSchema = this.dsl.componentIndexes[componentId];
-    componentSchema.displayName = newName;
+  @execute
+  updateComponentProps(propsPartial: Record<string, { value: any; propsToCompose?: string }> | CSSProperties) {
+    const props = this.dsl.props[this.selectedComponent.id];
+    Object.entries(propsPartial).forEach(([key, val]) => {
+      // 如果有 propsToCompose，说明当前 props 是一个对象
+      if (val.propsToCompose) {
+        const propsName = val.propsToCompose;
+        if (!props[propsName].value) {
+          props[propsName].value = {};
+        }
+        (props[propsName].value as Record<string, any>)[key] = val.value;
+      } else {
+        if (props[key]) {
+          props[key].value = val.value;
+        }
+      }
+    });
+  }
+
+  updateComponentStats(componentName: string) {
+    if (this.dsl.componentStats[componentName] === undefined) {
+      this.dsl.componentStats[componentName] = 0;
+    } else {
+      this.dsl.componentStats[componentName]++;
+    }
+  }
+
+  private calculateComponentName(config: IComponentConfig) {
+    const { callingName, importName, configName } = config;
+    if (callingName) {
+      // callingName 里可能有调用符，需要去掉
+      return callingName.replace(/\./g, '');
+    }
+    return importName || configName;
   }
 
   private cloneSubtree(id: ComponentId) {
@@ -611,9 +622,14 @@ export default class DSLStore {
     }
     // 1. 复制 component schema 本身
     const clonedComponentSchema = cloneDeep(componentSchema);
-    // 生成新的 component id
+    // 2. 生成新的 component id
     clonedComponentSchema.id = this.generateComponentIdByName(clonedComponentSchema.name);
-    // 2. 复制子树，并重新替换父组件的 children
+    // 3. 生成新的 displayName
+    const componentConfig = fetchComponentConfig(clonedComponentSchema.name, clonedComponentSchema.dependency);
+    clonedComponentSchema.displayName = `${componentConfig.title}${
+      this.dsl.componentStats[clonedComponentSchema.name]
+    }`;
+    // 4. 复制子树，并重新替换父组件的 children
     clonedComponentSchema.children = clonedComponentSchema.children.map(child => {
       if (child.isText) {
         return cloneDeep(child);
@@ -631,9 +647,9 @@ export default class DSLStore {
         };
       }
     });
-    // 3. 复制 props
+    // 5. 复制 props
     this.dsl.props[clonedComponentSchema.id] = cloneDeep(this.dsl.props[id]);
-    // 4. 遍历每一个 prop，如果它存在插槽，递归复制以插槽为根节点的子树
+    // 6. 遍历每一个 prop，如果它存在插槽，递归复制以插槽为根节点的子树
     const clonedPropsDict = this.dsl.props[clonedComponentSchema.id];
     clonedComponentSchema.propsRefs.forEach(ref => {
       const clonedPropsSchema: IPropsSchema = clonedPropsDict[ref];
@@ -658,7 +674,7 @@ export default class DSLStore {
               const parent = getValueByPath(clonedPropsSchema.value, parentKeyPath);
               // 计算出当前这个属性的 key
               const keyWithAccessOperator = keyPath.substring(0, parentKeyPath.length);
-              let key = keyWithAccessOperator.startsWith('.')
+              const key = keyWithAccessOperator.startsWith('.')
                 ? keyWithAccessOperator.substring(1)
                 : keyWithAccessOperator.substring(1, keyWithAccessOperator.length - 1);
               // 赋值
@@ -668,9 +684,15 @@ export default class DSLStore {
         });
       }
     });
-    // 5. 将节点挂载到 componentIndexes
+    // 7. 将节点挂载到 componentIndexes
     this.dsl.componentIndexes[clonedComponentSchema.id] = clonedComponentSchema;
     return clonedComponentSchema;
+  }
+
+  private createPageRoot() {
+    const component = this.createComponent('pageRoot', 'antd');
+    component.feature = ComponentFeature.root;
+    return component;
   }
 
   private deleteSubtree(id: ComponentId): IComponentSchema | null {
@@ -746,31 +768,6 @@ export default class DSLStore {
     // 8. 从索引中删除组件信息
     delete componentIndexes[id];
 
-    return component;
-  }
-
-  private removeReferenceFromParent(id: ComponentId): void {
-    const { componentIndexes } = this.dsl;
-    const component = componentIndexes[id];
-    // 从父节点的 children 中删除对这个组件的引用
-    const parent = componentIndexes[component.parentId];
-    if (parent) {
-      parent.children = parent.children.filter(item => item.current !== id);
-    }
-  }
-
-  private calculateComponentName(config: IComponentConfig) {
-    const { callingName, importName, configName } = config;
-    if (callingName) {
-      // callingName 里可能有调用符，需要去掉
-      return callingName.replace(/\./g, '');
-    }
-    return importName || configName;
-  }
-
-  private createPageRoot() {
-    const component = this.createComponent('pageRoot', 'antd');
-    component.feature = ComponentFeature.root;
     return component;
   }
 
@@ -859,5 +856,15 @@ export default class DSLStore {
     const newDsl = toJS(this.dsl);
     const newDiff = detailedDiff(newDsl, oldDsl);
     diffStack.push(newDiff);
+  }
+
+  private removeReferenceFromParent(id: ComponentId): void {
+    const { componentIndexes } = this.dsl;
+    const component = componentIndexes[id];
+    // 从父节点的 children 中删除对这个组件的引用
+    const parent = componentIndexes[component.parentId];
+    if (parent) {
+      parent.children = parent.children.filter(item => item.current !== id);
+    }
   }
 }

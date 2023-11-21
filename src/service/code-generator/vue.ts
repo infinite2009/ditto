@@ -19,8 +19,9 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
     this.tsCodeGenerator = tsCodeGenerator;
   }
 
+  // @ts-ignore
   dsl: IPageSchema;
-
+  // @ts-ignore
   tsCodeGenerator: TypeScriptCodeGenerator;
 
   /**
