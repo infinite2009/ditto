@@ -10,6 +10,17 @@ fn greet(name: &str) -> String {
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![greet])
+        .on_window_event(|event| {
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event.event() {
+                #[cfg(target_os = "macos")]
+                event.window().minimize().unwrap();
+
+                #[cfg(not(target_os = "macos"))]
+                event.window().close().unwrap();
+
+                api.prevent_close();
+            }
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
