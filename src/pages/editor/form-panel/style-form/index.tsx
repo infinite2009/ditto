@@ -3,13 +3,14 @@ import { useForm } from 'antd/es/form/Form';
 import { CSSProperties, FC, useEffect, useMemo } from 'react';
 import { typeOf } from '@/util';
 import { FormItemSchema } from '@/types/form-config';
+import { RoundedCorner } from '@/components/icon';
 
 export interface IStyleFormProps {
   config?: {
     [key: string]: FormItemSchema | boolean;
   };
-  value?: CSSProperties;
   onChange: (style: CSSProperties) => void;
+  value?: CSSProperties;
 }
 
 export default function StyleForm({ onChange, value, config }: IStyleFormProps) {
@@ -142,8 +143,12 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
   }
 
   return (
-    <Form form={form} onValuesChange={handleChangingStyle}>
-      {renderFormItems()}
-    </Form>
+    <div>
+      123
+      <RoundedCorner />
+      <Form form={form} onValuesChange={handleChangingStyle}>
+        {renderFormItems()}
+      </Form>
+    </div>
   );
 }
