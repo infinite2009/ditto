@@ -6,7 +6,12 @@ import { getCamelotComponentPropsFrom } from '../load-config/camelot';
  */
 export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
   // TODO: need implementation, 改为远程加载
-  const camelotComponentProps = await getCamelotComponentPropsFrom();
+  let camelotComponentProps = {};
+  try {
+    camelotComponentProps = await getCamelotComponentPropsFrom();
+  } catch (err) {
+    console.log(err);
+  }
   return {
     Button: {
       configName: 'Button',
