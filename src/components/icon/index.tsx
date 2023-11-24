@@ -27,6 +27,32 @@ function Icon({ style, className, onClick }: IIconProps) {
   return <i className={classes} onClick={handleClicking} style={style} />;
 }
 
+export function Plus({ style, className, onClick }: IIconProps) {
+  const classes = useMemo(
+    () =>
+      classNames({
+        [className]: !!className,
+        [styles['icon-xinjian']]: true
+      }),
+    [className]
+  );
+
+  return <Icon className={classes} onClick={onClick} style={style} />;
+}
+
+export function Menu({ style, className, onClick }: IIconProps) {
+  const classes = useMemo(
+    () =>
+      classNames({
+        [className]: !!className,
+        [styles['icon-caidan']]: true
+      }),
+    [className]
+  );
+
+  return <Icon className={classes} onClick={onClick} style={style} />;
+}
+
 export function RoundedCorner({ style, className, onClick }: IIconProps) {
   const classes = useMemo(
     () =>
