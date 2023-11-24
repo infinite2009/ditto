@@ -29,11 +29,11 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
    */
   generatePropsStrWithLiteral(opt: IPropsOptions): string {
     const { name, variableType, value } = opt;
-
     // 插槽属性 TODO 待优化 使用variableType = 'slotName'
     if (name.startsWith('#') && value == '') {
       return `${name}`;
     }
+
     if (variableType === 'string') {
       return `${name}="${value}"`;
     }
@@ -43,9 +43,12 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
    * @override
    */
   generatePropAssignmentExpWithVariable(opt: IPropsOptions): string {
-    const { name, variableName } = opt;
+    const { name, variableName, variableType } = opt;
     if (name.startsWith('#')) {
       return `${name}`;
+    }
+    if (name.startsWith('v-')) {
+      return `${name}="${variableName}"`;
     }
     return `:${name}="${variableName}"`;
   }

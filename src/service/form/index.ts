@@ -1,11 +1,13 @@
 import IFormConfig from '@/types/form-config';
+import { getCamelotComponentPropsFrom } from '../load-config/camelot';
 
 /**
  * 记载整个表单库，它和组件库是一对一的。
  */
-export function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
+export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
   // TODO: need implementation, 改为远程加载
-  return Promise.resolve({
+  const camelotComponentProps = await getCamelotComponentPropsFrom();
+  return {
     Button: {
       configName: 'Button',
       schema: {
@@ -281,6 +283,7 @@ export function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
           }
         }
       }
-    }
-  });
+    },
+    ...camelotComponentProps
+  };
 }

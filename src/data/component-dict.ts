@@ -56,6 +56,7 @@ import IComponentConfig from '@/types/component-config';
 import { createCamelotComponent } from '@/components/camelot';
 import PageRoot from '@/components/page-root';
 import Container from '@/components/container';
+import { camelotComponentConfig } from '@/service/load-config/camelot';
 
 const Search = Input.Search;
 
@@ -1306,97 +1307,6 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
 
 const htmlComponentConfig: { [key: string]: IComponentConfig } = {};
 
-const camelotComponentConfig: { [key: string]: IComponentConfig } = {
-  'b-oa-user-select': {
-    configName: 'b-oa-user-select',
-    dependency: 'camelot',
-    component: createCamelotComponent(
-      'b-oa-user-select',
-      'https://s1.hdslb.com/bfs/live/oa-user-select/last/oa-user-select.mjs'
-    ),
-    category: '用户技术中心专用',
-    title: '用户查询',
-    icon: CodeSandboxOutlined,
-    propsConfig: {
-      selected: {
-        id: 'selected',
-        schemaType: 'props',
-        name: 'selected',
-        valueSource: 'editorInput',
-        valueType: 'string',
-        category: 'basic',
-        value: 'guwenjia',
-        title: '已选择'
-      }
-    }
-  },
-  'b-oa-department-select': {
-    configName: 'b-oa-department-select',
-    dependency: 'camelot',
-    component: createCamelotComponent(
-      'b-oa-department-select',
-      'https://s1.hdslb.com/bfs/live/oa-department-select/last/oa-department-select.mjs?t=1697615352271'
-    ),
-    category: '用户技术中心专用',
-    title: '部门查询',
-    icon: CodeSandboxOutlined,
-    propsConfig: {
-      dids: {
-        id: 'dids',
-        schemaType: 'props',
-        name: 'dids',
-        valueSource: 'editorInput',
-        valueType: 'string',
-        category: 'basic',
-        value: '-10613,-10675',
-        title: '部门ID'
-      },
-      selected: {
-        id: 'selected',
-        schemaType: 'props',
-        name: 'selected',
-        valueSource: 'editorInput',
-        valueType: 'number',
-        category: 'basic',
-        value: -10712,
-        title: '已选择'
-      }
-    }
-  },
-  'b-tree-select': {
-    configName: 'b-tree-select',
-    dependency: 'camelot',
-    component: createCamelotComponent(
-      'b-tree-select',
-      'https://s1.hdslb.com/bfs/live/tree-select/last/tree-select.mjs?t=1697615352272'
-    ),
-    category: '用户技术中心专用',
-    title: '服务树',
-    icon: CodeSandboxOutlined,
-    propsConfig: {}
-  },
-  'b-audit-log': {
-    configName: 'b-audit-log',
-    dependency: 'camelot',
-    component: createCamelotComponent('b-audit-log', 'https://s1.hdslb.com/bfs/live/audit-log/last/audit-log.mjs'),
-    category: '用户技术中心专用',
-    title: '日志组件',
-    icon: CodeSandboxOutlined,
-    propsConfig: {}
-  },
-  'b-tapd-select': {
-    configName: 'b-tapd-select',
-    dependency: 'camelot',
-    component: createCamelotComponent(
-      'b-tapd-select',
-      'https://s1.hdslb.com/bfs/live/tapd-select/last/tapd-select.mjs?t=1697615352271'
-    ),
-    category: '用户技术中心专用',
-    title: 'TAPD组件',
-    icon: CodeSandboxOutlined,
-    propsConfig: {}
-  }
-};
 export default { antd: antdComponentConfig, html: htmlComponentConfig, camelot: camelotComponentConfig } as {
   [key: string]: { [key: string]: IComponentConfig };
 };

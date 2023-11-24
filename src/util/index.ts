@@ -73,7 +73,7 @@ export function toProgressive(verb: string) {
 }
 
 export function hyphenToCamelCase(input: string) {
-  return input.replace(/-([a-z])/g, function (match, group1) {
+  return input.replace(/-([a-zA-Z])/g, function (match, group1) {
     return group1.toUpperCase();
   });
 }
