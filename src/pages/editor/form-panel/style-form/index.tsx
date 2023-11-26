@@ -14,6 +14,7 @@ import {
   ColumnLayout,
   ColumnSpaceAround,
   ColumnSpaceBetween,
+  DashedLine,
   Gap,
   Height,
   Line,
@@ -26,6 +27,7 @@ import {
   SingleBorder,
   SpaceAround,
   Start,
+  Thickness,
   Width,
   Wrap
 } from '@/components/icon';
@@ -397,6 +399,11 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
             <SingleBorder className={styles.r90} />
             <SingleBorder className={styles.r180} />
             <SingleBorder className={styles.r270} />
+          </div>
+          <div className={styles.row}>
+            <NumberInput icon={<Thickness />} />
+            <Line />
+            <DashedLine />
           </div>
         </div>
       </div>
