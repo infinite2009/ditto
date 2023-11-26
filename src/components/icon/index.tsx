@@ -515,7 +515,7 @@ export function ShortBar({ style, className, onClick, disabled }: IIconProps) {
 
   return <Icon className={classes} onClick={onClick} style={style} disabled={disabled} />;
 }
-export function Justify({ style, className, onClick, disabled }: IIconProps) {
+export function TextAlignJustify({ style, className, onClick, disabled }: IIconProps) {
   const classes = useMemo(
     () =>
       classNames({

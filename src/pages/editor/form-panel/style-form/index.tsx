@@ -10,6 +10,7 @@ import {
   AlignCenter,
   AlignStart,
   Arrow,
+  Bold,
   Border2,
   ColumnLayout,
   ColumnSpaceAround,
@@ -17,7 +18,9 @@ import {
   DashedLine,
   Gap,
   Height,
+  Italian,
   Line,
+  LineThrough,
   LongBar,
   NoWrap,
   Padding,
@@ -27,7 +30,12 @@ import {
   SingleBorder,
   SpaceAround,
   Start,
+  TextAlignCenter,
+  TextAlignJustify,
+  TextAlignLeft,
+  TextAlignRight,
   Thickness,
+  UnderLine,
   Width,
   Wrap
 } from '@/components/icon';
@@ -429,7 +437,17 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     return (
       <div className={styles.m12}>
         <h3 className={styles.title}>文字</h3>
-        <div className={styles.body} style={{ border: 'none' }}></div>
+        <div className={styles.body} style={{ border: 'none' }}>
+          <TextAlignLeft />
+          <TextAlignCenter />
+          <TextAlignRight />
+          <TextAlignJustify />
+          <Divider style={{ height: 8, borderRadius: 0.5 }} type="vertical" />
+          <Bold />
+          <Italian />
+          <LineThrough />
+          <UnderLine />
+        </div>
       </div>
     );
   }
