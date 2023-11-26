@@ -1,9 +1,36 @@
-import { ColorPicker, Form, Input, InputNumber, Select, Switch } from 'antd';
+import { ColorPicker, Divider, Form, Input, InputNumber, Select, Switch } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { CSSProperties, FC, useEffect, useMemo } from 'react';
-import { typeOf } from '@/util';
+import { CSSProperties, FC, useEffect, useMemo, useState } from 'react';
+import { isDifferent, typeOf } from '@/util';
 import { FormItemSchema } from '@/types/form-config';
-import { RoundedCorner } from '@/components/icon';
+
+import styles from './index.module.less';
+import NumberInput from '@/pages/editor/form-panel/style-form/components/number-input';
+import {
+  AlignCenter,
+  AlignStart,
+  Arrow,
+  Border2,
+  ColumnLayout,
+  ColumnSpaceAround,
+  ColumnSpaceBetween,
+  Gap,
+  Height,
+  Line,
+  LongBar,
+  NoWrap,
+  Padding,
+  PlusThin,
+  RowSpaceBetween,
+  ShortBar,
+  SingleBorder,
+  SpaceAround,
+  Start,
+  Width,
+  Wrap
+} from '@/components/icon';
+import classNames from 'classnames';
+import { JSX } from 'react/jsx-runtime';
 
 export interface IStyleFormProps {
   config?: {
@@ -15,6 +42,8 @@ export interface IStyleFormProps {
 
 export default function StyleForm({ onChange, value, config }: IStyleFormProps) {
   const [form] = useForm();
+
+  const [valueState, setValueState] = useState<CSSProperties>({});
 
   const styleNames = [
     'width',
@@ -74,7 +103,14 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
 
   useEffect(() => {
     form.setFieldsValue(value);
+    setValueState({ ...value });
   }, [value]);
+
+  useEffect(() => {
+    if (onChange && isDifferent(valueState, value)) {
+      onChange(valueState);
+    }
+  }, [valueState]);
 
   const styleConfig = useMemo(() => {
     if (config && Object.keys(config).length > 0) {
@@ -142,13 +178,265 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     });
   }
 
+  function handleChangeStyle(value: number | string, key: string) {
+    const newValueState = {
+      ...valueState,
+      [key]: value
+    };
+    setValueState(newValueState);
+  }
+
+  function renderLayoutAdjustment() {
+    const { direction } = valueState;
+    let tpl: JSX.Element;
+    if ((direction as string) === 'row') {
+      tpl = (
+        <>
+          <Start />
+          <RowSpaceBetween />
+          <SpaceAround />
+          <ColumnSpaceBetween />
+        </>
+      );
+    } else {
+      tpl = (
+        <>
+          <ColumnLayout />
+          <ColumnSpaceAround />
+        </>
+      );
+    }
+    return <div className={styles.row}>{tpl}</div>;
+  }
+
+  function isStart(key: string) {
+    return valueState[key] === 'start' || valueState[key] === 'flex-start';
+  }
+
+  function isEnd(key: string) {
+    return valueState[key] === 'end' || valueState[key] === 'flex-end';
+  }
+
+  function isCenter(key: string) {
+    return valueState[key] === 'center';
+  }
+
+  function renderAlignmentPreview(direction: 'row' | 'column') {
+    const alignmentClass = classNames({
+      [styles.rDiagonal180]: direction === 'column',
+      [styles.alignmentGrid]: true
+    });
+
+    return (
+      <div className={alignmentClass}>
+        {isStart('alignItems') && isStart('justifyContent') ? <AlignStart /> : <div className={styles.dot} />}
+        {isStart('alignItems') && isCenter('justifyContent') ? <AlignStart /> : <div className={styles.dot} />}
+        {isStart('alignItems') && isEnd('justifyContent') ? <AlignStart /> : <div className={styles.dot} />}
+        {isCenter('alignItems') && isStart('justifyContent') ? <AlignCenter /> : <div className={styles.dot} />}
+        {isCenter('alignItems') && isCenter('justifyContent') ? <AlignCenter /> : <div className={styles.dot} />}
+        {isCenter('alignItems') && isEnd('justifyContent') ? <AlignCenter /> : <div className={styles.dot} />}
+        {isEnd('alignItems') && isStart('justifyContent') ? (
+          <AlignStart className={styles.alignEnd} />
+        ) : (
+          <div className={styles.dot} />
+        )}
+        {isEnd('alignItems') && isCenter('justifyContent') ? (
+          <AlignStart className={styles.alignEnd} />
+        ) : (
+          <div className={styles.dot} />
+        )}
+        {isEnd('alignItems') && isEnd('justifyContent') ? (
+          <AlignStart className={styles.alignEnd} />
+        ) : (
+          <div className={styles.dot} />
+        )}
+      </div>
+    );
+  }
+
+  function handleSwitchAlignment() {
+    // TODO
+  }
+
+  function renderSpaceAssignmentPreview(direction: 'row' | 'column') {
+    const alignmentClass = classNames({
+      [styles.rDiagonal180]: direction === 'column',
+      [styles.alignmentGrid]: true
+    });
+
+    return (
+      <div className={alignmentClass}>
+        {isStart('alignItems') ? <LongBar /> : <div className={styles.dot} />}
+        {isStart('alignItems') ? <ShortBar /> : <div className={styles.dot} />}
+        {isStart('alignItems') ? <LongBar /> : <div className={styles.dot} />}
+        {isCenter('alignItems') ? <LongBar /> : <div className={styles.dot} />}
+        {isCenter('alignItems') ? <ShortBar /> : <div className={styles.dot} />}
+        {isCenter('alignItems') ? <LongBar /> : <div className={styles.dot} />}
+        {isEnd('alignItems') ? <LongBar /> : <div className={styles.dot} />}
+        {isEnd('alignItems') ? <ShortBar /> : <div className={styles.dot} />}
+        {isEnd('alignItems') ? <LongBar /> : <div className={styles.dot} />}
+      </div>
+    );
+  }
+
+  function renderLayout() {
+    if (!config.layout) {
+      return null;
+    }
+
+    const { alignItems, direction } = valueState;
+
+    return (
+      <div className={styles.m12}>
+        <h3 className={styles.title}>布局</h3>
+        <div className={styles.body}>
+          <div className={styles.row}>
+            <NumberInput
+              value={value.width as number}
+              icon={<Width />}
+              onChange={data => handleChangeStyle(data, 'width')}
+            />
+            <NumberInput
+              value={value.height as number}
+              icon={<Height />}
+              onChange={data => handleChangeStyle(data, 'height')}
+            />
+          </div>
+          <div className={styles.row}>
+            <div className={styles.left}>
+              <div className={styles.row}>
+                {renderDirectionSwitch()}
+                <Divider type="vertical" style={{ height: 8, borderRadius: 0.5 }} />
+                {renderWrapSwitch()}
+              </div>
+              {renderLayoutAdjustment()}
+            </div>
+            <div className={styles.right}>
+              {isStart('justifyContent')
+                ? renderAlignmentPreview(direction as 'row' | 'column')
+                : renderSpaceAssignmentPreview(direction as 'row' | 'column')}
+            </div>
+          </div>
+          <div className={styles.row}>
+            <NumberInput icon={<Gap />} />
+            <NumberInput icon={<Gap className={styles.r90} />} />
+          </div>
+          <div className={styles.row}>
+            <NumberInput icon={<Padding />} />
+            <NumberInput icon={<Padding className={styles.r90} />} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function handleSwitchDirection() {
+    const newValueState = {
+      ...valueState,
+      direction: ((valueState.direction as string) === 'row' ? 'column' : 'row') as any
+    };
+    setValueState(newValueState);
+  }
+
+  function handleSwitchWrap() {
+    const newValueState = {
+      ...valueState,
+      wrap: ((valueState.flexWrap as string) === 'wrap' ? 'noWrap' : 'wrap') as any
+    };
+    setValueState(newValueState);
+  }
+
+  function renderDirectionSwitch() {
+    return (
+      <div className={styles.row}>
+        <Arrow onClick={handleSwitchDirection} /> <Arrow />
+      </div>
+    );
+  }
+
+  function renderWrapSwitch() {
+    return (
+      <div className={styles.row}>
+        <Wrap onClick={handleSwitchWrap} />
+        <NoWrap />
+      </div>
+    );
+  }
+
+  function renderFill() {
+    if (!config.fill) {
+      return null;
+    }
+    return (
+      <div className={styles.m12}>
+        <div className={styles.row}>
+          <h3 className={styles.title}>填充</h3>
+          <PlusThin />
+          <Line />
+        </div>
+        <div className={styles.bodySingle}></div>
+      </div>
+    );
+  }
+
+  function renderBorder() {
+    if (!config.border) {
+      return null;
+    }
+    return (
+      <div className={styles.m12}>
+        <div className={styles.row}>
+          <h3 className={styles.title}>线框</h3>
+          <PlusThin />
+        </div>
+        <div className={styles.body}>
+          <div className={styles.row}>{/*{ TODO: 渲染选择器 }*/}</div>
+          <div className={styles.row}>
+            <Border2 />
+            <SingleBorder />
+            <SingleBorder className={styles.r90} />
+            <SingleBorder className={styles.r180} />
+            <SingleBorder className={styles.r270} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function renderShadow() {
+    if (!config.shadow) {
+      return null;
+    }
+    return (
+      <div className={styles.m12}>
+        <h3 className={styles.title}>阴影</h3>
+        <div className={styles.bodySingle}></div>
+      </div>
+    );
+  }
+
+  function renderText() {
+    if (!config.text) {
+      return null;
+    }
+    return (
+      <div className={styles.m12}>
+        <h3 className={styles.title}>文字</h3>
+        <div className={styles.body} style={{ border: 'none' }}></div>
+      </div>
+    );
+  }
+
   return (
     <div>
-      123
-      <RoundedCorner />
-      <Form form={form} onValuesChange={handleChangingStyle}>
-        {renderFormItems()}
-      </Form>
+      {/*<Form form={form} onValuesChange={handleChangingStyle}>*/}
+      {/*  {renderFormItems()}*/}
+      {/*</Form>*/}
+      {renderLayout()}
+      {renderFill()}
+      {renderBorder()}
+      {renderShadow()}
+      {renderText()}
     </div>
   );
 }

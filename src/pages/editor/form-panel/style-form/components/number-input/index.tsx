@@ -1,20 +1,29 @@
 import { InputNumber } from 'antd';
-import { useState } from 'react';
+import { ReactNode } from 'react';
 
 export interface INumberInputProps {
-  onChange: (data: number) => void;
-  value: number;
+  icon?: ReactNode;
+  onChange?: (data: number) => void;
+  value?: number;
 }
 
-export default function NumberInput({ value, onChange }: INumberInputProps) {
-  const [internalValue, setInternalValue] = useState<number>();
-
+export default function NumberInput({ value, onChange, icon }: INumberInputProps) {
   function handleChanging(e: any) {
-    debugger;
     if (onChange) {
       onChange(e.target.value);
     }
   }
 
-  return <InputNumber value={value} onPressEnter={handleChanging} onBlur={handleChanging} onStep={handleChanging} />;
+  return (
+    <InputNumber
+      prefix={icon}
+      value={value}
+      onPressEnter={handleChanging}
+      onBlur={handleChanging}
+      onStep={handleChanging}
+      min={1}
+      max={1280}
+      bordered={false}
+    />
+  );
 }

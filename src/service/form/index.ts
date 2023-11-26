@@ -20,7 +20,12 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
           width: true,
           height: true,
           fontSize: true,
-          fontWeight: true
+          fontWeight: true,
+          layout: {},
+          fill: {},
+          border: {},
+          text: {},
+          shadow: {}
         },
         basic: {
           type: {
