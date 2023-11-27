@@ -199,20 +199,26 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
   function renderLayoutAdjustment() {
     const { direction } = valueState;
     let tpl: JSX.Element;
+
+    const iconClass = classNames({
+      [styles.icon]: true,
+      [styles.f20]: true
+    });
+
     if ((direction as string) === 'row') {
       tpl = (
         <>
-          <Start />
-          <RowSpaceBetween />
-          <SpaceAround />
-          <ColumnSpaceBetween />
+          <Start className={styles.icon} />
+          <RowSpaceBetween className={styles.icon} />
+          <SpaceAround className={styles.icon} />
+          <ColumnSpaceBetween className={styles.icon} />
         </>
       );
     } else {
       tpl = (
         <>
-          <ColumnLayout className={styles.f20} />
-          <ColumnSpaceAround className={styles.f20} />
+          <ColumnLayout className={iconClass} />
+          <ColumnSpaceAround className={iconClass} />
         </>
       );
     }
@@ -237,26 +243,55 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       [styles.alignmentGrid]: true
     });
 
+    const iconClass = classNames({
+      [styles.icon]: true,
+      [styles.alignEnd]: true
+    });
+
     return (
       <div className={alignmentClass}>
-        {isStart('alignItems') && isStart('justifyContent') ? <AlignStart /> : <div className={styles.dot} />}
-        {isStart('alignItems') && isCenter('justifyContent') ? <AlignStart /> : <div className={styles.dot} />}
-        {isStart('alignItems') && isEnd('justifyContent') ? <AlignStart /> : <div className={styles.dot} />}
-        {isCenter('alignItems') && isStart('justifyContent') ? <AlignCenter /> : <div className={styles.dot} />}
-        {isCenter('alignItems') && isCenter('justifyContent') ? <AlignCenter /> : <div className={styles.dot} />}
-        {isCenter('alignItems') && isEnd('justifyContent') ? <AlignCenter /> : <div className={styles.dot} />}
+        {isStart('alignItems') && isStart('justifyContent') ? (
+          <AlignStart className={styles.icon} />
+        ) : (
+          <div className={styles.dot} />
+        )}
+        {isStart('alignItems') && isCenter('justifyContent') ? (
+          <AlignStart className={styles.icon} />
+        ) : (
+          <div className={styles.dot} />
+        )}
+        {isStart('alignItems') && isEnd('justifyContent') ? (
+          <AlignStart className={styles.icon} />
+        ) : (
+          <div className={styles.dot} />
+        )}
+        {isCenter('alignItems') && isStart('justifyContent') ? (
+          <AlignCenter className={styles.icon} />
+        ) : (
+          <div className={styles.dot} />
+        )}
+        {isCenter('alignItems') && isCenter('justifyContent') ? (
+          <AlignCenter className={styles.icon} />
+        ) : (
+          <div className={styles.dot} />
+        )}
+        {isCenter('alignItems') && isEnd('justifyContent') ? (
+          <AlignCenter className={styles.icon} />
+        ) : (
+          <div className={styles.dot} />
+        )}
         {isEnd('alignItems') && isStart('justifyContent') ? (
-          <AlignStart className={styles.alignEnd} />
+          <AlignStart className={iconClass} />
         ) : (
           <div className={styles.dot} />
         )}
         {isEnd('alignItems') && isCenter('justifyContent') ? (
-          <AlignStart className={styles.alignEnd} />
+          <AlignStart className={iconClass} />
         ) : (
           <div className={styles.dot} />
         )}
         {isEnd('alignItems') && isEnd('justifyContent') ? (
-          <AlignStart className={styles.alignEnd} />
+          <AlignStart className={iconClass} />
         ) : (
           <div className={styles.dot} />
         )}
@@ -276,15 +311,15 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
 
     return (
       <div className={alignmentClass}>
-        {isStart('alignItems') ? <LongBar /> : <div className={styles.dot} />}
-        {isStart('alignItems') ? <ShortBar /> : <div className={styles.dot} />}
-        {isStart('alignItems') ? <LongBar /> : <div className={styles.dot} />}
-        {isCenter('alignItems') ? <LongBar /> : <div className={styles.dot} />}
-        {isCenter('alignItems') ? <ShortBar /> : <div className={styles.dot} />}
-        {isCenter('alignItems') ? <LongBar /> : <div className={styles.dot} />}
-        {isEnd('alignItems') ? <LongBar /> : <div className={styles.dot} />}
-        {isEnd('alignItems') ? <ShortBar /> : <div className={styles.dot} />}
-        {isEnd('alignItems') ? <LongBar /> : <div className={styles.dot} />}
+        {isStart('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+        {isStart('alignItems') ? <ShortBar className={styles.icon} /> : <div className={styles.dot} />}
+        {isStart('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+        {isCenter('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+        {isCenter('alignItems') ? <ShortBar className={styles.icon} /> : <div className={styles.dot} />}
+        {isCenter('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+        {isEnd('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+        {isEnd('alignItems') ? <ShortBar className={styles.icon} /> : <div className={styles.dot} />}
+        {isEnd('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
       </div>
     );
   }
@@ -294,7 +329,12 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       return null;
     }
 
-    const { alignItems, direction } = valueState;
+    const { direction } = valueState;
+
+    const iconClass = classNames({
+      [styles.r90]: true,
+      [styles.icon]: true
+    });
 
     return (
       <div className={styles.m12}>
@@ -312,11 +352,11 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
               onChange={data => handleChangeStyle(data, 'height')}
             />
           </div>
-          <div className={styles.row}>
+          <div className={styles.row} style={{ height: 'auto' }}>
             <div className={styles.left}>
               <div className={styles.row}>
                 {renderDirectionSwitch()}
-                <Divider type="vertical" style={{ height: 8, borderRadius: 0.5 }} />
+                <Divider type="vertical" style={{ height: 8, borderRadius: 0.5, margin: 0 }} />
                 {renderWrapSwitch()}
               </div>
               {renderLayoutAdjustment()}
@@ -328,12 +368,12 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
             </div>
           </div>
           <div className={styles.row}>
-            <NumberInput icon={<Gap />} />
-            <NumberInput icon={<Gap className={styles.r90} />} />
+            <NumberInput icon={<Gap className={styles.icon} />} />
+            <NumberInput icon={<Gap className={iconClass} />} />
           </div>
           <div className={styles.row}>
-            <NumberInput icon={<Padding />} />
-            <NumberInput icon={<Padding className={styles.r90} />} />
+            <NumberInput icon={<Padding className={styles.icon} />} />
+            <NumberInput icon={<Padding className={iconClass} />} />
           </div>
         </div>
       </div>
@@ -359,10 +399,12 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
   function renderDirectionSwitch() {
     const { direction } = valueState;
     const rowSelectedClass = classNames({
-      [styles.iconSelected]: (direction as string) === 'row'
+      [styles.iconSelected]: (direction as string) === 'row',
+      [styles.icon]: true
     });
     const columnSelectedClass = classNames({
       [styles.iconSelected]: (direction as string) === 'column',
+      [styles.icon]: true,
       [styles.r90]: true
     });
     return (
@@ -373,10 +415,14 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
   }
 
   function renderWrapSwitch() {
+    const iconClass = classNames({
+      [styles.icon]: true,
+      [styles.f20]: true
+    });
     return (
       <div className={styles.row}>
-        <Wrap onClick={handleSwitchWrap} />
-        <NoWrap />
+        <Wrap className={iconClass} onClick={handleSwitchWrap} />
+        <NoWrap className={iconClass} />
       </div>
     );
   }
@@ -389,8 +435,8 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       <div className={styles.m12}>
         <div className={styles.row}>
           <h3 className={styles.title}>填充</h3>
-          <PlusThin />
-          <Line />
+          <PlusThin className={styles.icon} />
+          <Line className={styles.icon} />
         </div>
         <div className={styles.bodySingle}></div>
       </div>
@@ -405,21 +451,21 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       <div className={styles.m12}>
         <div className={styles.row}>
           <h3 className={styles.title}>线框</h3>
-          <PlusThin />
+          <PlusThin className={styles.icon} />
         </div>
         <div className={styles.body}>
           <div className={styles.row}>{/*{ TODO: 渲染选择器 }*/}</div>
-          <div className={styles.row}>
-            <Border2 />
-            <SingleBorder />
-            <SingleBorder className={styles.r90} />
-            <SingleBorder className={styles.r180} />
-            <SingleBorder className={styles.r270} />
+          <div className={styles.borderContainer}>
+            <Border2 className={styles.icon} />
+            <SingleBorder className={styles.icon} />
+            <SingleBorder className={classNames({ [styles.r90]: true, [styles.icon]: true })} />
+            <SingleBorder className={classNames({ [styles.r180]: true, [styles.icon]: true })} />
+            <SingleBorder className={classNames({ [styles.r270]: true, [styles.icon]: true })} />
           </div>
           <div className={styles.row}>
             <NumberInput icon={<Thickness />} />
-            <Line />
-            <DashedLine />
+            <Line className={styles.icon} />
+            <DashedLine className={styles.icon} />
           </div>
         </div>
       </div>
@@ -445,16 +491,21 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     return (
       <div className={styles.m12}>
         <h3 className={styles.title}>文字</h3>
-        <div className={styles.body} style={{ border: 'none' }}>
-          <TextAlignLeft />
-          <TextAlignCenter />
-          <TextAlignRight />
-          <TextAlignJustify />
-          <Divider style={{ height: 8, borderRadius: 0.5 }} type="vertical" />
-          <Bold />
-          <Italian />
-          <LineThrough />
-          <UnderLine />
+        <div className={styles.body}>
+          <div
+            className={classNames({ [styles.row]: true, [styles.textBtnBar]: true })}
+            style={{ border: 'none', gap: 12 }}
+          >
+            <TextAlignLeft className={styles.icon} />
+            <TextAlignCenter className={styles.icon} />
+            <TextAlignRight className={styles.icon} />
+            <TextAlignJustify className={styles.icon} />
+            <Divider style={{ height: 8, borderRadius: 0.5, margin: 0 }} type="vertical" />
+            <Bold className={styles.icon} />
+            <Italian className={styles.icon} />
+            <LineThrough className={styles.icon} />
+            <UnderLine className={styles.icon} />
+          </div>
         </div>
       </div>
     );

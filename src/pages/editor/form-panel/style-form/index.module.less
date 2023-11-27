@@ -13,12 +13,12 @@
   align-items: stretch;
   gap: 12px;
   margin: 8px 12px;
-  border-bottom: 1px solid #f1f2f3;
 }
 
 .row {
   display: flex;
   align-items: center;
+  height: 24px;
   gap: 24px;
 }
 
@@ -28,6 +28,7 @@
 
 .m12 {
   margin: 12px 0;
+  border-bottom: 1px solid #f1f2f3;
 }
 
 .m18 {
@@ -89,7 +90,44 @@
 }
 
 .f20 {
-  &:before {
+  font-size: 20px;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.icon {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 20px;
+  width: 20px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 16px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #F6F7F8;
+  }
+}
+
+.textBtnBar {
+  .icon {
+    font-size: 20px;
+    &.selected {
+      color: #1A4BFF;
+      background-color: #fff;
+    }
+  }
+}
+
+.borderContainer {
+  .row();
+  .icon {
     font-size: 20px;
   }
 }
