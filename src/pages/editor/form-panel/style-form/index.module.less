@@ -36,12 +36,15 @@
 }
 
 .alignmentGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 2.4px;
-  height: 66px;
+  display: flex;
   width: 66px;
+  height: 66px;
+  padding: 4px;
+  justify-content: space-between;
+  align-items: flex-start;
+  align-content: flex-start;
+  row-gap: 2px;
+  flex-wrap: wrap;
   border: 1.2px solid #f1f2f3;
   border-radius: 4.8px;
 }
