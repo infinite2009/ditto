@@ -99,7 +99,7 @@ export function Arrow({ style, className, onClick, disabled }: IIconProps) {
     () =>
       classNames({
         [className]: !!className,
-        [styles['icon-jiantou1']]: true
+        [styles['icon-jiantou']]: true
       }),
     [className]
   );
