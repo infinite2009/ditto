@@ -1,11 +1,11 @@
 import { ColorPicker, Divider, Form, Input, InputNumber, Select, Switch } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { CSSProperties, FC, useEffect, useMemo, useState } from 'react';
+import classNames from 'classnames';
 import { isDifferent, typeOf } from '@/util';
 import { FormItemSchema } from '@/types/form-config';
-
-import styles from './index.module.less';
 import NumberInput from '@/pages/editor/form-panel/style-form/components/number-input';
+
 import {
   AlignCenter,
   AlignStart,
@@ -39,8 +39,8 @@ import {
   Width,
   Wrap
 } from '@/components/icon';
-import classNames from 'classnames';
-import { JSX } from 'react/jsx-runtime';
+
+import styles from './index.module.less';
 
 export interface IStyleFormProps {
   config?: {
@@ -211,8 +211,8 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     } else {
       tpl = (
         <>
-          <ColumnLayout />
-          <ColumnSpaceAround />
+          <ColumnLayout className={styles.f20} />
+          <ColumnSpaceAround className={styles.f20} />
         </>
       );
     }
@@ -357,9 +357,17 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
   }
 
   function renderDirectionSwitch() {
+    const { direction } = valueState;
+    const rowSelectedClass = classNames({
+      [styles.iconSelected]: (direction as string) === 'row'
+    });
+    const columnSelectedClass = classNames({
+      [styles.iconSelected]: (direction as string) === 'column',
+      [styles.r90]: true
+    });
     return (
       <div className={styles.row}>
-        <Arrow onClick={handleSwitchDirection} /> <Arrow />
+        <Arrow className={rowSelectedClass} onClick={handleSwitchDirection} /> <Arrow className={columnSelectedClass} />
       </div>
     );
   }
