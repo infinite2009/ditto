@@ -15,8 +15,11 @@ import {
   ColumnLayout,
   ColumnSpaceAround,
   ColumnSpaceBetween,
+  Compact,
   DashedLine,
+  Fixed,
   Gap,
+  Grow,
   Height,
   Italian,
   Line,
@@ -124,6 +127,17 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     if (onChange && isDifferent(valueState, value)) {
       onChange(valueState);
     }
+  }, [valueState]);
+
+  const widthSizeMode = useMemo(() => {
+    const { flexGrow, flexBasis, width } = valueState;
+    if (flexGrow > 0) {
+      return 'fill';
+    }
+    if (width > 0 && flexBasis > 0) {
+      return 'fixed';
+    }
+    return 'hug';
   }, [valueState]);
 
   const styleConfig = useMemo(() => {
@@ -328,6 +342,22 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     );
   }
 
+  function handleSelectingWidthSizeMode(val: string) {
+    switch (val) {
+      case 'fill':
+        setValueState({
+          ...valueState,
+          flexGrow: 1
+        });
+        break;
+      case 'fixed':
+        setValueState({
+          ...valueState
+        });
+        break;
+    }
+  }
+
   function renderLayout() {
     if (!config.layout) {
       return null;
@@ -356,6 +386,62 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
               value={value.height as number}
               icon={<Height />}
               onChange={data => handleChangeStyle(data, 'height')}
+            />
+          </div>
+          <div className={styles.sizeSelector}>
+            <Select
+              bordered={false}
+              value={widthSizeMode}
+              optionLabelProp="tag"
+              popupMatchSelectWidth={false}
+              onSelect={handleSelectingWidthSizeMode}
+              options={[
+                {
+                  value: 'fill',
+                  label: (
+                    <div className={styles.option}>
+                      <Grow />
+                      <span>Fill·撑满容器宽度</span>
+                    </div>
+                  ),
+                  tag: (
+                    <span>
+                      <Grow />
+                      Fill
+                    </span>
+                  )
+                },
+                {
+                  value: 'fixed',
+                  label: (
+                    <div className={styles.option}>
+                      <Fixed />
+                      <span>Fixed·固定宽度</span>
+                    </div>
+                  ),
+                  tag: (
+                    <span>
+                      <Fixed />
+                      Fixed
+                    </span>
+                  )
+                },
+                {
+                  value: 'hug',
+                  label: (
+                    <div className={styles.option}>
+                      <Compact />
+                      <span>Hug·紧凑内容</span>
+                    </div>
+                  ),
+                  tag: (
+                    <span>
+                      <Compact />
+                      Hug
+                    </span>
+                  )
+                }
+              ]}
             />
           </div>
           <div className={styles.row} style={{ height: 'auto' }}>
