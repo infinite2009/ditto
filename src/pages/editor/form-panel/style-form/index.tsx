@@ -349,7 +349,7 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
           <div className={styles.row}>
             <NumberInput
               value={value.width as number}
-              icon={<Width />}
+              icon={<Width className={styles.numberIcon} />}
               onChange={data => handleChangeStyle(data, 'width')}
             />
             <NumberInput
