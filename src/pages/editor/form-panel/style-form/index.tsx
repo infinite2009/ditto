@@ -492,10 +492,7 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       <div className={styles.m12}>
         <h3 className={styles.title}>文字</h3>
         <div className={styles.body}>
-          <div
-            className={classNames({ [styles.row]: true, [styles.textBtnBar]: true })}
-            style={{ border: 'none', gap: 12 }}
-          >
+          <div className={styles.textBtnBar}>
             <TextAlignLeft className={styles.icon} />
             <TextAlignCenter className={styles.icon} />
             <TextAlignRight className={styles.icon} />
