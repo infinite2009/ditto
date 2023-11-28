@@ -1,9 +1,9 @@
 .title {
-  margin: 4px 12px;
+  padding: 4px;
   font-family: PingFang SC;
   font-size: 12px;
   font-weight: 500;
-  line-height: 16px;
+  line-height: 24px;
   color: #18191c;
 }
 
@@ -26,8 +26,8 @@
   margin: 8px 0;
 }
 
-.m12 {
-  margin: 12px 0;
+.p12 {
+  padding: 12px 0;
   border-bottom: 1px solid #f1f2f3;
 }
 
@@ -146,4 +146,19 @@
   .icon {
     font-size: 20px;
   }
+}
+
+.lineContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-grow: 1;
+  margin: 0 12px 0 8px;
 }

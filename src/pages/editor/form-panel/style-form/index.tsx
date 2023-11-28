@@ -1,7 +1,7 @@
 import { ColorPicker, Divider, Form, Input, InputNumber, Select, Switch } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { CSSProperties, FC, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
+import { CSSProperties, FC, useEffect, useMemo, useState } from 'react';
 import { isDifferent, typeOf } from '@/util';
 import { FormItemSchema } from '@/types/form-config';
 import NumberInput from '@/pages/editor/form-panel/style-form/components/number-input';
@@ -51,6 +51,10 @@ export interface IStyleFormProps {
 }
 
 export default function StyleForm({ onChange, value, config }: IStyleFormProps) {
+  const [fillVisible, setFillVisible] = useState<boolean>();
+  const [borderVisible, setBorderVisible] = useState<boolean>();
+  const [shadowVisible, setShadowVisible] = useState<boolean>(false);
+
   const [form] = useForm();
 
   const [valueState, setValueState] = useState<CSSProperties>({});
@@ -337,8 +341,10 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     });
 
     return (
-      <div className={styles.m12}>
-        <h3 className={styles.title}>布局</h3>
+      <div className={styles.p12}>
+        <div className={styles.titleWrapper}>
+          <h3 className={styles.title}>布局</h3>
+        </div>
         <div className={styles.body}>
           <div className={styles.row}>
             <NumberInput
@@ -432,11 +438,13 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       return null;
     }
     return (
-      <div className={styles.m12}>
+      <div className={styles.p12}>
         <div className={styles.row}>
-          <h3 className={styles.title}>填充</h3>
-          <PlusThin className={styles.icon} />
-          <Line className={styles.icon} />
+          <div className={styles.titleWrapper}>
+            <h3 className={styles.title}>填充</h3>
+            <PlusThin className={styles.icon} />
+          </div>
+          {/*<Line className={styles.icon} />*/}
         </div>
         <div className={styles.bodySingle}></div>
       </div>
@@ -448,10 +456,12 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       return null;
     }
     return (
-      <div className={styles.m12}>
+      <div className={styles.p12}>
         <div className={styles.row}>
-          <h3 className={styles.title}>线框</h3>
-          <PlusThin className={styles.icon} />
+          <div className={styles.titleWrapper}>
+            <h3 className={styles.title}>线框</h3>
+            <PlusThin className={styles.icon} />
+          </div>
         </div>
         <div className={styles.body}>
           <div className={styles.row}>{/*{ TODO: 渲染选择器 }*/}</div>
@@ -464,8 +474,10 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
           </div>
           <div className={styles.row}>
             <NumberInput icon={<Thickness />} />
-            <Line className={styles.icon} />
-            <DashedLine className={styles.icon} />
+            <div className={styles.lineContainer}>
+              <Line className={styles.icon} />
+              <DashedLine className={styles.icon} />
+            </div>
           </div>
         </div>
       </div>
@@ -477,8 +489,11 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       return null;
     }
     return (
-      <div className={styles.m12}>
-        <h3 className={styles.title}>阴影</h3>
+      <div className={styles.p12}>
+        <div className={styles.titleWrapper}>
+          <h3 className={styles.title}>阴影</h3>
+          <PlusThin className={styles.icon} />
+        </div>
         <div className={styles.bodySingle}></div>
       </div>
     );
@@ -489,8 +504,10 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       return null;
     }
     return (
-      <div className={styles.m12}>
-        <h3 className={styles.title}>文字</h3>
+      <div className={styles.p12}>
+        <div className={styles.titleWrapper}>
+          <h3 className={styles.title}>文字</h3>
+        </div>
         <div className={styles.body}>
           <div className={styles.textBtnBar}>
             <TextAlignLeft className={styles.icon} />
@@ -510,9 +527,6 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
 
   return (
     <div>
-      {/*<Form form={form} onValuesChange={handleChangingStyle}>*/}
-      {/*  {renderFormItems()}*/}
-      {/*</Form>*/}
       {renderLayout()}
       {renderFill()}
       {renderBorder()}
