@@ -433,22 +433,43 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     );
   }
 
+  function handleClickingFillExpandingBtn() {
+    // TODO: 初始化填充值
+    setFillVisible(true);
+  }
+
+  function handleClickingFillCollapseBtn() {
+    // TODO: 删除当前填充值
+    setFillVisible(false);
+  }
+
   function renderFill() {
     if (!config.fill) {
       return null;
     }
     return (
       <div className={styles.p12}>
-        <div className={styles.row}>
-          <div className={styles.titleWrapper}>
-            <h3 className={styles.title}>填充</h3>
-            <PlusThin className={styles.icon} />
-          </div>
-          {/*<Line className={styles.icon} />*/}
+        <div className={styles.titleWrapper}>
+          <h3 className={styles.title}>填充</h3>
+          {fillVisible ? null : <PlusThin className={styles.icon} onClick={handleClickingFillExpandingBtn} />}
         </div>
+        {fillVisible ? (
+          <div className={styles.fillContainer}>
+            <div>占位符</div>
+            <Line className={styles.deleteIcon} onClick={handleClickingFillCollapseBtn} />
+          </div>
+        ) : null}
         <div className={styles.bodySingle}></div>
       </div>
     );
+  }
+
+  function handleClickingBorderExpandingBtn() {
+    setBorderVisible(true);
+  }
+
+  function handleClickingBorderCollapseBtn() {
+    setBorderVisible(false);
   }
 
   function renderBorder() {
@@ -460,28 +481,43 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
         <div className={styles.row}>
           <div className={styles.titleWrapper}>
             <h3 className={styles.title}>线框</h3>
-            <PlusThin className={styles.icon} />
+            {borderVisible ? null : <PlusThin className={styles.icon} onClick={handleClickingBorderExpandingBtn} />}
           </div>
         </div>
-        <div className={styles.body}>
-          <div className={styles.row}>{/*{ TODO: 渲染选择器 }*/}</div>
+        {borderVisible ? (
           <div className={styles.borderContainer}>
-            <Border2 className={styles.icon} />
-            <SingleBorder className={styles.icon} />
-            <SingleBorder className={classNames({ [styles.r90]: true, [styles.icon]: true })} />
-            <SingleBorder className={classNames({ [styles.r180]: true, [styles.icon]: true })} />
-            <SingleBorder className={classNames({ [styles.r270]: true, [styles.icon]: true })} />
-          </div>
-          <div className={styles.row}>
-            <NumberInput icon={<Thickness />} />
-            <div className={styles.lineContainer}>
-              <Line className={styles.icon} />
-              <DashedLine className={styles.icon} />
+            <div>
+              <div className={styles.row}>占位符</div>
+              <div className={styles.borderBar}>
+                <Border2 className={styles.icon} />
+                <SingleBorder className={styles.icon} />
+                <SingleBorder className={classNames({ [styles.r90]: true, [styles.icon]: true })} />
+                <SingleBorder className={classNames({ [styles.r180]: true, [styles.icon]: true })} />
+                <SingleBorder className={classNames({ [styles.r270]: true, [styles.icon]: true })} />
+              </div>
+              <div className={styles.row}>
+                <NumberInput icon={<Thickness />} />
+                <div className={styles.lineContainer}>
+                  <Line className={styles.icon} />
+                  <DashedLine className={styles.icon} />
+                </div>
+              </div>
             </div>
+            <Line className={styles.deleteIcon} onClick={handleClickingBorderCollapseBtn} />
           </div>
-        </div>
+        ) : null}
       </div>
     );
+  }
+
+  function handleClickingShadowExpandingBtn() {
+    // TODO: 初始化阴影值
+    setShadowVisible(true);
+  }
+
+  function handleClickingShadowCollapsingBtn() {
+    // TODO: 初始化阴影值
+    setShadowVisible(false);
   }
 
   function renderShadow() {
@@ -492,9 +528,14 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       <div className={styles.p12}>
         <div className={styles.titleWrapper}>
           <h3 className={styles.title}>阴影</h3>
-          <PlusThin className={styles.icon} />
+          {shadowVisible ? null : <PlusThin className={styles.icon} onClick={handleClickingShadowExpandingBtn} />}
         </div>
-        <div className={styles.bodySingle}></div>
+        {shadowVisible ? (
+          <div className={styles.shadowContainer}>
+            <div>占位符</div>
+            <Line className={styles.deleteIcon} onClick={handleClickingShadowCollapsingBtn} />
+          </div>
+        ) : null}
       </div>
     );
   }
