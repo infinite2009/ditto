@@ -61,7 +61,18 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     name: string;
     value: string;
   }>();
-
+  const [borderColorObj, setBorderColorObj] = useState<{
+    name: string;
+    value: string;
+  }>();
+  const [shadowObj, setShadowObj] = useState<{
+    name: string;
+    value: string;
+  }>();
+  const [textColorObj, setTextColorObj] = useState<{
+    name: string;
+    value: string;
+  }>();
 
   const [form] = useForm();
 
@@ -882,6 +893,22 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     );
   }
 
+  function handleSelectingFillColor(val: { name: string; value: string }) {
+    setFillColorObj(val);
+  }
+
+  function handleSelectingBorderColor(val: { name: string; value: string }) {
+    setBorderColorObj(val);
+  }
+
+  function handleSelectingShadow(val: { name: string; value: string }) {
+    setShadowObj(val);
+  }
+
+  function handleSelectingTextColor(val: { name: string; value: string }) {
+    setTextColorObj(val);
+  }
+
   function renderColorPalette(
     colors: {
       category: string;
@@ -901,7 +928,11 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
                 {group.data.map(item => {
                   return (
                     <Tooltip key={item.name} title={item.name}>
-                      <div className={styles.color} style={{ backgroundColor: item.value }} />
+                      <div
+                        className={styles.color}
+                        style={{ backgroundColor: item.value }}
+                        onClick={() => handleSelectingFillColor(item)}
+                      />
                     </Tooltip>
                   );
                 })}
