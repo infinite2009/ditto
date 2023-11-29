@@ -1,4 +1,4 @@
-import { ColorPicker, Divider, Form, Input, InputNumber, Select, Switch } from 'antd';
+import { ColorPicker, Divider, Form, Input, InputNumber, Popover, Select, Switch, Tooltip } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import classNames from 'classnames';
 import { CSSProperties, FC, useEffect, useMemo, useState } from 'react';
@@ -57,6 +57,8 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
   const [fillVisible, setFillVisible] = useState<boolean>();
   const [borderVisible, setBorderVisible] = useState<boolean>();
   const [shadowVisible, setShadowVisible] = useState<boolean>(false);
+  const [fillColorName, setFillColorName] = useState<string>();
+
 
   const [form] = useForm();
 
@@ -81,6 +83,109 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     'flexDirection',
     'flexWrap',
     'flexBasis'
+  ];
+
+  const indicatingColors = [
+    {
+      category: '主色',
+      data: [
+        {
+          name: '主色/colorPrimary',
+          value: '#00aeecff'
+        },
+        {
+          name: '主色/colorPrimaryHover',
+          value: '#00aeecbf'
+        },
+        {
+          name: '主色/colorPrimaryActive',
+          value: '#008ac5ff'
+        },
+        {
+          name: '主色/colorPrimaryDisabled',
+          value: '#00aeec80'
+        },
+        {
+          name: '主色/colorPrimaryHighlight',
+          value: '#00aeec14'
+        }
+      ]
+    },
+    {
+      category: '成功',
+      data: [
+        {
+          name: '成功/colorSuccess',
+          value: '#2ac864ff'
+        },
+        {
+          name: '成功/colorSuccessHover',
+          value: '#2ac864bf'
+        },
+        {
+          name: '成功/colorSuccessActive',
+          value: '#0eb350ff'
+        },
+        {
+          name: '成功/colorSuccessDisabled',
+          value: '#2ac864bf'
+        },
+        {
+          name: '成功/colorSuccessHighlight',
+          value: '#2ac86414'
+        }
+      ]
+    },
+    {
+      category: '警示',
+      data: [
+        {
+          name: '警示/colorWarning',
+          value: '#ff7f24ff'
+        },
+        {
+          name: '警示/colorWarningHover',
+          value: '#ff7f24bf'
+        },
+        {
+          name: '警示/colorWarningActive',
+          value: '#e95b03ff'
+        },
+        {
+          name: '警示/colorWarningDisabled',
+          value: '#ff7f2480'
+        },
+        {
+          name: '警示/colorWarningHighlight',
+          value: '#2ac86414'
+        }
+      ]
+    },
+    {
+      category: '错误',
+      data: [
+        {
+          name: '错误/colorError',
+          value: '#f85a54ff'
+        },
+        {
+          name: '错误/colorErrorHover',
+          value: '#f85a54bf'
+        },
+        {
+          name: '错误/colorErrorActive',
+          value: '#e23d3dff'
+        },
+        {
+          name: '错误/colorErrorDisabled',
+          value: '#f85a5480'
+        },
+        {
+          name: '错误/colorErrorHighlight',
+          value: '#f85a5414'
+        }
+      ]
+    }
   ];
 
   const defaultStyleConfig: Record<
@@ -572,6 +677,76 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     if (!config.fill) {
       return null;
     }
+
+    const colors = [
+      {
+        category: '背景',
+        data: [
+          {
+            name: '一级白色/colorBgBase',
+            value: 'rgb(255, 255, 255)'
+          },
+          {
+            name: '二级亮灰/colorBgBright',
+            value: 'rgb(246, 247, 248)'
+          },
+          {
+            name: '三级灰色/colorBgLight',
+            value: 'rgb(241, 242, 243)'
+          },
+          {
+            name: '灰色控件/colorBgWeak',
+            value: 'rgb(227, 229, 231)'
+          },
+          {
+            name: '雪白控件/colorBgSnow',
+            value: 'rgb(255, 255, 255)'
+          },
+          {
+            name: '绝对白色/colorBgWhite',
+            value: 'rgb(255, 255, 255)'
+          },
+          {
+            name: '凹陷的亮灰/colorBgSunkenBright',
+            value: 'rgb(246, 247, 248)'
+          },
+          {
+            name: '凹陷的灰色/colorBgSunkenLight',
+            value: 'rgb(241, 242, 243)'
+          },
+          {
+            name: '浮层一级/colorFloat',
+            value: 'rgb(246, 247, 248)'
+          },
+          {
+            name: '浮层二级/colorFloatSecondary',
+            value: 'rgb(246, 247, 248)'
+          },
+          {
+            name: '浮层三级/colorFloatTertiary',
+            value: 'rgb(246, 247, 248)'
+          },
+          {
+            name: '浮层深色/colorFloatDark',
+            value: 'rgb(246, 247, 248)'
+          },
+          {
+            name: '重遮罩/colorMaskBold',
+            value: 'rgb(246, 247, 248)'
+          },
+          {
+            name: '默认遮罩/colorMask',
+            value: 'rgb(246, 247, 248)'
+          },
+          {
+            name: '轻遮罩/colorMaskLight',
+            value: 'rgb(246, 247, 248)'
+          }
+        ]
+      },
+      ...indicatingColors
+    ];
+
     return (
       <div className={styles.p12}>
         <div className={styles.titleWrapper}>
@@ -580,7 +755,9 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
         </div>
         {fillVisible ? (
           <div className={styles.fillContainer}>
-            <div>占位符</div>
+            <Popover trigger={['click']} content={renderColorPalette(colors)} placement="leftTop" arrow={false}>
+              <div>{fillColorName || '请选择'}</div>
+            </Popover>
             <Line className={styles.deleteIcon} onClick={handleClickingFillCollapseBtn} />
           </div>
         ) : null}
@@ -649,6 +826,9 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     if (!config.shadow) {
       return null;
     }
+
+    const shadowOptTpl = <div>阴影选项占位符</div>;
+
     return (
       <div className={styles.p12}>
         <div className={styles.titleWrapper}>
@@ -657,7 +837,9 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
         </div>
         {shadowVisible ? (
           <div className={styles.shadowContainer}>
-            <div>占位符</div>
+            <Popover trigger={['click']} content={shadowOptTpl} placement="leftTop" arrow={false}>
+              <div>占位符</div>
+            </Popover>
             <Line className={styles.deleteIcon} onClick={handleClickingShadowCollapsingBtn} />
           </div>
         ) : null}
@@ -687,6 +869,37 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
             <UnderLine className={styles.icon} />
           </div>
         </div>
+      </div>
+    );
+  }
+
+  function renderColorPalette(
+    colors: {
+      category: string;
+      data: {
+        name: string;
+        value: string;
+      }[];
+    }[]
+  ) {
+    return (
+      <div className={styles.colorPalette}>
+        {colors.map(group => {
+          return (
+            <div key={group.category} className={styles.categoryContainer}>
+              <h3 className={styles.categoryTitle}>{group.category}</h3>
+              <div className={styles.colorContainer}>
+                {group.data.map(item => {
+                  return (
+                    <Tooltip key={item.name} title={item.name}>
+                      <div className={styles.color} style={{ backgroundColor: item.value }} />
+                    </Tooltip>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
       </div>
     );
   }
