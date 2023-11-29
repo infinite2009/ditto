@@ -223,13 +223,12 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       [styles.f20]: true
     });
 
-    if ((direction as string) === 'row') {
+    if ((direction as string) !== 'row') {
       tpl = (
         <>
-          <Start className={styles.icon} />
-          <RowSpaceBetween className={styles.icon} />
-          <SpaceAround className={styles.icon} />
-          <ColumnSpaceBetween className={styles.icon} />
+          <Start className={iconClass} />
+          <RowSpaceBetween className={iconClass} />
+          <SpaceAround className={iconClass} />
         </>
       );
     } else {
@@ -237,10 +236,11 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
         <>
           <ColumnLayout className={iconClass} />
           <ColumnSpaceAround className={iconClass} />
+          <ColumnSpaceBetween className={iconClass} />
         </>
       );
     }
-    return <div className={styles.row}>{tpl}</div>;
+    return <div className={styles.adjustmentContainer}>{tpl}</div>;
   }
 
   function isStart(key: string) {
@@ -511,10 +511,10 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     setValueState(newValueState);
   }
 
-  function handleSwitchWrap() {
+  function handleSwitchWrap(val: string) {
     const newValueState = {
       ...valueState,
-      wrap: ((valueState.flexWrap as string) === 'wrap' ? 'noWrap' : 'wrap') as any
+      wrap: val
     };
     setValueState(newValueState);
   }
@@ -531,21 +531,29 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       [styles.r90]: true
     });
     return (
-      <div className={styles.row}>
+      <div className={styles.directionContainer}>
         <Arrow className={rowSelectedClass} onClick={handleSwitchDirection} /> <Arrow className={columnSelectedClass} />
       </div>
     );
   }
 
   function renderWrapSwitch() {
-    const iconClass = classNames({
+    const { flexWrap } = valueState;
+    const wrapClass = classNames({
+      [styles.iconSelected]: (flexWrap as string) === 'wrap',
+      [styles.icon]: true,
+      [styles.f20]: true
+    });
+
+    const noWrapClass = classNames({
+      [styles.iconSelected]: flexWrap === 'nowrap',
       [styles.icon]: true,
       [styles.f20]: true
     });
     return (
-      <div className={styles.row}>
-        <Wrap className={iconClass} onClick={handleSwitchWrap} />
-        <NoWrap className={iconClass} />
+      <div className={styles.wrapContainer}>
+        <Wrap className={wrapClass} onClick={() => handleSwitchWrap('wrap')} />
+        <NoWrap className={noWrapClass} onClick={() => handleSwitchWrap('nowrap')} />
       </div>
     );
   }
