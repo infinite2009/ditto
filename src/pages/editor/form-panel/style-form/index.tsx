@@ -57,7 +57,10 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
   const [fillVisible, setFillVisible] = useState<boolean>();
   const [borderVisible, setBorderVisible] = useState<boolean>();
   const [shadowVisible, setShadowVisible] = useState<boolean>(false);
-  const [fillColorName, setFillColorName] = useState<string>();
+  const [fillColorObj, setFillColorObj] = useState<{
+    name: string;
+    value: string;
+  }>();
 
 
   const [form] = useForm();
@@ -756,7 +759,13 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
         {fillVisible ? (
           <div className={styles.fillContainer}>
             <Popover trigger={['click']} content={renderColorPalette(colors)} placement="leftTop" arrow={false}>
-              <div>{fillColorName || '请选择'}</div>
+              <div className={styles.colorResult}>
+                <div
+                  className={styles.color}
+                  style={{ height: 20, width: 20, backgroundColor: fillColorObj?.value || 'transparent' }}
+                />
+                <h3 className={styles.colorTitle}>{fillColorObj?.name || '请选择'}</h3>
+              </div>
             </Popover>
             <Line className={styles.deleteIcon} onClick={handleClickingFillCollapseBtn} />
           </div>
