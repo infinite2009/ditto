@@ -342,20 +342,41 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     );
   }
 
-  function handleSelectingWidthSizeMode(val: string) {
-    switch (val) {
-      case 'fill':
-        setValueState({
-          ...valueState,
-          flexGrow: 1
-        });
-        break;
-      case 'fixed':
-        setValueState({
-          ...valueState
-        });
-        break;
+  function handleSelectingSizeMode(val: string, type: 'width' | 'height') {
+    const { direction } = valueState;
+    const newValueState = { ...valueState };
+
+    if (val === 'fill') {
+      if ((direction as string) === 'row') {
+        if (type === 'width') {
+          newValueState.flexGrow = 1;
+        } else {
+          newValueState.alignSelf = 'stretch';
+        }
+      } else {
+        if (type === 'width') {
+          newValueState.alignSelf = 'stretch';
+        } else {
+          newValueState.flexGrow = 1;
+        }
+      }
+    } else {
+      if ((direction as string) === 'row') {
+        if (type === 'width') {
+          delete newValueState.flexGrow;
+        } else {
+          delete newValueState.alignSelf;
+        }
+      } else {
+        if (type === 'width') {
+          delete newValueState.alignSelf;
+        } else {
+          delete newValueState.flexGrow;
+        }
+      }
     }
+
+    setValueState(newValueState);
   }
 
   function renderLayout() {
@@ -369,6 +390,54 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       [styles.r90]: true,
       [styles.icon]: true
     });
+
+    const options = [
+      {
+        value: 'fill',
+        label: (
+          <div className={styles.option}>
+            <Grow />
+            <span>Fill·撑满容器宽度</span>
+          </div>
+        ),
+        tag: (
+          <span>
+            <Grow />
+            Fill
+          </span>
+        )
+      },
+      {
+        value: 'fixed',
+        label: (
+          <div className={styles.option}>
+            <Fixed />
+            <span>Fixed·固定宽度</span>
+          </div>
+        ),
+        tag: (
+          <span>
+            <Fixed />
+            Fixed
+          </span>
+        )
+      },
+      {
+        value: 'hug',
+        label: (
+          <div className={styles.option}>
+            <Compact />
+            <span>Hug·紧凑内容</span>
+          </div>
+        ),
+        tag: (
+          <span>
+            <Compact />
+            Hug
+          </span>
+        )
+      }
+    ];
 
     return (
       <div className={styles.p12}>
@@ -394,54 +463,16 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
               value={widthSizeMode}
               optionLabelProp="tag"
               popupMatchSelectWidth={false}
-              onSelect={handleSelectingWidthSizeMode}
-              options={[
-                {
-                  value: 'fill',
-                  label: (
-                    <div className={styles.option}>
-                      <Grow />
-                      <span>Fill·撑满容器宽度</span>
-                    </div>
-                  ),
-                  tag: (
-                    <span>
-                      <Grow />
-                      Fill
-                    </span>
-                  )
-                },
-                {
-                  value: 'fixed',
-                  label: (
-                    <div className={styles.option}>
-                      <Fixed />
-                      <span>Fixed·固定宽度</span>
-                    </div>
-                  ),
-                  tag: (
-                    <span>
-                      <Fixed />
-                      Fixed
-                    </span>
-                  )
-                },
-                {
-                  value: 'hug',
-                  label: (
-                    <div className={styles.option}>
-                      <Compact />
-                      <span>Hug·紧凑内容</span>
-                    </div>
-                  ),
-                  tag: (
-                    <span>
-                      <Compact />
-                      Hug
-                    </span>
-                  )
-                }
-              ]}
+              onSelect={(val: string) => handleSelectingSizeMode(val, 'width')}
+              options={options}
+            />
+            <Select
+              bordered={false}
+              value={widthSizeMode}
+              optionLabelProp="tag"
+              popupMatchSelectWidth={false}
+              onSelect={(val: string) => handleSelectingSizeMode(val, 'height')}
+              options={options}
             />
           </div>
           <div className={styles.row} style={{ height: 'auto' }}>
