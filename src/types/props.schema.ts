@@ -1,18 +1,18 @@
 import ISchema from '@/types/schema';
 
 export interface TemplateKeyPathsReg {
-  path: string;
-  type: 'object' | 'function';
-  // 循环渲染引用的prop，例如表格和列表是 dataSource
-  repeatPropRef?: string;
-  // 重复的类型：表格或者列表
-  repeatType?: 'list' | 'table';
   // 列索引变量名，对于 table 它是必需的，对于 list 它不是必需的，这个 key 的值为数据列的字段名，比如 age，name，gender 等
   columnKey?: string;
   // 数据的行索引变量名，常见的有 index，key，id 等，对于 list，只有行索引就可以了
   indexKey?: string;
   // 哪一个 render 的哪个参数是数据项
   itemIndexInArgs?: number;
+  path: string;
+  // 循环渲染引用的prop，例如表格和列表是 dataSource
+  repeatPropRef?: string;
+  // 重复的类型：表格或者列表
+  repeatType?: 'list' | 'table';
+  type: 'object' | 'function';
 }
 
 /**
@@ -21,10 +21,6 @@ export interface TemplateKeyPathsReg {
  * 之所以这么设计是为了让 dsl 读写效率更高，且 DSL 类型定义相对简洁一些
  */
 export default interface IPropsSchema extends ISchema {
-  // 如果是值，那么该属性变更时，可以用 useEffect 监听并做出响应。目前来说，对于一个组件，值属性最多支持一个
-  isValue?: boolean;
-  // 控制 UI 显隐性
-  isVisible?: boolean;
   // 属性类别
   category: 'basic' | 'style' | 'event' | 'data' | 'children';
   /**
@@ -37,19 +33,24 @@ export default interface IPropsSchema extends ISchema {
       [key: string]: 'basic' | 'style' | 'event' | 'data';
     };
   };
+  // 如果是值，那么该属性变更时，可以用 useEffect 监听并做出响应。目前来说，对于一个组件，值属性最多支持一个
+  isValue?: boolean;
+  // 控制 UI 显隐性
+  isVisible?: boolean;
+  // 属性的名字
+  name: string;
   /**
    * 模板字段路径，如果是空字符串，表明属性本身是就是模板对象
    * path 字段是正则表达式，即便是采用穷举的方式，也要使用正则表达式进行填充
    */
   templateKeyPathsReg?: TemplateKeyPathsReg[];
-
   // 属性的表单名称
   title: string;
-
-  // 属性的名字
-  name: string;
-  // 属性值的类型, 这个是组件要求的，它和 value 本身的类型不完全对等，比如 templateKeyPathsReg 为真时，valueType 即便是 function，value 的值也是对象
-  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object' | 'array';
+  /*
+   * 如果存在 keyPath，里边的对应值会变成 template 的引用
+   * 如果 valueSource 的值为 handler, 则 value 的值是一个 eventId
+   */
+  value: string | boolean | number | Record<string, any> | ((...params: any[]) => any) | any[] | undefined;
   /*
    * 这个值的来源
    * editorInput: 创建页面时编辑者输入的常量，会指导代码生成器生成常量声明和赋值代码，存入 const
@@ -60,9 +61,6 @@ export default interface IPropsSchema extends ISchema {
    * handler: 事件处理器，当用户为事件配置了相应后，会产生这个值
    */
   valueSource: 'editorInput' | 'httpRequest' | 'state' | 'userInput' | 'computed' | 'handler';
-  /*
-   * 如果存在 keyPath，里边的对应值会变成 template 的引用
-   * 如果 valueSource 的值为 handler, 则 value 的值是一个 eventId
-   */
-  value: string | boolean | number | Record<string, any> | ((...params: any[]) => any) | any[] | undefined;
+  // 属性值的类型, 这个是组件要求的，它和 value 本身的类型不完全对等，比如 templateKeyPathsReg 为真时，valueType 即便是 function，value 的值也是对象
+  valueType: 'string' | 'boolean' | 'number' | 'function' | 'object' | 'array';
 }
