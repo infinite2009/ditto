@@ -74,6 +74,12 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     value: string;
   }>();
 
+  const [textSizeObj, setTextSizeObj] = useState<{
+    fontSize: number;
+    lineHeight: string;
+    name: string;
+  }>();
+
   const [form] = useForm();
 
   const [valueState, setValueState] = useState<CSSProperties>({});
@@ -561,7 +567,7 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     return (
       <div className={styles.p12}>
         <div className={styles.titleWrapper}>
-          <h3 className={styles.title}>布局</h3>
+          <p className={styles.title}>布局</p>
         </div>
         <div className={styles.body}>
           <div className={styles.row}>
@@ -764,7 +770,7 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     return (
       <div className={styles.p12}>
         <div className={styles.titleWrapper}>
-          <h3 className={styles.title}>填充</h3>
+          <p className={styles.title}>填充</p>
           {fillVisible ? null : <PlusThin className={styles.icon} onClick={handleClickingFillExpandingBtn} />}
         </div>
         {fillVisible ? (
@@ -775,7 +781,7 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
                   className={styles.color}
                   style={{ height: 20, width: 20, backgroundColor: fillColorObj?.value || 'transparent' }}
                 />
-                <h3 className={styles.colorTitle}>{fillColorObj?.name || '请选择'}</h3>
+                <p className={styles.colorTitle}>{fillColorObj?.name || '请选择'}</p>
               </div>
             </Popover>
             <Line className={styles.deleteIcon} onClick={handleClickingFillCollapseBtn} />
@@ -798,18 +804,47 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     if (!config.border) {
       return null;
     }
+
+    const borderOpt = [
+      {
+        category: '',
+        data: [
+          {
+            value: 'rgb(201, 204, 208)',
+            name: '重线框/colorBorderBold'
+          },
+          {
+            value: 'rgb(227, 229, 231)',
+            name: '默认线框/colorBorder'
+          },
+          {
+            value: 'rgb(241, 242, 243)',
+            name: '浅线框/colorBorderLight'
+          }
+        ]
+      }
+    ];
+
     return (
       <div className={styles.p12}>
         <div className={styles.row}>
           <div className={styles.titleWrapper}>
-            <h3 className={styles.title}>线框</h3>
+            <p className={styles.title}>线框</p>
             {borderVisible ? null : <PlusThin className={styles.icon} onClick={handleClickingBorderExpandingBtn} />}
           </div>
         </div>
         {borderVisible ? (
           <div className={styles.borderContainer}>
             <div>
-              <div className={styles.row}>占位符</div>
+              <Popover trigger={['click']} content={renderColorPalette(borderOpt)} placement="leftTop" arrow={false}>
+                <div className={styles.colorResult}>
+                  <div
+                    className={styles.color}
+                    style={{ height: 20, width: 20, backgroundColor: borderColorObj?.value || 'transparent' }}
+                  />
+                  <p className={styles.colorTitle}>{borderColorObj?.name || '请选择'}</p>
+                </div>
+              </Popover>
               <div className={styles.borderBar}>
                 <Border2 className={styles.icon} />
                 <SingleBorder className={styles.icon} />
@@ -852,7 +887,7 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     return (
       <div className={styles.p12}>
         <div className={styles.titleWrapper}>
-          <h3 className={styles.title}>阴影</h3>
+          <p className={styles.title}>阴影</p>
           {shadowVisible ? null : <PlusThin className={styles.icon} onClick={handleClickingShadowExpandingBtn} />}
         </div>
         {shadowVisible ? (
@@ -871,12 +906,65 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     if (!config.text) {
       return null;
     }
+
+    const textOpt = [
+      {
+        category: '',
+        data: [
+          {
+            name: '一级色字符/colorSymbolBase',
+            value: 'rgb(24, 25, 28)'
+          },
+          {
+            name: '二级色字符/colorSymbolBold',
+            value: 'rgb(97, 102, 109)'
+          },
+          {
+            name: '三级色字符/colorSymbolMedium',
+            value: 'rgb(148, 153, 160)'
+          },
+          {
+            name: '四级色字符/colorSymbolLight',
+            value: 'rgb(201, 204, 208)'
+          },
+          {
+            name: '绝对白色字符/colorSymbolWhite',
+            value: 'rgb(255, 255, 255)'
+          },
+          {
+            name: '链接色/colorLink',
+            value: 'rgb(0, 105, 157)'
+          }
+        ]
+      }
+    ];
+
     return (
       <div className={styles.p12}>
         <div className={styles.titleWrapper}>
-          <h3 className={styles.title}>文字</h3>
+          <p className={styles.title}>文字</p>
         </div>
         <div className={styles.body}>
+          <Popover trigger={['click']} content={renderTextPalette()} placement="leftTop" arrow={false}>
+            <div className={styles.textSizeResult}>
+              <p
+                className={styles.text}
+                style={{ fontSize: textSizeObj?.fontSize || 12, lineHeight: textSizeObj?.lineHeight || '20px' }}
+              >
+                Ag
+              </p>
+              <p className={styles.colorTitle}>{textSizeObj?.name || '请选择'}</p>
+            </div>
+          </Popover>
+          <Popover trigger={['click']} content={renderColorPalette(textOpt)} placement="leftTop" arrow={false}>
+            <div className={styles.colorResult}>
+              <div
+                className={styles.color}
+                style={{ height: 20, width: 20, backgroundColor: borderColorObj?.value || 'transparent' }}
+              />
+              <p className={styles.colorTitle}>{borderColorObj?.name || '请选择'}</p>
+            </div>
+          </Popover>
           <div className={styles.textBtnBar}>
             <TextAlignLeft className={styles.icon} />
             <TextAlignCenter className={styles.icon} />
@@ -923,7 +1011,7 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
         {colors.map(group => {
           return (
             <div key={group.category} className={styles.categoryContainer}>
-              <h3 className={styles.categoryTitle}>{group.category}</h3>
+              <p className={styles.categoryTitle}>{group.category}</p>
               <div className={styles.colorContainer}>
                 {group.data.map(item => {
                   return (
@@ -941,6 +1029,70 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
           );
         })}
       </div>
+    );
+  }
+
+  function handleSelectingTextSize(size: { fontSize: number; lineHeight: string; name: string }) {
+    setTextSizeObj(size);
+  }
+
+  function renderTextPalette() {
+    const options = [
+      {
+        fontSize: 24,
+        lineHeight: '36px',
+        name: 'text-hugtitle · 24/36'
+      },
+      {
+        fontSize: 18,
+        lineHeight: '27px',
+        name: 'text-h1 · 18/27'
+      },
+      {
+        fontSize: 16,
+        lineHeight: '24px',
+        name: 'text-h2 · 16/24'
+      },
+      {
+        fontSize: 14,
+        lineHeight: '21px',
+        name: 'text-h3 · 14/21'
+      },
+      {
+        fontSize: 13,
+        lineHeight: '20px',
+        name: 'text-h4 · 13/20'
+      },
+      {
+        fontSize: 16,
+        lineHeight: '29px',
+        name: 'text-body-lg · 16/29'
+      },
+      {
+        fontSize: 14,
+        lineHeight: '25px',
+        name: 'text-body-md · 14/25'
+      },
+      {
+        fontSize: 13,
+        lineHeight: '20px',
+        name: 'text-description · 13/20'
+      }
+    ];
+
+    return (
+      <>
+        {options.map(item => {
+          return (
+            <p key={item.name} className={styles.textStyle} onClick={() => handleSelectingTextSize(item)}>
+              <span className={styles.textPreview} style={{ fontSize: item.fontSize, lineHeight: item.lineHeight }}>
+                Ag
+              </span>
+              <span className={styles.textName}>{item.name}</span>
+            </p>
+          );
+        })}
+      </>
     );
   }
 
