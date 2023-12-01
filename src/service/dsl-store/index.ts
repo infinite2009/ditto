@@ -106,22 +106,12 @@ export default class DSLStore {
     };
     Object.keys(props || {}).forEach(key => {
       const propSchema: IPropsSchema = props[key];
-      const { value, composition, category } = propSchema;
+      const { value, category } = propSchema;
       if (result[category]) {
         // 如果该 props 是由多个配置组成的
-        if (composition) {
-          const { options = {}, defaultCategory = 'basic' } = composition;
-          Object.entries(value as unknown as Record<string, any>).forEach(([name, val]) => {
-            const category = options[name] || defaultCategory;
-            if (category) {
-              (result[category] as Record<string, any>)[name] = val;
-            }
-          });
-        } else {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          result[category][key] = value;
-        }
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        result[category][key] = value;
       }
     });
 

@@ -23,16 +23,6 @@ export interface TemplateKeyPathsReg {
 export default interface IPropsSchema extends ISchema {
   // 属性类别
   category: 'basic' | 'style' | 'event' | 'data' | 'children';
-  /**
-   * props的组成配置，表示这个 props 是由多个 form 配置项组合出来的。每个属性对应的值是该属性对应的配置项类别。
-   * 例如：style 由各种css 属性组成，这些的属性的类别都是 style
-   */
-  composition?: {
-    defaultCategory: 'basic' | 'style' | 'event' | 'data';
-    options: {
-      [key: string]: 'basic' | 'style' | 'event' | 'data';
-    };
-  };
   // 如果是值，那么该属性变更时，可以用 useEffect 监听并做出响应。目前来说，对于一个组件，值属性最多支持一个
   isValue?: boolean;
   // 控制 UI 显隐性
