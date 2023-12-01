@@ -1,5 +1,5 @@
 import IFormConfig from '@/types/form-config';
-import { getCamelotComponentPropsFrom } from '../load-config/camelot';
+import {getCamelotComponentPropsFrom} from '../load-config/camelot';
 
 /**
  * 记载整个表单库，它和组件库是一对一的。
@@ -17,18 +17,35 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
       configName: 'Button',
       schema: {
         style: {
-          width: true,
-          height: true,
-          fontSize: true,
-          fontWeight: true,
-          layout: {},
-          fill: {},
-          border: {},
-          text: {},
-          shadow: {}
+          layout: {
+            width: true,
+            height: true,
+            widthGrow: true,
+            heightGrow: true,
+            wrap: true,
+            direction: true,
+            alignItems: true,
+            justifyContent: true,
+            padding: true,
+            gap: true
+          },
+          backgroundColor: true,
+          border: {
+            borderWidth: true,
+            borderColor: true,
+            borderStyle: true
+          },
+          shadow: true,
+          text: {
+            // 字号和行高
+            size: true,
+            color: true,
+            decoration: true
+          }
         },
         basic: {
           type: {
+            name: 'type',
             type: 'string',
             title: '按钮类型',
             component: 'Select',
@@ -58,36 +75,42 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
             }
           },
           danger: {
+            name: 'danger',
             type: 'boolean',
             title: '设置为危险按钮',
             required: false,
             component: 'Switch'
           },
           disabled: {
+            name: 'disabled',
             type: 'boolean',
             title: '设置失效',
             required: false,
             component: 'Switch'
           },
           href: {
+            name: 'href',
             type: 'string',
             title: '跳转地址',
             required: false,
             component: 'Input'
           },
           target: {
+            name: 'target',
             type: 'boolean',
             title: '跳转到新标签',
             required: false,
             component: 'Switch'
           },
           loading: {
+            name: 'loading',
             type: 'boolean',
             title: '加载状态',
             required: false,
             component: 'Switch'
           },
           shape: {
+            name: 'shape',
             type: 'string',
             title: '按钮形状',
             required: false,
@@ -104,6 +127,7 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
             }
           },
           size: {
+            name: 'size',
             type: 'string',
             title: '尺寸',
             component: 'Select',

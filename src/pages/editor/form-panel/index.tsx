@@ -51,6 +51,9 @@ export default observer(() => {
   }
 
   function handleChangingStyleForm(value: CSSProperties) {
+    // TODO: 自行处理属性的映射问题
+    const formConfig = dslStore.formConfigOfSelectedComponent.schema;
+    console.log('form config: ', formConfig);
     dslStore.updateComponentProps(value);
   }
 
@@ -66,6 +69,9 @@ export default observer(() => {
     if (!dslStore.formConfigOfSelectedComponent) {
       return null;
     }
+
+    console.log('dslStore.formConfigOfSelectedComponent: ', dslStore.formConfigOfSelectedComponent);
+
     return (
       <StyleForm
         key="style"

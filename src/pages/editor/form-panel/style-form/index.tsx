@@ -44,6 +44,7 @@ import {
 } from '@/components/icon';
 
 import styles from './index.module.less';
+import { toJS } from 'mobx';
 
 export interface IStyleFormProps {
   config?: {
@@ -1095,6 +1096,8 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       </>
     );
   }
+
+  console.log('config: ', toJS(config));
 
   return (
     <div>
