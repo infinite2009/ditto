@@ -1,10 +1,9 @@
-import { ColorPicker, Divider, Form, Input, InputNumber, Popover, Select, Switch, Tooltip } from 'antd';
-import { useForm } from 'antd/es/form/Form';
+import { ColorPicker, Divider, Input, InputNumber, Popover, Select, Switch, Tooltip } from 'antd';
 import classNames from 'classnames';
 import { CSSProperties, FC, useEffect, useMemo, useState } from 'react';
-import { isDifferent, typeOf } from '@/util';
-import { FormItemSchema } from '@/types/form-config';
+import { isDifferent } from '@/util';
 import NumberInput from '@/pages/editor/form-panel/style-form/components/number-input';
+import { toJS } from 'mobx';
 
 import {
   AlignCenter,
@@ -42,19 +41,76 @@ import {
   Width,
   Wrap
 } from '@/components/icon';
-
 import styles from './index.module.less';
-import { toJS } from 'mobx';
+import { StyleFormConfig } from '@/types';
 
 export interface IStyleFormProps {
-  config?: {
-    [key: string]: FormItemSchema | boolean;
-  };
+  config?: StyleFormConfig;
   onChange: (style: CSSProperties) => void;
+  parentDirection: 'row' | 'column';
   value?: CSSProperties;
 }
 
-export default function StyleForm({ onChange, value, config }: IStyleFormProps) {
+enum ItemsAlignment {
+  topLeft,
+  top,
+  topRight,
+  left,
+  center,
+  right,
+  bottomLeft,
+  bottom,
+  bottomRight
+}
+
+enum ItemsAlignment2 {
+  top,
+  center,
+  bottom
+}
+
+type SpaceArrangement = 'sequence' | 'space-around' | 'space-between';
+
+const itemsAlignmentDict = {
+  [ItemsAlignment.topLeft]: {
+    alignItems: 'start',
+    justifyContent: 'start'
+  },
+  [ItemsAlignment.top]: {
+    alignItems: 'start',
+    justifyContent: 'center'
+  },
+  [ItemsAlignment.topRight]: {
+    alignItems: 'start',
+    justifyContent: 'end'
+  },
+  [ItemsAlignment.left]: {
+    alignItems: 'center',
+    justifyContent: 'start'
+  },
+  [ItemsAlignment.center]: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  [ItemsAlignment.right]: {
+    alignItems: 'center',
+    justifyContent: 'end'
+  },
+  [ItemsAlignment.bottomLeft]: {
+    alignItems: 'end',
+    justifyContent: 'start'
+  },
+  [ItemsAlignment.bottom]: {
+    alignItems: 'end',
+    justifyContent: 'center'
+  },
+  [ItemsAlignment.bottomRight]: {
+    alignItems: 'end',
+    justifyContent: 'end'
+  }
+};
+
+export default function StyleForm({ onChange, value, config, parentDirection }: IStyleFormProps) {
   const [fillVisible, setFillVisible] = useState<boolean>();
   const [borderVisible, setBorderVisible] = useState<boolean>();
   const [shadowVisible, setShadowVisible] = useState<boolean>(false);
@@ -81,9 +137,21 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     name: string;
   }>();
 
-  const [form] = useForm();
+  const [borderType, setBorderType] = useState<string>();
+
+  const [borderWidth, setBorderWidth] = useState<number>(0);
 
   const [valueState, setValueState] = useState<CSSProperties>({});
+
+  const [itemsAlignmentState, setItemsAlignmentState] = useState<ItemsAlignment | ItemsAlignment2>();
+
+  const [spaceArrangement, setSpaceArrangement] = useState<SpaceArrangement>();
+
+  const [fillOpen, setFillOpen] = useState<boolean>(false);
+  const [borderOpen, setBorderOpen] = useState<boolean>(false);
+  const [shadowOpen, setShadowOpen] = useState<boolean>(false);
+  const [textOpen, setTextOpen] = useState<boolean>(false);
+  const [textColorOpen, setTextColorOpen] = useState<boolean>(true);
 
   const styleNames = [
     'width',
@@ -245,7 +313,6 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
   };
 
   useEffect(() => {
-    form.setFieldsValue(value);
     setValueState({ ...value });
   }, [value]);
 
@@ -273,64 +340,64 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     return [];
   }, [config]);
 
-  function handleChangingStyle() {
-    if (onChange) {
-      const originalValueObj = form.getFieldsValue();
-      Object.entries(originalValueObj).forEach(([key, val]) => {
-        if (val === undefined) {
-          delete originalValueObj[key];
-          return;
-        }
-        const config = styleConfig.find(item => item[0] === key);
-        if (config) {
-          if (typeOf(config[1]) === 'object') {
-            if ((config[1] as FormItemSchema).type === 'number') {
-              originalValueObj[key] = {
-                value: +(val as string)
-              };
-            } else {
-              originalValueObj[key] = {
-                value: val
-              };
-            }
-            // 如果该配置项是某个props的一个属性，则把这个 props 的名字写进去
-            if ((config[1] as FormItemSchema).propsToCompose) {
-              originalValueObj[key].propsToCompose = (config[1] as FormItemSchema).propsToCompose;
-            }
-          } else {
-            // 如果配置项是 boolean 值，则默认为 style 的一个属性
-            originalValueObj[key] = {
-              value: val,
-              propsToCompose: 'style'
-            };
-          }
-        }
-      });
-      onChange(originalValueObj);
-    }
-  }
+  // function handleChangingStyle() {
+  //   if (onChange) {
+  //     const originalValueObj = form.getFieldsValue();
+  //     Object.entries(originalValueObj).forEach(([key, val]) => {
+  //       if (val === undefined) {
+  //         delete originalValueObj[key];
+  //         return;
+  //       }
+  //       const config = styleConfig.find(item => item[0] === key);
+  //       if (config) {
+  //         if (typeOf(config[1]) === 'object') {
+  //           if ((config[1] as FormItemSchema).type === 'number') {
+  //             originalValueObj[key] = {
+  //               value: +(val as string)
+  //             };
+  //           } else {
+  //             originalValueObj[key] = {
+  //               value: val
+  //             };
+  //           }
+  //           // 如果该配置项是某个props的一个属性，则把这个 props 的名字写进去
+  //           if ((config[1] as FormItemSchema).propsToCompose) {
+  //             originalValueObj[key].propsToCompose = (config[1] as FormItemSchema).propsToCompose;
+  //           }
+  //         } else {
+  //           // 如果配置项是 boolean 值，则默认为 style 的一个属性
+  //           originalValueObj[key] = {
+  //             value: val,
+  //             propsToCompose: 'style'
+  //           };
+  //         }
+  //       }
+  //     });
+  //     onChange(originalValueObj);
+  //   }
+  // }
 
-  function renderFormItems() {
-    return styleConfig.map(([key, val]) => {
-      let Component: FC<any>;
-      let label;
-      let componentProps = {};
-      // 如果不是对象
-      if (typeOf(val).toLowerCase() === 'boolean' && styleNames.includes(key)) {
-        Component = defaultStyleConfig[key].component;
-        label = defaultStyleConfig[key].label;
-      } else {
-        Component = componentRegDict[(val as FormItemSchema).component] || Input;
-        label = (val as FormItemSchema).title;
-        componentProps = (val as FormItemSchema).componentProps || {};
-      }
-      return (
-        <Form.Item key={key} label={label} name={key}>
-          <Component {...componentProps} />
-        </Form.Item>
-      );
-    });
-  }
+  // function renderFormItems() {
+  //   return styleConfig.map(([key, val]) => {
+  //     let Component: FC<any>;
+  //     let label;
+  //     let componentProps = {};
+  //     // 如果不是对象
+  //     if (typeOf(val).toLowerCase() === 'boolean' && styleNames.includes(key)) {
+  //       Component = defaultStyleConfig[key].component;
+  //       label = defaultStyleConfig[key].label;
+  //     } else {
+  //       Component = componentRegDict[(val as FormItemSchema).component] || Input;
+  //       label = (val as FormItemSchema).title;
+  //       componentProps = (val as FormItemSchema).componentProps || {};
+  //     }
+  //     return (
+  //       <Form.Item key={key} label={label} name={key}>
+  //         <Component {...componentProps} />
+  //       </Form.Item>
+  //     );
+  //   });
+  // }
 
   function handleChangeStyle(value: number | string, key: string) {
     const newValueState = {
@@ -340,7 +407,11 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     setValueState(newValueState);
   }
 
-  function renderLayoutAdjustment() {
+  function handleSelectingSpaceArrangement(val: SpaceArrangement) {
+    setSpaceArrangement(val);
+  }
+
+  function renderItemsAlignment() {
     const { direction } = valueState;
     let tpl: JSX.Element;
 
@@ -352,17 +423,17 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     if ((direction as string) !== 'row') {
       tpl = (
         <>
-          <Start className={iconClass} />
-          <RowSpaceBetween className={iconClass} />
-          <SpaceAround className={iconClass} />
+          <Start className={iconClass} onClick={() => handleSelectingSpaceArrangement('sequence')} />
+          <RowSpaceBetween className={iconClass} onClick={() => handleSelectingSpaceArrangement('space-around')} />
+          <SpaceAround className={iconClass} onClick={() => handleSelectingSpaceArrangement('space-between')} />
         </>
       );
     } else {
       tpl = (
         <>
-          <ColumnLayout className={iconClass} />
-          <ColumnSpaceAround className={iconClass} />
-          <ColumnSpaceBetween className={iconClass} />
+          <ColumnLayout className={iconClass} onClick={() => handleSelectingSpaceArrangement('sequence')} />
+          <ColumnSpaceAround className={iconClass} onClick={() => handleSelectingSpaceArrangement('space-around')} />
+          <ColumnSpaceBetween className={iconClass} onClick={() => handleSelectingSpaceArrangement('space-between')} />
         </>
       );
     }
@@ -381,6 +452,16 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     return valueState[key] === 'center';
   }
 
+  function handleSelectingItemsAlignment(val: ItemsAlignment | ItemsAlignment2) {
+    const { alignItems, justifyContent } = itemsAlignmentDict[val];
+    setValueState({
+      ...valueState,
+      alignItems,
+      justifyContent
+    });
+  }
+
+  // 元素排布的预览九宫格
   function renderAlignmentPreview(direction: 'row' | 'column') {
     const alignmentClass = classNames({
       [styles.rDiagonal180]: direction === 'column',
@@ -394,51 +475,69 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
 
     return (
       <div className={alignmentClass}>
-        {isStart('alignItems') && isStart('justifyContent') ? (
-          <AlignStart className={styles.icon} />
-        ) : (
-          <div className={styles.dot} />
-        )}
-        {isStart('alignItems') && isCenter('justifyContent') ? (
-          <AlignStart className={styles.icon} />
-        ) : (
-          <div className={styles.dot} />
-        )}
-        {isStart('alignItems') && isEnd('justifyContent') ? (
-          <AlignStart className={styles.icon} />
-        ) : (
-          <div className={styles.dot} />
-        )}
-        {isCenter('alignItems') && isStart('justifyContent') ? (
-          <AlignCenter className={styles.icon} />
-        ) : (
-          <div className={styles.dot} />
-        )}
-        {isCenter('alignItems') && isCenter('justifyContent') ? (
-          <AlignCenter className={styles.icon} />
-        ) : (
-          <div className={styles.dot} />
-        )}
-        {isCenter('alignItems') && isEnd('justifyContent') ? (
-          <AlignCenter className={styles.icon} />
-        ) : (
-          <div className={styles.dot} />
-        )}
-        {isEnd('alignItems') && isStart('justifyContent') ? (
-          <AlignStart className={iconClass} />
-        ) : (
-          <div className={styles.dot} />
-        )}
-        {isEnd('alignItems') && isCenter('justifyContent') ? (
-          <AlignStart className={iconClass} />
-        ) : (
-          <div className={styles.dot} />
-        )}
-        {isEnd('alignItems') && isEnd('justifyContent') ? (
-          <AlignStart className={iconClass} />
-        ) : (
-          <div className={styles.dot} />
-        )}
+        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.topLeft)}>
+          {isStart('alignItems') && isStart('justifyContent') ? (
+            <AlignStart className={styles.icon} />
+          ) : (
+            <div className={styles.dot} />
+          )}
+        </div>
+        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.top)}>
+          {isStart('alignItems') && isCenter('justifyContent') ? (
+            <AlignStart className={styles.icon} />
+          ) : (
+            <div className={styles.dot} />
+          )}
+        </div>
+        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.topRight)}>
+          {isStart('alignItems') && isEnd('justifyContent') ? (
+            <AlignStart className={styles.icon} />
+          ) : (
+            <div className={styles.dot} />
+          )}
+        </div>
+        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.left)}>
+          {isCenter('alignItems') && isStart('justifyContent') ? (
+            <AlignCenter className={styles.icon} />
+          ) : (
+            <div className={styles.dot} />
+          )}
+        </div>
+        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.center)}>
+          {isCenter('alignItems') && isCenter('justifyContent') ? (
+            <AlignCenter className={styles.icon} />
+          ) : (
+            <div className={styles.dot} />
+          )}
+        </div>
+        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.right)}>
+          {isCenter('alignItems') && isEnd('justifyContent') ? (
+            <AlignCenter className={styles.icon} />
+          ) : (
+            <div className={styles.dot} />
+          )}
+        </div>
+        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.bottomLeft)}>
+          {isEnd('alignItems') && isStart('justifyContent') ? (
+            <AlignStart className={iconClass} />
+          ) : (
+            <div className={styles.dot} />
+          )}
+        </div>
+        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.bottom)}>
+          {isEnd('alignItems') && isCenter('justifyContent') ? (
+            <AlignStart className={iconClass} />
+          ) : (
+            <div className={styles.dot} />
+          )}
+        </div>
+        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.bottomRight)}>
+          {isEnd('alignItems') && isEnd('justifyContent') ? (
+            <AlignStart className={iconClass} />
+          ) : (
+            <div className={styles.dot} />
+          )}
+        </div>
       </div>
     );
   }
@@ -446,6 +545,8 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
   function handleSwitchAlignment() {
     // TODO
   }
+
+  function handlePreviewAlignment() {}
 
   function renderSpaceAssignmentPreview(direction: 'row' | 'column') {
     const alignmentClass = classNames({
@@ -455,15 +556,33 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
 
     return (
       <div className={alignmentClass}>
-        {isStart('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
-        {isStart('alignItems') ? <ShortBar className={styles.icon} /> : <div className={styles.dot} />}
-        {isStart('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
-        {isCenter('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
-        {isCenter('alignItems') ? <ShortBar className={styles.icon} /> : <div className={styles.dot} />}
-        {isCenter('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
-        {isEnd('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
-        {isEnd('alignItems') ? <ShortBar className={styles.icon} /> : <div className={styles.dot} />}
-        {isEnd('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+        <div onMouseEnter={() => handlePreviewAlignment()}>
+          {isStart('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+        </div>
+        <div onMouseEnter={() => handlePreviewAlignment()}>
+          {isStart('alignItems') ? <ShortBar className={styles.icon} /> : <div className={styles.dot} />}
+        </div>
+        <div onMouseEnter={() => handlePreviewAlignment()}>
+          {isStart('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+        </div>
+        <div onMouseEnter={() => handlePreviewAlignment()}>
+          {isCenter('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+        </div>
+        <div onMouseEnter={() => handlePreviewAlignment()}>
+          {isCenter('alignItems') ? <ShortBar className={styles.icon} /> : <div className={styles.dot} />}
+        </div>
+        <div onMouseEnter={() => handlePreviewAlignment()}>
+          {isCenter('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+        </div>
+        <div onMouseEnter={() => handlePreviewAlignment()}>
+          {isEnd('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+        </div>
+        <div onMouseEnter={() => handlePreviewAlignment()}>
+          {isEnd('alignItems') ? <ShortBar className={styles.icon} /> : <div className={styles.dot} />}
+        </div>
+        <div onMouseEnter={() => handlePreviewAlignment()}>
+          {isEnd('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+        </div>
       </div>
     );
   }
@@ -503,6 +622,11 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
     }
 
     setValueState(newValueState);
+  }
+
+  function showAlignmentPreview() {
+    const { justifyContent } = valueState;
+    return justifyContent !== 'space-between' && justifyContent !== 'space-around';
   }
 
   function renderLayout() {
@@ -572,58 +696,74 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
         </div>
         <div className={styles.body}>
           <div className={styles.row}>
-            <NumberInput
-              value={value.width as number}
-              icon={<Width className={styles.numberIcon} />}
-              onChange={data => handleChangeStyle(data, 'width')}
-            />
-            <NumberInput
-              value={value.height as number}
-              icon={<Height />}
-              onChange={data => handleChangeStyle(data, 'height')}
-            />
+            {config.layout.width ? (
+              <NumberInput
+                value={value.width as number}
+                icon={<Width className={styles.numberIcon} />}
+                onChange={data => handleChangeStyle(data, 'width')}
+              />
+            ) : null}
+            {config.layout.height ? (
+              <NumberInput
+                value={value.height as number}
+                icon={<Height />}
+                onChange={data => handleChangeStyle(data, 'height')}
+              />
+            ) : null}
           </div>
           <div className={styles.sizeSelector}>
-            <Select
-              bordered={false}
-              value={widthSizeMode}
-              optionLabelProp="tag"
-              popupMatchSelectWidth={false}
-              onSelect={(val: string) => handleSelectingSizeMode(val, 'width')}
-              options={options}
-            />
-            <Select
-              bordered={false}
-              value={widthSizeMode}
-              optionLabelProp="tag"
-              popupMatchSelectWidth={false}
-              onSelect={(val: string) => handleSelectingSizeMode(val, 'height')}
-              options={options}
-            />
+            {config.layout.widthGrow ? (
+              <Select
+                bordered={false}
+                value={widthSizeMode}
+                optionLabelProp="tag"
+                popupMatchSelectWidth={false}
+                onSelect={(val: string) => handleSelectingSizeMode(val, 'width')}
+                options={options}
+              />
+            ) : null}
+            {config.layout.heightGrow ? (
+              <Select
+                bordered={false}
+                value={widthSizeMode}
+                optionLabelProp="tag"
+                popupMatchSelectWidth={false}
+                onSelect={(val: string) => handleSelectingSizeMode(val, 'height')}
+                options={options}
+              />
+            ) : null}
           </div>
           <div className={styles.row} style={{ height: 'auto' }}>
-            <div className={styles.left}>
-              <div className={styles.row}>
-                {renderDirectionSwitch()}
-                <Divider type="vertical" style={{ height: 8, borderRadius: 0.5, margin: 0 }} />
-                {renderWrapSwitch()}
-              </div>
-              {renderLayoutAdjustment()}
+            {config.layout.direction ? (
+              <>
+                <div className={styles.left}>
+                  <div className={styles.row}>
+                    {renderDirectionSwitch()}
+                    <Divider type="vertical" style={{ height: 8, borderRadius: 0.5, margin: 0 }} />
+                    {renderWrapSwitch()}
+                  </div>
+                  {renderItemsAlignment()}
+                </div>
+                <div className={styles.right}>
+                  {showAlignmentPreview()
+                    ? renderAlignmentPreview(direction as 'row' | 'column')
+                    : renderSpaceAssignmentPreview(direction as 'row' | 'column')}
+                </div>
+              </>
+            ) : null}
+          </div>
+          {config.layout.gap ? (
+            <div className={styles.row}>
+              <NumberInput icon={<Gap className={styles.icon} />} />
+              <NumberInput icon={<Gap className={iconClass} />} />
             </div>
-            <div className={styles.right}>
-              {isStart('justifyContent')
-                ? renderAlignmentPreview(direction as 'row' | 'column')
-                : renderSpaceAssignmentPreview(direction as 'row' | 'column')}
+          ) : null}
+          {config.layout.padding ? (
+            <div className={styles.row}>
+              <NumberInput icon={<Padding className={styles.icon} />} />
+              <NumberInput icon={<Padding className={iconClass} />} />
             </div>
-          </div>
-          <div className={styles.row}>
-            <NumberInput icon={<Gap className={styles.icon} />} />
-            <NumberInput icon={<Gap className={iconClass} />} />
-          </div>
-          <div className={styles.row}>
-            <NumberInput icon={<Padding className={styles.icon} />} />
-            <NumberInput icon={<Padding className={iconClass} />} />
-          </div>
+          ) : null}
         </div>
       </div>
     );
@@ -695,7 +835,7 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
   }
 
   function renderFill() {
-    if (!config.fill) {
+    if (!config.backgroundColor) {
       return null;
     }
 
@@ -776,7 +916,14 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
         </div>
         {fillVisible ? (
           <div className={styles.fillContainer}>
-            <Popover trigger={['click']} content={renderColorPalette(colors)} placement="leftTop" arrow={false}>
+            <Popover
+              open={fillOpen}
+              trigger={['click']}
+              content={renderColorPalette(colors, handleSelectingFillColor)}
+              placement="leftTop"
+              arrow={false}
+              onOpenChange={(newOpen: boolean) => setFillOpen(newOpen)}
+            >
               <div className={styles.colorResult}>
                 <div
                   className={styles.color}
@@ -826,6 +973,17 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
       }
     ];
 
+    function handleSelectingBorderType(borderType: string) {
+      setBorderType(borderType);
+    }
+
+    function handleSelectingBorderStyle(val: string) {
+      setValueState({
+        ...valueState,
+        borderStyle: val
+      });
+    }
+
     return (
       <div className={styles.p12}>
         <div className={styles.row}>
@@ -837,7 +995,14 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
         {borderVisible ? (
           <div className={styles.borderContainer}>
             <div>
-              <Popover trigger={['click']} content={renderColorPalette(borderOpt)} placement="leftTop" arrow={false}>
+              <Popover
+                open={borderOpen}
+                trigger={['click']}
+                content={renderColorPalette(borderOpt, handleSelectingBorderColor)}
+                placement="leftTop"
+                arrow={false}
+                onOpenChange={(newOpen: boolean) => setBorderOpen(newOpen)}
+              >
                 <div className={styles.colorResult}>
                   <div
                     className={styles.color}
@@ -847,17 +1012,26 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
                 </div>
               </Popover>
               <div className={styles.borderBar}>
-                <Border2 className={styles.icon} />
-                <SingleBorder className={styles.icon} />
-                <SingleBorder className={classNames({ [styles.r90]: true, [styles.icon]: true })} />
-                <SingleBorder className={classNames({ [styles.r180]: true, [styles.icon]: true })} />
-                <SingleBorder className={classNames({ [styles.r270]: true, [styles.icon]: true })} />
+                <Border2 className={styles.icon} onClick={() => handleSelectingBorderType('all')} />
+                <SingleBorder className={styles.icon} onClick={() => handleSelectingBorderType('left')} />
+                <SingleBorder
+                  className={classNames({ [styles.r90]: true, [styles.icon]: true })}
+                  onClick={() => handleSelectingBorderType('top')}
+                />
+                <SingleBorder
+                  className={classNames({ [styles.r180]: true, [styles.icon]: true })}
+                  onClick={() => handleSelectingBorderType('right')}
+                />
+                <SingleBorder
+                  className={classNames({ [styles.r270]: true, [styles.icon]: true })}
+                  onClick={() => handleSelectingBorderType('bottom')}
+                />
               </div>
               <div className={styles.row}>
-                <NumberInput icon={<Thickness />} />
+                <NumberInput icon={<Thickness />} onChange={(data: number) => setBorderWidth(data)} />
                 <div className={styles.lineContainer}>
-                  <Line className={styles.icon} />
-                  <DashedLine className={styles.icon} />
+                  <Line className={styles.icon} onClick={() => handleSelectingBorderStyle('solid')} />
+                  <DashedLine className={styles.icon} onClick={() => handleSelectingBorderStyle('dashed')} />
                 </div>
               </div>
             </div>
@@ -893,7 +1067,14 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
         </div>
         {shadowVisible ? (
           <div className={styles.shadowContainer}>
-            <Popover trigger={['click']} content={shadowOptTpl} placement="leftTop" arrow={false}>
+            <Popover
+              open={shadowOpen}
+              trigger={['click']}
+              content={shadowOptTpl}
+              placement="leftTop"
+              arrow={false}
+              onOpenChange={(newOpen: boolean) => setShadowOpen(newOpen)}
+            >
               <div>占位符</div>
             </Popover>
             <Line className={styles.deleteIcon} onClick={handleClickingShadowCollapsingBtn} />
@@ -946,7 +1127,14 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
           <p className={styles.title}>文字</p>
         </div>
         <div className={styles.body}>
-          <Popover trigger={['click']} content={renderTextPalette()} placement="leftTop" arrow={false}>
+          <Popover
+            open={textOpen}
+            trigger={['click']}
+            content={renderTextPalette()}
+            placement="leftTop"
+            arrow={false}
+            onOpenChange={(newOpen: boolean) => setTextOpen(newOpen)}
+          >
             <div className={styles.textSizeResult}>
               <p
                 className={styles.text}
@@ -957,13 +1145,20 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
               <p className={styles.colorTitle}>{textSizeObj?.name || '请选择'}</p>
             </div>
           </Popover>
-          <Popover trigger={['click']} content={renderColorPalette(textOpt)} placement="leftTop" arrow={false}>
+          <Popover
+            open={textColorOpen}
+            trigger={['click']}
+            content={renderColorPalette(textOpt, handleSelectingTextColor)}
+            placement="leftTop"
+            arrow={false}
+            onOpenChange={(newOpen: boolean) => setTextColorOpen(newOpen)}
+          >
             <div className={styles.colorResult}>
               <div
                 className={styles.color}
-                style={{ height: 20, width: 20, backgroundColor: borderColorObj?.value || 'transparent' }}
+                style={{ height: 20, width: 20, backgroundColor: textColorObj?.value || 'transparent' }}
               />
-              <p className={styles.colorTitle}>{borderColorObj?.name || '请选择'}</p>
+              <p className={styles.colorTitle}>{textColorObj?.name || '请选择'}</p>
             </div>
           </Popover>
           <div className={styles.textBtnBar}>
@@ -984,10 +1179,20 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
 
   function handleSelectingFillColor(val: { name: string; value: string }) {
     setFillColorObj(val);
+    setValueState({
+      ...valueState,
+      backgroundColor: val.value
+    });
+    setFillOpen(false);
   }
 
   function handleSelectingBorderColor(val: { name: string; value: string }) {
     setBorderColorObj(val);
+    setValueState({
+      ...valueState,
+      borderColor: val.value
+    });
+    setBorderOpen(false);
   }
 
   function handleSelectingShadow(val: { name: string; value: string }) {
@@ -996,6 +1201,11 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
 
   function handleSelectingTextColor(val: { name: string; value: string }) {
     setTextColorObj(val);
+    setValueState({
+      ...valueState,
+      color: val.value
+    });
+    setTextColorOpen(false);
   }
 
   function renderColorPalette(
@@ -1005,7 +1215,8 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
         name: string;
         value: string;
       }[];
-    }[]
+    }[],
+    cb: (data: any) => void
   ) {
     return (
       <div className={styles.colorPalette}>
@@ -1017,11 +1228,7 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
                 {group.data.map(item => {
                   return (
                     <Tooltip key={item.name} title={item.name}>
-                      <div
-                        className={styles.color}
-                        style={{ backgroundColor: item.value }}
-                        onClick={() => handleSelectingFillColor(item)}
-                      />
+                      <div className={styles.color} style={{ backgroundColor: item.value }} onClick={() => cb(item)} />
                     </Tooltip>
                   );
                 })}
@@ -1035,6 +1242,13 @@ export default function StyleForm({ onChange, value, config }: IStyleFormProps) 
 
   function handleSelectingTextSize(size: { fontSize: number; lineHeight: string; name: string }) {
     setTextSizeObj(size);
+    const { fontSize, lineHeight } = size;
+    setValueState({
+      ...valueState,
+      fontSize,
+      lineHeight
+    });
+    setTextOpen(false);
   }
 
   function renderTextPalette() {

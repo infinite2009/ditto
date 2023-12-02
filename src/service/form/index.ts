@@ -1,5 +1,5 @@
 import IFormConfig from '@/types/form-config';
-import {getCamelotComponentPropsFrom} from '../load-config/camelot';
+import { getCamelotComponentPropsFrom } from '../load-config/camelot';
 
 /**
  * 记载整个表单库，它和组件库是一对一的。
@@ -314,6 +314,38 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
             required: false,
             component: 'Input',
             initialValue: '8px'
+          }
+        }
+      }
+    },
+    Text: {
+      configName: 'Text',
+      schema: {
+        style: {
+          layout: {
+            width: true,
+            height: true,
+            widthGrow: true,
+            heightGrow: true,
+            wrap: true,
+            direction: true,
+            alignItems: true,
+            justifyContent: true,
+            padding: true,
+            gap: true
+          },
+          backgroundColor: true,
+          border: {
+            borderWidth: true,
+            borderColor: true,
+            borderStyle: true
+          },
+          shadow: true,
+          text: {
+            // 字号和行高
+            size: true,
+            color: true,
+            decoration: true
           }
         }
       }
