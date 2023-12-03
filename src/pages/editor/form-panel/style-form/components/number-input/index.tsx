@@ -23,9 +23,9 @@ export default function NumberInput({ value, onChange, icon }: INumberInputProps
     return styles.main;
   }, [bordered]);
 
-  function handleChanging(e: any) {
+  function handleChanging(value: number) {
     if (onChange) {
-      onChange(e.target.value);
+      onChange(value);
     }
   }
 
@@ -39,10 +39,12 @@ export default function NumberInput({ value, onChange, icon }: INumberInputProps
       prefix={icon}
       value={value}
       onFocus={handleFocus}
-      onPressEnter={handleChanging}
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      onPressEnter={e => handleChanging(+e.target.value)}
       onBlur={e => {
         setBordered(false);
-        handleChanging(e);
+        handleChanging(+e.target.value);
       }}
       onStep={handleChanging}
       min={1}
