@@ -158,28 +158,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   const [textItalic, setTextItalic] = useState<boolean>();
   const [textUnderline, setTextUnderline] = useState<boolean>();
   const [textLineThrough, setTextLineThrough] = useState<boolean>();
-
-  const styleNames = [
-    'width',
-    'height',
-    'padding',
-    // 'margin',
-    'backgroundColor',
-    'backgroundImage',
-    'color',
-    'fontSize',
-    'fontWeight',
-    'textAlign',
-    'flexGrow',
-    'flexShrink',
-    'alignItems',
-    'alignSelf',
-    'justifyContent',
-    'flexDirection',
-    'flexWrap',
-    'flexBasis'
-  ];
-
   const indicatingColors = [
     {
       category: '主色',
