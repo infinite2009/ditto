@@ -13,12 +13,12 @@ import styles from './index.module.less';
 import { generateContextMenus } from '@/util';
 
 export interface IEditorProps {
+  children: React.ReactNode;
+  childrenId?: string[];
+  childrenStyle?: CSSProperties;
+  feature?: ComponentFeature;
   id: string;
   parentId: string;
-  childrenId?: string[];
-  children: React.ReactNode;
-  feature?: ComponentFeature;
-  childrenStyle?: CSSProperties;
   undeletable?: boolean;
 }
 
