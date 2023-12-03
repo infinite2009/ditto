@@ -108,10 +108,15 @@ export default class DSLStore {
       const propSchema: IPropsSchema = props[key];
       const { value, category } = propSchema;
       if (result[category]) {
-        // 如果该 props 是由多个配置组成的
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        result[category][key] = value;
+        if (key === 'style') {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          result[category] = value;
+        } else {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          result[category][key] = value;
+        }
       }
     });
 

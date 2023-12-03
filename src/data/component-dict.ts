@@ -370,6 +370,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     title: '文字',
     icon: CodeSandboxOutlined,
     propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
       copyable: {
         id: 'copyable',
         schemaType: 'props',
@@ -476,6 +486,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     title: '段落',
     icon: CodeSandboxOutlined,
     propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
       copyable: {
         id: 'copyable',
         schemaType: 'props',
@@ -582,6 +602,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     title: '标题',
     icon: CodeSandboxOutlined,
     propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
       copyable: {
         id: 'copyable',
         schemaType: 'props',

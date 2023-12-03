@@ -153,7 +153,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   const [shadowOpen, setShadowOpen] = useState<boolean>(false);
   const [textOpen, setTextOpen] = useState<boolean>(false);
   const [textColorOpen, setTextColorOpen] = useState<boolean>(false);
-  const [textAlignment, setTextAlignment] = useState<TextAlignment>();
+  const [textAlignment, setTextAlignment] = useState<TextAlignment>('left');
   const [textBold, setTextBold] = useState<boolean>();
   const [textItalic, setTextItalic] = useState<boolean>();
   const [textUnderline, setTextUnderline] = useState<boolean>();
@@ -337,6 +337,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       });
     } else {
       delete valueState.fontWeight;
+      setValueState({
+        ...valueState
+      });
     }
   }, [textBold]);
 
@@ -348,6 +351,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       });
     } else {
       delete valueState.fontStyle;
+      setValueState({
+        ...valueState
+      });
     }
   }, [textItalic]);
 
@@ -366,6 +372,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       });
     } else {
       delete valueState.textDecoration;
+      setValueState({
+        ...valueState
+      });
     }
   }, [textUnderline, textLineThrough]);
 

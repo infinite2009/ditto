@@ -51,11 +51,9 @@ export default observer(() => {
   }
 
   function handleChangingStyleForm(value: CSSProperties) {
-    console.log('onChange: ', value);
-    // TODO: 自行处理属性的映射问题
-    const formConfig = dslStore.formConfigOfSelectedComponent.schema;
-    console.log('form config: ', formConfig);
-    dslStore.updateComponentProps(value);
+    dslStore.updateComponentProps({
+      style: value
+    });
   }
 
   function handleChangingDataFormValues(value: Record<string, any>) {
