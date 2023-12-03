@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { StyleFormConfig } from '@/types/index';
 
 export interface FormItemSchema {
   component: string;
@@ -39,9 +40,7 @@ export default interface IFormConfig {
     data?: FC<any>;
   };
   schema?: {
-    style?: {
-      [key: string]: boolean | FormItemSchema | Record<string, any>;
-    };
+    style?: StyleFormConfig;
     basic?: FormSchema;
     event?: FormSchema;
     data?: FormSchema;
