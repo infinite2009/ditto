@@ -402,65 +402,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     return [];
   }, [config]);
 
-  // function handleChangingStyle() {
-  //   if (onChange) {
-  //     const originalValueObj = form.getFieldsValue();
-  //     Object.entries(originalValueObj).forEach(([key, val]) => {
-  //       if (val === undefined) {
-  //         delete originalValueObj[key];
-  //         return;
-  //       }
-  //       const config = styleConfig.find(item => item[0] === key);
-  //       if (config) {
-  //         if (typeOf(config[1]) === 'object') {
-  //           if ((config[1] as FormItemSchema).type === 'number') {
-  //             originalValueObj[key] = {
-  //               value: +(val as string)
-  //             };
-  //           } else {
-  //             originalValueObj[key] = {
-  //               value: val
-  //             };
-  //           }
-  //           // 如果该配置项是某个props的一个属性，则把这个 props 的名字写进去
-  //           if ((config[1] as FormItemSchema).propsToCompose) {
-  //             originalValueObj[key].propsToCompose = (config[1] as FormItemSchema).propsToCompose;
-  //           }
-  //         } else {
-  //           // 如果配置项是 boolean 值，则默认为 style 的一个属性
-  //           originalValueObj[key] = {
-  //             value: val,
-  //             propsToCompose: 'style'
-  //           };
-  //         }
-  //       }
-  //     });
-  //     onChange(originalValueObj);
-  //   }
-  // }
-
-  // function renderFormItems() {
-  //   return styleConfig.map(([key, val]) => {
-  //     let Component: FC<any>;
-  //     let label;
-  //     let componentProps = {};
-  //     // 如果不是对象
-  //     if (typeOf(val).toLowerCase() === 'boolean' && styleNames.includes(key)) {
-  //       Component = defaultStyleConfig[key].component;
-  //       label = defaultStyleConfig[key].label;
-  //     } else {
-  //       Component = componentRegDict[(val as FormItemSchema).component] || Input;
-  //       label = (val as FormItemSchema).title;
-  //       componentProps = (val as FormItemSchema).componentProps || {};
-  //     }
-  //     return (
-  //       <Form.Item key={key} label={label} name={key}>
-  //         <Component {...componentProps} />
-  //       </Form.Item>
-  //     );
-  //   });
-  // }
-
   function handleChangeStyle(value: number | string, key: string) {
     const newValueState = {
       ...valueState,
