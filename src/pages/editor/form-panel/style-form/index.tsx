@@ -111,6 +111,49 @@ const itemsAlignmentDict = {
   }
 };
 
+const textSizeOptions = [
+  {
+    fontSize: 24,
+    lineHeight: '36px',
+    name: 'text-hugtitle · 24/36'
+  },
+  {
+    fontSize: 18,
+    lineHeight: '27px',
+    name: 'text-h1 · 18/27'
+  },
+  {
+    fontSize: 16,
+    lineHeight: '24px',
+    name: 'text-h2 · 16/24'
+  },
+  {
+    fontSize: 14,
+    lineHeight: '21px',
+    name: 'text-h3 · 14/21'
+  },
+  {
+    fontSize: 13,
+    lineHeight: '20px',
+    name: 'text-h4 · 13/20'
+  },
+  {
+    fontSize: 16,
+    lineHeight: '29px',
+    name: 'text-body-lg · 16/29'
+  },
+  {
+    fontSize: 14,
+    lineHeight: '25px',
+    name: 'text-body-md · 14/25'
+  },
+  {
+    fontSize: 13,
+    lineHeight: '20px',
+    name: 'text-description · 13/20'
+  }
+];
+
 export default function StyleForm({ onChange, value, config, parentDirection }: IStyleFormProps) {
   const [fillVisible, setFillVisible] = useState<boolean>();
   const [borderVisible, setBorderVisible] = useState<boolean>();
@@ -292,7 +335,11 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   useEffect(() => {
     setValueState({ ...value });
     // 初始化表单值
-    const { width, height, gap, padding, direction } = value;
+    const { width, height, gap, padding, direction, fontSize, lineHeight } = value;
+    const opt = textSizeOptions.find(item => item.fontSize === fontSize && item.lineHeight === lineHeight);
+    if (opt) {
+      setTextSizeObj(opt);
+    }
   }, [value]);
 
   useEffect(() => {
@@ -1397,52 +1444,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   function renderTextPalette() {
-    const options = [
-      {
-        fontSize: 24,
-        lineHeight: '36px',
-        name: 'text-hugtitle · 24/36'
-      },
-      {
-        fontSize: 18,
-        lineHeight: '27px',
-        name: 'text-h1 · 18/27'
-      },
-      {
-        fontSize: 16,
-        lineHeight: '24px',
-        name: 'text-h2 · 16/24'
-      },
-      {
-        fontSize: 14,
-        lineHeight: '21px',
-        name: 'text-h3 · 14/21'
-      },
-      {
-        fontSize: 13,
-        lineHeight: '20px',
-        name: 'text-h4 · 13/20'
-      },
-      {
-        fontSize: 16,
-        lineHeight: '29px',
-        name: 'text-body-lg · 16/29'
-      },
-      {
-        fontSize: 14,
-        lineHeight: '25px',
-        name: 'text-body-md · 14/25'
-      },
-      {
-        fontSize: 13,
-        lineHeight: '20px',
-        name: 'text-description · 13/20'
-      }
-    ];
-
     return (
       <>
-        {options.map(item => {
+        {textSizeOptions.map(item => {
           return (
             <p key={item.name} className={styles.textStyle} onClick={() => handleSelectingTextSize(item)}>
               <span className={styles.textPreview} style={{ fontSize: item.fontSize, lineHeight: item.lineHeight }}>
