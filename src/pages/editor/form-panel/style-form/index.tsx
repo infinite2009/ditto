@@ -486,6 +486,14 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     });
   }
 
+  function handlePreviewItemsAlignment(val: ItemsAlignment | ItemsAlignment2) {
+    setItemsAlignmentState(val);
+  }
+
+  function cancelSelectingItemsAlignment() {
+    setItemsAlignmentState(undefined);
+  }
+
   // 元素排布的预览九宫格
   function renderAlignmentPreview(direction: 'row' | 'column') {
     const alignmentClass = classNames({
@@ -499,65 +507,92 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     });
 
     return (
-      <div className={alignmentClass}>
-        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.topLeft)}>
-          {isStart('alignItems') && isStart('justifyContent') ? (
+      <div className={alignmentClass} onMouseLeave={cancelSelectingItemsAlignment}>
+        <div
+          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.topLeft)}
+          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.topLeft)}
+        >
+          {(isStart('alignItems') && isStart('justifyContent')) || itemsAlignmentState === ItemsAlignment.topLeft ? (
             <AlignStart className={styles.icon} />
           ) : (
             <div className={styles.dot} />
           )}
         </div>
-        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.top)}>
-          {isStart('alignItems') && isCenter('justifyContent') ? (
+        <div
+          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.top)}
+          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.top)}
+        >
+          {(isStart('alignItems') && isCenter('justifyContent')) || itemsAlignmentState === ItemsAlignment.top ? (
             <AlignStart className={styles.icon} />
           ) : (
             <div className={styles.dot} />
           )}
         </div>
-        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.topRight)}>
-          {isStart('alignItems') && isEnd('justifyContent') ? (
+        <div
+          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.topRight)}
+          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.topRight)}
+        >
+          {(isStart('alignItems') && isEnd('justifyContent')) || itemsAlignmentState === ItemsAlignment.topRight ? (
             <AlignStart className={styles.icon} />
           ) : (
             <div className={styles.dot} />
           )}
         </div>
-        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.left)}>
-          {isCenter('alignItems') && isStart('justifyContent') ? (
+        <div
+          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.left)}
+          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.left)}
+        >
+          {(isCenter('alignItems') && isStart('justifyContent')) || itemsAlignmentState === ItemsAlignment.left ? (
             <AlignCenter className={styles.icon} />
           ) : (
             <div className={styles.dot} />
           )}
         </div>
-        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.center)}>
-          {isCenter('alignItems') && isCenter('justifyContent') ? (
+        <div
+          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.center)}
+          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.center)}
+        >
+          {(isCenter('alignItems') && isCenter('justifyContent')) || itemsAlignmentState === ItemsAlignment.center ? (
             <AlignCenter className={styles.icon} />
           ) : (
             <div className={styles.dot} />
           )}
         </div>
-        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.right)}>
-          {isCenter('alignItems') && isEnd('justifyContent') ? (
+        <div
+          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.right)}
+          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.right)}
+        >
+          {(isCenter('alignItems') && isEnd('justifyContent')) || itemsAlignmentState === ItemsAlignment.right ? (
             <AlignCenter className={styles.icon} />
           ) : (
             <div className={styles.dot} />
           )}
         </div>
-        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.bottomLeft)}>
-          {isEnd('alignItems') && isStart('justifyContent') ? (
+        <div
+          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.bottomLeft)}
+          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.bottomLeft)}
+        >
+          {(isEnd('alignItems') && isStart('justifyContent')) || itemsAlignmentState === ItemsAlignment.bottomLeft ? (
             <AlignStart className={iconClass} />
           ) : (
             <div className={styles.dot} />
           )}
         </div>
-        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.bottom)}>
-          {isEnd('alignItems') && isCenter('justifyContent') ? (
+        <div
+          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.bottom)}
+          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.bottom)}
+        >
+          {(isEnd('alignItems') && isCenter('justifyContent')) || itemsAlignmentState === ItemsAlignment.bottom ? (
             <AlignStart className={iconClass} />
           ) : (
             <div className={styles.dot} />
           )}
         </div>
-        <div onMouseEnter={() => handleSelectingItemsAlignment(ItemsAlignment.bottomRight)}>
-          {isEnd('alignItems') && isEnd('justifyContent') ? (
+        <div
+          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.bottomRight)}
+          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.bottomRight)}
+        >
+          {(isEnd('alignItems') && isEnd('justifyContent')) || itemsAlignmentState === ItemsAlignment.bottomRight ? (
             <AlignStart className={iconClass} />
           ) : (
             <div className={styles.dot} />
