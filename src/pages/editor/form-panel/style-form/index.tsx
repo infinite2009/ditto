@@ -20,7 +20,7 @@ import {
   Gap,
   Grow,
   Height,
-  Italian,
+  Italic,
   Line,
   LineThrough,
   LongBar,
@@ -70,6 +70,8 @@ enum ItemsAlignment2 {
 }
 
 type SpaceArrangement = 'sequence' | 'space-around' | 'space-between';
+
+type TextAlignment = 'left' | 'right' | 'center' | 'justify';
 
 const itemsAlignmentDict = {
   [ItemsAlignment.topLeft]: {
@@ -151,7 +153,12 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   const [borderOpen, setBorderOpen] = useState<boolean>(false);
   const [shadowOpen, setShadowOpen] = useState<boolean>(false);
   const [textOpen, setTextOpen] = useState<boolean>(false);
-  const [textColorOpen, setTextColorOpen] = useState<boolean>(true);
+  const [textColorOpen, setTextColorOpen] = useState<boolean>(false);
+  const [textAlignment, setTextAlignment] = useState<TextAlignment>();
+  const [textBold, setTextBold] = useState<boolean>();
+  const [textItalic, setTextItalic] = useState<boolean>();
+  const [textUnderline, setTextUnderline] = useState<boolean>();
+  const [textLineThrough, setTextLineThrough] = useState<boolean>();
 
   const styleNames = [
     'width',
@@ -415,25 +422,43 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     const { direction } = valueState;
     let tpl: JSX.Element;
 
-    const iconClass = classNames({
+    const iconClassObj = {
       [styles.icon]: true,
       [styles.f20]: true
-    });
+    };
 
-    if ((direction as string) !== 'row') {
+    if ((direction as string) === 'row') {
       tpl = (
         <>
-          <Start className={iconClass} onClick={() => handleSelectingSpaceArrangement('sequence')} />
-          <RowSpaceBetween className={iconClass} onClick={() => handleSelectingSpaceArrangement('space-around')} />
-          <SpaceAround className={iconClass} onClick={() => handleSelectingSpaceArrangement('space-between')} />
+          <Start
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'sequence' })}
+            onClick={() => handleSelectingSpaceArrangement('sequence')}
+          />
+          <RowSpaceBetween
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-around' })}
+            onClick={() => handleSelectingSpaceArrangement('space-around')}
+          />
+          <SpaceAround
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-between' })}
+            onClick={() => handleSelectingSpaceArrangement('space-between')}
+          />
         </>
       );
     } else {
       tpl = (
         <>
-          <ColumnLayout className={iconClass} onClick={() => handleSelectingSpaceArrangement('sequence')} />
-          <ColumnSpaceAround className={iconClass} onClick={() => handleSelectingSpaceArrangement('space-around')} />
-          <ColumnSpaceBetween className={iconClass} onClick={() => handleSelectingSpaceArrangement('space-between')} />
+          <ColumnLayout
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'sequence' })}
+            onClick={() => handleSelectingSpaceArrangement('sequence')}
+          />
+          <ColumnSpaceAround
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-around' })}
+            onClick={() => handleSelectingSpaceArrangement('space-around')}
+          />
+          <ColumnSpaceBetween
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-between' })}
+            onClick={() => handleSelectingSpaceArrangement('space-between')}
+          />
         </>
       );
     }
@@ -769,20 +794,18 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     );
   }
 
-  function handleSwitchDirection() {
-    const newValueState = {
+  function handleSwitchDirection(direction: any) {
+    setValueState({
       ...valueState,
-      direction: ((valueState.direction as string) === 'row' ? 'column' : 'row') as any
-    };
-    setValueState(newValueState);
+      direction
+    });
   }
 
-  function handleSwitchWrap(val: string) {
-    const newValueState = {
+  function handleSwitchWrap(val: any) {
+    setValueState({
       ...valueState,
-      wrap: val
-    };
-    setValueState(newValueState);
+      flexWrap: val
+    });
   }
 
   function renderDirectionSwitch() {
@@ -798,7 +821,8 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     });
     return (
       <div className={styles.directionContainer}>
-        <Arrow className={rowSelectedClass} onClick={handleSwitchDirection} /> <Arrow className={columnSelectedClass} />
+        <Arrow className={rowSelectedClass} onClick={() => handleSwitchDirection('row')} />
+        <Arrow className={columnSelectedClass} onClick={() => handleSwitchDirection('column')} />
       </div>
     );
   }
@@ -1012,26 +1036,56 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                 </div>
               </Popover>
               <div className={styles.borderBar}>
-                <Border2 className={styles.icon} onClick={() => handleSelectingBorderType('all')} />
-                <SingleBorder className={styles.icon} onClick={() => handleSelectingBorderType('left')} />
+                <Border2
+                  className={classNames({ [styles.icon]: true, [styles.iconSelected]: borderType === 'all' })}
+                  onClick={() => handleSelectingBorderType('all')}
+                />
                 <SingleBorder
-                  className={classNames({ [styles.r90]: true, [styles.icon]: true })}
+                  className={classNames({ [styles.icon]: true, [styles.iconSelected]: borderType === 'left' })}
+                  onClick={() => handleSelectingBorderType('left')}
+                />
+                <SingleBorder
+                  className={classNames({
+                    [styles.r90]: true,
+                    [styles.icon]: true,
+                    [styles.iconSelected]: borderType === 'top'
+                  })}
                   onClick={() => handleSelectingBorderType('top')}
                 />
                 <SingleBorder
-                  className={classNames({ [styles.r180]: true, [styles.icon]: true })}
+                  className={classNames({
+                    [styles.r180]: true,
+                    [styles.icon]: true,
+                    [styles.iconSelected]: borderType === 'right'
+                  })}
                   onClick={() => handleSelectingBorderType('right')}
                 />
                 <SingleBorder
-                  className={classNames({ [styles.r270]: true, [styles.icon]: true })}
+                  className={classNames({
+                    [styles.r270]: true,
+                    [styles.icon]: true,
+                    [styles.iconSelected]: borderType === 'bottom'
+                  })}
                   onClick={() => handleSelectingBorderType('bottom')}
                 />
               </div>
               <div className={styles.row}>
                 <NumberInput icon={<Thickness />} onChange={(data: number) => setBorderWidth(data)} />
                 <div className={styles.lineContainer}>
-                  <Line className={styles.icon} onClick={() => handleSelectingBorderStyle('solid')} />
-                  <DashedLine className={styles.icon} onClick={() => handleSelectingBorderStyle('dashed')} />
+                  <Line
+                    className={classNames({
+                      [styles.icon]: true,
+                      [styles.iconSelected]: valueState?.borderStyle === 'solid'
+                    })}
+                    onClick={() => handleSelectingBorderStyle('solid')}
+                  />
+                  <DashedLine
+                    className={classNames({
+                      [styles.icon]: true,
+                      [styles.iconSelected]: valueState?.borderStyle === 'dashed'
+                    })}
+                    onClick={() => handleSelectingBorderStyle('dashed')}
+                  />
                 </div>
               </div>
             </div>
@@ -1082,6 +1136,26 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         ) : null}
       </div>
     );
+  }
+
+  function handleSelectingTextAlignment(val: 'left' | 'right' | 'center' | 'justify') {
+    setTextAlignment(val);
+  }
+
+  function handleSwitchBold() {
+    setTextBold(!textBold);
+  }
+
+  function handleSwitchItalic() {
+    setTextItalic(!textItalic);
+  }
+
+  function handleSwitchLineThrough() {
+    setTextLineThrough(!textLineThrough);
+  }
+
+  function handleSwitchUnderline() {
+    setTextUnderline(!textUnderline);
   }
 
   function renderText() {
@@ -1162,15 +1236,39 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
             </div>
           </Popover>
           <div className={styles.textBtnBar}>
-            <TextAlignLeft className={styles.icon} />
-            <TextAlignCenter className={styles.icon} />
-            <TextAlignRight className={styles.icon} />
-            <TextAlignJustify className={styles.icon} />
+            <TextAlignLeft
+              className={classNames({ [styles.icon]: true, [styles.selected]: textAlignment === 'left' })}
+              onClick={() => handleSelectingTextAlignment('left')}
+            />
+            <TextAlignCenter
+              className={classNames({ [styles.icon]: true, [styles.selected]: textAlignment === 'center' })}
+              onClick={() => handleSelectingTextAlignment('center')}
+            />
+            <TextAlignRight
+              className={classNames({ [styles.icon]: true, [styles.selected]: textAlignment === 'right' })}
+              onClick={() => handleSelectingTextAlignment('right')}
+            />
+            <TextAlignJustify
+              className={classNames({ [styles.icon]: true, [styles.selected]: textAlignment === 'justify' })}
+              onClick={() => handleSelectingTextAlignment('justify')}
+            />
             <Divider style={{ height: 8, borderRadius: 0.5, margin: 0 }} type="vertical" />
-            <Bold className={styles.icon} />
-            <Italian className={styles.icon} />
-            <LineThrough className={styles.icon} />
-            <UnderLine className={styles.icon} />
+            <Bold
+              className={classNames({ [styles.icon]: true, [styles.selected]: textBold })}
+              onClick={handleSwitchBold}
+            />
+            <Italic
+              className={classNames({ [styles.icon]: true, [styles.selected]: textItalic })}
+              onClick={handleSwitchItalic}
+            />
+            <LineThrough
+              className={classNames({ [styles.icon]: true, [styles.selected]: textLineThrough })}
+              onClick={handleSwitchLineThrough}
+            />
+            <UnderLine
+              className={classNames({ [styles.icon]: true, [styles.selected]: textUnderline })}
+              onClick={handleSwitchUnderline}
+            />
           </div>
         </div>
       </div>

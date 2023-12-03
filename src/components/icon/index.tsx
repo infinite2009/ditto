@@ -293,7 +293,7 @@ export function Grow(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-shiyingkuochong" />;
 }
 
-export function Italian(props: Omit<IconFontProps, 'type'>) {
+export function Italic(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-xieti" />;
 }
 
