@@ -289,15 +289,10 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     flexBasis: { name: 'flexBasis', label: '基准宽度', component: InputNumber }
   };
 
-  const componentRegDict: Record<string, FC> = {
-    Select: Select,
-    Switch: Switch,
-    Input: Input,
-    ColorPicker: ColorPicker
-  };
-
   useEffect(() => {
     setValueState({ ...value });
+    // 初始化表单值
+    const { width, height, gap, padding, direction } = value;
   }, [value]);
 
   useEffect(() => {
@@ -657,6 +652,36 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     setValueState(newValueState);
   }
 
+  function handleChangingRowGap(val: number) {
+    setValueState({
+      ...valueState,
+      rowGap: val
+    });
+  }
+
+  function handleChangingColumnGap(val: number) {
+    setValueState({
+      ...valueState,
+      columnGap: val
+    });
+  }
+
+  function handleChangingRowPadding(val: number) {
+    setValueState({
+      ...valueState,
+      paddingLeft: val,
+      paddingRight: val
+    });
+  }
+
+  function handleChangingColumnPadding(val: number) {
+    setValueState({
+      ...valueState,
+      paddingTop: val,
+      paddingBottom: val
+    });
+  }
+
   function showAlignmentPreview() {
     const { justifyContent } = valueState;
     return justifyContent !== 'space-between' && justifyContent !== 'space-around';
@@ -731,14 +756,14 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
           <div className={styles.row}>
             {config.layout.width ? (
               <NumberInput
-                value={value.width as number}
+                value={valueState.width as number}
                 icon={<Width className={styles.numberIcon} />}
                 onChange={data => handleChangeStyle(data, 'width')}
               />
             ) : null}
             {config.layout.height ? (
               <NumberInput
-                value={value.height as number}
+                value={valueState.height as number}
                 icon={<Height />}
                 onChange={data => handleChangeStyle(data, 'height')}
               />
@@ -787,14 +812,28 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
           </div>
           {config.layout.gap ? (
             <div className={styles.row}>
-              <NumberInput icon={<Gap className={styles.icon} />} />
-              <NumberInput icon={<Gap className={iconClass} />} />
+              <NumberInput
+                icon={<Gap className={styles.icon} />}
+                value={valueState.rowGap as number}
+                onChange={handleChangingRowGap}
+              />
+              <NumberInput
+                icon={<Gap className={iconClass} />}
+                value={valueState.columnGap as number}
+                onChange={handleChangingColumnGap}
+              />
             </div>
           ) : null}
           {config.layout.padding ? (
             <div className={styles.row}>
-              <NumberInput icon={<Padding className={styles.icon} />} />
-              <NumberInput icon={<Padding className={iconClass} />} />
+              <NumberInput
+                icon={<Padding className={styles.icon} value={valueState.paddingLeft} />}
+                onChange={handleChangingRowPadding}
+              />
+              <NumberInput
+                icon={<Padding className={iconClass} value={valueState.paddingTop} />}
+                onChange={handleChangingColumnPadding}
+              />
             </div>
           ) : null}
         </div>
