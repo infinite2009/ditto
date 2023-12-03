@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { CSSProperties, FC, useEffect, useMemo, useState } from 'react';
 import { isDifferent } from '@/util';
 import NumberInput from '@/pages/editor/form-panel/style-form/components/number-input';
-import { toJS } from 'mobx';
 
 import {
   AlignCenter,
@@ -322,6 +321,53 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   useEffect(() => {
     setValueState({ ...value });
   }, [value]);
+
+  useEffect(() => {
+    setValueState({
+      ...valueState,
+      textAlign: textAlignment
+    });
+  }, [textAlignment]);
+
+  useEffect(() => {
+    if (textBold) {
+      setValueState({
+        ...valueState,
+        fontWeight: 600
+      });
+    } else {
+      delete valueState.fontWeight;
+    }
+  }, [textBold]);
+
+  useEffect(() => {
+    if (textItalic) {
+      setValueState({
+        ...valueState,
+        fontStyle: 'italic'
+      });
+    } else {
+      delete valueState.fontStyle;
+    }
+  }, [textItalic]);
+
+  useEffect(() => {
+    const arr = [];
+    if (textUnderline) {
+      arr.push('underline');
+    }
+    if (textLineThrough) {
+      arr.push('line-through');
+    }
+    if (arr.length > 0) {
+      setValueState({
+        ...valueState,
+        textDecoration: arr.join(' ')
+      });
+    } else {
+      delete valueState.textDecoration;
+    }
+  }, [textUnderline, textLineThrough]);
 
   useEffect(() => {
     if (onChange && isDifferent(valueState, value)) {
@@ -648,11 +694,10 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   function handleSelectingSizeMode(val: string, type: 'width' | 'height') {
-    const { direction } = valueState;
     const newValueState = { ...valueState };
 
     if (val === 'fill') {
-      if ((direction as string) === 'row') {
+      if (parentDirection === 'row') {
         if (type === 'width') {
           newValueState.flexGrow = 1;
         } else {
@@ -666,7 +711,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         }
       }
     } else {
-      if ((direction as string) === 'row') {
+      if (parentDirection === 'row') {
         if (type === 'width') {
           delete newValueState.flexGrow;
         } else {
@@ -1443,8 +1488,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       </>
     );
   }
-
-  console.log('config: ', toJS(config));
 
   return (
     <div>

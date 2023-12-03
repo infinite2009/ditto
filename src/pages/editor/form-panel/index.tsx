@@ -51,6 +51,7 @@ export default observer(() => {
   }
 
   function handleChangingStyleForm(value: CSSProperties) {
+    console.log('onChange: ', value);
     // TODO: 自行处理属性的映射问题
     const formConfig = dslStore.formConfigOfSelectedComponent.schema;
     console.log('form config: ', formConfig);
@@ -70,7 +71,8 @@ export default observer(() => {
       return null;
     }
 
-    console.log('dslStore.formConfigOfSelectedComponent: ', dslStore.formConfigOfSelectedComponent);
+    const parentSchema = dslStore.dsl.componentIndexes[dslStore.selectedComponent.parentId];
+    const parentDirection = dslStore.dsl.props[parentSchema.id].vertical ? 'column' : 'row';
 
     return (
       <StyleForm
@@ -78,6 +80,7 @@ export default observer(() => {
         onChange={handleChangingStyleForm}
         value={dslStore.valueOfSelectedComponent?.style}
         config={dslStore.formConfigOfSelectedComponent.schema?.style}
+        parentDirection={parentDirection}
       />
     );
   }
