@@ -9,6 +9,7 @@ import StyleForm from '@/pages/editor/form-panel/style-form';
 import { observer } from 'mobx-react';
 import { DSLStoreContext } from '@/hooks/context';
 import styles from './index.module.less';
+import { toJS } from 'mobx';
 
 export default observer(() => {
   const dslStore = useContext(DSLStoreContext);
@@ -76,7 +77,7 @@ export default observer(() => {
       <StyleForm
         key="style"
         onChange={handleChangingStyleForm}
-        value={dslStore.valueOfSelectedComponent?.style}
+        value={toJS(dslStore.valueOfSelectedComponent?.style)}
         config={dslStore.formConfigOfSelectedComponent.schema?.style}
         parentDirection={parentDirection}
       />

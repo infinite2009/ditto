@@ -452,9 +452,10 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
     const borderTypes = ['border', 'borderLeft', 'borderTop', 'borderRight', 'borderBottom'];
     for (const key of borderTypes) {
-      if (key in value) {
+      if (`${key}Width` in value) {
         setBorderType(key);
-        setBorderWidth(value[key]);
+        setBorderWidth(value[`${key}Width`]);
+        console.log('border width: ', value[key]);
       }
     }
 
@@ -534,6 +535,16 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       }
     }
   }, [textUnderline, textLineThrough]);
+
+  useEffect(() => {
+    const borderTypes = ['borderWidth', 'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth'];
+    for (const key of borderTypes) {
+      if (value[key] > 0) {
+        handleChangingBorderWidth(value[key]);
+        return;
+      }
+    }
+  }, [borderType]);
 
   const widthSizeMode = useMemo(() => {
     const { flexGrow, alignSelf, flexBasis, width } = value;
@@ -1166,40 +1177,40 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     setBorderVisible(false);
   }
 
+  function handleSelectingBorderType(borderType: string) {
+    setBorderType(borderType);
+  }
+
+  function handleSelectingBorderStyle(val: string) {
+    if (onChange) {
+      onChange({
+        ...value,
+        borderStyle: val
+      });
+    }
+  }
+
+  function handleChangingBorderWidth(val: number) {
+    if (!borderType) {
+      return;
+    }
+    delete value.borderWidth;
+    delete value.borderTopWidth;
+    delete value.borderRightWidth;
+    delete value.borderBottomWidth;
+    delete value.borderLeftWidth;
+
+    if (onChange) {
+      onChange({
+        ...value,
+        [`${borderType}Width`]: val
+      });
+    }
+  }
+
   function renderBorder() {
     if (!config.border) {
       return null;
-    }
-
-    function handleSelectingBorderType(borderType: string) {
-      setBorderType(borderType);
-    }
-
-    function handleSelectingBorderStyle(val: string) {
-      if (onChange) {
-        onChange({
-          ...value,
-          borderStyle: val
-        });
-      }
-    }
-
-    function handleChangingBorderWidth(val: number) {
-      if (!borderType) {
-        return;
-      }
-      delete value.border;
-      delete value.borderTop;
-      delete value.borderRight;
-      delete value.borderBottom;
-      delete value.borderLeft;
-
-      if (onChange) {
-        onChange({
-          ...value,
-          [borderType]: val
-        });
-      }
     }
 
     return (
