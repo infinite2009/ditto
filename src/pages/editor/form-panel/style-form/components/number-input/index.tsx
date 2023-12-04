@@ -8,9 +8,10 @@ export interface INumberInputProps {
   icon?: ReactNode;
   onChange?: (data: number) => void;
   value?: number;
+  disabled?: boolean;
 }
 
-export default function NumberInput({ value, onChange, icon }: INumberInputProps) {
+export default function NumberInput({ disabled, value, onChange, icon }: INumberInputProps) {
   const [bordered, setBordered] = useState<boolean>(false);
 
   const inputClass = useMemo(() => {
@@ -36,6 +37,7 @@ export default function NumberInput({ value, onChange, icon }: INumberInputProps
   return (
     <InputNumber
       className={inputClass}
+      disabled={disabled}
       prefix={icon}
       value={value}
       onFocus={handleFocus}
