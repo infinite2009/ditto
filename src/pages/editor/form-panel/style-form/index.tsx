@@ -748,8 +748,8 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     if (onChange) {
       onChange({
         ...value,
-        paddingLeft: val,
-        paddingRight: val
+        paddingTop: val,
+        paddingBottom: val
       });
     }
   }
@@ -758,8 +758,8 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     if (onChange) {
       onChange({
         ...value,
-        paddingTop: val,
-        paddingBottom: val
+        paddingLeft: val,
+        paddingRight: val
       });
     }
   }
@@ -898,25 +898,25 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
             <div className={styles.row}>
               <NumberInput
                 icon={<Gap className={styles.icon} />}
-                value={value.rowGap as number}
-                onChange={handleChangingRowGap}
+                value={value.columnGap as number}
+                onChange={handleChangingColumnGap}
               />
               <NumberInput
                 icon={<Gap className={iconClass} />}
-                value={value.columnGap as number}
-                onChange={handleChangingColumnGap}
+                value={value.rowGap as number}
+                onChange={handleChangingRowGap}
               />
             </div>
           ) : null}
           {config.layout.padding ? (
             <div className={styles.row}>
               <NumberInput
-                icon={<Padding className={styles.icon} value={value.paddingLeft} />}
-                onChange={handleChangingRowPadding}
+                icon={<Padding className={iconClass} value={value.paddingLeft} />}
+                onChange={handleChangingColumnPadding}
               />
               <NumberInput
-                icon={<Padding className={iconClass} value={value.paddingTop} />}
-                onChange={handleChangingColumnPadding}
+                icon={<Padding className={styles.icon} value={value.paddingTop} />}
+                onChange={handleChangingRowPadding}
               />
             </div>
           ) : null}
