@@ -1,6 +1,6 @@
-import { ColorPicker, Divider, Input, InputNumber, Popover, Select, Switch, Tooltip } from 'antd';
+import { Divider, Popover, Select, Tooltip } from 'antd';
 import classNames from 'classnames';
-import { CSSProperties, FC, useEffect, useMemo, useState } from 'react';
+import { CSSProperties, useEffect, useMemo, useState } from 'react';
 import NumberInput from '@/pages/editor/form-panel/style-form/components/number-input';
 
 import {
@@ -389,34 +389,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   const [textUnderline, setTextUnderline] = useState<boolean>();
   const [textLineThrough, setTextLineThrough] = useState<boolean>();
   const [borderWidth, setBorderWidth] = useState<number>();
-
-  const defaultStyleConfig: Record<
-    string,
-    {
-      name: string;
-      label: string;
-      component: FC<any>;
-    }
-  > = {
-    width: { name: 'width', label: '宽度', component: InputNumber },
-    height: { name: 'height', label: '高度', component: InputNumber },
-    padding: { name: 'padding', label: '内边距', component: InputNumber },
-    // margin: { name: 'margin', label: '外边距', component: InputNumber },
-    backgroundColor: { name: 'backgroundColor', label: '背景色', component: ColorPicker },
-    backgroundImage: { name: 'backgroundImage', label: '背景图片', component: Input },
-    color: { name: 'color', label: '字体颜色', component: InputNumber },
-    fontSize: { name: 'fontSize', label: '字号', component: InputNumber },
-    fontWeight: { name: 'fontWeight', label: '字重', component: InputNumber },
-    textAlign: { name: 'textAlign', label: '文字对齐', component: Select },
-    flexGrow: { name: 'flexGrow', label: '伸展', component: Switch },
-    flexShrink: { name: 'flexShrink', label: '收缩', component: Switch },
-    alignItems: { name: 'alignItems', label: '子元素主轴对齐', component: Select },
-    alignSelf: { name: 'alignSelf', label: '主轴对齐', component: Select },
-    justifyContent: { name: 'justifyContent', label: '交叉轴对齐', component: Select },
-    flexDirection: { name: 'flexDirection', label: '方向', component: Select },
-    flexWrap: { name: 'flexWrap', label: '换行', component: Switch },
-    flexBasis: { name: 'flexBasis', label: '基准宽度', component: InputNumber }
-  };
+  const [borderStyle, setBorderStyle] = useState<'solid' | 'dashed'>();
 
   useEffect(() => {
     // 初始化表单值
@@ -455,7 +428,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       if (`${key}Width` in value) {
         setBorderType(key);
         setBorderWidth(value[`${key}Width`]);
-        console.log('border width: ', value[key]);
+      }
+      if (`${key}Style` in value) {
+        setBorderStyle(value[`${key}Style`]);
       }
     }
 
@@ -537,11 +512,13 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }, [textUnderline, textLineThrough]);
 
   useEffect(() => {
-    const borderTypes = ['borderWidth', 'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth'];
+    const borderTypes = ['border', 'borderTop', 'borderRight', 'borderBottom', 'borderLeft'];
     for (const key of borderTypes) {
-      if (value[key] > 0) {
-        handleChangingBorderWidth(value[key]);
-        return;
+      if (value[`${key}Width`] > 0) {
+        handleChangingBorderWidth(value[`${key}Width`]);
+      }
+      if (value[`${key}Style`]) {
+        handleSelectingBorderStyle(value[`${key}Style`]);
       }
     }
   }, [borderType]);
@@ -1182,10 +1159,16 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   function handleSelectingBorderStyle(val: string) {
+    delete value.borderStyle;
+    delete value.borderTopStyle;
+    delete value.borderRightStyle;
+    delete value.borderBottomStyle;
+    delete value.borderLeftStyle;
+
     if (onChange) {
       onChange({
         ...value,
-        borderStyle: val
+        [`${borderType}Style`]: val
       });
     }
   }
@@ -1280,14 +1263,14 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                   <Line
                     className={classNames({
                       [styles.icon]: true,
-                      [styles.iconSelected]: value?.borderStyle === 'solid'
+                      [styles.iconSelected]: borderStyle === 'solid'
                     })}
                     onClick={() => handleSelectingBorderStyle('solid')}
                   />
                   <DashedLine
                     className={classNames({
                       [styles.icon]: true,
-                      [styles.iconSelected]: value?.borderStyle === 'dashed'
+                      [styles.iconSelected]: borderStyle === 'dashed'
                     })}
                     onClick={() => handleSelectingBorderStyle('dashed')}
                   />
