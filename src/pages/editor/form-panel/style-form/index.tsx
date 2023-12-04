@@ -153,6 +153,198 @@ const textSizeOptions = [
   }
 ];
 
+const indicatingColors = [
+  {
+    category: '主色',
+    data: [
+      {
+        name: '主色/colorPrimary',
+        value: '#00aeecff'
+      },
+      {
+        name: '主色/colorPrimaryHover',
+        value: '#00aeecbf'
+      },
+      {
+        name: '主色/colorPrimaryActive',
+        value: '#008ac5ff'
+      },
+      {
+        name: '主色/colorPrimaryDisabled',
+        value: '#00aeec80'
+      },
+      {
+        name: '主色/colorPrimaryHighlight',
+        value: '#00aeec14'
+      }
+    ]
+  },
+  {
+    category: '成功',
+    data: [
+      {
+        name: '成功/colorSuccess',
+        value: '#2ac864ff'
+      },
+      {
+        name: '成功/colorSuccessHover',
+        value: '#2ac864bf'
+      },
+      {
+        name: '成功/colorSuccessActive',
+        value: '#0eb350ff'
+      },
+      {
+        name: '成功/colorSuccessDisabled',
+        value: '#2ac864bf'
+      },
+      {
+        name: '成功/colorSuccessHighlight',
+        value: '#2ac86414'
+      }
+    ]
+  },
+  {
+    category: '警示',
+    data: [
+      {
+        name: '警示/colorWarning',
+        value: '#ff7f24ff'
+      },
+      {
+        name: '警示/colorWarningHover',
+        value: '#ff7f24bf'
+      },
+      {
+        name: '警示/colorWarningActive',
+        value: '#e95b03ff'
+      },
+      {
+        name: '警示/colorWarningDisabled',
+        value: '#ff7f2480'
+      },
+      {
+        name: '警示/colorWarningHighlight',
+        value: '#2ac86414'
+      }
+    ]
+  },
+  {
+    category: '错误',
+    data: [
+      {
+        name: '错误/colorError',
+        value: '#f85a54ff'
+      },
+      {
+        name: '错误/colorErrorHover',
+        value: '#f85a54bf'
+      },
+      {
+        name: '错误/colorErrorActive',
+        value: '#e23d3dff'
+      },
+      {
+        name: '错误/colorErrorDisabled',
+        value: '#f85a5480'
+      },
+      {
+        name: '错误/colorErrorHighlight',
+        value: '#f85a5414'
+      }
+    ]
+  }
+];
+
+const colors = [
+  {
+    category: '背景',
+    data: [
+      {
+        name: '一级白色/colorBgBase',
+        value: 'rgb(255, 255, 255)'
+      },
+      {
+        name: '二级亮灰/colorBgBright',
+        value: 'rgb(246, 247, 248)'
+      },
+      {
+        name: '三级灰色/colorBgLight',
+        value: 'rgb(241, 242, 243)'
+      },
+      {
+        name: '灰色控件/colorBgWeak',
+        value: 'rgb(227, 229, 231)'
+      },
+      {
+        name: '雪白控件/colorBgSnow',
+        value: 'rgb(255, 255, 255)'
+      },
+      {
+        name: '绝对白色/colorBgWhite',
+        value: 'rgb(255, 255, 255)'
+      },
+      {
+        name: '凹陷的亮灰/colorBgSunkenBright',
+        value: 'rgb(246, 247, 248)'
+      },
+      {
+        name: '凹陷的灰色/colorBgSunkenLight',
+        value: 'rgb(241, 242, 243)'
+      },
+      {
+        name: '浮层一级/colorFloat',
+        value: 'rgb(246, 247, 248)'
+      },
+      {
+        name: '浮层二级/colorFloatSecondary',
+        value: 'rgb(246, 247, 248)'
+      },
+      {
+        name: '浮层三级/colorFloatTertiary',
+        value: 'rgb(246, 247, 248)'
+      },
+      {
+        name: '浮层深色/colorFloatDark',
+        value: 'rgb(246, 247, 248)'
+      },
+      {
+        name: '重遮罩/colorMaskBold',
+        value: 'rgb(246, 247, 248)'
+      },
+      {
+        name: '默认遮罩/colorMask',
+        value: 'rgb(246, 247, 248)'
+      },
+      {
+        name: '轻遮罩/colorMaskLight',
+        value: 'rgb(246, 247, 248)'
+      }
+    ]
+  },
+  ...indicatingColors
+];
+
+const borderOpt = [
+  {
+    category: '',
+    data: [
+      {
+        value: 'rgb(201, 204, 208)',
+        name: '重线框/colorBorderBold'
+      },
+      {
+        value: 'rgb(227, 229, 231)',
+        name: '默认线框/colorBorder'
+      },
+      {
+        value: 'rgb(241, 242, 243)',
+        name: '浅线框/colorBorderLight'
+      }
+    ]
+  }
+];
+
 export default function StyleForm({ onChange, value, config, parentDirection }: IStyleFormProps) {
   const [fillVisible, setFillVisible] = useState<boolean>();
   const [borderVisible, setBorderVisible] = useState<boolean>();
@@ -196,109 +388,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   const [textItalic, setTextItalic] = useState<boolean>();
   const [textUnderline, setTextUnderline] = useState<boolean>();
   const [textLineThrough, setTextLineThrough] = useState<boolean>();
-
-  const indicatingColors = [
-    {
-      category: '主色',
-      data: [
-        {
-          name: '主色/colorPrimary',
-          value: '#00aeecff'
-        },
-        {
-          name: '主色/colorPrimaryHover',
-          value: '#00aeecbf'
-        },
-        {
-          name: '主色/colorPrimaryActive',
-          value: '#008ac5ff'
-        },
-        {
-          name: '主色/colorPrimaryDisabled',
-          value: '#00aeec80'
-        },
-        {
-          name: '主色/colorPrimaryHighlight',
-          value: '#00aeec14'
-        }
-      ]
-    },
-    {
-      category: '成功',
-      data: [
-        {
-          name: '成功/colorSuccess',
-          value: '#2ac864ff'
-        },
-        {
-          name: '成功/colorSuccessHover',
-          value: '#2ac864bf'
-        },
-        {
-          name: '成功/colorSuccessActive',
-          value: '#0eb350ff'
-        },
-        {
-          name: '成功/colorSuccessDisabled',
-          value: '#2ac864bf'
-        },
-        {
-          name: '成功/colorSuccessHighlight',
-          value: '#2ac86414'
-        }
-      ]
-    },
-    {
-      category: '警示',
-      data: [
-        {
-          name: '警示/colorWarning',
-          value: '#ff7f24ff'
-        },
-        {
-          name: '警示/colorWarningHover',
-          value: '#ff7f24bf'
-        },
-        {
-          name: '警示/colorWarningActive',
-          value: '#e95b03ff'
-        },
-        {
-          name: '警示/colorWarningDisabled',
-          value: '#ff7f2480'
-        },
-        {
-          name: '警示/colorWarningHighlight',
-          value: '#2ac86414'
-        }
-      ]
-    },
-    {
-      category: '错误',
-      data: [
-        {
-          name: '错误/colorError',
-          value: '#f85a54ff'
-        },
-        {
-          name: '错误/colorErrorHover',
-          value: '#f85a54bf'
-        },
-        {
-          name: '错误/colorErrorActive',
-          value: '#e23d3dff'
-        },
-        {
-          name: '错误/colorErrorDisabled',
-          value: '#f85a5480'
-        },
-        {
-          name: '错误/colorErrorHighlight',
-          value: '#f85a5414'
-        }
-      ]
-    }
-  ];
+  const [borderWidth, setBorderWidth] = useState<number>();
 
   const defaultStyleConfig: Record<
     string,
@@ -330,7 +420,45 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   useEffect(() => {
     // 初始化表单值
-    const { width, height, gap, padding, direction, fontSize, lineHeight } = value;
+    const { borderColor, backgroundColor, width, height, gap, padding, direction, fontSize, lineHeight } = value;
+    // 设置背景色
+    const allColorsOpt = [];
+    colors.forEach(color => {
+      color.data.forEach(item => {
+        allColorsOpt.push(item);
+      });
+    });
+    const backgroundColorOpt = allColorsOpt.find(item => item.value === backgroundColor);
+    if (backgroundColorOpt) {
+      setFillVisible(true);
+      setFillColorObj(backgroundColorOpt);
+    } else {
+      setFillVisible(false);
+    }
+    // 设置线框
+    const allBorderOpt = [];
+    borderOpt.forEach(color => {
+      color.data.forEach(item => {
+        allBorderOpt.push(item);
+      });
+    });
+    const borderColorOpt = allBorderOpt.find(item => item.value === borderColor);
+    if (borderColorOpt) {
+      setBorderVisible(true);
+      setBorderColorObj(borderColorOpt);
+    } else {
+      setBorderVisible(false);
+    }
+
+    const borderTypes = ['border', 'borderLeft', 'borderTop', 'borderRight', 'borderBottom'];
+    for (const key of borderTypes) {
+      if (key in value) {
+        setBorderType(key);
+        setBorderWidth(value[key]);
+      }
+    }
+
+    // 设置文字大小
     const opt = textSizeOptions.find(item => item.fontSize === fontSize && item.lineHeight === lineHeight);
     if (opt) {
       setTextSizeObj(opt);
@@ -998,75 +1126,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       return null;
     }
 
-    const colors = [
-      {
-        category: '背景',
-        data: [
-          {
-            name: '一级白色/colorBgBase',
-            value: 'rgb(255, 255, 255)'
-          },
-          {
-            name: '二级亮灰/colorBgBright',
-            value: 'rgb(246, 247, 248)'
-          },
-          {
-            name: '三级灰色/colorBgLight',
-            value: 'rgb(241, 242, 243)'
-          },
-          {
-            name: '灰色控件/colorBgWeak',
-            value: 'rgb(227, 229, 231)'
-          },
-          {
-            name: '雪白控件/colorBgSnow',
-            value: 'rgb(255, 255, 255)'
-          },
-          {
-            name: '绝对白色/colorBgWhite',
-            value: 'rgb(255, 255, 255)'
-          },
-          {
-            name: '凹陷的亮灰/colorBgSunkenBright',
-            value: 'rgb(246, 247, 248)'
-          },
-          {
-            name: '凹陷的灰色/colorBgSunkenLight',
-            value: 'rgb(241, 242, 243)'
-          },
-          {
-            name: '浮层一级/colorFloat',
-            value: 'rgb(246, 247, 248)'
-          },
-          {
-            name: '浮层二级/colorFloatSecondary',
-            value: 'rgb(246, 247, 248)'
-          },
-          {
-            name: '浮层三级/colorFloatTertiary',
-            value: 'rgb(246, 247, 248)'
-          },
-          {
-            name: '浮层深色/colorFloatDark',
-            value: 'rgb(246, 247, 248)'
-          },
-          {
-            name: '重遮罩/colorMaskBold',
-            value: 'rgb(246, 247, 248)'
-          },
-          {
-            name: '默认遮罩/colorMask',
-            value: 'rgb(246, 247, 248)'
-          },
-          {
-            name: '轻遮罩/colorMaskLight',
-            value: 'rgb(246, 247, 248)'
-          }
-        ]
-      },
-      ...indicatingColors
-    ];
-
     return (
       <div className={styles.p12}>
         <div className={styles.titleWrapper}>
@@ -1112,26 +1171,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       return null;
     }
 
-    const borderOpt = [
-      {
-        category: '',
-        data: [
-          {
-            value: 'rgb(201, 204, 208)',
-            name: '重线框/colorBorderBold'
-          },
-          {
-            value: 'rgb(227, 229, 231)',
-            name: '默认线框/colorBorder'
-          },
-          {
-            value: 'rgb(241, 242, 243)',
-            name: '浅线框/colorBorderLight'
-          }
-        ]
-      }
-    ];
-
     function handleSelectingBorderType(borderType: string) {
       setBorderType(borderType);
     }
@@ -1146,10 +1185,19 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     }
 
     function handleChangingBorderWidth(val: number) {
+      if (!borderType) {
+        return;
+      }
+      delete value.border;
+      delete value.borderTop;
+      delete value.borderRight;
+      delete value.borderBottom;
+      delete value.borderLeft;
+
       if (onChange) {
         onChange({
           ...value,
-          borderWidth: val
+          [borderType]: val
         });
       }
     }
@@ -1183,40 +1231,40 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
               </Popover>
               <div className={styles.borderBar}>
                 <Border2
-                  className={classNames({ [styles.icon]: true, [styles.iconSelected]: borderType === 'all' })}
-                  onClick={() => handleSelectingBorderType('all')}
+                  className={classNames({ [styles.icon]: true, [styles.iconSelected]: borderType === 'border' })}
+                  onClick={() => handleSelectingBorderType('border')}
                 />
                 <SingleBorder
-                  className={classNames({ [styles.icon]: true, [styles.iconSelected]: borderType === 'left' })}
-                  onClick={() => handleSelectingBorderType('left')}
+                  className={classNames({ [styles.icon]: true, [styles.iconSelected]: borderType === 'borderLeft' })}
+                  onClick={() => handleSelectingBorderType('borderLeft')}
                 />
                 <SingleBorder
                   className={classNames({
                     [styles.r90]: true,
                     [styles.icon]: true,
-                    [styles.iconSelected]: borderType === 'top'
+                    [styles.iconSelected]: borderType === 'borderTop'
                   })}
-                  onClick={() => handleSelectingBorderType('top')}
+                  onClick={() => handleSelectingBorderType('borderTop')}
                 />
                 <SingleBorder
                   className={classNames({
                     [styles.r180]: true,
                     [styles.icon]: true,
-                    [styles.iconSelected]: borderType === 'right'
+                    [styles.iconSelected]: borderType === 'borderRight'
                   })}
-                  onClick={() => handleSelectingBorderType('right')}
+                  onClick={() => handleSelectingBorderType('borderRight')}
                 />
                 <SingleBorder
                   className={classNames({
                     [styles.r270]: true,
                     [styles.icon]: true,
-                    [styles.iconSelected]: borderType === 'bottom'
+                    [styles.iconSelected]: borderType === 'borderBottom'
                   })}
-                  onClick={() => handleSelectingBorderType('bottom')}
+                  onClick={() => handleSelectingBorderType('borderBottom')}
                 />
               </div>
               <div className={styles.row}>
-                <NumberInput icon={<Thickness />} onChange={handleChangingBorderWidth} />
+                <NumberInput icon={<Thickness />} value={borderWidth as number} onChange={handleChangingBorderWidth} />
                 <div className={styles.lineContainer}>
                   <Line
                     className={classNames({
