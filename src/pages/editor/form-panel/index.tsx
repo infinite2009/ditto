@@ -70,7 +70,7 @@ export default observer(() => {
     }
 
     const parentSchema = dslStore.dsl.componentIndexes[dslStore.selectedComponent.parentId];
-    const parentDirection = dslStore.dsl.props[parentSchema.id].vertical ? 'column' : 'row';
+    const parentDirection = dslStore.dsl.props[parentSchema.id].vertical.value ? 'column' : 'row';
 
     return (
       <StyleForm
