@@ -1,7 +1,6 @@
 import { ColorPicker, Divider, Input, InputNumber, Popover, Select, Switch, Tooltip } from 'antd';
 import classNames from 'classnames';
 import { CSSProperties, FC, useEffect, useMemo, useState } from 'react';
-import { isDifferent } from '@/util';
 import NumberInput from '@/pages/editor/form-panel/style-form/components/number-input';
 
 import {
@@ -183,10 +182,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   const [borderType, setBorderType] = useState<string>();
 
-  const [borderWidth, setBorderWidth] = useState<number>(0);
-
-  const [valueState, setValueState] = useState<CSSProperties>({});
-
   const [itemsAlignmentState, setItemsAlignmentState] = useState<ItemsAlignment | ItemsAlignment2>();
 
   const [spaceArrangement, setSpaceArrangement] = useState<SpaceArrangement>();
@@ -201,6 +196,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   const [textItalic, setTextItalic] = useState<boolean>();
   const [textUnderline, setTextUnderline] = useState<boolean>();
   const [textLineThrough, setTextLineThrough] = useState<boolean>();
+
   const indicatingColors = [
     {
       category: '主色',
@@ -333,7 +329,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   };
 
   useEffect(() => {
-    setValueState({ ...value });
     // 初始化表单值
     const { width, height, gap, padding, direction, fontSize, lineHeight } = value;
     const opt = textSizeOptions.find(item => item.fontSize === fontSize && item.lineHeight === lineHeight);
@@ -343,37 +338,47 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }, [value]);
 
   useEffect(() => {
-    setValueState({
-      ...valueState,
-      textAlign: textAlignment
-    });
+    if (onChange) {
+      onChange({
+        ...value,
+        textAlign: textAlignment
+      });
+    }
   }, [textAlignment]);
 
   useEffect(() => {
     if (textBold) {
-      setValueState({
-        ...valueState,
-        fontWeight: 600
-      });
+      if (onChange) {
+        onChange({
+          ...value,
+          fontWeight: 600
+        });
+      }
     } else {
-      delete valueState.fontWeight;
-      setValueState({
-        ...valueState
-      });
+      delete value.fontWeight;
+      if (onChange) {
+        onChange({
+          ...value
+        });
+      }
     }
   }, [textBold]);
 
   useEffect(() => {
     if (textItalic) {
-      setValueState({
-        ...valueState,
-        fontStyle: 'italic'
-      });
+      if (onChange) {
+        onChange({
+          ...value,
+          fontStyle: 'italic'
+        });
+      }
     } else {
-      delete valueState.fontStyle;
-      setValueState({
-        ...valueState
-      });
+      delete value.fontStyle;
+      if (onChange) {
+        onChange({
+          ...value
+        });
+      }
     }
   }, [textItalic]);
 
@@ -386,48 +391,66 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       arr.push('line-through');
     }
     if (arr.length > 0) {
-      setValueState({
-        ...valueState,
-        textDecoration: arr.join(' ')
-      });
+      if (onChange) {
+        onChange({
+          ...value,
+          textDecoration: arr.join(' ')
+        });
+      }
     } else {
-      delete valueState.textDecoration;
-      setValueState({
-        ...valueState
-      });
+      delete value.textDecoration;
+      if (onChange) {
+        onChange({
+          ...value
+        });
+      }
     }
   }, [textUnderline, textLineThrough]);
 
-  useEffect(() => {
-    if (onChange && isDifferent(valueState, value)) {
-      onChange(valueState);
-    }
-  }, [valueState]);
-
   const widthSizeMode = useMemo(() => {
-    const { flexGrow, flexBasis, width } = valueState;
-    if (flexGrow > 0) {
-      return 'fill';
+    const { flexGrow, alignSelf, flexBasis, width } = value;
+    if (parentDirection === 'row') {
+      // 如果是方向是 row, 判断flexGrow，
+      if (flexGrow > 0) {
+        return 'fill';
+      }
+    } else {
+      if (alignSelf === 'stretch') {
+        return 'fill';
+      }
     }
-    if (width > 0 && flexBasis > 0) {
+    if (width > 0 || flexBasis > 0) {
       return 'fixed';
     }
     return 'hug';
-  }, [valueState]);
+  }, [value]);
 
-  const styleConfig = useMemo(() => {
-    if (config && Object.keys(config).length > 0) {
-      return Object.entries(config);
+  const heightSizeMode = useMemo(() => {
+    const { flexGrow, alignSelf, flexBasis, height } = value;
+    if (parentDirection === 'row') {
+      if (alignSelf === 'stretch') {
+        return 'fill';
+      }
+    } else {
+      if (flexGrow > 0) {
+        return 'fill';
+      }
     }
-    return [];
-  }, [config]);
+    if (height > 0 || flexBasis > 0) {
+      return 'fixed';
+    }
 
-  function handleChangeStyle(value: number | string, key: string) {
+    return 'hug';
+  }, [value]);
+
+  function handleChangeStyle(val: number | string, key: string) {
     const newValueState = {
-      ...valueState,
-      [key]: value
+      ...value,
+      [key]: val
     };
-    setValueState(newValueState);
+    if (onChange) {
+      onChange(newValueState);
+    }
   }
 
   function handleSelectingSpaceArrangement(val: SpaceArrangement) {
@@ -435,7 +458,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   function renderItemsAlignment() {
-    const { direction } = valueState;
+    const { direction } = value;
     let tpl: JSX.Element;
 
     const iconClassObj = {
@@ -482,24 +505,26 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   function isStart(key: string) {
-    return valueState[key] === 'start' || valueState[key] === 'flex-start';
+    return value[key] === 'start' || value[key] === 'flex-start';
   }
 
   function isEnd(key: string) {
-    return valueState[key] === 'end' || valueState[key] === 'flex-end';
+    return value[key] === 'end' || value[key] === 'flex-end';
   }
 
   function isCenter(key: string) {
-    return valueState[key] === 'center';
+    return value[key] === 'center';
   }
 
   function handleSelectingItemsAlignment(val: ItemsAlignment | ItemsAlignment2) {
     const { alignItems, justifyContent } = itemsAlignmentDict[val];
-    setValueState({
-      ...valueState,
-      alignItems,
-      justifyContent
-    });
+    if (onChange) {
+      onChange({
+        ...value,
+        alignItems,
+        justifyContent
+      });
+    }
   }
 
   function handlePreviewItemsAlignment(val: ItemsAlignment | ItemsAlignment2) {
@@ -664,7 +689,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   function handleSelectingSizeMode(val: string, type: 'width' | 'height') {
-    const newValueState = { ...valueState };
+    const newValueState = { ...value };
 
     if (val === 'fill') {
       if (parentDirection === 'row') {
@@ -696,41 +721,51 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       }
     }
 
-    setValueState(newValueState);
+    if (onChange) {
+      onChange(newValueState);
+    }
   }
 
   function handleChangingRowGap(val: number) {
-    setValueState({
-      ...valueState,
-      rowGap: val
-    });
+    if (onChange) {
+      onChange({
+        ...value,
+        rowGap: val
+      });
+    }
   }
 
   function handleChangingColumnGap(val: number) {
-    setValueState({
-      ...valueState,
-      columnGap: val
-    });
+    if (onChange) {
+      onChange({
+        ...value,
+        columnGap: val
+      });
+    }
   }
 
   function handleChangingRowPadding(val: number) {
-    setValueState({
-      ...valueState,
-      paddingLeft: val,
-      paddingRight: val
-    });
+    if (onChange) {
+      onChange({
+        ...value,
+        paddingLeft: val,
+        paddingRight: val
+      });
+    }
   }
 
   function handleChangingColumnPadding(val: number) {
-    setValueState({
-      ...valueState,
-      paddingTop: val,
-      paddingBottom: val
-    });
+    if (onChange) {
+      onChange({
+        ...value,
+        paddingTop: val,
+        paddingBottom: val
+      });
+    }
   }
 
   function showAlignmentPreview() {
-    const { justifyContent } = valueState;
+    const { justifyContent } = value;
     return justifyContent !== 'space-between' && justifyContent !== 'space-around';
   }
 
@@ -739,7 +774,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       return null;
     }
 
-    const { direction } = valueState;
+    const { direction } = value;
 
     const iconClass = classNames({
       [styles.r90]: true,
@@ -803,14 +838,16 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
           <div className={styles.row}>
             {config.layout.width ? (
               <NumberInput
-                value={valueState.width as number}
+                disabled={widthSizeMode !== 'fixed'}
+                value={value.width as number}
                 icon={<Width className={styles.numberIcon} />}
                 onChange={data => handleChangeStyle(data, 'width')}
               />
             ) : null}
             {config.layout.height ? (
               <NumberInput
-                value={valueState.height as number}
+                disabled={heightSizeMode !== 'fixed'}
+                value={value.height as number}
                 icon={<Height />}
                 onChange={data => handleChangeStyle(data, 'height')}
               />
@@ -830,7 +867,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
             {config.layout.heightGrow ? (
               <Select
                 bordered={false}
-                value={widthSizeMode}
+                value={heightSizeMode}
                 optionLabelProp="tag"
                 popupMatchSelectWidth={false}
                 onSelect={(val: string) => handleSelectingSizeMode(val, 'height')}
@@ -861,12 +898,12 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
             <div className={styles.row}>
               <NumberInput
                 icon={<Gap className={styles.icon} />}
-                value={valueState.rowGap as number}
+                value={value.rowGap as number}
                 onChange={handleChangingRowGap}
               />
               <NumberInput
                 icon={<Gap className={iconClass} />}
-                value={valueState.columnGap as number}
+                value={value.columnGap as number}
                 onChange={handleChangingColumnGap}
               />
             </div>
@@ -874,11 +911,11 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
           {config.layout.padding ? (
             <div className={styles.row}>
               <NumberInput
-                icon={<Padding className={styles.icon} value={valueState.paddingLeft} />}
+                icon={<Padding className={styles.icon} value={value.paddingLeft} />}
                 onChange={handleChangingRowPadding}
               />
               <NumberInput
-                icon={<Padding className={iconClass} value={valueState.paddingTop} />}
+                icon={<Padding className={iconClass} value={value.paddingTop} />}
                 onChange={handleChangingColumnPadding}
               />
             </div>
@@ -889,21 +926,25 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   function handleSwitchDirection(direction: any) {
-    setValueState({
-      ...valueState,
-      direction
-    });
+    if (onChange) {
+      onChange({
+        ...value,
+        direction
+      });
+    }
   }
 
   function handleSwitchWrap(val: any) {
-    setValueState({
-      ...valueState,
-      flexWrap: val
-    });
+    if (onChange) {
+      onChange({
+        ...value,
+        flexWrap: val
+      });
+    }
   }
 
   function renderDirectionSwitch() {
-    const { direction } = valueState;
+    const { direction } = value;
     const rowSelectedClass = classNames({
       [styles.iconSelected]: (direction as string) === 'row',
       [styles.icon]: true
@@ -922,7 +963,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   function renderWrapSwitch() {
-    const { flexWrap } = valueState;
+    const { flexWrap } = value;
     const wrapClass = classNames({
       [styles.iconSelected]: (flexWrap as string) === 'wrap',
       [styles.icon]: true,
@@ -1096,10 +1137,21 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     }
 
     function handleSelectingBorderStyle(val: string) {
-      setValueState({
-        ...valueState,
-        borderStyle: val
-      });
+      if (onChange) {
+        onChange({
+          ...value,
+          borderStyle: val
+        });
+      }
+    }
+
+    function handleChangingBorderWidth(val: number) {
+      if (onChange) {
+        onChange({
+          ...value,
+          borderWidth: val
+        });
+      }
     }
 
     return (
@@ -1164,19 +1216,19 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                 />
               </div>
               <div className={styles.row}>
-                <NumberInput icon={<Thickness />} onChange={(data: number) => setBorderWidth(data)} />
+                <NumberInput icon={<Thickness />} onChange={handleChangingBorderWidth} />
                 <div className={styles.lineContainer}>
                   <Line
                     className={classNames({
                       [styles.icon]: true,
-                      [styles.iconSelected]: valueState?.borderStyle === 'solid'
+                      [styles.iconSelected]: value?.borderStyle === 'solid'
                     })}
                     onClick={() => handleSelectingBorderStyle('solid')}
                   />
                   <DashedLine
                     className={classNames({
                       [styles.icon]: true,
-                      [styles.iconSelected]: valueState?.borderStyle === 'dashed'
+                      [styles.iconSelected]: value?.borderStyle === 'dashed'
                     })}
                     onClick={() => handleSelectingBorderStyle('dashed')}
                   />
@@ -1371,19 +1423,23 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   function handleSelectingFillColor(val: { name: string; value: string }) {
     setFillColorObj(val);
-    setValueState({
-      ...valueState,
-      backgroundColor: val.value
-    });
+    if (onChange) {
+      onChange({
+        ...value,
+        backgroundColor: val.value
+      });
+    }
     setFillOpen(false);
   }
 
   function handleSelectingBorderColor(val: { name: string; value: string }) {
     setBorderColorObj(val);
-    setValueState({
-      ...valueState,
-      borderColor: val.value
-    });
+    if (onChange) {
+      onChange({
+        ...value,
+        borderColor: val.value
+      });
+    }
     setBorderOpen(false);
   }
 
@@ -1393,10 +1449,12 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   function handleSelectingTextColor(val: { name: string; value: string }) {
     setTextColorObj(val);
-    setValueState({
-      ...valueState,
-      color: val.value
-    });
+    if (onChange) {
+      onChange({
+        ...value,
+        color: val.value
+      });
+    }
     setTextColorOpen(false);
   }
 
@@ -1435,11 +1493,13 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   function handleSelectingTextSize(size: { fontSize: number; lineHeight: string; name: string }) {
     setTextSizeObj(size);
     const { fontSize, lineHeight } = size;
-    setValueState({
-      ...valueState,
-      fontSize,
-      lineHeight
-    });
+    if (onChange) {
+      onChange({
+        ...value,
+        fontSize,
+        lineHeight
+      });
+    }
     setTextOpen(false);
   }
 
