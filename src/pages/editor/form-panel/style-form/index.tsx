@@ -838,6 +838,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
             delete newValueState.flexGrow;
           }
         }
+        delete newValueState[type];
         if (onChange) {
           doChange(newValueState);
         }
