@@ -80,7 +80,9 @@ export default observer(function EditWrapper({
       'right',
       'bottom',
       'left',
-      'inset'
+      'inset',
+      'flexGrow',
+      'alignSelf'
     ];
     styleNames.forEach(name => {
       if (childrenStyle?.[name] !== undefined) {
@@ -160,17 +162,19 @@ export default observer(function EditWrapper({
     }
 
     // 处理Flex布局的拉伸问题
-    if (wrapperElement.parentElement) {
-      const computedParentStyle = getComputedStyle(wrapperElement.parentElement);
-      const alignItems = computedParentStyle.alignItems;
-      if (alignItems === 'stretch' || alignItems === 'normal') {
-        if (computedParentStyle.flexDirection === 'column') {
-          childElement.style.width = '100%';
-        } else {
-          childElement.style.height = '100%';
-        }
-      }
-    }
+    // if (wrapperElement.parentElement) {
+    //   const computedParentStyle = getComputedStyle(wrapperElement.parentElement);
+    //   const alignItems = computedParentStyle.alignItems;
+    //   if (alignItems === 'stretch' || alignItems === 'normal') {
+    //     if (computedParentStyle.flexDirection === 'column') {
+    //       childElement.style.width = '100%';
+    //     } else {
+    //       childElement.style.height = '100%';
+    //     }
+    //   }
+    // }
+    childElement.style.width = '100%';
+    childElement.style.height = '100%';
 
     // 处理定位问题
     if (!result.position) {
