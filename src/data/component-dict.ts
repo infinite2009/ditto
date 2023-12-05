@@ -53,7 +53,6 @@ import {
 } from 'antd';
 import { CodeSandboxOutlined } from '@ant-design/icons';
 import IComponentConfig from '@/types/component-config';
-import { createCamelotComponent } from '@/components/camelot';
 import PageRoot from '@/components/page-root';
 import Container from '@/components/container';
 import { camelotComponentConfig } from '@/service/load-config/camelot';
@@ -342,10 +341,6 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '样式',
         category: 'style',
         value: {},
-        composition: {
-          defaultCategory: 'style',
-          options: {}
-        },
         valueType: 'object',
         valueSource: 'editorInput'
       },
@@ -375,6 +370,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     title: '文字',
     icon: CodeSandboxOutlined,
     propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
       copyable: {
         id: 'copyable',
         schemaType: 'props',
@@ -481,6 +486,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     title: '段落',
     icon: CodeSandboxOutlined,
     propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
       copyable: {
         id: 'copyable',
         schemaType: 'props',
@@ -587,6 +602,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     title: '标题',
     icon: CodeSandboxOutlined,
     propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
       copyable: {
         id: 'copyable',
         schemaType: 'props',

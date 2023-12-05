@@ -1,0 +1,302 @@
+.title {
+  padding: 4px;
+  font-family: PingFang SC;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #18191c;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  margin: 8px 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  gap: 24px;
+}
+
+.m8 {
+  margin: 8px 0;
+}
+
+.p12 {
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f2f3;
+}
+
+.m18 {
+  margin: 18px 0;
+}
+
+.alignmentGrid {
+  display: flex;
+  width: 68px;
+  height: 68px;
+  padding: 4px;
+  justify-content: space-between;
+  align-items: flex-start;
+  align-content: flex-start;
+  row-gap: 2px;
+  flex-wrap: wrap;
+  border: 1px solid #f1f2f3;
+  border-radius: 4px;
+  .icon {
+    height: 18px;
+    width: 18px;
+  }
+}
+
+.dot {
+  position: relative;
+  width: 18px;
+  height: 18px;
+
+  &:before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2.4px;
+    height: 2.4px;
+    transform: translate(-50%, -50%);
+    content: "";
+    border-radius: 1.2px;
+    background-color: #e3e5e7;
+  }
+}
+
+.r90 {
+  transform: rotate(90deg);
+}
+
+.r180 {
+  transform: rotate(180deg);
+}
+
+.r270 {
+  transform: rotate(270deg);
+}
+
+.alignEnd {
+  transform: rotateX(180deg);
+}
+
+.rDiagonal180 {
+  transform: rotate(-1, -1, 0, 180deg);
+}
+
+.iconSelected {
+  color: #18191c;
+  background-color: #f6f7f8;
+}
+
+.f20 {
+  font-size: 20px !important;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  width: 20px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 16px;
+  color: #9499a0;
+  &.selected {
+    color: #1A4BFF;
+    background-color: #fff;
+    &:hover {
+      background-color: #fff;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+    background-color: #F6F7F8;
+  }
+}
+
+.textBtnBar {
+  .row();
+  gap: initial;
+  border: none;
+  background-color: #f6f7f8;
+  border-radius: 4px;
+  height: 28px;
+  padding: 4px;
+  justify-content: space-between;
+}
+
+.borderBar {
+  .row();
+  padding: 8px 0;
+  height: 40px;
+  gap: 8px;
+  .icon {
+    font-size: 20px;
+  }
+}
+
+.lineContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-grow: 1;
+  margin: 0 12px 0 8px;
+}
+
+.fillContainer,
+.shadowContainer,
+.borderContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin: 0 16px;
+}
+
+.deleteIcon {
+  .icon();
+  margin: 4px 0;
+}
+
+.numberIcon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #9499a0;
+}
+
+.adjustmentContainer {
+  .row();
+  gap: 12px;
+}
+
+.wrapContainer {
+  .row();
+  gap: 12px;
+}
+
+.directionContainer {
+  .row();
+  gap: 12px;
+}
+
+.sizeSelector {
+  .row();
+  gap: 16px;
+}
+
+.colorPalette {
+  width: 200px;
+  padding: 8px;
+
+  .categoryContainer:last-of-type {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .categoryContainer:first-of-type {
+    padding-top: 0;
+    border-top: none;
+  }
+}
+
+.categoryContainer {
+  border-top: 1px solid #f1f2f3;
+  padding: 12px 0;
+}
+
+.categoryTitle {
+  margin-bottom: 6px;
+  font-family: PingFang SC, serif;
+  font-size: 12px;
+  line-height: 16px;
+  color: #61666d;
+}
+
+.colorContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 4px;
+}
+
+.color {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: 1px solid #e3e5e7;
+  cursor: pointer;
+}
+
+.colorResult {
+  display: flex;
+  flex-direction: row;
+  height: 28px;
+  width: 220px;
+  padding: 4px;
+  border-radius: 4px;
+  background-color: #f6f7f8;
+}
+
+.colorTitle {
+  padding: 2px 6px;
+  font-size: 12px;
+  line-height: 16px;
+  color: #18191c;
+  cursor: pointer;
+}
+
+.textSizeResult {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 28px;
+}
+
+.text {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.textStyle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 24px;
+  gap: 8px;
+}

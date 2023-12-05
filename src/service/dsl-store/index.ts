@@ -106,17 +106,12 @@ export default class DSLStore {
     };
     Object.keys(props || {}).forEach(key => {
       const propSchema: IPropsSchema = props[key];
-      const { value, composition, category } = propSchema;
+      const { value, category } = propSchema;
       if (result[category]) {
-        // 如果该 props 是由多个配置组成的
-        if (composition) {
-          const { options = {}, defaultCategory = 'basic' } = composition;
-          Object.entries(value as unknown as Record<string, any>).forEach(([name, val]) => {
-            const category = options[name] || defaultCategory;
-            if (category) {
-              (result[category] as Record<string, any>)[name] = val;
-            }
-          });
+        if (key === 'style') {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          result[category] = value;
         } else {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
@@ -580,20 +575,11 @@ export default class DSLStore {
   }
 
   @execute
-  updateComponentProps(propsPartial: Record<string, { value: any; propsToCompose?: string }> | CSSProperties) {
+  updateComponentProps(propsPartial: Record<string, any> | CSSProperties) {
     const props = this.dsl.props[this.selectedComponent.id];
     Object.entries(propsPartial).forEach(([key, val]) => {
-      // 如果有 propsToCompose，说明当前 props 是一个对象
-      if (val.propsToCompose) {
-        const propsName = val.propsToCompose;
-        if (!props[propsName].value) {
-          props[propsName].value = {};
-        }
-        (props[propsName].value as Record<string, any>)[key] = val.value;
-      } else {
-        if (props[key]) {
-          props[key].value = val.value;
-        }
+      if (props[key]) {
+        props[key].value = val;
       }
     });
   }

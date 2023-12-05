@@ -193,3 +193,29 @@ export function generateContextMenus(
       return [[COPY_MENU, RENAME_MENU], [visible ? HIDE_MENU : SHOW_MENU], [DELETE_MENU]];
   }
 }
+
+export function isDifferent(a: any, b: any) {
+  // 判断两个值的类型是否相同
+  if (typeof a !== typeof b) return true;
+
+  // 如果两个值都是对象（包括数组和普通对象）
+  if (typeof a === 'object' && a !== null && b !== null) {
+    // 获取两个对象的键
+    const keysA = Object.keys(a);
+    const keysB = Object.keys(b);
+
+    // 如果两个对象的键的数量不同，那么它们就是不同的
+    if (keysA.length !== keysB.length) return true;
+
+    // 检查每一个键，看看它们在两个对象中是否有相同的值
+    for (const key of keysA) {
+      if (isDifferent(a[key], b[key])) return true;
+    }
+
+    // 如果所有的键都有相同的值，那么两个对象是相同的
+    return false;
+  }
+
+  // 对于所有非对象的值，我们可以简单地检查它们是否相等
+  return a !== b;
+}

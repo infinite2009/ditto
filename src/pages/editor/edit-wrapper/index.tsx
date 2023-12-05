@@ -6,19 +6,17 @@ import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import classNames from 'classnames';
 
 import { observer } from 'mobx-react';
-import ComponentContextMenu from '@/pages/editor/component-context-menu';
 import IComponentSchema from '@/types/component.schema';
 import { message } from 'antd';
 import styles from './index.module.less';
-import { generateContextMenus } from '@/util';
 
 export interface IEditorProps {
+  children: React.ReactNode;
+  childrenId?: string[];
+  childrenStyle?: CSSProperties;
+  feature?: ComponentFeature;
   id: string;
   parentId: string;
-  childrenId?: string[];
-  children: React.ReactNode;
-  feature?: ComponentFeature;
-  childrenStyle?: CSSProperties;
   undeletable?: boolean;
 }
 
@@ -285,22 +283,22 @@ export default observer(function EditWrapper({
   }
 
   return (
-    <ComponentContextMenu
-      data={dslStore.dsl.componentIndexes[id]}
-      onClick={handleClickContextMenu}
-      items={generateContextMenus(feature, editorStore.isVisible(id), editorStore.hasCopiedComponent)}
+    // <ComponentContextMenu
+    //   data={dslStore.dsl.componentIndexes[id]}
+    //   onClick={handleClickContextMenu}
+    //   items={generateContextMenus(feature, editorStore.isVisible(id), editorStore.hasCopiedComponent)}
+    // >
+    <div
+      className={className}
+      id={id}
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      style={styleState}
+      onClick={handleClick}
     >
-      <div
-        className={className}
-        id={id}
-        ref={setNodeRef}
-        {...listeners}
-        {...attributes}
-        style={styleState}
-        onClick={handleClick}
-      >
-        {children}
-      </div>
-    </ComponentContextMenu>
+      {children}
+    </div>
+    // </ComponentContextMenu>
   );
 });
