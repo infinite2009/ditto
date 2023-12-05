@@ -7,6 +7,10 @@ export interface FormItemSchema {
     [key: string]: any;
   };
   initialValue?: any;
+  // 这个 form 配置项将合并到哪个 props 上，此时该 props 是一个对象，如果没有这个配置，则不进行合并
+  propsToCompose?: string;
+  /** 描述信息 */
+  help?: string;
   name: string;
   // // 这个 form 配置项将合并到哪个 props 上，此时该 props 是一个对象，如果没有这个配置，则不进行合并
   // propsToCompose?: string;
