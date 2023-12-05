@@ -1,6 +1,6 @@
 import { Divider, Popover, Select, Tooltip } from 'antd';
 import classNames from 'classnames';
-import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 import NumberInput from '@/pages/editor/form-panel/style-form/components/number-input';
 
 import {
@@ -71,6 +71,8 @@ enum ItemsAlignment2 {
 type SpaceArrangement = 'sequence' | 'space-around' | 'space-between';
 
 type TextAlignment = 'left' | 'right' | 'center' | 'justify';
+
+type SizeMode = 'hug' | 'fill' | 'fixed';
 
 const itemsAlignmentDict = {
   [ItemsAlignment.topLeft]: {
@@ -420,6 +422,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   const [borderWidth, setBorderWidth] = useState<number>();
   const [borderStyle, setBorderStyle] = useState<'solid' | 'dashed'>();
 
+  const [widthSizeMode, setWidthSizeMode] = useState<SizeMode>();
+  const [heightSizeMode, setHeightSizeMode] = useState<SizeMode>();
+
   // 上次的value值
   const oldValueRef = useRef<Record<string, any>>(value);
 
@@ -429,7 +434,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     // }
     // oldValueRef.current = value;
     // 初始化表单值
-    const { textDecoration, fontStyle, fontWeight, color, borderColor, backgroundColor, fontSize, lineHeight } = value;
+    const { flexGrow, alignSelf, width, height, color, borderColor, backgroundColor, fontSize, lineHeight } = value;
     // 设置背景色
     const allColorsOpt = [];
     colors.forEach(color => {
@@ -488,9 +493,22 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       setTextSizeObj(undefined);
     }
 
-    // 处理文字效果
-    const textDecorationArr = ((textDecoration || '') as string).split(' ');
-    console.log('value changed: ', value);
+    // 如果是方向是 row, 判断flexGrow，
+    if ((parentDirection === 'row' && flexGrow > 0) || (parentDirection === 'column' && alignSelf === 'stretch')) {
+      setWidthSizeMode('fill');
+    } else if (width > 0) {
+      setWidthSizeMode('fixed');
+    } else {
+      setWidthSizeMode('hug');
+    }
+
+    if ((parentDirection === 'column' && flexGrow > 0) || (parentDirection === 'row' && alignSelf === 'stretch')) {
+      setHeightSizeMode('fill');
+    } else if (height > 0) {
+      setHeightSizeMode('fixed');
+    } else {
+      setHeightSizeMode('hug');
+    }
   }, [value]);
 
   useEffect(() => {
@@ -521,47 +539,25 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     }
   }, [borderType]);
 
-  const widthSizeMode = useMemo(() => {
-    const { flexGrow, alignSelf, flexBasis, width } = value;
+  function handleChangeSize(val: number | string, type: 'width' | 'height') {
+    const newValueState = value ? { ...value } : {};
+
     if (parentDirection === 'row') {
-      // 如果是方向是 row, 判断flexGrow，
-      if (flexGrow > 0) {
-        return 'fill';
+      if (type === 'width') {
+        delete newValueState.flexGrow;
+      } else {
+        delete newValueState.alignSelf;
       }
     } else {
-      if (alignSelf === 'stretch') {
-        return 'fill';
+      if (type === 'width') {
+        delete newValueState.alignSelf;
+      } else {
+        delete newValueState.flexGrow;
       }
     }
-    if (width > 0 || flexBasis > 0) {
-      return 'fixed';
-    }
-    return 'hug';
-  }, [value]);
 
-  const heightSizeMode = useMemo(() => {
-    const { flexGrow, alignSelf, flexBasis, height } = value;
-    if (parentDirection === 'row') {
-      if (alignSelf === 'stretch') {
-        return 'fill';
-      }
-    } else {
-      if (flexGrow > 0) {
-        return 'fill';
-      }
-    }
-    if (height > 0 || flexBasis > 0) {
-      return 'fixed';
-    }
+    newValueState[type] = val;
 
-    return 'hug';
-  }, [value]);
-
-  function handleChangeStyle(val: number | string, key: string) {
-    const newValueState = {
-      ...value,
-      [key]: val
-    };
     if (onChange) {
       doChange(newValueState);
     }
@@ -802,41 +798,58 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     );
   }
 
-  function handleSelectingSizeMode(val: string, type: 'width' | 'height') {
-    const newValueState = { ...value };
+  function handleSelectingSizeMode(val: SizeMode, type: 'width' | 'height') {
+    const newValueState = value ? { ...value } : {};
 
-    if (val === 'fill') {
-      if (parentDirection === 'row') {
-        if (type === 'width') {
-          newValueState.flexGrow = 1;
+    switch (val) {
+      case 'fill':
+        if (parentDirection === 'row') {
+          if (type === 'width') {
+            newValueState.flexGrow = 1;
+            delete newValueState.width;
+          } else {
+            newValueState.alignSelf = 'stretch';
+            delete newValueState.height;
+          }
         } else {
-          newValueState.alignSelf = 'stretch';
+          if (type === 'width') {
+            newValueState.alignSelf = 'stretch';
+            delete newValueState.width;
+          } else {
+            newValueState.flexGrow = 1;
+            delete newValueState.height;
+          }
         }
-      } else {
-        if (type === 'width') {
-          newValueState.alignSelf = 'stretch';
+        if (onChange) {
+          doChange(newValueState);
+        }
+        break;
+      case 'hug':
+        if (parentDirection === 'row') {
+          if (type === 'width') {
+            delete newValueState.flexGrow;
+          } else {
+            delete newValueState.alignSelf;
+          }
         } else {
-          newValueState.flexGrow = 1;
+          if (type === 'width') {
+            delete newValueState.alignSelf;
+          } else {
+            delete newValueState.flexGrow;
+          }
         }
-      }
-    } else {
-      if (parentDirection === 'row') {
-        if (type === 'width') {
-          delete newValueState.flexGrow;
-        } else {
-          delete newValueState.alignSelf;
+        if (onChange) {
+          doChange(newValueState);
         }
-      } else {
-        if (type === 'width') {
-          delete newValueState.alignSelf;
-        } else {
-          delete newValueState.flexGrow;
-        }
-      }
+        break;
+      case 'fixed':
+        // 技术限制，这里什么也不做
+        break;
     }
-
-    if (onChange) {
-      doChange(newValueState);
+    if (type === 'width') {
+      setWidthSizeMode(val);
+    } else {
+      setHeightSizeMode(val);
     }
   }
 
@@ -955,7 +968,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                 disabled={widthSizeMode !== 'fixed'}
                 value={value.width as number}
                 icon={<Width className={styles.numberIcon} />}
-                onChange={data => handleChangeStyle(data, 'width')}
+                onChange={data => handleChangeSize(data, 'width')}
               />
             ) : null}
             {config.layout.height ? (
@@ -963,7 +976,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                 disabled={heightSizeMode !== 'fixed'}
                 value={value.height as number}
                 icon={<Height />}
-                onChange={data => handleChangeStyle(data, 'height')}
+                onChange={data => handleChangeSize(data, 'height')}
               />
             ) : null}
           </div>
@@ -974,7 +987,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                 value={widthSizeMode}
                 optionLabelProp="tag"
                 popupMatchSelectWidth={false}
-                onSelect={(val: string) => handleSelectingSizeMode(val, 'width')}
+                onSelect={(val: string) => handleSelectingSizeMode(val as SizeMode, 'width')}
                 options={options}
               />
             ) : null}
@@ -984,7 +997,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                 value={heightSizeMode}
                 optionLabelProp="tag"
                 popupMatchSelectWidth={false}
-                onSelect={(val: string) => handleSelectingSizeMode(val, 'height')}
+                onSelect={(val: string) => handleSelectingSizeMode(val as SizeMode, 'height')}
                 options={options}
               />
             ) : null}
