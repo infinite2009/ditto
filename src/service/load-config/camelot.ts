@@ -7,6 +7,7 @@ interface PropsConfig {
   description: string;
   type: FormItemSchema['type'];
   defaultValue:string;
+  options?: {value: string; label: string}[];
 }
 interface ICamelotComponent {
   title: string;
@@ -114,22 +115,26 @@ export async function getCamelotComponentPropsFrom() {
           title: key,
           required: false,
           type: propConfig.type.includes('|') ? 'string' : propConfig.type,
-          component: component
+          component: component,
+          help: propConfig.description
         };
-        // enum 类型
-        if (propConfig.type.includes('|') && !BASE_TYPE_REG.test(propConfig.type)) {
+        if (propConfig.options && propConfig.options.length > 0) {
           Object.assign(formConfig[item.tag].schema.basic[key], {
             component: 'Select',
             componentProps: {
-              options: propConfig.type.split('|').map(value => {
+              options: propConfig.options.map(option => {
                 return {
-                  value: value,
-                  label:value
+                  value: option.value,
+                  label: option.label
                 };
               })
             }
           });
         }
+        // enum 类型
+        // if (propConfig.type.includes('|') && !BASE_TYPE_REG.test(propConfig.type)) {
+          
+        // }
       }
     });
   });
