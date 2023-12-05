@@ -1,6 +1,6 @@
 import { Divider, Popover, Select, Tooltip } from 'antd';
 import classNames from 'classnames';
-import { CSSProperties, useEffect, useMemo, useState } from 'react';
+import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import NumberInput from '@/pages/editor/form-panel/style-form/components/number-input';
 
 import {
@@ -41,6 +41,7 @@ import {
 } from '@/components/icon';
 import styles from './index.module.less';
 import { StyleFormConfig } from '@/types';
+import { isDifferent } from '@/util';
 
 export interface IStyleFormProps {
   config?: StyleFormConfig;
@@ -150,6 +151,38 @@ const textSizeOptions = [
     fontSize: 13,
     lineHeight: '20px',
     name: 'text-description · 13/20'
+  }
+];
+
+const textColorOptions = [
+  {
+    category: '',
+    data: [
+      {
+        name: '一级色字符/colorSymbolBase',
+        value: 'rgb(24, 25, 28)'
+      },
+      {
+        name: '二级色字符/colorSymbolBold',
+        value: 'rgb(97, 102, 109)'
+      },
+      {
+        name: '三级色字符/colorSymbolMedium',
+        value: 'rgb(148, 153, 160)'
+      },
+      {
+        name: '四级色字符/colorSymbolLight',
+        value: 'rgb(201, 204, 208)'
+      },
+      {
+        name: '绝对白色字符/colorSymbolWhite',
+        value: 'rgb(255, 255, 255)'
+      },
+      {
+        name: '链接色/colorLink',
+        value: 'rgb(0, 105, 157)'
+      }
+    ]
   }
 ];
 
@@ -384,16 +417,19 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   const [textOpen, setTextOpen] = useState<boolean>(false);
   const [textColorOpen, setTextColorOpen] = useState<boolean>(false);
   const [textAlignment, setTextAlignment] = useState<TextAlignment>('left');
-  const [textBold, setTextBold] = useState<boolean>();
-  const [textItalic, setTextItalic] = useState<boolean>();
-  const [textUnderline, setTextUnderline] = useState<boolean>();
-  const [textLineThrough, setTextLineThrough] = useState<boolean>();
   const [borderWidth, setBorderWidth] = useState<number>();
   const [borderStyle, setBorderStyle] = useState<'solid' | 'dashed'>();
 
+  // 上次的value值
+  const oldValueRef = useRef<Record<string, any>>(value);
+
   useEffect(() => {
+    // if (!isDifferent(oldValueRef.current, value)) {
+    //   return;
+    // }
+    // oldValueRef.current = value;
     // 初始化表单值
-    const { borderColor, backgroundColor, width, height, gap, padding, direction, fontSize, lineHeight } = value;
+    const { textDecoration, fontStyle, fontWeight, color, borderColor, backgroundColor, fontSize, lineHeight } = value;
     // 设置背景色
     const allColorsOpt = [];
     colors.forEach(color => {
@@ -438,78 +474,40 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     const opt = textSizeOptions.find(item => item.fontSize === fontSize && item.lineHeight === lineHeight);
     if (opt) {
       setTextSizeObj(opt);
+    } else {
+      setTextSizeObj(undefined);
     }
+    const allTextColors = [];
+    textColorOptions.forEach(category => {
+      category.data.forEach(item => allTextColors.push(item));
+    });
+    const textColorOpt = allTextColors.find(item => item.value === color);
+    if (textColorOpt) {
+      setTextColorObj(textColorOpt);
+    } else {
+      setTextSizeObj(undefined);
+    }
+
+    // 处理文字效果
+    const textDecorationArr = ((textDecoration || '') as string).split(' ');
+    console.log('value changed: ', value);
   }, [value]);
 
   useEffect(() => {
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         textAlign: textAlignment
       });
     }
   }, [textAlignment]);
 
-  useEffect(() => {
-    if (textBold) {
-      if (onChange) {
-        onChange({
-          ...value,
-          fontWeight: 600
-        });
-      }
-    } else {
-      delete value.fontWeight;
-      if (onChange) {
-        onChange({
-          ...value
-        });
-      }
+  function doChange(newValue: Record<string, any>) {
+    if (isDifferent(newValue, oldValueRef.current)) {
+      onChange(newValue);
+      oldValueRef.current = newValue;
     }
-  }, [textBold]);
-
-  useEffect(() => {
-    if (textItalic) {
-      if (onChange) {
-        onChange({
-          ...value,
-          fontStyle: 'italic'
-        });
-      }
-    } else {
-      delete value.fontStyle;
-      if (onChange) {
-        onChange({
-          ...value
-        });
-      }
-    }
-  }, [textItalic]);
-
-  useEffect(() => {
-    const arr = [];
-    if (textUnderline) {
-      arr.push('underline');
-    }
-    if (textLineThrough) {
-      arr.push('line-through');
-    }
-    if (arr.length > 0) {
-      if (onChange) {
-        onChange({
-          ...value,
-          textDecoration: arr.join(' ')
-        });
-      }
-    } else {
-      delete value.textDecoration;
-      if (onChange) {
-        onChange({
-          ...value
-        });
-      }
-    }
-  }, [textUnderline, textLineThrough]);
+  }
 
   useEffect(() => {
     const borderTypes = ['border', 'borderTop', 'borderRight', 'borderBottom', 'borderLeft'];
@@ -565,7 +563,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       [key]: val
     };
     if (onChange) {
-      onChange(newValueState);
+      doChange(newValueState);
     }
   }
 
@@ -635,7 +633,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   function handleSelectingItemsAlignment(val: ItemsAlignment | ItemsAlignment2) {
     const { alignItems, justifyContent } = itemsAlignmentDict[val];
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         alignItems,
         justifyContent
@@ -838,13 +836,13 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     }
 
     if (onChange) {
-      onChange(newValueState);
+      doChange(newValueState);
     }
   }
 
   function handleChangingRowGap(val: number) {
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         rowGap: val
       });
@@ -853,7 +851,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   function handleChangingColumnGap(val: number) {
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         columnGap: val
       });
@@ -862,7 +860,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   function handleChangingRowPadding(val: number) {
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         paddingTop: val,
         paddingBottom: val
@@ -872,7 +870,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   function handleChangingColumnPadding(val: number) {
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         paddingLeft: val,
         paddingRight: val
@@ -1043,7 +1041,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   function handleSwitchDirection(direction: any) {
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         direction
       });
@@ -1052,7 +1050,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   function handleSwitchWrap(val: any) {
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         flexWrap: val
       });
@@ -1166,7 +1164,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     delete value.borderLeftStyle;
 
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         [`${borderType}Style`]: val
       });
@@ -1184,7 +1182,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     delete value.borderLeftWidth;
 
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         [`${borderType}Width`]: val
       });
@@ -1328,60 +1326,63 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   function handleSelectingTextAlignment(val: 'left' | 'right' | 'center' | 'justify') {
     setTextAlignment(val);
+    const newValue = value ? { ...value } : {};
+    if (val === 'left') {
+      delete newValue.textAlign;
+    } else {
+      newValue.textAlign = val;
+    }
+    if (onChange) {
+      doChange(newValue);
+    }
   }
 
   function handleSwitchBold() {
-    setTextBold(!textBold);
+    const newValue = value ? { ...value } : {};
+    if (newValue.fontWeight >= 600) {
+      delete newValue?.fontWeight;
+    } else {
+      newValue.fontWeight = 600;
+    }
+    if (onChange) {
+      doChange(newValue);
+    }
   }
 
   function handleSwitchItalic() {
-    setTextItalic(!textItalic);
+    const newValue = value ? { ...value } : {};
+
+    const { fontStyle } = newValue;
+    if (fontStyle) {
+      delete newValue.fontStyle;
+    } else {
+      newValue.fontStyle = 'italic';
+    }
+    if (onChange) {
+      doChange(newValue);
+    }
   }
 
-  function handleSwitchLineThrough() {
-    setTextLineThrough(!textLineThrough);
-  }
-
-  function handleSwitchUnderline() {
-    setTextUnderline(!textUnderline);
+  function handleToggleTextDecoration(val: 'line-through' | 'underline') {
+    const newValue = value ? { ...value } : {};
+    const { textDecoration } = newValue;
+    if (textDecoration) {
+      if ((textDecoration as string).indexOf(val) > -1) {
+        (textDecoration as string).replace(val, '');
+      } else {
+        const arr = (textDecoration as string).split(' ').filter(item => !!item);
+        arr.push(val);
+        newValue.textDecoration = arr.join(' ');
+      }
+    } else {
+      newValue.textDecoration = val;
+    }
   }
 
   function renderText() {
     if (!config.text) {
       return null;
     }
-
-    const textOpt = [
-      {
-        category: '',
-        data: [
-          {
-            name: '一级色字符/colorSymbolBase',
-            value: 'rgb(24, 25, 28)'
-          },
-          {
-            name: '二级色字符/colorSymbolBold',
-            value: 'rgb(97, 102, 109)'
-          },
-          {
-            name: '三级色字符/colorSymbolMedium',
-            value: 'rgb(148, 153, 160)'
-          },
-          {
-            name: '四级色字符/colorSymbolLight',
-            value: 'rgb(201, 204, 208)'
-          },
-          {
-            name: '绝对白色字符/colorSymbolWhite',
-            value: 'rgb(255, 255, 255)'
-          },
-          {
-            name: '链接色/colorLink',
-            value: 'rgb(0, 105, 157)'
-          }
-        ]
-      }
-    ];
 
     return (
       <div className={styles.p12}>
@@ -1410,7 +1411,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
           <Popover
             open={textColorOpen}
             trigger={['click']}
-            content={renderColorPalette(textOpt, handleSelectingTextColor)}
+            content={renderColorPalette(textColorOptions, handleSelectingTextColor)}
             placement="leftTop"
             arrow={false}
             onOpenChange={(newOpen: boolean) => setTextColorOpen(newOpen)}
@@ -1442,20 +1443,26 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
             />
             <Divider style={{ height: 8, borderRadius: 0.5, margin: 0 }} type="vertical" />
             <Bold
-              className={classNames({ [styles.icon]: true, [styles.selected]: textBold })}
+              className={classNames({ [styles.icon]: true, [styles.selected]: value?.fontWeight >= 600 })}
               onClick={handleSwitchBold}
             />
             <Italic
-              className={classNames({ [styles.icon]: true, [styles.selected]: textItalic })}
+              className={classNames({ [styles.icon]: true, [styles.selected]: value?.fontStyle === 'italic' })}
               onClick={handleSwitchItalic}
             />
             <LineThrough
-              className={classNames({ [styles.icon]: true, [styles.selected]: textLineThrough })}
-              onClick={handleSwitchLineThrough}
+              className={classNames({
+                [styles.icon]: true,
+                [styles.selected]: ((value?.textDecoration || '') as string).indexOf('line-through') > -1
+              })}
+              onClick={() => handleToggleTextDecoration('line-through')}
             />
             <UnderLine
-              className={classNames({ [styles.icon]: true, [styles.selected]: textUnderline })}
-              onClick={handleSwitchUnderline}
+              className={classNames({
+                [styles.icon]: true,
+                [styles.selected]: ((value?.textDecoration || '') as string).indexOf('underline') > -1
+              })}
+              onClick={() => handleToggleTextDecoration('underline')}
             />
           </div>
         </div>
@@ -1466,7 +1473,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   function handleSelectingFillColor(val: { name: string; value: string }) {
     setFillColorObj(val);
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         backgroundColor: val.value
       });
@@ -1477,7 +1484,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   function handleSelectingBorderColor(val: { name: string; value: string }) {
     setBorderColorObj(val);
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         borderColor: val.value
       });
@@ -1492,7 +1499,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   function handleSelectingTextColor(val: { name: string; value: string }) {
     setTextColorObj(val);
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         color: val.value
       });
@@ -1536,7 +1543,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     setTextSizeObj(size);
     const { fontSize, lineHeight } = size;
     if (onChange) {
-      onChange({
+      doChange({
         ...value,
         fontSize,
         lineHeight
