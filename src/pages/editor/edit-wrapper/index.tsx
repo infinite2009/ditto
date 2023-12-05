@@ -75,6 +75,8 @@ export default observer(function EditWrapper({
       // 'marginTop',
       // 'marginRight',
       // 'marginBottom',
+      'height',
+      'width',
       'position',
       'top',
       'right',
