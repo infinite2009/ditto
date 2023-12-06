@@ -40,8 +40,8 @@ import {
   Wrap
 } from '@/components/icon';
 import styles from './index.module.less';
-import { StyleFormConfig } from '@/types';
 import { isDifferent } from '@/util';
+import { StyleFormConfig } from '@/types/form-config';
 
 export interface IStyleFormProps {
   config?: StyleFormConfig;
@@ -954,7 +954,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         </div>
         <div className={styles.body}>
           <div className={styles.row}>
-            {config.layout.width ? (
+            {config.layout === true || config.layout.width ? (
               <NumberInput
                 disabled={widthSizeMode !== 'fixed'}
                 value={value.width as number}
@@ -962,7 +962,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                 onChange={data => handleChangeSize(data, 'width')}
               />
             ) : null}
-            {config.layout.height ? (
+            {config.layout === true || config.layout.height ? (
               <NumberInput
                 disabled={heightSizeMode !== 'fixed'}
                 value={value.height as number}
@@ -972,7 +972,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
             ) : null}
           </div>
           <div className={styles.sizeSelector}>
-            {config.layout.widthGrow ? (
+            {config.layout === true || config.layout.widthGrow ? (
               <Select
                 bordered={false}
                 value={widthSizeMode}
@@ -982,7 +982,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                 options={options}
               />
             ) : null}
-            {config.layout.heightGrow ? (
+            {config.layout === true || config.layout.heightGrow ? (
               <Select
                 bordered={false}
                 value={heightSizeMode}
@@ -994,7 +994,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
             ) : null}
           </div>
           <div className={styles.row} style={{ height: 'auto' }}>
-            {config.layout.direction ? (
+            {config.layout === true || config.layout.direction ? (
               <>
                 <div className={styles.left}>
                   <div className={styles.row}>
@@ -1012,7 +1012,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
               </>
             ) : null}
           </div>
-          {config.layout.gap ? (
+          {config.layout === true || config.layout.gap ? (
             <div className={styles.row}>
               <NumberInput
                 icon={<Gap className={styles.icon} />}
@@ -1026,7 +1026,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
               />
             </div>
           ) : null}
-          {config.layout.padding ? (
+          {config.layout === true || config.layout.padding ? (
             <div className={styles.row}>
               <NumberInput
                 icon={<Padding className={iconClass} value={value.paddingLeft} />}
@@ -1330,11 +1330,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   function handleSelectingTextAlignment(val: 'left' | 'right' | 'center' | 'justify') {
     const newValue = value ? { ...value } : {};
-    if (val === 'left') {
-      delete newValue.textAlign;
-    } else {
-      newValue.textAlign = val;
-    }
+    newValue.textAlign = val;
     if (onChange) {
       doChange(newValue);
     }
