@@ -418,7 +418,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   const [shadowOpen, setShadowOpen] = useState<boolean>(false);
   const [textOpen, setTextOpen] = useState<boolean>(false);
   const [textColorOpen, setTextColorOpen] = useState<boolean>(false);
-  const [textAlignment, setTextAlignment] = useState<TextAlignment>('left');
   const [borderWidth, setBorderWidth] = useState<number>();
   const [borderStyle, setBorderStyle] = useState<'solid' | 'dashed'>();
 
@@ -510,15 +509,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       setHeightSizeMode('hug');
     }
   }, [value]);
-
-  useEffect(() => {
-    if (onChange) {
-      doChange({
-        ...value,
-        textAlign: textAlignment
-      });
-    }
-  }, [textAlignment]);
 
   function doChange(newValue: Record<string, any>) {
     if (isDifferent(newValue, oldValueRef.current)) {
@@ -1339,7 +1329,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   function handleSelectingTextAlignment(val: 'left' | 'right' | 'center' | 'justify') {
-    setTextAlignment(val);
     const newValue = value ? { ...value } : {};
     if (val === 'left') {
       delete newValue.textAlign;
@@ -1440,19 +1429,19 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
           </Popover>
           <div className={styles.textBtnBar}>
             <TextAlignLeft
-              className={classNames({ [styles.icon]: true, [styles.selected]: textAlignment === 'left' })}
+              className={classNames({ [styles.icon]: true, [styles.selected]: value?.textAlign === 'left' })}
               onClick={() => handleSelectingTextAlignment('left')}
             />
             <TextAlignCenter
-              className={classNames({ [styles.icon]: true, [styles.selected]: textAlignment === 'center' })}
+              className={classNames({ [styles.icon]: true, [styles.selected]: value?.textAlign === 'center' })}
               onClick={() => handleSelectingTextAlignment('center')}
             />
             <TextAlignRight
-              className={classNames({ [styles.icon]: true, [styles.selected]: textAlignment === 'right' })}
+              className={classNames({ [styles.icon]: true, [styles.selected]: value?.textAlign === 'right' })}
               onClick={() => handleSelectingTextAlignment('right')}
             />
             <TextAlignJustify
-              className={classNames({ [styles.icon]: true, [styles.selected]: textAlignment === 'justify' })}
+              className={classNames({ [styles.icon]: true, [styles.selected]: value?.textAlign === 'justify' })}
               onClick={() => handleSelectingTextAlignment('justify')}
             />
             <Divider style={{ height: 8, borderRadius: 0.5, margin: 0 }} type="vertical" />
