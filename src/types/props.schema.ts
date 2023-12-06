@@ -21,8 +21,8 @@ export interface TemplateKeyPathsReg {
  * 之所以这么设计是为了让 dsl 读写效率更高，且 DSL 类型定义相对简洁一些
  */
 export default interface IPropsSchema extends ISchema {
-  // 属性类别
-  category: 'basic' | 'style' | 'event' | 'data' | 'children';
+  // 属性类别, 'hidden' 类型指的是当前属性需要映射到 style 类别进行配置
+  category: 'basic' | 'style' | 'event' | 'data' | 'children' | 'hidden';
   // 如果是值，那么该属性变更时，可以用 useEffect 监听并做出响应。目前来说，对于一个组件，值属性最多支持一个
   isValue?: boolean;
   // 控制 UI 显隐性

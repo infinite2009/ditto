@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import IComponentSchema from '@/types/component.schema';
 import IPropsSchema from '@/types/props.schema';
+import { PropsFormTransformer } from '@/types/form-config';
 
 export interface IPropsConfigItem extends IPropsSchema {
   disabled?: boolean;
@@ -25,6 +26,7 @@ export default interface IComponentConfig {
   propsConfig: {
     [key: string]: IPropsConfigItem;
   };
+  transformerStr?: PropsFormTransformer;
   children?: {
     name: string;
     value: IComponentSchema[] | string;

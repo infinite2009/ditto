@@ -1,6 +1,63 @@
 import IFormConfig from '@/types/form-config';
 import { getCamelotComponentPropsFrom } from '../load-config/camelot';
 
+const flexTransformerStr =
+  'return (values => {' +
+  '  if (!values) {' +
+  '    return {};' +
+  '  }' +
+  '  const result = {};' +
+  '  const { flexDirection, flexWrap, justifyContent, alignItems, rowGap, columnGap } = values;' +
+  "  if (flexDirection && flexDirection === 'column') {" +
+  '    result.vertical = true;' +
+  '  }' +
+  "  if (flexWrap && flexWrap === 'wrap') {" +
+  '    result.wrap = true;' +
+  '  }' +
+  "  if (justifyContent && justifyContent !== 'start') {" +
+  '    result.justify = justifyContent;' +
+  '  }' +
+  "  if (alignItems && alignItems !== 'start') {" +
+  '    result.align = alignItems;' +
+  '  }' +
+  '  const arr = [];' +
+  '  if (rowGap) {' +
+  '    arr.push(`${rowGap}px`);' +
+  '  }' +
+  '  if (columnGap) {' +
+  '    arr.push(`${columnGap}px`);' +
+  '  }' +
+  '  if (arr.length) {' +
+  "    result.gap = arr.join(' ');" +
+  '  }' +
+  '  return result;' +
+  '})(values)';
+
+const typographyTransformerStr =
+  'return (values => {' +
+  '  if (!values) {' +
+  '    return {};' +
+  '  }' +
+  '  const result = {};' +
+  '  const { textDecoration, fontWeight, fontStyle } = values;' +
+  '  if (textDecoration) {' +
+  "    const arr = textDecoration.split(' ');" +
+  "    if (arr.includes('line-through')) {" +
+  '      result.delete = true;' +
+  '    }' +
+  "    if (arr.includes('underline')) {" +
+  '      result.underline = true;' +
+  '    }' +
+  '  }' +
+  '  if (fontWeight >= 600) {' +
+  '    result.strong = true;' +
+  '  }' +
+  "  if (fontStyle === 'italic') {" +
+  '    result.italic = true;' +
+  '  }' +
+  '  return result;' +
+  '})(values);';
+
 /**
  * 记载整个表单库，它和组件库是一对一的。
  */
@@ -154,172 +211,73 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
     },
     HorizontalFlex: {
       configName: 'HorizontalFlex',
+      transformerStr: flexTransformerStr,
       schema: {
         style: {
-          vertical: {
-            type: 'boolean',
-            title: '方向',
-            required: false,
-            component: 'Switch',
-            initialValue: false
-            // 这个 form 配置项将合并到哪个 props 上，此时该 props 是一个对象，如果没有这个配置，则不进行合并
+          layout: {
+            width: true,
+            height: true,
+            widthGrow: true,
+            heightGrow: true,
+            wrap: true,
+            direction: true,
+            alignItems: true,
+            justifyContent: true,
+            padding: true,
+            gap: true
           },
-          wrap: {
-            type: 'boolean',
-            title: '换行',
-            required: false,
-            component: 'Switch',
-            initialValue: false
+          backgroundColor: true,
+          border: {
+            borderWidth: true,
+            borderColor: true,
+            borderStyle: true
           },
-          justify: {
-            type: 'string',
-            title: '主轴对齐',
-            required: false,
-            component: 'Select',
-            componentProps: {
-              options: [
-                {
-                  value: 'normal',
-                  label: '自动'
-                },
-                {
-                  value: 'start',
-                  label: '头对齐'
-                },
-                {
-                  value: 'center',
-                  label: '居中对齐'
-                },
-                {
-                  value: 'end',
-                  label: '尾对齐'
-                }
-              ]
-            },
-            initialValue: 'start'
-          },
-          align: {
-            type: 'string',
-            title: '副轴对齐',
-            required: false,
-            component: 'Select',
-            componentProps: {
-              options: [
-                {
-                  value: 'normal',
-                  label: '自动'
-                },
-                {
-                  value: 'start',
-                  label: '头对齐'
-                },
-                {
-                  value: 'center',
-                  label: '居中对齐'
-                },
-                {
-                  value: 'end',
-                  label: '尾对齐'
-                }
-              ]
-            },
-            initialValue: 'start'
-          },
-          gap: {
-            type: 'string',
-            title: '间距',
-            required: false,
-            component: 'Input',
-            initialValue: '8px'
+          shadow: true,
+          text: {
+            // 字号和行高
+            size: true,
+            color: true,
+            decoration: true
           }
         }
       }
     },
     VerticalFlex: {
       configName: 'VerticalFlex',
+      transformerStr: flexTransformerStr,
       schema: {
         style: {
-          vertical: {
-            type: 'boolean',
-            title: '方向',
-            required: false,
-            component: 'Switch',
-            initialValue: true
-            // 这个 form 配置项将合并到哪个 props 上，此时该 props 是一个对象，如果没有这个配置，则不进行合并
+          layout: {
+            width: true,
+            height: true,
+            widthGrow: true,
+            heightGrow: true,
+            wrap: true,
+            direction: true,
+            alignItems: true,
+            justifyContent: true,
+            padding: true,
+            gap: true
           },
-          wrap: {
-            type: 'boolean',
-            title: '换行',
-            required: false,
-            component: 'Switch',
-            initialValue: false
+          backgroundColor: true,
+          border: {
+            borderWidth: true,
+            borderColor: true,
+            borderStyle: true
           },
-          justify: {
-            type: 'string',
-            title: '主轴对齐',
-            required: false,
-            component: 'Select',
-            componentProps: {
-              options: [
-                {
-                  value: 'normal',
-                  label: '自动'
-                },
-                {
-                  value: 'start',
-                  label: '头对齐'
-                },
-                {
-                  value: 'center',
-                  label: '居中对齐'
-                },
-                {
-                  value: 'end',
-                  label: '尾对齐'
-                }
-              ]
-            },
-            initialValue: 'start'
-          },
-          align: {
-            type: 'string',
-            title: '副轴对齐',
-            required: false,
-            component: 'Select',
-            componentProps: {
-              options: [
-                {
-                  value: 'normal',
-                  label: '自动'
-                },
-                {
-                  value: 'start',
-                  label: '头对齐'
-                },
-                {
-                  value: 'center',
-                  label: '居中对齐'
-                },
-                {
-                  value: 'end',
-                  label: '尾对齐'
-                }
-              ]
-            },
-            initialValue: 'start'
-          },
-          gap: {
-            type: 'string',
-            title: '间距',
-            required: false,
-            component: 'Input',
-            initialValue: '8px'
+          shadow: true,
+          text: {
+            // 字号和行高
+            size: true,
+            color: true,
+            decoration: true
           }
         }
       }
     },
     Text: {
       configName: 'Text',
+      transformerStr: typographyTransformerStr,
       schema: {
         style: {
           layout: {

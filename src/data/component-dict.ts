@@ -59,6 +59,56 @@ import { camelotComponentConfig } from '@/service/load-config/camelot';
 
 const Search = Input.Search;
 
+const flexTransformerStr =
+  'return ((values) => {' +
+  '  if (!values) {' +
+  '    return {};' +
+  '  }' +
+  '  const { vertical, wrap, align, justify, gap } = values;' +
+  '  const result = {' +
+  "    flexDirection: vertical ? 'column' : 'row'," +
+  "    flexWrap: wrap ? 'wrap' : 'nowrap', " +
+  "    alignItems: align === 'normal' ? 'start' : align," +
+  "    justifyContent: justify === 'normal' ? 'start' : justify" +
+  '  };' +
+  '  if (gap) {' +
+  '    const gapRegex = /\\s*(\\S+)\\s*(\\S+)?/;' +
+  '    const match = gap.match(gapRegex);' +
+  '    if (match) {' +
+  '      const [, rowGap, columnGap] = match;' +
+  "      result.rowGap = +(rowGap.replace('px', ''));" +
+  "      result.columnGap = columnGap ? +(columnGap.replace('px', '')) : rowGap;" +
+  '    }' +
+  '  }' +
+  '  return result;' +
+  '})(values)';
+
+const typographyTransformerStr =
+  'return ((values) => {' +
+  '  if (!values) {' +
+  '    return {};' +
+  '  }' +
+  '  const result = {};' +
+  '  const { strong, italic, underline  } = values;' +
+  '  const arr = [];' +
+  '  if (values.delete) {' +
+  "    arr.push('line-through');" +
+  '  }' +
+  '  if (underline) {' +
+  "    arr.push('underline');" +
+  '  }' +
+  '  if (arr.length) {' +
+  "    result.textDecoration = arr.join(' ');" +
+  '  }' +
+  '  if (italic) {' +
+  "    result.fontStyle = 'italic';" +
+  '  }' +
+  '  if (strong) {' +
+  '    result.fontWeight = 600;' +
+  '  }' +
+  '  return result;' +
+  '})(values)';
+
 const antdComponentConfig: { [key: string]: IComponentConfig } = {
   pageRoot: {
     configName: 'pageRoot',
@@ -75,7 +125,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         name: 'vertical',
         title: '布局方向',
-        category: 'style',
+        category: 'hidden',
         value: true,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -85,7 +135,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         name: 'wrap',
         title: '自动换行',
-        category: 'style',
+        category: 'hidden',
         value: true,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -95,7 +145,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'justify',
         title: '主轴对齐',
         schemaType: 'props',
-        category: 'style',
+        category: 'hidden',
         value: 'normal',
         valueType: 'string',
         valueSource: 'editorInput'
@@ -105,7 +155,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         name: 'align',
         title: '副轴对齐',
-        category: 'style',
+        category: 'hidden',
         value: 'normal',
         valueType: 'string',
         valueSource: 'editorInput'
@@ -115,12 +165,13 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         name: 'gap',
         title: '间距',
-        category: 'style',
+        category: 'hidden',
         value: 8,
         valueType: 'number',
         valueSource: 'editorInput'
       }
-    }
+    },
+    transformerStr: flexTransformerStr
   },
   HorizontalFlex: {
     configName: 'HorizontalFlex',
@@ -137,7 +188,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         name: 'vertical',
         title: '布局方向',
-        category: 'style',
+        category: 'hidden',
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -147,7 +198,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         title: '自动换行',
         name: 'wrap',
-        category: 'style',
+        category: 'hidden',
         value: true,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -157,7 +208,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '主轴对齐',
         name: 'justify',
         schemaType: 'props',
-        category: 'style',
+        category: 'hidden',
         value: 'normal',
         valueType: 'string',
         valueSource: 'editorInput'
@@ -167,7 +218,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         title: '副轴对齐',
         name: 'align',
-        category: 'style',
+        category: 'hidden',
         value: 'start',
         valueType: 'string',
         valueSource: 'editorInput'
@@ -177,12 +228,13 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         name: 'gap',
         title: '间距',
-        category: 'style',
+        category: 'hidden',
         value: 8,
         valueType: 'number',
         valueSource: 'editorInput'
       }
-    }
+    },
+    transformerStr: flexTransformerStr
   },
   VerticalFlex: {
     configName: 'VerticalFlex',
@@ -199,7 +251,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         name: 'vertical',
         title: '布局方向',
-        category: 'style',
+        category: 'hidden',
         value: true,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -209,7 +261,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         title: '自动换行',
         name: 'wrap',
-        category: 'style',
+        category: 'hidden',
         value: true,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -219,7 +271,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '主轴对齐',
         name: 'justify',
         schemaType: 'props',
-        category: 'style',
+        category: 'hidden',
         value: 'normal',
         valueType: 'string',
         valueSource: 'editorInput'
@@ -229,22 +281,13 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         title: '副轴对齐',
         name: 'align',
-        category: 'style',
+        category: 'hidden',
         value: 'normal',
         valueType: 'string',
         valueSource: 'editorInput'
-      },
-      gap: {
-        id: 'gap',
-        schemaType: 'props',
-        name: 'gap',
-        title: '间距',
-        category: 'style',
-        value: 8,
-        valueType: 'number',
-        valueSource: 'editorInput'
       }
-    }
+    },
+    transformerStr: flexTransformerStr
   },
   Button: {
     configName: 'Button',
@@ -395,7 +438,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         name: 'delete',
         title: '删除线',
-        category: 'basic',
+        category: 'hidden',
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -445,7 +488,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'strong',
         title: '加粗',
         schemaType: 'props',
-        category: 'basic',
+        category: 'hidden',
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -455,7 +498,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'italic',
         title: '斜体',
         schemaType: 'props',
-        category: 'basic',
+        category: 'hidden',
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -465,12 +508,13 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '下划线',
         name: 'underline',
         schemaType: 'props',
-        category: 'basic',
+        category: 'hidden',
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
       }
     },
+    transformerStr: typographyTransformerStr,
     children: {
       name: 'children',
       value: '默认文字',
@@ -511,7 +555,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         name: 'delete',
         title: '删除线',
-        category: 'basic',
+        category: 'hidden',
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -561,7 +605,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'strong',
         title: '加粗',
         schemaType: 'props',
-        category: 'basic',
+        category: 'hidden',
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -571,7 +615,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'italic',
         title: '斜体',
         schemaType: 'props',
-        category: 'basic',
+        category: 'hidden',
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -581,12 +625,13 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '下划线',
         name: 'underline',
         schemaType: 'props',
-        category: 'basic',
+        category: 'hidden',
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
       }
     },
+    transformerStr: typographyTransformerStr,
     children: {
       name: 'children',
       value: '默认段落',
@@ -627,7 +672,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         schemaType: 'props',
         name: 'delete',
         title: '删除线',
-        category: 'basic',
+        category: 'hidden',
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -677,7 +722,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'strong',
         title: '加粗',
         schemaType: 'props',
-        category: 'basic',
+        category: 'hidden',
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -687,7 +732,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'italic',
         title: '斜体',
         schemaType: 'props',
-        category: 'basic',
+        category: 'hidden',
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
@@ -697,12 +742,13 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '下划线',
         name: 'underline',
         schemaType: 'props',
-        category: 'basic',
+        category: 'hidden',
         value: false,
         valueType: 'boolean',
         valueSource: 'editorInput'
       }
     },
+    transformerStr: typographyTransformerStr,
     children: {
       name: 'children',
       value: '默认标题',
