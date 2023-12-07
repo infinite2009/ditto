@@ -96,7 +96,7 @@ export async function getCamelotComponentPropsFrom() {
       formConfig[item.tag] = {
         configName: item.tag,
         schema: {
-          style: {},
+          style: {} as any,
           basic: {},
           event: {},
           data: {},
@@ -112,6 +112,7 @@ export async function getCamelotComponentPropsFrom() {
         const component = getComponentType(propConfig.type);
         
         formConfig[item.tag].schema.basic[key] = {
+          name: key,
           title: key,
           required: false,
           type: propConfig.type.includes('|') ? 'string' : propConfig.type,
