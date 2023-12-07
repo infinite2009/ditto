@@ -1,13 +1,13 @@
-import { createCamelotComponent } from "@/components/camelot";
-import IComponentConfig from "@/types/component-config";
-import IFormConfig, { FormItemSchema } from "@/types/form-config";
-import { CodeSandboxOutlined } from "@ant-design/icons";
+import { createCamelotComponent } from '@/components/camelot';
+import IComponentConfig from '@/types/component-config';
+import IFormConfig, { FormItemSchema } from '@/types/form-config';
+import { CodeSandboxOutlined } from '@ant-design/icons';
 
 interface PropsConfig {
   description: string;
   type: FormItemSchema['type'];
-  defaultValue:string;
-  options?: {value: string; label: string}[];
+  defaultValue: string;
+  options?: { value: string; label: string }[];
 }
 interface ICamelotComponent {
   title: string;
@@ -15,19 +15,20 @@ interface ICamelotComponent {
   tag: string;
   docLink: string;
   umd: string;
-  esm:string;
+  esm: string;
   props: PropsConfig;
 }
 
 export const camelotComponentConfig: { [key: string]: IComponentConfig } = {};
-export let camelotComponents: ICamelotComponent[]= [];
-
+export let camelotComponents: ICamelotComponent[] = [];
 
 export async function fetchCamelotComponent() {
   if (camelotComponents.length > 0) {
     return camelotComponents;
   }
-  const result = await fetch('//shylf-inner-boss.bilibili.co/neo-pages/mlive-dev/camelot-doc/config/components.json?aaa=1');
+  const result = await fetch(
+    '//shylf-inner-boss.bilibili.co/neo-pages/mlive-dev/camelot-doc/config/components.json?aaa=1'
+  );
   const data = await result.json();
 
   if (Array.isArray(data)) {
@@ -37,38 +38,39 @@ export async function fetchCamelotComponent() {
 }
 /** 组件基本配置 */
 export async function fetchCamelotComponentConfig() {
-  const components = await fetchCamelotComponent();
+  try {
+    const components = await fetchCamelotComponent();
 
-  components.forEach((item) => {
-    const propsConfig: IComponentConfig['propsConfig'] = {};
-    Object.keys(item.props).forEach(key => {
-      const propValue = item.props[key];
-      propsConfig[key] = {
-        id: key,
-        schemaType: 'props',
-        name: key,
-        valueSource: 'editorInput',
-        valueType: propValue.type,
-        category: 'basic',
-        value: propValue.defaultValue !== '-' ? propValue.defaultValue : '',
-        title: propValue.description
-      };
+    components.forEach(item => {
+      const propsConfig: IComponentConfig['propsConfig'] = {};
+      Object.keys(item.props).forEach(key => {
+        const propValue = item.props[key];
+        propsConfig[key] = {
+          id: key,
+          schemaType: 'props',
+          name: key,
+          valueSource: 'editorInput',
+          valueType: propValue.type,
+          category: 'basic',
+          value: propValue.defaultValue !== '-' ? propValue.defaultValue : '',
+          title: propValue.description
+        };
+      });
+      Object.assign(camelotComponentConfig, {
+        [item.tag]: {
+          configName: item.tag,
+          dependency: 'camelot',
+          component: createCamelotComponent(item.tag, item.esm),
+          category: '用户技术中心专用',
+          title: item.title,
+          icon: CodeSandboxOutlined,
+          propsConfig: propsConfig
+        }
+      });
     });
-    Object.assign(camelotComponentConfig, {
-      [item.tag]:  {
-        configName: item.tag,
-        dependency: 'camelot',
-        component: createCamelotComponent(
-          item.tag,
-          item.esm
-        ),
-        category: '用户技术中心专用',
-        title: item.title,
-        icon: CodeSandboxOutlined,
-        propsConfig: propsConfig
-      },
-    });
-  });
+  } catch (e) {
+    console.error(e);
+  }
 }
 fetchCamelotComponentConfig();
 
@@ -77,8 +79,8 @@ export async function getCamelotComponentPropsFrom() {
   const camelotComponents = await fetchCamelotComponent();
   const formConfig: Record<string, IFormConfig> = {};
   const BASE_TYPE_REG = /(string|number|boolean|function|array)/i;
-  const getComponentType = (type) => {
-    switch(type.toLowerCase()) {
+  const getComponentType = type => {
+    switch (type.toLowerCase()) {
       case 'number':
         return 'InputNumber';
       case 'boolean':
@@ -91,7 +93,7 @@ export async function getCamelotComponentPropsFrom() {
         return 'Input';
     }
   };
-  camelotComponents.forEach((item) => {
+  camelotComponents.forEach(item => {
     if (formConfig[item.tag] === undefined) {
       formConfig[item.tag] = {
         configName: item.tag,
@@ -99,8 +101,8 @@ export async function getCamelotComponentPropsFrom() {
           style: {} as any,
           basic: {},
           event: {},
-          data: {},
-        },
+          data: {}
+        }
       };
     }
     Object.keys(item.props).forEach(key => {
@@ -110,7 +112,7 @@ export async function getCamelotComponentPropsFrom() {
         formConfig[item.tag].schema.event = {};
       } else {
         const component = getComponentType(propConfig.type);
-        
+
         formConfig[item.tag].schema.basic[key] = {
           name: key,
           title: key,
@@ -134,7 +136,7 @@ export async function getCamelotComponentPropsFrom() {
         }
         // enum 类型
         // if (propConfig.type.includes('|') && !BASE_TYPE_REG.test(propConfig.type)) {
-          
+
         // }
       }
     });
