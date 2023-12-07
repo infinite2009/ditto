@@ -10,6 +10,8 @@ const flexTransformerStr =
   '  const { flexDirection, flexWrap, justifyContent, alignItems, rowGap, columnGap } = values;' +
   "  if (flexDirection && flexDirection === 'column') {" +
   '    result.vertical = true;' +
+  '  } else {' +
+  '    result.vertical = false;' +
   '  }' +
   "  if (flexWrap && flexWrap === 'wrap') {" +
   '    result.wrap = true;' +
