@@ -17,7 +17,6 @@ export interface FormItemSchema {
   /** 描述信息 */
   help?: string;
   name: string;
-  transformerStr?: PropsFormTransformer;
   required?: boolean;
   title: string;
   type: 'string' | 'number' | 'boolean' | 'object' | 'array';
@@ -26,11 +25,6 @@ export interface FormItemSchema {
 export interface FormSchema {
   [key: string]: FormItemSchema;
 }
-
-export interface StyleItemConfig {
-  transformerStr?: PropsFormTransformer;
-}
-
 /**
  * 样式表单配置，目前是不支持自定义的，按需传入配置即可。
  * boolean 表示启用当前配置全部功能，比如 layout: true 表示会启用layout 的所有功能：尺寸、方向、对齐、边距等
@@ -78,6 +72,8 @@ export default interface IFormConfig {
     data?: FC<any>;
   };
   transformerStr?: PropsFormTransformer;
+  // 需要忽略的属性，配合 transformerStr 使用，把转换过的属性都删除掉，避免出现非预期行为
+  valuesToIgnore?: string[];
   schema?: {
     style?: StyleFormConfig;
     basic?: FormSchema;

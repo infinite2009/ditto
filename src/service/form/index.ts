@@ -212,6 +212,7 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
     HorizontalFlex: {
       configName: 'HorizontalFlex',
       transformerStr: flexTransformerStr,
+      valuesToIgnore: ['flexDirection', 'flexWrap', 'justifyContent', 'alignItems', 'rowGap', 'columnGap'],
       schema: {
         style: {
           layout: {
@@ -245,6 +246,7 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
     VerticalFlex: {
       configName: 'VerticalFlex',
       transformerStr: flexTransformerStr,
+      valuesToIgnore: ['flexDirection', 'flexWrap', 'justifyContent', 'alignItems', 'rowGap', 'columnGap'],
       schema: {
         style: {
           layout: {

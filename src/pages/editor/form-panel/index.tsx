@@ -53,8 +53,23 @@ export default observer(() => {
   }
 
   function handleChangingStyleForm(value: CSSProperties) {
+    // 把样式配置转换为普通属性，并把需要转换的样式属性删除掉，避免重复传入属性导致组件出现超预期行为
+    let transformedObj = {};
+    const valueCopy = { ...value };
+    if (dslStore.formConfigOfSelectedComponent?.transformerStr) {
+      const transformer = new Function('values', dslStore.formConfigOfSelectedComponent.transformerStr);
+      try {
+        transformedObj = transformer(value);
+        (dslStore.formConfigOfSelectedComponent?.valuesToIgnore || []).forEach(key => {
+          delete valueCopy[key];
+        });
+      } catch (e) {
+        console.error(e.toString());
+      }
+    }
     dslStore.updateComponentProps({
-      style: value
+      style: valueCopy,
+      hidden: transformedObj
     });
   }
 
