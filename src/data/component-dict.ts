@@ -67,10 +67,14 @@ const flexTransformerStr =
   '  const { vertical, wrap, align, justify, gap } = values;' +
   '  const result = {' +
   "    flexDirection: vertical ? 'column' : 'row'," +
-  "    flexWrap: wrap ? 'wrap' : 'nowrap', " +
-  "    alignItems: align === 'normal' ? 'start' : align," +
-  "    justifyContent: justify === 'normal' ? 'start' : justify" +
+  "    flexWrap: wrap ? 'wrap' : 'nowrap'" +
   '  };' +
+  '  if (align) {' +
+  "    result.alignItems = align === 'normal' ? 'start' : align;" +
+  '  }' +
+  '  if (justify) {' +
+  "    result.justifyContent = justify === 'normal' ? 'start' : justify;" +
+  '  }' +
   '  if (gap) {' +
   '    const gapRegex = /\\s*(\\S+)\\s*(\\S+)?/;' +
   '    const match = gap.match(gapRegex);' +
