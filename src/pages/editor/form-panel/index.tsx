@@ -68,8 +68,8 @@ export default observer(() => {
       }
     }
     dslStore.updateComponentProps({
-      style: valueCopy,
-      hidden: transformedObj
+      ...valueCopy,
+      ...transformedObj
     });
   }
 
