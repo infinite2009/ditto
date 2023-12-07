@@ -1,6 +1,6 @@
 import { Divider, Popover, Select, Tooltip } from 'antd';
 import classNames from 'classnames';
-import { CSSProperties, useEffect, useRef, useState } from 'react';
+import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import NumberInput from '@/pages/editor/form-panel/style-form/components/number-input';
 
 import {
@@ -747,8 +747,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     // TODO
   }
 
-  function handlePreviewAlignment() {}
-
   function renderSpaceAssignmentPreview(direction: 'row' | 'column') {
     const alignmentClass = classNames({
       [styles.rDiagonal180]: direction === 'column',
@@ -756,33 +754,63 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     });
 
     return (
-      <div className={alignmentClass}>
-        <div onMouseEnter={() => handlePreviewAlignment()}>
-          {isStart('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+      <div className={alignmentClass} onMouseLeave={cancelSelectingItemsAlignment}>
+        <div
+          className={styles.alignStart}
+          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment2.top)}
+          onClick={() => handleSelectingItemsAlignment(ItemsAlignment2.top)}
+        >
+          {isStart('alignItems') || itemsAlignmentState === ItemsAlignment2.top ? (
+            <>
+              <LongBar className={styles.icon} />
+              <ShortBar className={styles.icon} />
+              <LongBar className={styles.icon} />
+            </>
+          ) : (
+            <>
+              <div className={styles.dot} />
+              <div className={styles.dot} />
+              <div className={styles.dot} />
+            </>
+          )}
         </div>
-        <div onMouseEnter={() => handlePreviewAlignment()}>
-          {isStart('alignItems') ? <ShortBar className={styles.icon} /> : <div className={styles.dot} />}
+        <div
+          className={styles.alignCenter}
+          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment2.center)}
+          onClick={() => handleSelectingItemsAlignment(ItemsAlignment2.center)}
+        >
+          {isCenter('alignItems') || itemsAlignmentState === ItemsAlignment2.center ? (
+            <>
+              <LongBar className={styles.icon} />
+              <ShortBar className={styles.icon} />
+              <LongBar className={styles.icon} />
+            </>
+          ) : (
+            <>
+              <div className={styles.dot} />
+              <div className={styles.dot} />
+              <div className={styles.dot} />
+            </>
+          )}
         </div>
-        <div onMouseEnter={() => handlePreviewAlignment()}>
-          {isStart('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
-        </div>
-        <div onMouseEnter={() => handlePreviewAlignment()}>
-          {isCenter('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
-        </div>
-        <div onMouseEnter={() => handlePreviewAlignment()}>
-          {isCenter('alignItems') ? <ShortBar className={styles.icon} /> : <div className={styles.dot} />}
-        </div>
-        <div onMouseEnter={() => handlePreviewAlignment()}>
-          {isCenter('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
-        </div>
-        <div onMouseEnter={() => handlePreviewAlignment()}>
-          {isEnd('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
-        </div>
-        <div onMouseEnter={() => handlePreviewAlignment()}>
-          {isEnd('alignItems') ? <ShortBar className={styles.icon} /> : <div className={styles.dot} />}
-        </div>
-        <div onMouseEnter={() => handlePreviewAlignment()}>
-          {isEnd('alignItems') ? <LongBar className={styles.icon} /> : <div className={styles.dot} />}
+        <div
+          className={styles.alignEnd}
+          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment2.bottom)}
+          onClick={() => handleSelectingItemsAlignment(ItemsAlignment2.bottom)}
+        >
+          {isEnd('alignItems') || itemsAlignmentState === ItemsAlignment2.bottom ? (
+            <>
+              <LongBar className={styles.icon} />
+              <ShortBar className={styles.icon} />
+              <LongBar className={styles.icon} />
+            </>
+          ) : (
+            <>
+              <div className={styles.dot} />
+              <div className={styles.dot} />
+              <div className={styles.dot} />
+            </>
+          )}
         </div>
       </div>
     );
@@ -882,10 +910,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     }
   }
 
-  function showAlignmentPreview() {
-    const { justifyContent } = value;
-    return justifyContent !== 'space-between' && justifyContent !== 'space-around';
-  }
+  const showAlignmentPreview = useMemo(() => {
+    return spaceArrangement === 'sequence';
+  }, [spaceArrangement]);
 
   function renderLayout() {
     if (!config.layout) {
@@ -1005,7 +1032,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                   {renderItemsAlignment()}
                 </div>
                 <div className={styles.right}>
-                  {showAlignmentPreview()
+                  {showAlignmentPreview
                     ? renderAlignmentPreview(direction as 'row' | 'column')
                     : renderSpaceAssignmentPreview(direction as 'row' | 'column')}
                 </div>

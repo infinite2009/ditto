@@ -300,3 +300,22 @@
   line-height: 24px;
   gap: 8px;
 }
+
+.lateralLayout(@type) {
+  display: flex;
+  flex-direction: row;
+  align-items: @type;
+  justify-content: space-between;
+}
+
+.alignStart {
+  .lateralLayout('start');
+}
+
+.alignCenter {
+  .lateralLayout('center');
+}
+
+.alignEnd {
+  .lateralLayout('end');
+}
