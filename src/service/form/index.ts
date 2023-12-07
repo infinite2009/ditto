@@ -15,12 +15,18 @@ const flexTransformerStr =
   '  }' +
   "  if (flexWrap && flexWrap === 'wrap') {" +
   '    result.wrap = true;' +
+  '  } else {' +
+  '    result.wrap = false;' +
   '  }' +
-  "  if (justifyContent && justifyContent !== 'start') {" +
+  '  if (justifyContent) {' +
   '    result.justify = justifyContent;' +
+  '  } else {' +
+  "    result.justify = 'normal';" +
   '  }' +
-  "  if (alignItems && alignItems !== 'start') {" +
+  '  if (alignItems) {' +
   '    result.align = alignItems;' +
+  '  } else {' +
+  "    result.align = 'normal';" +
   '  }' +
   '  const arr = [];' +
   '  if (rowGap) {' +

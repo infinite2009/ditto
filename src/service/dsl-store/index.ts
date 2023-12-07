@@ -577,7 +577,17 @@ export default class DSLStore {
 
   @execute
   updateComponentProps(propsPartial: Record<string, any> | CSSProperties) {
-    const props = this.dsl.props[this.selectedComponent.id];
+    const { id, configName, dependency } = this.selectedComponent;
+    const props = this.dsl.props[id];
+    const config = fetchComponentConfig(configName, dependency);
+    if (config) {
+      Object.values(config.propsConfig || {}).forEach(prop => {
+        // 如果当前这个属性不在变更的属性对象里，就用重置为默认值
+        if (!(prop.name in propsPartial)) {
+          props[prop.name].value = prop.value;
+        }
+      });
+    }
     Object.entries(propsPartial).forEach(([key, val]) => {
       if (props[key]) {
         props[key].value = val;

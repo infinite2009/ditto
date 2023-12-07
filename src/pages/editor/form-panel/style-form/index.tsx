@@ -1,6 +1,6 @@
 import { Divider, Popover, Select, Tooltip } from 'antd';
 import classNames from 'classnames';
-import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 import NumberInput from '@/pages/editor/form-panel/style-form/components/number-input';
 
 import {
@@ -407,8 +407,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   const [itemsAlignmentState, setItemsAlignmentState] = useState<ItemsAlignment | ItemsAlignment2>();
 
-  const [spaceArrangement, setSpaceArrangement] = useState<SpaceArrangement>();
-
   const [fillOpen, setFillOpen] = useState<boolean>(false);
   const [borderOpen, setBorderOpen] = useState<boolean>(false);
   const [shadowOpen, setShadowOpen] = useState<boolean>(false);
@@ -549,14 +547,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     }
   }
 
-  function handleSelectingSpaceArrangement(val: SpaceArrangement) {
-    setSpaceArrangement(val);
+  function handleSelectingSpaceArrangement(val: 'start' | 'space-evenly' | 'space-between') {
     const newValues = value ? { ...value } : {};
-    if (val === 'sequence') {
-      newValues.justifyContent = 'start';
-    } else {
-      newValues.justifyContent = val;
-    }
+    newValues.justifyContent = val;
     newValues.alignItems = 'start';
     if (onChange) {
       doChange(newValues);
@@ -576,15 +569,15 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       tpl = (
         <>
           <Start
-            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'sequence' })}
-            onClick={() => handleSelectingSpaceArrangement('sequence')}
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: value.justifyContent === 'start' })}
+            onClick={() => handleSelectingSpaceArrangement('start')}
           />
           <RowSpaceBetween
-            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-evenly' })}
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: value.justifyContent === 'space-evenly' })}
             onClick={() => handleSelectingSpaceArrangement('space-evenly')}
           />
           <SpaceAround
-            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-between' })}
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: value.justifyContent === 'space-between' })}
             onClick={() => handleSelectingSpaceArrangement('space-between')}
           />
         </>
@@ -593,15 +586,15 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       tpl = (
         <>
           <ColumnLayout
-            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'sequence' })}
-            onClick={() => handleSelectingSpaceArrangement('sequence')}
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: value.justifyContent === 'start' })}
+            onClick={() => handleSelectingSpaceArrangement('start')}
           />
           <ColumnSpaceAround
-            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-evenly' })}
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: value.justifyContent === 'space-evenly' })}
             onClick={() => handleSelectingSpaceArrangement('space-evenly')}
           />
           <ColumnSpaceBetween
-            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-between' })}
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: value.justifyContent === 'space-between' })}
             onClick={() => handleSelectingSpaceArrangement('space-between')}
           />
         </>
@@ -927,10 +920,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     }
   }
 
-  const showAlignmentPreview = useMemo(() => {
-    return spaceArrangement === 'sequence';
-  }, [spaceArrangement]);
-
   function renderLayout() {
     if (!config.layout) {
       return null;
@@ -1049,7 +1038,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                   {renderItemsAlignment()}
                 </div>
                 <div className={styles.right}>
-                  {showAlignmentPreview
+                  {value.justifyContent === 'start'
                     ? renderAlignmentPreview(flexDirection as 'row' | 'column')
                     : renderSpaceAssignmentPreview(flexDirection as 'row' | 'column')}
                 </div>
