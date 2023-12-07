@@ -102,7 +102,8 @@ export default class DSLStore {
       style: {},
       basic: {},
       event: {},
-      data: {}
+      data: {},
+      hidden: {}
     };
     Object.keys(props || {}).forEach(key => {
       const propSchema: IPropsSchema = props[key];
