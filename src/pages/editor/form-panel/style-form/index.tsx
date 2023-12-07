@@ -1043,7 +1043,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     );
   }
 
-  function handleSwitchDirection(direction: any) {
+  function handleSwitchDirection(direction: 'row' | 'column') {
     if (onChange) {
       doChange({
         ...value,
