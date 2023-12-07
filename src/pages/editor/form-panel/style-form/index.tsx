@@ -558,7 +558,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   function renderItemsAlignment() {
-    const { direction } = value;
+    const { flexDirection } = value;
     let tpl: JSX.Element;
 
     const iconClassObj = {
@@ -566,7 +566,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       [styles.f20]: true
     };
 
-    if ((direction as string) === 'row') {
+    if (flexDirection === 'row') {
       tpl = (
         <>
           <Start
@@ -636,9 +636,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   // 元素排布的预览九宫格
-  function renderAlignmentPreview(direction: 'row' | 'column') {
+  function renderAlignmentPreview(flexDirection: 'row' | 'column') {
     const alignmentClass = classNames({
-      [styles.rDiagonal180]: direction === 'column',
+      [styles.rDiagonal180]: flexDirection === 'column',
       [styles.alignmentGrid]: true
     });
 
@@ -747,9 +747,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     // TODO
   }
 
-  function renderSpaceAssignmentPreview(direction: 'row' | 'column') {
+  function renderSpaceAssignmentPreview(flexDirection: 'row' | 'column') {
     const alignmentClass = classNames({
-      [styles.rDiagonal180]: direction === 'column',
+      [styles.rDiagonal180]: flexDirection === 'column',
       [styles.alignmentGrid]: true
     });
 
@@ -919,7 +919,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       return null;
     }
 
-    const { direction } = value;
+    const { flexDirection } = value;
 
     const iconClass = classNames({
       [styles.r90]: true,
@@ -1033,8 +1033,8 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                 </div>
                 <div className={styles.right}>
                   {showAlignmentPreview
-                    ? renderAlignmentPreview(direction as 'row' | 'column')
-                    : renderSpaceAssignmentPreview(direction as 'row' | 'column')}
+                    ? renderAlignmentPreview(flexDirection as 'row' | 'column')
+                    : renderSpaceAssignmentPreview(flexDirection as 'row' | 'column')}
                 </div>
               </>
             ) : null}
@@ -1070,11 +1070,11 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     );
   }
 
-  function handleSwitchDirection(direction: 'row' | 'column') {
+  function handleSwitchDirection(flexDirection: 'row' | 'column') {
     if (onChange) {
       doChange({
         ...value,
-        direction
+        flexDirection
       });
     }
   }
@@ -1089,13 +1089,14 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   function renderDirectionSwitch() {
-    const { direction } = value;
+    const { flexDirection } = value;
+
     const rowSelectedClass = classNames({
-      [styles.iconSelected]: (direction as string) === 'row',
+      [styles.iconSelected]: flexDirection !== 'column',
       [styles.icon]: true
     });
     const columnSelectedClass = classNames({
-      [styles.iconSelected]: (direction as string) === 'column',
+      [styles.iconSelected]: flexDirection === 'column',
       [styles.icon]: true,
       [styles.r90]: true
     });
@@ -1110,7 +1111,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   function renderWrapSwitch() {
     const { flexWrap } = value;
     const wrapClass = classNames({
-      [styles.iconSelected]: (flexWrap as string) === 'wrap',
+      [styles.iconSelected]: flexWrap === 'wrap',
       [styles.icon]: true,
       [styles.f20]: true
     });

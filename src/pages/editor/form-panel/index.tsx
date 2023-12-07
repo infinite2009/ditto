@@ -9,6 +9,7 @@ import StyleForm from '@/pages/editor/form-panel/style-form';
 import { observer } from 'mobx-react';
 import { DSLStoreContext } from '@/hooks/context';
 import styles from './index.module.less';
+import { fetchComponentConfig } from '@/util';
 import { toJS } from 'mobx';
 
 export default observer(() => {
@@ -66,18 +67,38 @@ export default observer(() => {
   }
 
   function renderStyleForm() {
-    if (!dslStore.formConfigOfSelectedComponent) {
+    if (!dslStore.formConfigOfSelectedComponent || !dslStore.selectedComponent) {
       return null;
     }
 
-    const parentSchema = dslStore.dsl.componentIndexes[dslStore.selectedComponent.parentId];
+    const { configName, dependency, parentId } = dslStore.selectedComponent;
+    const parentSchema = dslStore.dsl.componentIndexes[parentId];
     const parentDirection = dslStore.dsl.props[parentSchema.id].vertical.value ? 'column' : 'row';
+
+    let mergedStyleObj: CSSProperties;
+    const componentConfig = fetchComponentConfig(configName, dependency);
+
+    if (componentConfig.transformerStr) {
+      const transformer = new Function('values', componentConfig.transformerStr);
+      let transformedValues = {};
+      try {
+        transformedValues = transformer(dslStore.valueOfSelectedComponent?.hidden);
+      } catch (e) {
+        console.error(e);
+      }
+      mergedStyleObj = {
+        ...(dslStore.valueOfSelectedComponent?.style || {}),
+        ...transformedValues
+      };
+    } else {
+      mergedStyleObj = toJS(dslStore.valueOfSelectedComponent.style);
+    }
 
     return (
       <StyleForm
         key="style"
         onChange={handleChangingStyleForm}
-        value={toJS(dslStore.valueOfSelectedComponent?.style)}
+        value={mergedStyleObj}
         config={dslStore.formConfigOfSelectedComponent.schema?.style}
         parentDirection={parentDirection}
       />
