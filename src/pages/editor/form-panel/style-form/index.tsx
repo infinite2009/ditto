@@ -62,13 +62,9 @@ enum ItemsAlignment {
   bottomRight
 }
 
-enum ItemsAlignment2 {
-  top,
-  center,
-  bottom
-}
+type ItemsAlignment2 = 'start' | 'center' | 'end';
 
-type SpaceArrangement = 'sequence' | 'space-around' | 'space-between';
+type SpaceArrangement = 'sequence' | 'space-evenly' | 'space-between';
 
 type TextAlignment = 'left' | 'right' | 'center' | 'justify';
 
@@ -555,6 +551,16 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   function handleSelectingSpaceArrangement(val: SpaceArrangement) {
     setSpaceArrangement(val);
+    const newValues = value ? { ...value } : {};
+    if (val === 'sequence') {
+      newValues.justifyContent = 'start';
+    } else {
+      newValues.justifyContent = val;
+    }
+    newValues.alignItems = 'start';
+    if (onChange) {
+      doChange(newValues);
+    }
   }
 
   function renderItemsAlignment() {
@@ -574,8 +580,8 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
             onClick={() => handleSelectingSpaceArrangement('sequence')}
           />
           <RowSpaceBetween
-            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-around' })}
-            onClick={() => handleSelectingSpaceArrangement('space-around')}
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-evenly' })}
+            onClick={() => handleSelectingSpaceArrangement('space-evenly')}
           />
           <SpaceAround
             className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-between' })}
@@ -591,8 +597,8 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
             onClick={() => handleSelectingSpaceArrangement('sequence')}
           />
           <ColumnSpaceAround
-            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-around' })}
-            onClick={() => handleSelectingSpaceArrangement('space-around')}
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-evenly' })}
+            onClick={() => handleSelectingSpaceArrangement('space-evenly')}
           />
           <ColumnSpaceBetween
             className={classNames({ ...iconClassObj, [styles.iconSelected]: spaceArrangement === 'space-between' })}
@@ -616,7 +622,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     return value[key] === 'center';
   }
 
-  function handleSelectingItemsAlignment(val: ItemsAlignment | ItemsAlignment2) {
+  function handleChangingItemsAlignmentAndJustifyContent(val: ItemsAlignment) {
     const { alignItems, justifyContent } = itemsAlignmentDict[val];
     if (onChange) {
       doChange({
@@ -624,6 +630,14 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         alignItems,
         justifyContent
       });
+    }
+  }
+
+  function handleChangingItemsAlignment(val: ItemsAlignment2) {
+    const newValues = value ? { ...value } : {};
+    newValues.alignItems = val;
+    if (onChange) {
+      doChange(newValues);
     }
   }
 
@@ -651,7 +665,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       <div className={alignmentClass} onMouseLeave={cancelSelectingItemsAlignment}>
         <div
           onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.topLeft)}
-          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.topLeft)}
+          onClick={() => handleChangingItemsAlignmentAndJustifyContent(ItemsAlignment.topLeft)}
         >
           {(isStart('alignItems') && isStart('justifyContent')) || itemsAlignmentState === ItemsAlignment.topLeft ? (
             <AlignStart className={styles.icon} />
@@ -661,7 +675,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         </div>
         <div
           onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.top)}
-          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.top)}
+          onClick={() => handleChangingItemsAlignmentAndJustifyContent(ItemsAlignment.top)}
         >
           {(isStart('alignItems') && isCenter('justifyContent')) || itemsAlignmentState === ItemsAlignment.top ? (
             <AlignStart className={styles.icon} />
@@ -671,7 +685,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         </div>
         <div
           onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.topRight)}
-          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.topRight)}
+          onClick={() => handleChangingItemsAlignmentAndJustifyContent(ItemsAlignment.topRight)}
         >
           {(isStart('alignItems') && isEnd('justifyContent')) || itemsAlignmentState === ItemsAlignment.topRight ? (
             <AlignStart className={styles.icon} />
@@ -681,7 +695,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         </div>
         <div
           onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.left)}
-          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.left)}
+          onClick={() => handleChangingItemsAlignmentAndJustifyContent(ItemsAlignment.left)}
         >
           {(isCenter('alignItems') && isStart('justifyContent')) || itemsAlignmentState === ItemsAlignment.left ? (
             <AlignCenter className={styles.icon} />
@@ -691,7 +705,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         </div>
         <div
           onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.center)}
-          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.center)}
+          onClick={() => handleChangingItemsAlignmentAndJustifyContent(ItemsAlignment.center)}
         >
           {(isCenter('alignItems') && isCenter('justifyContent')) || itemsAlignmentState === ItemsAlignment.center ? (
             <AlignCenter className={styles.icon} />
@@ -701,7 +715,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         </div>
         <div
           onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.right)}
-          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.right)}
+          onClick={() => handleChangingItemsAlignmentAndJustifyContent(ItemsAlignment.right)}
         >
           {(isCenter('alignItems') && isEnd('justifyContent')) || itemsAlignmentState === ItemsAlignment.right ? (
             <AlignCenter className={styles.icon} />
@@ -711,7 +725,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         </div>
         <div
           onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.bottomLeft)}
-          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.bottomLeft)}
+          onClick={() => handleChangingItemsAlignmentAndJustifyContent(ItemsAlignment.bottomLeft)}
         >
           {(isEnd('alignItems') && isStart('justifyContent')) || itemsAlignmentState === ItemsAlignment.bottomLeft ? (
             <AlignStart className={iconClass} />
@@ -721,7 +735,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         </div>
         <div
           onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.bottom)}
-          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.bottom)}
+          onClick={() => handleChangingItemsAlignmentAndJustifyContent(ItemsAlignment.bottom)}
         >
           {(isEnd('alignItems') && isCenter('justifyContent')) || itemsAlignmentState === ItemsAlignment.bottom ? (
             <AlignStart className={iconClass} />
@@ -731,7 +745,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         </div>
         <div
           onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment.bottomRight)}
-          onClick={() => handleSelectingItemsAlignment(ItemsAlignment.bottomRight)}
+          onClick={() => handleChangingItemsAlignmentAndJustifyContent(ItemsAlignment.bottomRight)}
         >
           {(isEnd('alignItems') && isEnd('justifyContent')) || itemsAlignmentState === ItemsAlignment.bottomRight ? (
             <AlignStart className={iconClass} />
@@ -754,13 +768,14 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     });
 
     return (
-      <div className={alignmentClass} onMouseLeave={cancelSelectingItemsAlignment}>
+      <div className={alignmentClass}>
         <div
           className={styles.alignStart}
-          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment2.top)}
-          onClick={() => handleSelectingItemsAlignment(ItemsAlignment2.top)}
+          onMouseEnter={() => handlePreviewItemsAlignment('start')}
+          onMouseLeave={cancelSelectingItemsAlignment}
+          onClick={() => handleChangingItemsAlignment('start')}
         >
-          {isStart('alignItems') || itemsAlignmentState === ItemsAlignment2.top ? (
+          {isStart('alignItems') || itemsAlignmentState === 'start' ? (
             <>
               <LongBar className={styles.icon} />
               <ShortBar className={styles.icon} />
@@ -776,10 +791,11 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         </div>
         <div
           className={styles.alignCenter}
-          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment2.center)}
-          onClick={() => handleSelectingItemsAlignment(ItemsAlignment2.center)}
+          onMouseEnter={() => handlePreviewItemsAlignment('center')}
+          onMouseLeave={cancelSelectingItemsAlignment}
+          onClick={() => handleChangingItemsAlignment('center')}
         >
-          {isCenter('alignItems') || itemsAlignmentState === ItemsAlignment2.center ? (
+          {isCenter('alignItems') || itemsAlignmentState === 'center' ? (
             <>
               <LongBar className={styles.icon} />
               <ShortBar className={styles.icon} />
@@ -795,10 +811,11 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         </div>
         <div
           className={styles.alignEnd}
-          onMouseEnter={() => handlePreviewItemsAlignment(ItemsAlignment2.bottom)}
-          onClick={() => handleSelectingItemsAlignment(ItemsAlignment2.bottom)}
+          onMouseEnter={() => handlePreviewItemsAlignment('end')}
+          onMouseLeave={cancelSelectingItemsAlignment}
+          onClick={() => handleChangingItemsAlignment('end')}
         >
-          {isEnd('alignItems') || itemsAlignmentState === ItemsAlignment2.bottom ? (
+          {isEnd('alignItems') || itemsAlignmentState === 'end' ? (
             <>
               <LongBar className={styles.icon} />
               <ShortBar className={styles.icon} />
