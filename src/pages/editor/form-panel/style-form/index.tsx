@@ -1052,7 +1052,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     }
   }
 
-  function handleSwitchWrap(val: any) {
+  function handleSwitchWrap(val: 'wrap' | 'nowrap') {
     if (onChange) {
       doChange({
         ...value,
