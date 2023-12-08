@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react';
+import { CSSProperties, ReactNode, useMemo } from 'react';
 
 import styles from './index.module.less';
 import classNames from 'classnames';
@@ -12,9 +12,10 @@ export interface IContainerProps {
   align: 'normal' | 'start' | 'center' | 'end' | 'stretch';
   justify: 'normal' | 'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly' | 'stretch';
   gap: number;
+  style: CSSProperties;
 }
 
-export default function Container({ children, vertical, gap, wrap, justify, align }: IContainerProps) {
+export default function Container({ children, vertical, gap, wrap, justify, align, style }: IContainerProps) {
   const classes = useMemo(() => {
     return classNames({
       [styles.rowWithoutChildren]: !vertical,
@@ -30,7 +31,7 @@ export default function Container({ children, vertical, gap, wrap, justify, alig
   }
 
   return (
-    <Flex vertical={vertical} gap={gap} wrap={wrap} justify={justify} align={align} style={{ padding: 8 }}>
+    <Flex vertical={vertical} gap={gap} wrap={wrap} justify={justify} align={align} style={style}>
       {renderChildren()}
     </Flex>
   );
