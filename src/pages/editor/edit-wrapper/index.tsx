@@ -84,6 +84,7 @@ export default observer(function EditWrapper({
       'left',
       'inset',
       'flexGrow',
+      'flexShrink',
       'alignSelf'
     ];
     styleNames.forEach(name => {

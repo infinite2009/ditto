@@ -580,7 +580,6 @@ export default class DSLStore {
     const { id, configName, dependency } = this.selectedComponent;
     const props = this.dsl.props[id];
     const config = fetchComponentConfig(configName, dependency);
-    debugger;
     if (config) {
       Object.values(config.propsConfig || {}).forEach(prop => {
         // 如果当前这个属性不在变更的属性对象里，就用重置为默认值

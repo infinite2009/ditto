@@ -537,6 +537,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     }
 
     newValueState[type] = val;
+    newValueState.flexShrink = 0;
 
     if (onChange) {
       doChange(newValueState);
@@ -828,7 +829,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
     switch (val) {
       case 'fill':
-        delete newValueState.flexShrink;
         if (parentDirection === 'row') {
           if (type === 'width') {
             newValueState.flexGrow = 1;
@@ -851,7 +851,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         }
         break;
       case 'hug':
-        delete newValueState.flexShrink;
         if (parentDirection === 'row') {
           if (type === 'width') {
             delete newValueState.flexGrow;
@@ -871,8 +870,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         }
         break;
       case 'fixed':
-        // 添加不可压缩
-        newValueState.flexShrink = 0;
         break;
     }
     if (type === 'width') {

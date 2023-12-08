@@ -67,7 +67,6 @@ export default observer(() => {
         console.error(e.toString());
       }
     }
-    debugger;
     dslStore.updateComponentProps({
       style: {
         ...valueCopy
