@@ -13,11 +13,7 @@ const flexTransformerStr =
   '  } else {' +
   '    result.vertical = false;' +
   '  }' +
-  "  if (flexWrap && flexWrap === 'wrap') {" +
-  '    result.wrap = true;' +
-  '  } else {' +
-  '    result.wrap = false;' +
-  '  }' +
+  "  result.wrap = flexWrap || 'nowrap';" +
   '  if (justifyContent) {' +
   '    result.justify = justifyContent;' +
   '  } else {' +

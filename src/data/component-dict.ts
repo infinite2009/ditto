@@ -67,7 +67,7 @@ const flexTransformerStr =
   '  const { vertical, wrap, align, justify, gap } = values;' +
   '  const result = {' +
   "    flexDirection: vertical ? 'column' : 'row'," +
-  "    flexWrap: wrap ? 'wrap' : 'nowrap'" +
+  "    flexWrap: wrap || 'nowrap'" +
   '  };' +
   '  if (align) {' +
   "    result.alignItems = align === 'normal' ? 'start' : align;" +
@@ -76,12 +76,17 @@ const flexTransformerStr =
   "    result.justifyContent = justify === 'normal' ? 'start' : justify;" +
   '  }' +
   '  if (gap) {' +
-  '    const gapRegex = /\\s*(\\S+)\\s*(\\S+)?/;' +
-  '    const match = gap.match(gapRegex);' +
-  '    if (match) {' +
-  '      const [, rowGap, columnGap] = match;' +
-  "      result.rowGap = +(rowGap.replace('px', ''));" +
-  "      result.columnGap = columnGap ? +(columnGap.replace('px', '')) : result.rowGap;" +
+  "    if (typeof gap === 'number') {" +
+  '      result.rowGap = gap;' +
+  '      result.columnGap = gap;' +
+  '    } else {' +
+  '      const gapRegex = /\\s*(\\S+)\\s*(\\S+)?/;' +
+  '      const match = gap.match(gapRegex);' +
+  '      if (match) {' +
+  '        const [, rowGap, columnGap] = match;' +
+  "        result.rowGap = +(rowGap.replace('px', ''));" +
+  "        result.columnGap = columnGap ? +(columnGap.replace('px', '')) : result.rowGap;" +
+  '      }' +
   '    }' +
   '  }' +
   '  return result;' +
@@ -152,7 +157,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'wrap',
         title: '自动换行',
         category: 'hidden',
-        value: true,
+        value: 'nowrap',
         valueType: 'boolean',
         valueSource: 'editorInput'
       },
@@ -227,7 +232,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '自动换行',
         name: 'wrap',
         category: 'hidden',
-        value: true,
+        value: 'nowrap',
         valueType: 'boolean',
         valueSource: 'editorInput'
       },
@@ -302,7 +307,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '自动换行',
         name: 'wrap',
         category: 'hidden',
-        value: true,
+        value: 'nowrap',
         valueType: 'boolean',
         valueSource: 'editorInput'
       },
