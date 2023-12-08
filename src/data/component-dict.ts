@@ -81,7 +81,7 @@ const flexTransformerStr =
   '    if (match) {' +
   '      const [, rowGap, columnGap] = match;' +
   "      result.rowGap = +(rowGap.replace('px', ''));" +
-  "      result.columnGap = columnGap ? +(columnGap.replace('px', '')) : rowGap;" +
+  "      result.columnGap = columnGap ? +(columnGap.replace('px', '')) : result.rowGap;" +
   '    }' +
   '  }' +
   '  return result;' +
