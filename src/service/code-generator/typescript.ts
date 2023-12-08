@@ -1,4 +1,3 @@
-import DynamicObject from '@/types/dynamic-object';
 import { typeOf } from '@/util';
 import { ImportType } from '@/types';
 
@@ -164,6 +163,10 @@ export default class TypeScriptCodeGenerator {
           this.generateObjectStrArr(val, keyPaths, callback, `${currentKeyPath}[${index}]`).forEach(item => {
             sentences.push(item);
           });
+          if (index < data.length - 1) {
+            // 每个元素后加上一个逗号，最后一个除外
+            sentences[sentences.length - 1] += ',';
+          }
         });
         sentences.push(`],`);
         break;
