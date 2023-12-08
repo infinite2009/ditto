@@ -124,6 +124,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     title: '页面',
     icon: CodeSandboxOutlined,
     propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
       vertical: {
         id: 'vertical',
         schemaType: 'props',
@@ -187,6 +197,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     icon: CodeSandboxOutlined,
     component: Container,
     propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
       vertical: {
         id: 'vertical',
         schemaType: 'props',
@@ -250,6 +270,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     icon: CodeSandboxOutlined,
     component: Container,
     propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
       vertical: {
         id: 'vertical',
         schemaType: 'props',
@@ -287,6 +317,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'align',
         category: 'hidden',
         value: 'normal',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      gap: {
+        id: 'gap',
+        name: 'gap',
+        schemaType: 'props',
+        title: '间距',
+        category: 'hidden',
+        value: '8px',
         valueType: 'string',
         valueSource: 'editorInput'
       }
