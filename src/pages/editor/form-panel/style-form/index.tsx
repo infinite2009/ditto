@@ -40,7 +40,7 @@ import {
   Wrap
 } from '@/components/icon';
 import styles from './index.module.less';
-import { isDifferent } from '@/util';
+import { isDifferent, parsePadding } from '@/util';
 import { StyleFormConfig } from '@/types/form-config';
 
 export interface IStyleFormProps {
@@ -930,8 +930,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       return null;
     }
 
-    const { flexDirection } = value;
-
     const iconClass = classNames({
       [styles.r90]: true,
       [styles.icon]: true
@@ -984,6 +982,17 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         )
       }
     ];
+
+    let paddingObj: { paddingTop?: number; paddingLeft?: number } = {};
+    if (value.padding) {
+      paddingObj = parsePadding(value.padding) || {};
+    } else {
+      paddingObj = {
+        paddingTop: value.paddingTop as number,
+        paddingLeft: value.paddingLeft as number
+      };
+    }
+    console.log('paddingObj: ', paddingObj);
 
     return (
       <div className={styles.p12}>
@@ -1065,11 +1074,13 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
           {config.layout === true || config.layout.padding ? (
             <div className={styles.row}>
               <NumberInput
-                icon={<Padding className={iconClass} value={value.paddingLeft} />}
+                icon={<Padding className={iconClass} />}
+                value={paddingObj.paddingLeft}
                 onChange={handleChangingColumnPadding}
               />
               <NumberInput
-                icon={<Padding className={styles.icon} value={value.paddingTop} />}
+                icon={<Padding className={styles.icon} />}
+                value={paddingObj.paddingTop}
                 onChange={handleChangingRowPadding}
               />
             </div>

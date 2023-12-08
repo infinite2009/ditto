@@ -130,7 +130,9 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'style',
         title: '样式',
         category: 'style',
-        value: {},
+        value: {
+          padding: 8
+        },
         valueType: 'object',
         valueSource: 'editorInput'
       },
@@ -203,7 +205,9 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'style',
         title: '样式',
         category: 'style',
-        value: {},
+        value: {
+          padding: 8
+        },
         valueType: 'object',
         valueSource: 'editorInput'
       },
@@ -276,7 +280,9 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'style',
         title: '样式',
         category: 'style',
-        value: {},
+        value: {
+          padding: 8
+        },
         valueType: 'object',
         valueSource: 'editorInput'
       },

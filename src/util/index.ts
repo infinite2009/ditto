@@ -219,3 +219,61 @@ export function isDifferent(a: any, b: any) {
   // 对于所有非对象的值，我们可以简单地检查它们是否相等
   return a !== b;
 }
+
+export function parsePadding(padding: number | string) {
+  if (typeof padding === 'number') {
+    return {
+      paddingTop: padding,
+      paddingRight: padding,
+      paddingBottom: padding,
+      paddingLeft: padding
+    };
+  }
+  // 将输入字符串分割为数组
+  const values = padding.split(' ');
+
+  // 创建一个对象来存储解析后的值
+  let parsedValues = {};
+
+  // 根据数组的长度，解析 padding 值
+  switch (values.length) {
+    case 1: // 所有的边都有相同的值
+      parsedValues = {
+        top: parseInt(values[0]),
+        right: parseInt(values[0]),
+        bottom: parseInt(values[0]),
+        left: parseInt(values[0])
+      };
+      break;
+    case 2: // 上下边和左右边有相同的值
+      parsedValues = {
+        top: parseInt(values[0]),
+        right: parseInt(values[1]),
+        bottom: parseInt(values[0]),
+        left: parseInt(values[1])
+      };
+      break;
+    case 3: // 上边有一个值，左右边有相同的值，下边有一个值
+      parsedValues = {
+        top: parseInt(values[0]),
+        right: parseInt(values[1]),
+        bottom: parseInt(values[2]),
+        left: parseInt(values[1])
+      };
+      break;
+    case 4: // 每个边都有一个值
+      parsedValues = {
+        top: parseInt(values[0]),
+        right: parseInt(values[1]),
+        bottom: parseInt(values[2]),
+        left: parseInt(values[3])
+      };
+      break;
+    default: // 输入无效
+      console.log('Invalid input');
+      return;
+  }
+
+  // 返回解析后的值
+  return parsedValues;
+}
