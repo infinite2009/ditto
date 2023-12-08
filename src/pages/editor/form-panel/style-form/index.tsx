@@ -64,10 +64,6 @@ enum ItemsAlignment {
 
 type ItemsAlignment2 = 'start' | 'center' | 'end';
 
-type SpaceArrangement = 'sequence' | 'space-evenly' | 'space-between';
-
-type TextAlignment = 'left' | 'right' | 'center' | 'justify';
-
 type SizeMode = 'hug' | 'fill' | 'fixed';
 
 const itemsAlignmentDict = {
@@ -569,7 +565,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       tpl = (
         <>
           <Start
-            className={classNames({ ...iconClassObj, [styles.iconSelected]: value.justifyContent === 'start' })}
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: isCompact(value.justifyContent) })}
             onClick={() => handleSelectingSpaceArrangement('start')}
           />
           <RowSpaceBetween
@@ -586,7 +582,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       tpl = (
         <>
           <ColumnLayout
-            className={classNames({ ...iconClassObj, [styles.iconSelected]: value.justifyContent === 'start' })}
+            className={classNames({ ...iconClassObj, [styles.iconSelected]: isCompact(value.justifyContent) })}
             onClick={() => handleSelectingSpaceArrangement('start')}
           />
           <ColumnSpaceAround
@@ -643,9 +639,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   // 元素排布的预览九宫格
-  function renderAlignmentPreview(flexDirection: 'row' | 'column') {
+  function renderAlignmentPreview() {
     const alignmentClass = classNames({
-      [styles.rDiagonal180]: flexDirection === 'column',
+      [styles.rDiagonal180]: value.flexDirection === 'column',
       [styles.alignmentGrid]: true
     });
 
@@ -754,9 +750,10 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     // TODO
   }
 
-  function renderSpaceAssignmentPreview(flexDirection: 'row' | 'column') {
+  function renderSpaceAssignmentPreview() {
+    console.log('space: ', value.flexDirection);
     const alignmentClass = classNames({
-      [styles.rDiagonal180]: flexDirection === 'column',
+      [styles.rDiagonal180]: value.flexDirection === 'column',
       [styles.alignmentGrid]: true
     });
 
@@ -920,6 +917,14 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     }
   }
 
+  /**
+   * 是否是紧凑排列
+   */
+  function isCompact(val: string) {
+    const compactStyles = ['start', 'center', 'end'];
+    return compactStyles.includes(val);
+  }
+
   function renderLayout() {
     if (!config.layout) {
       return null;
@@ -1038,9 +1043,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                   {renderItemsAlignment()}
                 </div>
                 <div className={styles.right}>
-                  {value.justifyContent === 'start'
-                    ? renderAlignmentPreview(flexDirection as 'row' | 'column')
-                    : renderSpaceAssignmentPreview(flexDirection as 'row' | 'column')}
+                  {isCompact(value.justifyContent) ? renderAlignmentPreview() : renderSpaceAssignmentPreview()}
                 </div>
               </>
             ) : null}
