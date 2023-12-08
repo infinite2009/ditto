@@ -992,7 +992,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         paddingLeft: value.paddingLeft as number
       };
     }
-    console.log('paddingObj: ', paddingObj);
 
     return (
       <div className={styles.p12}>
