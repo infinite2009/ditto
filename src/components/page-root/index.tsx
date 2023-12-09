@@ -7,10 +7,10 @@ import ComponentFeature from '@/types/component-feature';
 import { Flex } from 'antd';
 
 export interface IPageRootProps {
-  id: string;
-  childrenId: string[];
-  parentId: string;
   children: ReactNode[];
+  childrenId: string[];
+  id: string;
+  parentId: string;
   scale?: number;
 }
 
@@ -35,7 +35,7 @@ export default function PageRoot({ id, childrenId, parentId, children, scale = 1
   }, [children]);
 
   const composedStyle: CSSProperties = useMemo(() => {
-    return { transform: `scale(${scale})`, transformOrigin: 'top left' };
+    return { transform: `scale(${scale}) ${scale === 0.5 ? 'translateX(50%)' : ''} `, transformOrigin: 'top left' };
   }, [scale]);
 
   return (
