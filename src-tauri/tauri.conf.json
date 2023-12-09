@@ -145,10 +145,10 @@
         "fullscreen": false,
         "resizable": true,
         "title": "Ditto",
-        "width": 800,
-        "height": 600,
-        "minWidth": 800,
-        "minHeight": 600
+        "width": 1300,
+        "height": 800,
+        "minWidth": 1300,
+        "minHeight": 800
       }
     ]
   }
