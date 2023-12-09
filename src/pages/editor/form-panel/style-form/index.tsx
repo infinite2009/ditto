@@ -752,7 +752,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   }
 
   function renderSpaceAssignmentPreview() {
-    console.log('space: ', value.flexDirection);
     const alignmentClass = classNames({
       [styles.rDiagonal180]: value.flexDirection === 'column',
       [styles.alignmentGrid]: true
