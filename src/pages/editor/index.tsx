@@ -16,7 +16,7 @@ import {
 } from '@dnd-kit/core';
 import { Form, Input, message, Modal } from 'antd';
 
-import Toolbar, { PageActionEvent } from '@/pages/editor/toolbar';
+import Toolbar, { PageActionEvent, PageWidth } from '@/pages/editor/toolbar';
 import PagePanel from '@/pages/editor/page-panel';
 import ComponentPanel from '@/pages/editor/component-panel';
 import TemplatePanel from '@/pages/editor/template-panel';
@@ -111,6 +111,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [scale, setScale] = useState<number>(1);
   const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
   const [selectedComponentForRenaming, setSelectedComponentForRenaming] = useState<ComponentId>('');
+  const [pageWidth, setPageWidth] = useState<number>(PageWidth.mac);
 
   const [form] = useForm();
 
@@ -640,7 +641,18 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       case PageAction.changeScale:
         togglePageScale(e?.payload?.scale);
         break;
+      case PageAction.changePageSize:
+        changePageSize(e?.payload?.pageWidth);
+        break;
     }
+  }
+
+  function changePageSize(pageWidth: PageWidth) {
+    if (!pageWidth) {
+      setPageWidth(PageWidth.mac);
+      return;
+    }
+    setPageWidth(pageWidth);
   }
 
   function createBlankPage() {
@@ -873,7 +885,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
               {renderLeftPanel()}
             </div>
             <div className={styles.canvas}>
-              <div className={styles.canvasInner}>
+              <div className={styles.canvasInner} style={{ width: pageWidth }}>
                 {currentFile ? <PageRenderer mode="edit" scale={scale} /> : <Empty />}
               </div>
             </div>
@@ -905,7 +917,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             style={leftPanelVisible ? undefined : { width: 0, overflow: 'hidden', margin: 0, padding: 0 }}
           />
         ) : null}
-        <Toolbar onDo={handleOnDo} />
+        <Toolbar onDo={handleOnDo} pageWidth={pageWidth} />
       </div>
       <div className={styles.editArea}>{showDesign ? renderDesignSection() : renderCodeSection()}</div>
 

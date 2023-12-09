@@ -17,18 +17,26 @@ import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import { RadioChangeEvent } from 'antd/es/radio/interface';
 
+export enum PageWidth {
+  wechat = 900,
+  windows = 1280,
+  mac = 1440,
+  monitor = 1920
+}
+
 export interface PageActionEvent {
-  type: PageAction;
   payload?: { [key: string]: any };
+  type: PageAction;
 }
 
 interface IToolbarProps {
   onDo: (e: PageActionEvent) => void;
+  pageWidth?: number;
 }
 
 const { Option } = Select;
 
-export default observer(({ onDo }: IToolbarProps) => {
+export default observer(({ onDo, pageWidth }: IToolbarProps) => {
   const dslStore = useContext(DSLStoreContext);
 
   const [view, setView] = useState<'code' | 'design'>('design');
@@ -141,7 +149,7 @@ export default observer(({ onDo }: IToolbarProps) => {
       onDo({
         type: PageAction.changePageSize,
         payload: {
-          size: data
+          pageWidth: data
         }
       });
     }
@@ -185,35 +193,35 @@ export default observer(({ onDo }: IToolbarProps) => {
         {/*<MobileOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('phone')} />*/}
         <Select
           disabled={view !== 'design'}
-          value={1280}
+          value={pageWidth}
           style={{ width: 100 }}
           bordered={false}
           optionLabelProp="label"
           dropdownStyle={{ width: 140 }}
           onChange={handleChangePageSize}
         >
-          <Option value={900} label="900px">
+          <Option value={PageWidth.wechat} label={`${PageWidth.wechat}px`}>
             <Space>
               <span>企微窗口</span>
-              <span>900 px</span>
+              <span>{PageWidth.wechat} px</span>
             </Space>
           </Option>
-          <Option value={1280} label="1280px">
+          <Option value={PageWidth.windows} label={`${PageWidth.windows}px`}>
             <Space>
               <span>Win</span>
-              <span>1280 px</span>
+              <span>{PageWidth.windows} px</span>
             </Space>
           </Option>
-          <Option value={1440} label="1440px">
+          <Option value={PageWidth.mac} label={`${PageWidth.mac}px`}>
             <Space>
               <span>Mac</span>
-              <span>1440 px</span>
+              <span>{PageWidth.mac} px</span>
             </Space>
           </Option>
-          <Option value={1920} label="1920px">
+          <Option value={PageWidth.monitor} label={`${PageWidth.monitor}px`}>
             <Space>
               <span>显示器</span>
-              <span>1920 px</span>
+              <span>{PageWidth.monitor} px</span>
             </Space>
           </Option>
         </Select>
