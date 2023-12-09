@@ -10,11 +10,12 @@ export interface IPageRootProps {
   children: ReactNode[];
   childrenId: string[];
   id: string;
+  pageWidth?: number;
   parentId: string;
   scale?: number;
 }
 
-export default function PageRoot({ id, childrenId, parentId, children, scale = 1 }: IPageRootProps) {
+export default function PageRoot({ id, childrenId, parentId, children, scale = 1, pageWidth }: IPageRootProps) {
   const { isOver, setNodeRef } = useDroppable({
     id,
     data: {
@@ -35,8 +36,12 @@ export default function PageRoot({ id, childrenId, parentId, children, scale = 1
   }, [children]);
 
   const composedStyle: CSSProperties = useMemo(() => {
-    return { transform: `scale(${scale}) ${scale === 0.5 ? 'translateX(50%)' : ''} `, transformOrigin: 'top left' };
-  }, [scale]);
+    return {
+      transform: `scale(${scale}) ${scale === 0.5 ? 'translateX(50%)' : ''} `,
+      transformOrigin: 'top left',
+      width: pageWidth
+    };
+  }, [scale, pageWidth]);
 
   return (
     <div className={classes} ref={setNodeRef} style={composedStyle}>

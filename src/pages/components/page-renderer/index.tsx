@@ -15,6 +15,7 @@ import { observer } from 'mobx-react';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
+  pageWidth: number;
   scale?: number;
 }
 
@@ -25,7 +26,7 @@ export default observer((props: IPageRendererProps) => {
 
   const dslStore = toJS(useContext(DSLStoreContext));
 
-  const { mode = 'preview', scale } = props;
+  const { mode = 'preview', scale, pageWidth } = props;
 
   const [transferredComponentState, componentStateDispatch] = useReducer<
     Reducer<Record<ComponentId, Record<PropsId, any>>, any>
@@ -262,7 +263,8 @@ export default observer((props: IPageRendererProps) => {
         id: componentId,
         childrenId,
         parentId: dslStore.dsl.id,
-        scale
+        scale,
+        pageWidth
       };
     }
 
