@@ -36,9 +36,11 @@ type FormValue = {
 function execute(target: any, name: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
   descriptor.value = function (...args: any[]) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const oldDsl = toJS(this.dsl);
     const result = originalMethod.apply(this, args);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const newDsl = toJS(this.dsl);
     const diff = detailedDiff(newDsl, oldDsl);
@@ -352,7 +354,12 @@ export default class DSLStore {
    */
   @execute
   deleteComponent(id: ComponentId): IComponentSchema | null {
-    return this.deleteSubtree(id);
+    const deleted = this.deleteSubtree(id);
+    // 如果当前已选中的组件，已经被删除了，就清空
+    if (this.selectedComponent?.id && !this.dsl.componentIndexes[this.selectedComponent.id]) {
+      this.selectedComponent = null;
+    }
+    return deleted;
   }
 
   exportAsTemplate(id: string) {}
