@@ -258,6 +258,7 @@ export default observer((props: IPageRendererProps) => {
     const childrenId = children.filter(c => !c.isText).map(c => c.current);
 
     let rootProps = {};
+    // PageRoot 组件特有的属性
     if (isRoot) {
       rootProps = {
         id: componentId,
