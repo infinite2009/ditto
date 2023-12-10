@@ -89,8 +89,15 @@ export default observer(() => {
     }
 
     const { configName, dependency, parentId } = dslStore.selectedComponent;
-    const parentSchema = dslStore.dsl.componentIndexes[parentId];
-    const parentDirection = dslStore.dsl.props[parentSchema.id].vertical.value ? 'column' : 'row';
+    // 默认父组件的flexDirection 是 column
+    let parentDirection: 'column' | 'row' = 'column';
+    // PageRoot 没有 parentId
+    if (parentId) {
+      const parentSchema = dslStore.dsl.componentIndexes[parentId];
+      if (parentSchema) {
+        parentDirection = dslStore.dsl.props[parentSchema.id].vertical.value ? 'column' : 'row';
+      }
+    }
 
     let mergedStyleObj: CSSProperties;
     const componentConfig = fetchComponentConfig(configName, dependency);

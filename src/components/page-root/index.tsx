@@ -1,10 +1,12 @@
-import { CSSProperties, ReactNode, useMemo } from 'react';
+import { CSSProperties, ReactNode, useContext, useMemo } from 'react';
 import classNames from 'classnames';
 
 import styles from './index.module.less';
 import { useDroppable } from '@dnd-kit/core';
 import ComponentFeature from '@/types/component-feature';
 import { Flex } from 'antd';
+import { observer } from 'mobx-react';
+import { DSLStoreContext } from '@/hooks/context';
 
 export interface IPageRootProps {
   children: ReactNode[];
@@ -15,7 +17,18 @@ export interface IPageRootProps {
   scale?: number;
 }
 
-export default function PageRoot({ id, childrenId, parentId, children, scale = 1, pageWidth }: IPageRootProps) {
+class DslStore {}
+
+export default observer(function PageRoot({
+  id,
+  childrenId,
+  parentId,
+  children,
+  scale = 1,
+  pageWidth
+}: IPageRootProps) {
+  const dslStore = useContext(DSLStoreContext);
+
   const { isOver, setNodeRef } = useDroppable({
     id,
     data: {
@@ -43,9 +56,14 @@ export default function PageRoot({ id, childrenId, parentId, children, scale = 1
     };
   }, [scale, pageWidth]);
 
+  function handleSelecting(e) {
+    e.stopPropagation();
+    dslStore.selectComponent(id);
+  }
+
   return (
-    <div className={classes} ref={setNodeRef} style={composedStyle}>
+    <div className={classes} ref={setNodeRef} style={composedStyle} onClick={handleSelecting}>
       <Flex vertical>{children}</Flex>
     </div>
   );
-}
+});

@@ -241,7 +241,6 @@ export default class DSLStore {
 
     this.dsl.componentIndexes[componentId] = {
       id: componentId,
-      parentId: (this.currentParentNode?.id || this.dsl.id) as string,
       // 默认都设置为 solid
       feature: ComponentFeature.solid,
       schemaType: 'component',
@@ -252,6 +251,11 @@ export default class DSLStore {
       propsRefs: [],
       children
     } as IComponentSchema;
+
+    // pageRoot 不用赋值
+    if (this.currentParentNode?.id) {
+      this.dsl.componentIndexes[componentId].parentId = this.currentParentNode?.id;
+    }
 
     const componentSchema = this.dsl.componentIndexes[componentId];
 

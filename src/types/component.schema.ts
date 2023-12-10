@@ -8,16 +8,16 @@ import ComponentSchemaRef from '@/types/component-schema-ref';
 import ComponentFeature from '@/types/component-feature';
 
 export default interface IComponentSchema extends ISchema {
-  feature: ComponentFeature;
-  parentId: string;
-  desc?: string;
-  displayName: string;
-  configName?: string;
-  importName?: string;
   // 调用名，如果导入的名字和调用的名字不一样，调用时用这个
   callingName?: string;
+  children: ComponentSchemaRef[];
+  configName?: string;
   // 组件包的名字
   dependency: string;
+  desc?: string;
+  displayName: string;
+  feature: ComponentFeature;
+  importName?: string;
   // 导入的相对路径，缺失时系统默认为 ''
   importRelativePath?: string;
   /**
@@ -28,7 +28,8 @@ export default interface IComponentSchema extends ISchema {
   importType?: ImportType;
   // 组件名，用于代码生成的导入和调用环节
   name: string;
+  // PageRoot 没有 parentId
+  parentId?: string;
   // 组件属性
   propsRefs: PropsId[];
-  children: ComponentSchemaRef[];
 }

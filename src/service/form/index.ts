@@ -74,6 +74,38 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
     console.log(err);
   }
   return {
+    pageRoot: {
+      configName: 'pageRoot',
+      schema: {
+        style: {
+          layout: {
+            width: true,
+            height: true,
+            widthGrow: true,
+            heightGrow: true,
+            wrap: true,
+            direction: true,
+            alignItems: true,
+            justifyContent: true,
+            padding: true,
+            gap: true
+          },
+          backgroundColor: true,
+          border: {
+            borderWidth: true,
+            borderColor: true,
+            borderStyle: true
+          },
+          shadow: true,
+          text: {
+            // 字号和行高
+            size: true,
+            color: true,
+            decoration: true
+          }
+        }
+      }
+    },
     Button: {
       configName: 'Button',
       schema: {
