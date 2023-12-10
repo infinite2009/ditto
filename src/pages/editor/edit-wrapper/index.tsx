@@ -305,6 +305,10 @@ export default observer(function EditWrapper({
       onClick={handleClick}
     >
       {children}
+      <div className={styles.topLeft} />
+      <div className={styles.topRight} />
+      <div className={styles.bottomRight} />
+      <div className={styles.bottomLeft} />
     </div>
     // </ComponentContextMenu>
   );

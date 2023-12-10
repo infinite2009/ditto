@@ -39,7 +39,7 @@
 .canvas {
   position: relative;
   flex-grow: 1;
-  padding: @gap;
+  padding: 0 @gap;
   overflow: auto;
   background: #e3e3e3;
 }
@@ -55,6 +55,11 @@
   flex-shrink: 0;
   width: 280px;
   transition: width .25s ease-in-out;
+  :global {
+    .ant-tabs-nav-wrap {
+      margin-left: 12px;
+    }
+  }
 }
 
 .pagePanel {

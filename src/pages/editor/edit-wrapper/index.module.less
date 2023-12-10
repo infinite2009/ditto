@@ -1,17 +1,55 @@
 .main {
-  transition: border 0.5s ease-in-out;
+  position: relative;
   box-sizing: border-box;
-  outline-width: 2px;
+  outline-width: 1px;
+  outline-offset: -1px;
   outline-style: none;
   cursor: default;
+  z-index: 99;
+  transition: border 0.5s ease-in-out;
 }
 
 .isOver {
+  border-radius: 4px;
   outline-style: dotted;
   outline-color: #7193f1;
 }
 
 .selected {
   outline-style: solid;
-  outline-color: #f00;
+  outline-color: #1A4BFF;
+  z-index: 99;
+  .topLeft {
+    top: -3px;
+    left: -3px;
+    .brick();
+  }
+
+  .topRight {
+    top: -3px;
+    right: -3px;
+    .brick();
+  }
+
+  .bottomLeft {
+    bottom: -3px;
+    left: -3px;
+    .brick();
+  }
+
+  .bottomRight {
+    right: -3px;
+    bottom: -3px;
+    .brick();
+  }
+
+}
+
+.brick {
+  position: absolute;
+  z-index: 99;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #1A4BFF;
+  background-color: #fff;
 }
