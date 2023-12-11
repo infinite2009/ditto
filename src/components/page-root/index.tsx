@@ -50,7 +50,7 @@ export default observer(function PageRoot({
 
   const composedStyle: CSSProperties = useMemo(() => {
     return {
-      transform: `scale(${scale}) ${scale === 0.5 ? 'translateX(50%)' : ''} `,
+      transform: `scale(${scale / 100}) `,
       transformOrigin: 'top left',
       width: pageWidth
     };

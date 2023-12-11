@@ -227,26 +227,50 @@ export default observer(({ onDo, pageWidth }: IToolbarProps) => {
         </Select>
         <Select
           disabled={view !== 'design'}
-          defaultValue={1}
+          defaultValue={100}
           style={{ width: 100 }}
           bordered={false}
           optionLabelProp="label"
           dropdownStyle={{ width: 140 }}
           onChange={handleChangeScale}
         >
-          <Option value={0.5} label="50%">
+          <Option value={50} label="50%">
             <Space>
               <span>调整至</span>
               <span>50%</span>
             </Space>
           </Option>
-          <Option value={1} label="100%">
+          <Option value={75} label="75%">
+            <Space>
+              <span>调整至</span>
+              <span>75%</span>
+            </Space>
+          </Option>
+          <Option value={100} label="100%">
             <Space>
               <span>调整至</span>
               <span>100%</span>
             </Space>
           </Option>
-          <Option value={2} label="200%">
+          <Option value={125} label="125%">
+            <Space>
+              <span>调整至</span>
+              <span>125%</span>
+            </Space>
+          </Option>
+          <Option value={150} label="150%">
+            <Space>
+              <span>调整至</span>
+              <span>150%</span>
+            </Space>
+          </Option>
+          <Option value={175} label="175%">
+            <Space>
+              <span>调整至</span>
+              <span>175%</span>
+            </Space>
+          </Option>
+          <Option value={200} label="200%">
             <Space>
               <span>调整至</span>
               <span>200%</span>

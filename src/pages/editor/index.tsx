@@ -108,7 +108,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [leftPanelVisible, setLeftPanelVisible] = useState<boolean>(true);
   const [rightPanelVisible, setRightPanelVisible] = useState<boolean>(true);
   const [showDesign, setShowDesign] = useState<boolean>(true);
-  const [scale, setScale] = useState<number>(1);
+  const [scale, setScale] = useState<number>(100);
   const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
   const [selectedComponentForRenaming, setSelectedComponentForRenaming] = useState<ComponentId>('');
   const [pageWidth, setPageWidth] = useState<number>(PageWidth.mac);
@@ -602,7 +602,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function togglePageScale(scale: number) {
-    setScale(scale || 1);
+    setScale(scale || 100);
   }
 
   async function handleOnDo(e: PageActionEvent) {
