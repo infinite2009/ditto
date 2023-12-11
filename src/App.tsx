@@ -1,14 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
+import { observer } from 'mobx-react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import Editor from '@/pages/editor';
 import Home from '@/pages/home';
 import fileManager from '@/service/file';
 import CustomTitleBar from '@/components/custom-title-bar';
 import { ProjectInfo } from '@/types/app-data';
 import DSLStore from '@/service/dsl-store';
-import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
+import { AppStoreContext, DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import EditorStore from '@/service/editor-store';
 
-function App() {
+export default observer(function App() {
   const [showUI, setShowUI] = useState<boolean>(false);
   const [openedProjects, setOpenedProjects] = useState<ProjectInfo[]>([]);
   const [currentProject, setCurrentProject] = useState<string>('');
@@ -23,9 +24,20 @@ function App() {
     >
   >({});
 
+  const appStore = useContext(AppStoreContext);
+
   useEffect(() => {
     init();
+    window.addEventListener('keyup', handleKeyEvent);
+    return () => {
+      window.removeEventListener('keyup', handleKeyEvent);
+    };
   }, []);
+
+  function handleKeyEvent(e) {
+    // TODO: 待实现
+    console.log('e: ', e);
+  }
 
   const projectItems = useMemo(() => {
     return openedProjects.map(item => {
@@ -138,16 +150,16 @@ function App() {
 
   return showUI ? (
     <div>
-      <CustomTitleBar
-        data={projectItems}
-        selectedProjectId={currentProject}
-        onSelect={handleSelectingProject}
-        onClose={handleClosingProject}
-      />
-      {renderHome()}
-      {renderEditorTabs()}
+      <AppStoreContext.Provider value={appStore}>
+        <CustomTitleBar
+          data={projectItems}
+          selectedProjectId={currentProject}
+          onSelect={handleSelectingProject}
+          onClose={handleClosingProject}
+        />
+        {renderHome()}
+        {renderEditorTabs()}
+      </AppStoreContext.Provider>
     </div>
   ) : null;
-}
-
-export default App;
+});
