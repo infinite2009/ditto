@@ -111,7 +111,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [scale, setScale] = useState<number>(100);
   const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
   const [selectedComponentForRenaming, setSelectedComponentForRenaming] = useState<ComponentId>('');
-  const [pageWidth, setPageWidth] = useState<number>(PageWidth.mac);
+  const [pageWidth, setPageWidth] = useState<number>(PageWidth.auto);
 
   const [form] = useForm();
 
@@ -648,8 +648,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function changePageSize(pageWidth: PageWidth) {
-    if (!pageWidth) {
-      setPageWidth(PageWidth.mac);
+    if (pageWidth === undefined || pageWidth === null) {
+      setPageWidth(PageWidth.auto);
       return;
     }
     setPageWidth(pageWidth);

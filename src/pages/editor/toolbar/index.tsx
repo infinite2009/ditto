@@ -21,7 +21,8 @@ export enum PageWidth {
   wechat = 900,
   windows = 1280,
   mac = 1440,
-  monitor = 1920
+  monitor = 1920,
+  auto = 0
 }
 
 export interface PageActionEvent {
@@ -200,10 +201,9 @@ export default observer(({ onDo, pageWidth }: IToolbarProps) => {
           dropdownStyle={{ width: 140 }}
           onChange={handleChangePageSize}
         >
-          <Option value={PageWidth.wechat} label={`${PageWidth.wechat}px`}>
+          <Option value={PageWidth.auto} label="自适应">
             <Space>
-              <span>企微窗口</span>
-              <span>{PageWidth.wechat} px</span>
+              <span>自适应窗口宽度</span>
             </Space>
           </Option>
           <Option value={PageWidth.windows} label={`${PageWidth.windows}px`}>
@@ -222,6 +222,12 @@ export default observer(({ onDo, pageWidth }: IToolbarProps) => {
             <Space>
               <span>显示器</span>
               <span>{PageWidth.monitor} px</span>
+            </Space>
+          </Option>
+          <Option value={PageWidth.wechat} label={`${PageWidth.wechat}px`}>
+            <Space>
+              <span>企微窗口</span>
+              <span>{PageWidth.wechat} px</span>
             </Space>
           </Option>
         </Select>

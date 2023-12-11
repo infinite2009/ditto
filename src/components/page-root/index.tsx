@@ -52,7 +52,8 @@ export default observer(function PageRoot({
     return {
       transform: `scale(${scale / 100}) `,
       transformOrigin: 'top left',
-      width: pageWidth
+      width: pageWidth === 0 ? 'initial' : pageWidth,
+      margin: pageWidth === 0 ? '10px 0' : '10px auto'
     };
   }, [scale, pageWidth]);
 
