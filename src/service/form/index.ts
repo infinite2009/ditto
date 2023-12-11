@@ -90,19 +90,7 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
             padding: true,
             gap: true
           },
-          backgroundColor: true,
-          border: {
-            borderWidth: true,
-            borderColor: true,
-            borderStyle: true
-          },
-          shadow: true,
-          text: {
-            // 字号和行高
-            size: true,
-            color: true,
-            decoration: true
-          }
+          backgroundColor: true
         }
       }
     },
