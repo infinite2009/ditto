@@ -1413,7 +1413,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     const { textDecoration } = newValue;
     if (textDecoration) {
       if ((textDecoration as string).indexOf(val) > -1) {
-        (textDecoration as string).replace(val, '');
+        newValue.textDecoration = (textDecoration as string).replace(val, '');
       } else {
         const arr = (textDecoration as string).split(' ').filter(item => !!item);
         arr.push(val);
@@ -1421,6 +1421,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       }
     } else {
       newValue.textDecoration = val;
+    }
+    if (onChange) {
+      doChange(newValue);
     }
   }
 
