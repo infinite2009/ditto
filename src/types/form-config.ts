@@ -30,35 +30,35 @@ export interface FormSchema {
  * boolean 表示启用当前配置全部功能，比如 layout: true 表示会启用layout 的所有功能：尺寸、方向、对齐、边距等
  */
 export type StyleFormConfig = {
-  layout:
+  layout?:
     | {
-        width: boolean;
-        height: boolean;
-        widthGrow: boolean;
-        heightGrow: boolean;
-        wrap: boolean;
-        direction: boolean;
-        alignItems: boolean;
-        justifyContent: boolean;
-        padding: boolean;
-        gap: boolean;
+        width?: boolean;
+        height?: boolean;
+        widthGrow?: boolean;
+        heightGrow?: boolean;
+        wrap?: boolean;
+        direction?: boolean;
+        alignItems?: boolean;
+        justifyContent?: boolean;
+        padding?: boolean;
+        gap?: boolean;
       }
     | boolean;
-  backgroundColor: boolean;
-  border:
+  backgroundColor?: boolean;
+  border?:
     | {
-        borderWidth: boolean;
-        borderColor: boolean;
-        borderStyle: boolean;
+        borderWidth?: boolean;
+        borderColor?: boolean;
+        borderStyle?: boolean;
       }
     | boolean;
-  shadow: boolean;
-  text:
+  shadow?: boolean;
+  text?:
     | {
         // 字号和行高
-        size: boolean;
-        color: boolean;
-        decoration: boolean;
+        size?: boolean;
+        color?: boolean;
+        decoration?: boolean;
       }
     | boolean;
 };
