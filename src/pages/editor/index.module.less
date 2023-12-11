@@ -11,6 +11,11 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - 34px);
+  :global {
+    .ant-tabs-nav-wrap {
+      margin-left: 12px;
+    }
+  }
 }
 
 .topBar {
@@ -33,6 +38,7 @@
 
 .panel {
   width: @panelWidth;
+  flex-shrink: 0;
   transition: width .25s ease-in-out;
 }
 
@@ -55,11 +61,6 @@
   flex-shrink: 0;
   width: 280px;
   transition: width .25s ease-in-out;
-  :global {
-    .ant-tabs-nav-wrap {
-      margin-left: 12px;
-    }
-  }
 }
 
 .pagePanel {
