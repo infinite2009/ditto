@@ -36,6 +36,12 @@ export default observer(function App() {
 
   function handleKeyEvent(e) {
     // TODO: 待实现
+    // e.altKey = true;
+    // e.ctrlKey = true;
+    // e.shiftKey = true;
+    // e.metaKey = true;
+    e.stopPropagation();
+    e.preventDefault();
     console.log('e: ', e);
   }
 
