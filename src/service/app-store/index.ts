@@ -17,7 +17,8 @@ export default class AppStore {
       openInFinder: '',
       createCopy: '',
       rename: '',
-      remove: ''
+      remove: '',
+      closeProject: ''
     },
     toolbar: {
       downloadCode: '',
@@ -36,15 +37,33 @@ export default class AppStore {
       copy: '',
       cut: '',
       paste: '',
-      width: ''
+      cancelSelection: '',
+      bold: '',
+      italic: '',
+      underline: '',
+      lineThrough: '',
+      textAlignLeft: '',
+      textAlignCenter: '',
+      textAlignRight: '',
+      alignStart: '',
+      alignCenter: '',
+      alignEnd: '',
+      justifyStart: '',
+      justifyEnd: '',
+      justifyAround: '',
+      justifyEvenly: '',
+      toggleDirection: '',
+      toggleWrap: ''
     },
     projectTree: {
+      exportTemplate: '',
       copy: '',
       cut: '',
       paste: '',
       rename: '',
       newFolder: '',
-      newPage: ''
+      newPage: '',
+      cancelSelection: ''
     },
     preview: {}
   };
