@@ -1377,6 +1377,11 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   function handleSelectingTextAlignment(val: 'left' | 'right' | 'center' | 'justify') {
     const newValue = value ? { ...value } : {};
     newValue.textAlign = val;
+    if (val === 'justify') {
+      newValue.textAlignLast = val;
+    } else {
+      delete newValue.textAlign;
+    }
     if (onChange) {
       doChange(newValue);
     }
