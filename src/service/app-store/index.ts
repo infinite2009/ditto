@@ -6,67 +6,190 @@ export enum Scene {
   preview = 'preview'
 }
 
+export interface ActiveSceneContext {
+  scene: Scene;
+  functionName: string;
+  data: any;
+}
+
 export default class AppStore {
   // 场景
   scene: Scene;
 
   // 快捷键的注册字典，分场景，分功能
-  sceneDict = {
-    projectManagement: {
-      openProject: '',
-      openInFinder: '',
-      createCopy: '',
-      rename: '',
-      remove: '',
-      closeProject: ''
+  shortKeyDict = {
+    [Scene.projectManagement]: {
+      openProject: {
+        functionName: '打开项目',
+        shortKey: ''
+      },
+      openInFinder: {
+        functionName: '打开文件所在位置',
+        shortKey: ''
+      },
+      createCopy: {
+        functionName: '创建副本',
+
+        shortKey: ''
+      },
+      rename: {
+        functionName: '重命名',
+        shortKey: ''
+      },
+      remove: {
+        functionName: '删除',
+        shortKey: ''
+      },
+      closeProject: {
+        functionName: '关闭项目',
+        shortKey: ''
+      }
     },
-    toolbar: {
-      downloadCode: '',
-      save: '',
-      preview: '',
-      toggleDesignAndCode: '',
-      toggleCanvasExpansion: '',
-      clearCanvas: '',
-      adjustPageSize: '',
-      zoomIn: '',
-      zoomOut: '',
-      undo: '',
-      redo: ''
-    },
-    editor: {
-      copy: '',
-      cut: '',
-      paste: '',
-      cancelSelection: '',
-      bold: '',
-      italic: '',
-      underline: '',
-      lineThrough: '',
-      textAlignLeft: '',
-      textAlignCenter: '',
-      textAlignRight: '',
-      alignStart: '',
-      alignCenter: '',
-      alignEnd: '',
-      justifyStart: '',
-      justifyEnd: '',
-      justifyAround: '',
-      justifyEvenly: '',
-      toggleDirection: '',
-      toggleWrap: ''
-    },
-    projectTree: {
-      exportTemplate: '',
-      copy: '',
-      cut: '',
-      paste: '',
-      rename: '',
-      newFolder: '',
-      newPage: '',
-      cancelSelection: ''
-    },
-    preview: {}
+    [Scene.editor]: {
+      downloadCode: {
+        functionName: '下载代码',
+        shortKey: ''
+      },
+      save: {
+        functionName: '保存',
+        shortKey: ''
+      },
+      preview: {
+        functionName: '预览',
+        shortKey: ''
+      },
+      toggleDesignAndCode: {
+        functionName: '切换设计/代码展示',
+        shortKey: ''
+      },
+      toggleCanvasExpansion: {
+        functionName: '切换宽屏画布展示',
+        shortKey: ''
+      },
+      clearCanvas: {
+        functionName: '清空画布',
+        shortKey: ''
+      },
+      adjustPageSize: {
+        functionName: '调整页面尺寸',
+        shortKey: ''
+      },
+      zoomIn: {
+        functionName: '缩小画布',
+        shortKey: ''
+      },
+      zoomOut: {
+        functionName: '放大画布',
+        shortKey: ''
+      },
+      undo: {
+        functionName: '撤销',
+        shortKey: ''
+      },
+      redo: {
+        functionName: '重做',
+        shortKey: ''
+      },
+      copy: {
+        functionName: '复制',
+        shortKey: ''
+      },
+      paste: {
+        functionName: '粘贴',
+        shortKey: ''
+      },
+      cancelSelection: {
+        functionName: '取消选择',
+        shortKey: ''
+      },
+      bold: {
+        functionName: '添加/移除加粗',
+        shortKey: ''
+      },
+      italic: {
+        functionName: '添加/移除斜体',
+        shortKey: ''
+      },
+      underline: {
+        functionName: '添加/移除下划线',
+        shortKey: ''
+      },
+      lineThrough: {
+        functionName: '添加/移除删除线',
+        shortKey: ''
+      },
+      textAlignLeft: {
+        functionName: '文字左对齐',
+        shortKey: ''
+      },
+      textAlignCenter: {
+        functionName: '文字居中对齐',
+        shortKey: ''
+      },
+      textAlignRight: {
+        functionName: '文字右对齐',
+        shortKey: ''
+      },
+      alignStart: {
+        functionName: '主轴始端对齐',
+        shortKey: ''
+      },
+      alignCenter: {
+        functionName: '主轴居中对齐',
+        shortKey: ''
+      },
+      alignEnd: {
+        functionName: '主轴末端对齐',
+        shortKey: ''
+      },
+      justifyStart: {
+        functionName: '交叉轴始端对齐',
+        shortKey: ''
+      },
+      justifyCenter: {
+        functionName: '交叉轴居中对齐',
+        shortKey: ''
+      },
+      justifyEnd: {
+        functionName: '交叉轴始端对齐',
+        shortKey: ''
+      },
+      justifyAround: {
+        functionName: '交叉轴始端对齐',
+        shortKey: ''
+      },
+      justifyEvenly: {
+        functionName: '交叉轴均匀对齐1',
+        shortKey: ''
+      },
+      toggleDirection: {
+        functionName: '交叉轴均匀对齐2',
+        shortKey: ''
+      },
+      toggleWrap: {
+        functionName: '切换换行/不换行',
+        shortKey: ''
+      },
+      exportTemplate: {
+        functionName: '导出为模板',
+        shortKey: ''
+      },
+      rename: {
+        functionName: '重命名',
+        shortKey: ''
+      },
+      newFolder: {
+        functionName: '新增文件夹',
+        shortKey: ''
+      },
+      newPage: {
+        functionName: '新增页面',
+        shortKey: ''
+      }
+    }
   };
+
+  activeSceneContext: ActiveSceneContext;
 
   constructor() {
     makeAutoObservable(this);
@@ -78,20 +201,19 @@ export default class AppStore {
    * 给指定场景下指定快捷键注册处理器
    * @param shortKey
    * @param scene
-   * @param handler
+   * @param functionKey
    */
-  // registerShortKey(shortKey: string, scene: Scene, handler: (e: { shortKey: string; scene: Scene }) => void) {
-  //   // 检测到当前场景下的快捷键被其他的处理器注册，抛出错误。允许同一个handler反复注册，保持幂等
-  //   if (this.sceneDict[scene]?.[shortKey] && this.sceneDict[scene]?.[shortKey] !== handler) {
-  //     throw new Error('当前快捷键已被使用，请更换另外一个快捷键');
-  //   }
-  //   // 如果当前场景没有初始化
-  //   if (!this.sceneDict[scene]) {
-  //     this.sceneDict[scene] = {};
-  //   }
-  //   // 注册当前的 handler
-  //   this.sceneDict[scene][shortKey] = handler;
-  // }
+  registerShortKey(scene: Scene, functionKey: string, shortKey: string) {
+    Object.entries(this.shortKeyDict).find(([, sceneDict]) => {
+      if (sceneDict[functionKey] === shortKey) {
+        sceneDict[functionKey].shortKey = '';
+        throw new Error(`检测到冲突的按键，${sceneDict[functionKey].functionName}`);
+      }
+    });
+    if (this.shortKeyDict[scene]?.[functionKey]) {
+      delete this.shortKeyDict[scene][shortKey];
+    }
+  }
 
   /**
    * 切换场景
@@ -103,12 +225,10 @@ export default class AppStore {
 
   /**
    * 取消处理器注册
-   * @param shortKey
    * @param scene
+   * @param functionKey
    */
-  unregisterShortKey(shortKey: string, scene: Scene) {
-    if (this.sceneDict[scene]?.[shortKey]) {
-      delete this.sceneDict[scene][shortKey];
-    }
+  unregisterShortKey(scene: Scene, functionKey: string) {
+    this.scene[functionKey].shortKey = '';
   }
 }
