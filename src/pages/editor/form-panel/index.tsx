@@ -25,17 +25,17 @@ export default observer(() => {
       key: 'basic',
       label: '基础',
       children: renderBasicForm()
-    },
-    {
-      key: 'event',
-      label: '事件',
-      children: renderEventForm()
-    },
-    {
-      key: 'data',
-      label: '数据',
-      children: renderDataForm()
     }
+    // {
+    //   key: 'event',
+    //   label: '事件',
+    //   children: renderEventForm()
+    // },
+    // {
+    //   key: 'data',
+    //   label: '数据',
+    //   children: renderDataForm()
+    // }
   ];
 
   useEffect(() => {
