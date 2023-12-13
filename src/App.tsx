@@ -8,6 +8,7 @@ import { ProjectInfo } from '@/types/app-data';
 import DSLStore from '@/service/dsl-store';
 import { AppStoreContext, DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import EditorStore from '@/service/editor-store';
+import { Scene } from '@/service/app-store';
 
 export default observer(function App() {
   const [showUI, setShowUI] = useState<boolean>(false);
@@ -34,6 +35,20 @@ export default observer(function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!(currentProject in appStore.contextIdDictForProject)) {
+      // 创建一个新的上下文
+      appStore.setContextIdForProject(
+        appStore.createContext(Scene.projectManagement, {
+          projectId: currentProject
+        }),
+        currentProject
+      );
+    } else {
+      appStore.activateSceneContext(appStore.getContextIdForProject(currentProject));
+    }
+  }, [currentProject]);
+
   function handleKeyEvent(e) {
     // TODO: 待实现
     // e.altKey = true;
@@ -42,6 +57,13 @@ export default observer(function App() {
     // e.metaKey = true;
     e.stopPropagation();
     e.preventDefault();
+    appStore.execute(e.key, {
+      alt: e.altKey,
+      ctrl: e.ctrlKey,
+      shift: e.shiftKey,
+      meta: e.metaKey
+    });
+
     console.log('e: ', e);
   }
 

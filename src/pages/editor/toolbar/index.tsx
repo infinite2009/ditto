@@ -1,7 +1,7 @@
 import styles from './index.module.less';
-import { Divider, Radio, Select, Space } from 'antd';
+import { Divider, message, Radio, Select, Space } from 'antd';
 import PageAction from '@/types/page-action';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   ClearOutlined,
   DownloadOutlined,
@@ -13,7 +13,7 @@ import {
   YoutubeOutlined
 } from '@ant-design/icons';
 import classNames from 'classnames';
-import { DSLStoreContext } from '@/hooks/context';
+import { AppStoreContext, DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import { RadioChangeEvent } from 'antd/es/radio/interface';
 
@@ -39,8 +39,34 @@ const { Option } = Select;
 
 export default observer(({ onDo, pageWidth }: IToolbarProps) => {
   const dslStore = useContext(DSLStoreContext);
+  const appStore = useContext(AppStoreContext);
 
   const [view, setView] = useState<'code' | 'design'>('design');
+
+  useEffect(() => {
+    // 注册快捷键
+    appStore.registerHandlers(appStore.activeContext.id, {
+      downloadCode: handleExportingCode,
+      save: handleSave,
+      preview: handlePreview,
+      toggleDesignAndCode: handleChangeView,
+      toggleCanvasExpansion: handleExpand,
+      clearCanvas: handleClear,
+      // adjustPageSize: ,
+      zoomIn,
+      zoomOut,
+      undo: handleUndo,
+      redo: handleRedo
+    });
+  }, []);
+
+  function zoomIn() {
+    message.success('缩小');
+  }
+
+  function zoomOut() {
+    message.success('放大');
+  }
 
   function handleUndo() {
     if (onDo) {

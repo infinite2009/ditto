@@ -1,6 +1,6 @@
 import { Divider, Popover, Select, Tooltip } from 'antd';
 import classNames from 'classnames';
-import { CSSProperties, useEffect, useRef, useState } from 'react';
+import { CSSProperties, useContext, useEffect, useRef, useState } from 'react';
 import NumberInput from '@/pages/editor/form-panel/style-form/components/number-input';
 
 import {
@@ -42,6 +42,7 @@ import {
 import styles from './index.module.less';
 import { isDifferent, parsePadding } from '@/util';
 import { StyleFormConfig } from '@/types/form-config';
+import { AppStoreContext } from '@/hooks/context';
 
 export interface IStyleFormProps {
   config?: StyleFormConfig;
@@ -414,6 +415,8 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
   const [widthSizeMode, setWidthSizeMode] = useState<SizeMode>();
   const [heightSizeMode, setHeightSizeMode] = useState<SizeMode>();
 
+  const appStore = useContext(AppStoreContext);
+
   // 上次的value值
   const oldValueRef = useRef<Record<string, any>>(value);
 
@@ -518,6 +521,101 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       }
     }
   }, [borderType]);
+
+  useEffect(() => {
+    appStore.registerHandlers(appStore.activeContext.id, {
+      bold: handleSwitchBold,
+      italic: handleSwitchItalic,
+      underline: toggleUnderline,
+      lineThrough: toggleLineThrough,
+      textAlignLeft: alignTextLeft,
+      textAlignCenter: alignTextCenter,
+      textAlignRight: alignTextRight,
+      textAlignJustify: alignTextJustified,
+      alignStart,
+      alignCenter,
+      alignEnd,
+      justifyStart,
+      justifyCenter,
+      justifyEnd,
+      justifyBetween,
+      justifyEvenly,
+      toggleDirection,
+      toggleWrap
+    });
+  }, []);
+
+  function justifyStart() {
+    if (onChange) {
+      doChange({
+        ...value,
+        justifyContent: 'start'
+      });
+    }
+  }
+
+  function justifyEnd() {
+    if (onChange) {
+      doChange({
+        ...value,
+        justifyContent: 'end'
+      });
+    }
+  }
+
+  function justifyCenter() {
+    if (onChange) {
+      doChange({
+        ...value,
+        justifyContent: 'center'
+      });
+    }
+  }
+
+  function alignStart() {
+    if (onChange) {
+      doChange({
+        ...value,
+        alignItems: 'start'
+      });
+    }
+  }
+
+  function justifyBetween() {
+    if (onChange) {
+      doChange({
+        ...value,
+        alignItems: 'space-between'
+      });
+    }
+  }
+
+  function justifyEvenly() {
+    if (onChange) {
+      doChange({
+        ...value,
+        alignItems: 'space-evenly'
+      });
+    }
+  }
+
+  function alignEnd() {
+    if (onChange) {
+      doChange({
+        ...value,
+        alignItems: 'end'
+      });
+    }
+  }
+
+  function alignCenter() {
+    if (onChange) {
+      doChange({
+        ...value,
+        alignItems: 'center'
+      });
+    }
+  }
 
   function handleChangeSize(val: number | string, type: 'width' | 'height') {
     const newValueState = value ? { ...value } : {};
@@ -1088,6 +1186,24 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     );
   }
 
+  function toggleDirection() {
+    if (onChange) {
+      doChange({
+        ...value,
+        flexDirection: value.flexDirection === 'row' ? 'column' : 'row'
+      });
+    }
+  }
+
+  function toggleWrap() {
+    if (onChange) {
+      doChange({
+        ...value,
+        flexWrap: value.flexWrap === 'wrap' ? 'nowrap' : 'wrap'
+      });
+    }
+  }
+
   function handleSwitchDirection(flexDirection: 'row' | 'column') {
     if (onChange) {
       doChange({
@@ -1480,19 +1596,19 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
           <div className={styles.textBtnBar}>
             <TextAlignLeft
               className={classNames({ [styles.icon]: true, [styles.selected]: value?.textAlign === 'left' })}
-              onClick={() => handleSelectingTextAlignment('left')}
+              onClick={alignTextLeft}
             />
             <TextAlignCenter
               className={classNames({ [styles.icon]: true, [styles.selected]: value?.textAlign === 'center' })}
-              onClick={() => handleSelectingTextAlignment('center')}
+              onClick={alignTextCenter}
             />
             <TextAlignRight
               className={classNames({ [styles.icon]: true, [styles.selected]: value?.textAlign === 'right' })}
-              onClick={() => handleSelectingTextAlignment('right')}
+              onClick={alignTextRight}
             />
             <TextAlignJustify
               className={classNames({ [styles.icon]: true, [styles.selected]: value?.textAlign === 'justify' })}
-              onClick={() => handleSelectingTextAlignment('justify')}
+              onClick={alignTextJustified}
             />
             <Divider style={{ height: 8, borderRadius: 0.5, margin: 0 }} type="vertical" />
             <Bold
@@ -1508,19 +1624,43 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                 [styles.icon]: true,
                 [styles.selected]: ((value?.textDecoration || '') as string).indexOf('line-through') > -1
               })}
-              onClick={() => handleToggleTextDecoration('line-through')}
+              onClick={toggleLineThrough}
             />
             <UnderLine
               className={classNames({
                 [styles.icon]: true,
                 [styles.selected]: ((value?.textDecoration || '') as string).indexOf('underline') > -1
               })}
-              onClick={() => handleToggleTextDecoration('underline')}
+              onClick={toggleUnderline}
             />
           </div>
         </div>
       </div>
     );
+  }
+
+  function alignTextLeft() {
+    handleSelectingTextAlignment('left');
+  }
+
+  function alignTextRight() {
+    handleSelectingTextAlignment('right');
+  }
+
+  function alignTextCenter() {
+    handleSelectingTextAlignment('center');
+  }
+
+  function alignTextJustified() {
+    handleSelectingTextAlignment('justify');
+  }
+
+  function toggleLineThrough() {
+    handleToggleTextDecoration('line-through');
+  }
+
+  function toggleUnderline() {
+    handleToggleTextDecoration('underline');
   }
 
   function handleSelectingFillColor(val: { name: string; value: string }) {

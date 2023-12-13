@@ -45,7 +45,7 @@ import { ComponentId } from '@/types';
 import ComponentTree from '@/pages/editor/component-tree';
 import { ProjectInfo } from '@/types/app-data';
 import CompositionPanel from '@/pages/editor/composition-panel';
-import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
+import { AppStoreContext, DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import IComponentSchema from '@/types/component.schema';
@@ -117,6 +117,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   const dslStore = useContext(DSLStoreContext);
   const editorStore = useContext(EditorStoreContext);
+  const appStore = useContext(AppStoreContext);
 
   const insertIndexRef = useRef<number>(-1);
   const anchorCoordinatesRef = useRef<IAnchorCoordinates>();
@@ -150,8 +151,46 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         openFile(currentFile).then();
       }
       setCurrentFile(currentFile || '');
+      // 激活快捷键
+      appStore.registerHandlers(appStore.getContextIdForProject(currentProject.id), {
+        copy,
+        paste,
+        cancelSelection,
+        exportTemplate,
+        rename,
+        newFolder,
+        newPage
+      });
     }
   }, [currentProject]);
+
+  function copy() {
+    message.success('复制待实现');
+  }
+
+  function paste() {
+    message.success('粘贴待实现');
+  }
+
+  function cancelSelection() {
+    message.success('取消选择待实现');
+  }
+
+  function exportTemplate() {
+    message.success('导出模板待实现');
+  }
+
+  function rename() {
+    message.success('重命名待实现');
+  }
+
+  function newFolder() {
+    message.success('新建文件夹待实现');
+  }
+
+  function newPage() {
+    message.success('新建页面待实现');
+  }
 
   function fetchCurrentProject() {
     const projectId = fileManager.fetchCurrentProjectId();
@@ -779,6 +818,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
                 onFocus={e => e.target.select()}
                 onBlur={e => handleRenamingComponent(componentId, (e.target.value as unknown as string).trim())}
                 onPressEnter={e =>
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
                   handleRenamingComponent(componentId, (e.target.value as unknown as string).trim())
                 }
