@@ -1,10 +1,12 @@
 import { CloseOutlined, FileFilled, PlusOutlined, SelectOutlined, SortAscendingOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Input, InputRef, message, Modal } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import fileManager from '@/service/file';
 import { ProjectInfo } from '@/types/app-data';
 import classNames from 'classnames';
 import style from './index.module.less';
+import { AppStoreContext } from '@/hooks/context';
+import { Scene } from '@/service/app-store';
 
 export interface IHomeProps {
   onOpenProject: (projectId: string) => void;
@@ -20,8 +22,25 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
 
   const inputRef = useRef<InputRef>(null);
   const deleteFolder = useRef<boolean>(true);
+  const selectedProjectInfoRef = useRef<ProjectInfo>(null);
+
+  const appStore = useContext(AppStoreContext);
 
   useEffect(() => {
+    // 创建上下文
+    appStore.createHomeContext(
+      Scene.projectManagement,
+      {
+        isHome: true
+      },
+      {
+        openProject,
+        openInFinder: openFinder,
+        createCopy: createCopy,
+        rename: handleClickRenameBtn,
+        remove: deleteProject
+      }
+    );
     fetchRecentProjects();
   }, []);
 
@@ -77,12 +96,13 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
   }
 
   function generateDropDownMenu(data: ProjectInfo) {
+    selectedProjectInfoRef.current = data;
     return {
       items: [
         {
           key: '1',
           label: (
-            <div className={style.dropDownItem} onClick={() => openProject(data)}>
+            <div className={style.dropDownItem} onClick={openProject}>
               <span>打开</span>
               <span className={style.shortKey}>⌘ O</span>
             </div>
@@ -140,7 +160,8 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
     if (e.target.id === 'dropdownBtn') {
       return;
     }
-    openProject(data);
+    selectedProjectInfoRef.current = data;
+    openProject();
   }
 
   function renderRecentProjects() {
@@ -183,9 +204,9 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
     });
   }
 
-  async function openProject(data: ProjectInfo) {
+  async function openProject() {
     if (onOpenProject) {
-      onOpenProject(data.id);
+      onOpenProject(selectedProjectInfoRef.current.id);
     }
   }
 
@@ -317,7 +338,8 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
       message.error('项目创建失败，请重试');
       return;
     }
-    openProject(project);
+    selectedProjectInfoRef.current = project;
+    openProject();
   }
 
   /**
@@ -328,7 +350,8 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
     if (!project) {
       return;
     }
-    openProject(project);
+    selectedProjectInfoRef.current = project;
+    openProject();
   }
 
   function handleClickWhiteSpace(e: any) {

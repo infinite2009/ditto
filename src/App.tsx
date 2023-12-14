@@ -36,10 +36,12 @@ export default observer(function App() {
   }, []);
 
   useEffect(() => {
-    if (!(currentProject in appStore.contextIdDictForProject)) {
+    if (!currentProject && appStore.homeContextId) {
+      appStore.activateSceneContext(appStore.homeContextId);
+    } else if (!(currentProject in appStore.contextIdDictForProject)) {
       // 创建一个新的上下文
       appStore.setContextIdForProject(
-        appStore.createContext(Scene.projectManagement, {
+        appStore.createContext(Scene.editor, {
           projectId: currentProject
         }),
         currentProject
@@ -125,6 +127,9 @@ export default observer(function App() {
     await fileManager.setCurrentProject(projectId);
     fetchAndOpenCurrentProject();
     setCurrentProject(projectId);
+    // 激活上下文
+    // appStore.activateSceneContext(appStore.getContextIdForProject(projectId));
+    // console.log('当前上下文id： ', appStore.getContextIdForProject(projectId));
   }
 
   async function handleOpeningProject(projectId: string) {

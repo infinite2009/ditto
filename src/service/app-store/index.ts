@@ -371,6 +371,8 @@ export default class AppStore {
 
   activeContext: SceneContext;
 
+  homeContextId: string;
+
   contexts: Record<FunctionKey, SceneContext> = {};
 
   // projectId 为 key，contextId 为 value
@@ -378,6 +380,10 @@ export default class AppStore {
 
   setContextIdForProject(contextId: string, projectId: string) {
     this.contextIdDictForProject[projectId] = contextId;
+  }
+
+  setHomeContext(contextId: string) {
+    this.homeContextId = contextId;
   }
 
   getContextIdForProject(projectId: string) {
@@ -398,6 +404,10 @@ export default class AppStore {
     };
     this.activeContext = this.contexts[contextId];
     return contextId;
+  }
+
+  createHomeContext(scene: Scene, data: any, handlers: Record<FunctionKey, ShortKeyHandler> = {}) {
+    this.homeContextId = this.createContext(scene, data, handlers);
   }
 
   /**
@@ -456,7 +466,7 @@ export default class AppStore {
     }
     const { key: mainKey, alt, shift, meta, ctrl } = this.shortKeyDict[scene][selected];
     if (
-      key === mainKey &&
+      key.toUpperCase() === mainKey &&
       modifiers.alt === alt &&
       modifiers.shift === shift &&
       modifiers.ctrl === ctrl &&

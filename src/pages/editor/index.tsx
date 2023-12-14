@@ -52,6 +52,7 @@ import IComponentSchema from '@/types/component.schema';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
 import { generateContextMenus } from '@/util';
 import InsertType from '@/types/insert-type';
+import { Scene } from '@/service/app-store';
 
 const collisionOffset = 4;
 
@@ -151,8 +152,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         openFile(currentFile).then();
       }
       setCurrentFile(currentFile || '');
-      // 激活快捷键
-      appStore.registerHandlers(appStore.getContextIdForProject(currentProject.id), {
+      const contextId = appStore.getContextIdForProject(currentProject.id);
+      const handlers = {
         copy,
         paste,
         cancelSelection,
@@ -160,7 +161,14 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         rename,
         newFolder,
         newPage
-      });
+      };
+      if (!contextId) {
+        appStore.createContext(Scene.editor, {}, handlers);
+        console.log('上下文已创建： ');
+      } else {
+        appStore.registerHandlers(contextId, handlers);
+        console.log('已存在上下文');
+      }
     }
   }, [currentProject]);
 
