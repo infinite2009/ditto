@@ -52,7 +52,7 @@ export default observer(({ onDo, pageWidth }: IToolbarProps) => {
       toggleDesignAndCode: handleChangeView,
       toggleCanvasExpansion: handleExpand,
       clearCanvas: handleClear,
-      // adjustPageSize: ,
+      // togglePageWidth: ,
       zoomIn,
       zoomOut,
       undo: handleUndo,
