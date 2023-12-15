@@ -662,11 +662,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     setPageWidth(pageWidth);
   }
 
-  function createBlankPage() {
-    closePageCreationModal();
-    createFile().then();
-  }
-
   async function openFile(page: string) {
     if (!currentProject) {
       return;
