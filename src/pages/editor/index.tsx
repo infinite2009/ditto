@@ -18,13 +18,8 @@ import { Form, Input, message, Modal } from 'antd';
 
 import Toolbar, { PageActionEvent, PageWidth } from '@/pages/editor/toolbar';
 import PagePanel from '@/pages/editor/page-panel';
-import ComponentPanel from '@/pages/editor/component-panel';
-import TemplatePanel from '@/pages/editor/template-panel';
-import CustomComponentPanel from '@/pages/editor/custom-component-panel';
 import FormPanel from '@/pages/editor/form-panel';
 import PageRenderer from '@/pages/components/page-renderer';
-
-import LayerComponentPanel from '@/pages/editor/layer-component-panel';
 import styles from './index.module.less';
 import { createPortal } from 'react-dom';
 import DropAnchor from '@/pages/editor/drop-anchor';
@@ -65,29 +60,6 @@ const dropAnimation: DropAnimation = {
     }
   })
 };
-
-const tabsItems = [
-  {
-    key: 'component',
-    label: '组件',
-    children: <ComponentPanel />
-  },
-  {
-    key: 'layer',
-    label: '图层组件',
-    children: <LayerComponentPanel />
-  },
-  {
-    key: 'template',
-    label: '模板',
-    children: <TemplatePanel />
-  },
-  {
-    key: 'custom',
-    label: '业务组件',
-    children: <CustomComponentPanel />
-  }
-];
 
 export interface IEditorProps {
   onPreview: (projectId: string) => void;
