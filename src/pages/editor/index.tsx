@@ -74,7 +74,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [currentProject, setCurrentProject] = useState<ProjectInfo>();
   const [projectData, setProjectData] = useState<any[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
-  const [selectedFolder, setSelectedFolder] = useState<string>('');
   const [selectedPath, setSelectedPath] = useState<string>('');
   const [leftPanelType, setLeftPanelType] = useState<PanelType>(PanelType.file);
   const [leftPanelVisible, setLeftPanelVisible] = useState<boolean>(true);
@@ -648,11 +647,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     if (page.isLeaf) {
       openFile(page.path as string).then();
       setCurrentFile(page.path as string);
-      setSelectedPath(page.path);
-    } else {
-      setSelectedFolder(page.path as string);
-      setSelectedPath(page.path);
     }
+    setSelectedPath(page.path);
   }
 
   function handleTogglePanel(type: PanelType) {
@@ -794,8 +790,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
    * 渲染项目的文件目录，当前文件的组件树
    */
   function renderProjectPanel() {
-    console.log('selected path: ', selectedPath);
-    console.log('current file: ', currentFile);
     return (
       <>
         <div className={styles.pagePanel}>
