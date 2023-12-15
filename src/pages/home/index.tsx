@@ -339,6 +339,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
             e.stopPropagation();
           }
         }}
+        onContextMenu={e => e.stopPropagation()}
       >
         <Dropdown
           menu={generateDropDownMenu(data)}
