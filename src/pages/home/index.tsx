@@ -34,6 +34,8 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
         isHome: true
       },
       {
+        createProject,
+        openLocalProject,
         openProject,
         openInFinder: openFinder,
         createCopy,
@@ -397,10 +399,16 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
             <Button className={style.newBtn} type="primary" onClick={createProject}>
               <PlusOutlined className={style.btnIcon} />
               新建
+              <span className={style.shortKey}>
+                {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'createProject')}
+              </span>
             </Button>
             <Button className={style.openBtn} onClick={openLocalProject}>
               <SelectOutlined />
               打开
+              <span className={style.shortKey} style={{ color: '#0958d9' }}>
+                {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'openLocalProject')}
+              </span>
             </Button>
           </div>
         </div>
