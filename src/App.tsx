@@ -54,7 +54,8 @@ export default observer(function App() {
   function handleKeyEvent(e) {
     e.stopPropagation();
     e.preventDefault();
-    appStore.execute(e.key, {
+    // FIX: mac 系统上 alt + 字母键会导致 e.key 的值为希腊字母或其他符号
+    appStore.execute(e.code.replace(/^Key/, ''), {
       alt: e.altKey,
       ctrl: e.ctrlKey,
       shift: e.shiftKey,
