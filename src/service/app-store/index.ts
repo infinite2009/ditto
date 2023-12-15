@@ -62,7 +62,7 @@ export default class AppStore {
       },
       remove: {
         functionName: '删除',
-        key: 'DEL',
+        key: 'DELETE',
         ctrl: false,
         alt: false,
         shift: false,
@@ -448,6 +448,7 @@ export default class AppStore {
   /**
    * 执行当前场景下的功能，
    * 如果没有在场景字典中找到当前场景，抛出异常
+   * @return 将来录入日志
    */
   execute(key: string, modifiers: Record<Modifier, boolean>) {
     if (!this.activeContext) {
@@ -459,21 +460,21 @@ export default class AppStore {
       return '不存在的场景';
     }
     const selected = Object.keys(handlers).find(functionKey => {
-      return functionKey in this.shortKeyDict[scene];
+      if (functionKey in this.shortKeyDict[scene]) {
+        const { key: mainKey, alt, shift, meta, ctrl } = this.shortKeyDict[scene][functionKey];
+        return (
+          key.toUpperCase() === mainKey &&
+          modifiers.alt === alt &&
+          modifiers.shift === shift &&
+          modifiers.ctrl === ctrl &&
+          modifiers.meta === meta
+        );
+      }
     });
     if (!selected) {
       return '不存在的快捷键设置';
     }
-    const { key: mainKey, alt, shift, meta, ctrl } = this.shortKeyDict[scene][selected];
-    if (
-      key.toUpperCase() === mainKey &&
-      modifiers.alt === alt &&
-      modifiers.shift === shift &&
-      modifiers.ctrl === ctrl &&
-      modifiers.meta === meta
-    ) {
-      handlers[selected](data, scene, selected);
-    }
+    handlers[selected](data, scene, selected);
   }
 
   /**
@@ -486,5 +487,38 @@ export default class AppStore {
       return '不存在的上下文';
     }
     this.contexts[contextId].handlers = handlers;
+  }
+
+  /**
+   * 生成展示快捷键功能的名字
+   * @param scene
+   * @param functionKey
+   */
+  generateShortKeyDisplayName(scene: string, functionKey: string): string {
+    const symbolDict = {
+      ctrl: '⌃',
+      alt: '⌥',
+      shift: '⇧',
+      meta: '⌘'
+    };
+    const shortKeySetting = this.shortKeyDict[scene][functionKey];
+    const keyForDisplay = shortKeySetting.key === 'DELETE' ? 'Del' : shortKeySetting.key;
+    const modifiersWithKey = [];
+
+    if (shortKeySetting.meta) {
+      modifiersWithKey.push(symbolDict.meta);
+    }
+    if (shortKeySetting.ctrl) {
+      modifiersWithKey.push(symbolDict.ctrl);
+    }
+    if (shortKeySetting.alt) {
+      modifiersWithKey.push(symbolDict.alt);
+    }
+    if (shortKeySetting.shift) {
+      modifiersWithKey.push(symbolDict.shift);
+    }
+
+    modifiersWithKey.push(keyForDisplay);
+    return modifiersWithKey.join(' ');
   }
 }

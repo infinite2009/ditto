@@ -52,11 +52,6 @@ export default observer(function App() {
   }, [currentProject]);
 
   function handleKeyEvent(e) {
-    // TODO: 待实现
-    // e.altKey = true;
-    // e.ctrlKey = true;
-    // e.shiftKey = true;
-    // e.metaKey = true;
     e.stopPropagation();
     e.preventDefault();
     appStore.execute(e.key, {
@@ -65,8 +60,6 @@ export default observer(function App() {
       shift: e.shiftKey,
       meta: e.metaKey
     });
-
-    console.log('e: ', e);
   }
 
   const projectItems = useMemo(() => {

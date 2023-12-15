@@ -36,9 +36,9 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
       {
         openProject,
         openInFinder: openFinder,
-        createCopy: createCopy,
+        createCopy,
         rename: handleClickRenameBtn,
-        remove: deleteProject
+        remove: openProjectDeletingModal
       }
     );
     fetchRecentProjects();
@@ -104,16 +104,20 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
           label: (
             <div className={style.dropDownItem} onClick={openProject}>
               <span>打开</span>
-              <span className={style.shortKey}>⌘ O</span>
+              <span className={style.shortKey}>
+                {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'openProject')}
+              </span>
             </div>
           )
         },
         {
           key: '2',
           label: (
-            <div className={style.dropDownItem} onClick={() => openFinder(data)}>
+            <div className={style.dropDownItem} onClick={openFinder}>
               <span>打开文件所在位置</span>
-              <span className={style.shortKey}>⌘ O</span>
+              <span className={style.shortKey}>
+                {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'openInFinder')}
+              </span>
             </div>
           )
         },
@@ -123,18 +127,22 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
         {
           key: '3',
           label: (
-            <div className={style.dropDownItem} onClick={() => createCopy(data)}>
+            <div className={style.dropDownItem} onClick={createCopy}>
               <span>创建副本</span>
-              <span className={style.shortKey}>⌘ P</span>
+              <span className={style.shortKey}>
+                {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'createCopy')}
+              </span>
             </div>
           )
         },
         {
           key: '4',
           label: (
-            <div className={style.dropDownItem} onClick={() => handleClickRenameBtn(data)}>
+            <div className={style.dropDownItem} onClick={handleClickRenameBtn}>
               <span>重命名</span>
-              <span className={style.shortKey}>⌘ R</span>
+              <span className={style.shortKey}>
+                {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'rename')}
+              </span>
             </div>
           )
         },
@@ -144,9 +152,11 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
         {
           key: '5',
           label: (
-            <div className={style.dropDownItem} onClick={() => openProjectDeletingModal(data)}>
+            <div className={style.dropDownItem} onClick={openProjectDeletingModal}>
               <span>删除</span>
-              <span className={style.shortKey}>⌘ D</span>
+              <span className={style.shortKey}>
+                {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'remove')}
+              </span>
             </div>
           )
         }
@@ -205,6 +215,9 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
   }
 
   async function openProject() {
+    if (!selectedProjectInfoRef.current) {
+      return;
+    }
     if (onOpenProject) {
       onOpenProject(selectedProjectInfoRef.current.id);
     }
@@ -212,11 +225,13 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
 
   /**
    * 打开文件所在位置
-   * @param data
    */
-  async function openFinder(data: ProjectInfo) {
+  async function openFinder() {
+    if (!selectedProjectInfoRef.current) {
+      return;
+    }
     try {
-      await fileManager.openLocalFileDirectory(data);
+      await fileManager.openLocalFileDirectory(selectedProjectInfoRef.current);
     } catch (error) {
       message.error(error as string);
     }
@@ -225,8 +240,11 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
   /**
    * 创建项目副本
    */
-  async function createCopy(data: ProjectInfo) {
-    const projectCp = await fileManager.copyProject(data);
+  async function createCopy() {
+    if (!selectedProjectInfoRef.current) {
+      return;
+    }
+    const projectCp = await fileManager.copyProject(selectedProjectInfoRef.current);
     if (!projectCp) {
       message.error('创建副本失败，请重试');
       return;
@@ -238,12 +256,18 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
    * 重命名项目，展示编辑名称的输入框
    * @param data
    */
-  function handleClickRenameBtn(data: ProjectInfo) {
-    setTemporaryProjectName(data.name);
+  function handleClickRenameBtn() {
+    if (!selectedProjectInfoRef.current) {
+      return;
+    }
+    setTemporaryProjectName(selectedProjectInfoRef.current.name);
     setIsEditing(true);
   }
 
-  function openProjectDeletingModal(data: ProjectInfo) {
+  function openProjectDeletingModal() {
+    if (!selectedProjectInfoRef.current) {
+      return;
+    }
     Modal.confirm({
       title: (
         <div className={style.modalTitleWrapper}>
@@ -254,13 +278,15 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
       icon: null,
       content: (
         <div className={style.deleteProject}>
-          <p className={style.deleteLateral}>确认要删除 “{data.name}” 吗？删除后文件将被移至系统废纸篓</p>
+          <p className={style.deleteLateral}>
+            确认要删除 “{selectedProjectInfoRef.current.name}” 吗？删除后文件将被移至系统废纸篓
+          </p>
           {/*<Checkbox onChange={e => (deleteFolder.current = e.target.checked)}>*/}
           {/*</Checkbox>*/}
         </div>
       ),
       onOk() {
-        return deleteProject(data);
+        return deleteProject(selectedProjectInfoRef.current);
       },
       okText: '确认删除',
       okButtonProps: { style: { borderRadius: 8, backgroundColor: '#F85A54' } },
@@ -297,6 +323,9 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
   function onOpenChange(open: boolean, data: ProjectInfo) {
     if (open) {
       setSelectedProject(data);
+    } else {
+      // 防止菜单关闭以后，快捷键依旧生效
+      selectedProjectInfoRef.current = null;
     }
   }
 
