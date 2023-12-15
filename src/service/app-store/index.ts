@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import { nanoid } from 'nanoid';
+import cloneDeep from 'lodash/cloneDeep';
 
 export type Modifier = 'ctrl' | 'meta' | 'alt' | 'shift';
 
@@ -25,9 +26,24 @@ export default class AppStore {
   // 场景
   scene: Scene;
 
-  // 快捷键的注册字典，分场景，分功能
-  shortKeyDict = {
+  defaultShortKeyDict = {
     [Scene.projectManagement]: {
+      createProject: {
+        functionName: '新建项目',
+        key: 'N',
+        ctrl: false,
+        alt: false,
+        shift: false,
+        meta: true
+      },
+      openLocalProject: {
+        functionName: '打开本地项目',
+        key: 'O',
+        ctrl: false,
+        alt: true,
+        shift: false,
+        meta: true
+      },
       openProject: {
         functionName: '打开项目',
         key: 'O',
@@ -368,6 +384,9 @@ export default class AppStore {
       }
     }
   };
+
+  // 快捷键的注册字典，分场景，分功能
+  shortKeyDict = this.defaultShortKeyDict;
 
   activeContext: SceneContext;
 
