@@ -113,38 +113,6 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
     }
   }
 
-  function handleCreatingNewPage() {
-    if (onDo) {
-      onDo({
-        type: PageAction.createPage
-      });
-    }
-  }
-
-  function handleOpenProject() {
-    if (onDo) {
-      onDo({
-        type: PageAction.openProject
-      });
-    }
-  }
-
-  function handleSavingFile() {
-    if (onDo) {
-      onDo({
-        type: PageAction.saveFile
-      });
-    }
-  }
-
-  function handleTogglePlatform(platform: 'pc' | 'tablet' | 'phone') {
-    if (onDo) {
-      onDo({
-        type: PageAction.changePlatform
-      });
-    }
-  }
-
   function handleClear() {
     if (onDo) {
       onDo({
