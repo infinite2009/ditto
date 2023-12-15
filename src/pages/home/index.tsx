@@ -37,7 +37,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
         createProject,
         openLocalProject,
         openProject,
-        openInFinder: openFinder,
+        openInFinder,
         createCopy,
         rename: handleClickRenameBtn,
         remove: openProjectDeletingModal
@@ -115,7 +115,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
         {
           key: '2',
           label: (
-            <div className={style.dropDownItem} onClick={openFinder}>
+            <div className={style.dropDownItem} onClick={openInFinder}>
               <span>打开文件所在位置</span>
               <span className={style.shortKey}>
                 {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'openInFinder')}
@@ -228,7 +228,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
   /**
    * 打开文件所在位置
    */
-  async function openFinder() {
+  async function openInFinder() {
     if (!selectedProjectInfoRef.current) {
       return;
     }
