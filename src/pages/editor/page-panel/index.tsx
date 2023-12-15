@@ -34,7 +34,12 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
 
   useEffect(() => {
     if (selected && data.length) {
-      setExpandedKeys(mergeExpandedKeys(expandedKeys, findNodePath({ key: undefined, children: data }, selected)));
+      const foundNodePath = findNodePath({ key: undefined, children: data }, selected);
+      console.log('found node path: ', foundNodePath);
+      console.log('before merge: ', expandedKeys);
+      const mergedExpandedKeys = mergeExpandedKeys(expandedKeys, foundNodePath);
+      console.log('merged expanded keys: ', mergedExpandedKeys);
+      setExpandedKeys(mergedExpandedKeys);
     }
   }, [selected, data]);
 
@@ -58,7 +63,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   function mergeExpandedKeys(arr1: string[], arr2: string[]): string[] {
     const result = [...arr1];
     arr2.forEach(item => {
-      if (!arr1.includes(item) && item.endsWith('.ditto')) {
+      if (!arr1.includes(item)) {
         result.push(item);
       }
     });
