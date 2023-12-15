@@ -123,6 +123,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         openFile(currentFile).then();
       }
       setCurrentFile(currentFile || '');
+      setSelectedPath(currentFile || '');
       const contextId = appStore.getContextIdForProject(currentProject.id);
       const handlers = {
         copy,
