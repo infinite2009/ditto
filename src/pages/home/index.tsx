@@ -4,9 +4,9 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import fileManager from '@/service/file';
 import { ProjectInfo } from '@/types/app-data';
 import classNames from 'classnames';
-import style from './index.module.less';
 import { AppStoreContext } from '@/hooks/context';
 import { Scene } from '@/service/app-store';
+import style from './index.module.less';
 
 export interface IHomeProps {
   onOpenProject: (projectId: string) => void;
@@ -106,7 +106,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
           label: (
             <div className={style.dropDownItem} onClick={openProject}>
               <span>打开</span>
-              <span className={style.shortKey}>
+              <span className={style.menuShortKey}>
                 {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'openProject')}
               </span>
             </div>
@@ -117,7 +117,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
           label: (
             <div className={style.dropDownItem} onClick={openInFinder}>
               <span>打开文件所在位置</span>
-              <span className={style.shortKey}>
+              <span className={style.menuShortKey}>
                 {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'openInFinder')}
               </span>
             </div>
@@ -131,7 +131,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
           label: (
             <div className={style.dropDownItem} onClick={createCopy}>
               <span>创建副本</span>
-              <span className={style.shortKey}>
+              <span className={style.menuShortKey}>
                 {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'createCopy')}
               </span>
             </div>
@@ -142,7 +142,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
           label: (
             <div className={style.dropDownItem} onClick={handleClickRenameBtn}>
               <span>重命名</span>
-              <span className={style.shortKey}>
+              <span className={style.menuShortKey}>
                 {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'rename')}
               </span>
             </div>
@@ -156,7 +156,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
           label: (
             <div className={style.dropDownItem} onClick={openProjectDeletingModal}>
               <span>删除</span>
-              <span className={style.shortKey}>
+              <span className={style.menuShortKey}>
                 {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'remove')}
               </span>
             </div>
