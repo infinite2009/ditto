@@ -505,7 +505,7 @@ export default class AppStore {
     if (!this.contexts[contextId]) {
       return '不存在的上下文';
     }
-    this.contexts[contextId].handlers = handlers;
+    this.contexts[contextId].handlers = Object.assign(this.contexts[contextId].handlers || {}, handlers);
   }
 
   /**

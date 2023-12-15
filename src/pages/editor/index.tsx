@@ -937,7 +937,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             style={leftPanelVisible ? undefined : { width: 0, overflow: 'hidden', margin: 0, padding: 0 }}
           />
         ) : null}
-        <Toolbar onDo={handleOnDo} pageWidth={pageWidth} />
+        <Toolbar onDo={handleOnDo} pageWidth={pageWidth} projectId={currentProject?.id} />
       </div>
       <div className={styles.editArea}>{showDesign ? renderDesignSection() : renderCodeSection()}</div>
 

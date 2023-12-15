@@ -16,6 +16,7 @@ import classNames from 'classnames';
 import { AppStoreContext, DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import { RadioChangeEvent } from 'antd/es/radio/interface';
+import { Scene } from '@/service/app-store';
 
 export enum PageWidth {
   wechat = 900,
@@ -33,19 +34,19 @@ export interface PageActionEvent {
 interface IToolbarProps {
   onDo: (e: PageActionEvent) => void;
   pageWidth?: number;
+  projectId: string;
 }
 
 const { Option } = Select;
 
-export default observer(({ onDo, pageWidth }: IToolbarProps) => {
+export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
   const dslStore = useContext(DSLStoreContext);
   const appStore = useContext(AppStoreContext);
 
   const [view, setView] = useState<'code' | 'design'>('design');
 
   useEffect(() => {
-    // 注册快捷键
-    appStore.registerHandlers(appStore.activeContext.id, {
+    const handlers = {
       downloadCode: handleExportingCode,
       save: handleSave,
       preview: handlePreview,
@@ -57,8 +58,20 @@ export default observer(({ onDo, pageWidth }: IToolbarProps) => {
       zoomOut,
       undo: handleUndo,
       redo: handleRedo
-    });
-  }, []);
+    };
+
+    if (projectId) {
+      const contextId = appStore.getContextIdForProject(projectId);
+      if (!contextId) {
+        // 创建上下文
+        appStore.createContext(Scene.editor, { projectId }, handlers);
+      } else {
+        appStore.activateSceneContext(contextId);
+        appStore.registerHandlers(contextId, handlers);
+      }
+    }
+    // 注册快捷键
+  }, [projectId]);
 
   function zoomIn() {
     message.success('缩小');

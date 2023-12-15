@@ -39,13 +39,15 @@ export default observer(function App() {
     if (!currentProject && appStore.homeContextId) {
       appStore.activateSceneContext(appStore.homeContextId);
     } else if (!(currentProject in appStore.contextIdDictForProject)) {
-      // 创建一个新的上下文
-      appStore.setContextIdForProject(
-        appStore.createContext(Scene.editor, {
-          projectId: currentProject
-        }),
-        currentProject
-      );
+      if (currentProject) {
+        // 创建一个新的上下文
+        appStore.setContextIdForProject(
+          appStore.createContext(Scene.editor, {
+            projectId: currentProject
+          }),
+          currentProject
+        );
+      }
     } else {
       appStore.activateSceneContext(appStore.getContextIdForProject(currentProject));
     }
