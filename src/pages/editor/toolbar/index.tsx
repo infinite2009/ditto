@@ -66,12 +66,23 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
         // 创建上下文
         appStore.createContext(Scene.editor, { projectId }, handlers);
       } else {
-        appStore.activateSceneContext(contextId);
         appStore.registerHandlers(contextId, handlers);
       }
     }
     // 注册快捷键
-  }, [projectId]);
+  }, [
+    projectId,
+    handleSave,
+    handleExportingCode,
+    handlePreview,
+    handleChangeView,
+    handleUndo,
+    handleRedo,
+    zoomIn,
+    zoomOut,
+    handleClear,
+    handleExpand
+  ]);
 
   function zoomIn() {
     message.success('缩小');
