@@ -14,7 +14,7 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core';
-import { Form, Input, message, Modal } from 'antd';
+import { Input, message } from 'antd';
 
 import Toolbar, { PageActionEvent, PageWidth } from '@/pages/editor/toolbar';
 import PagePanel from '@/pages/editor/page-panel';
@@ -71,7 +71,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const searchParams = new URLSearchParams(window.location.search);
 
   const [, setActiveId] = useState<string>('');
-  const [pageCreationVisible, setPageCreationVisible] = useState<boolean>(false);
   const [currentProject, setCurrentProject] = useState<ProjectInfo>();
   const [projectData, setProjectData] = useState<any[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
@@ -537,14 +536,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     []
   );
 
-  function openPageCreationModal() {
-    setPageCreationVisible(true);
-  }
-
-  function closePageCreationModal() {
-    setPageCreationVisible(false);
-  }
-
   async function createFile() {
     const { name = '新建页面', desc } = form.getFieldsValue();
     dslStore.createEmptyDSL(name, desc);
@@ -626,9 +617,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   async function handleOnDo(e: PageActionEvent) {
     switch (e.type) {
-      case PageAction.createPage:
-        openPageCreationModal();
-        break;
       case PageAction.redo:
         dslStore.redo();
         break;
@@ -941,24 +929,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       </div>
       <div className={styles.editArea}>{showDesign ? renderDesignSection() : renderCodeSection()}</div>
 
-      <Modal
-        title="创建页面"
-        open={pageCreationVisible}
-        onOk={createBlankPage}
-        onCancel={closePageCreationModal}
-        okText="确定"
-        cancelText="取消"
-        maskClosable={false}
-      >
-        <Form form={form}>
-          <Form.Item label="页面名称" name="name">
-            <Input />
-          </Form.Item>
-          <Form.Item label="描述" name="desc">
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
       <DropAnchor style={anchorStyle} />
     </div>
   );
