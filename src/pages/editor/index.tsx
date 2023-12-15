@@ -29,7 +29,7 @@ import PageAction from '@/types/page-action';
 import { useForm } from 'antd/es/form/Form';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 import { save } from '@tauri-apps/api/dialog';
-import { dirname, documentDir, join, sep } from '@tauri-apps/api/path';
+import { dirname, documentDir, join } from '@tauri-apps/api/path';
 import ComponentFeature from '@/types/component-feature';
 import fileManager from '@/service/file';
 import Empty from '@/pages/editor/empty';
@@ -536,37 +536,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     []
   );
 
-  async function createFile() {
-    const { name = '新建页面', desc } = form.getFieldsValue();
-    dslStore.createEmptyDSL(name, desc);
-    let selectedFile;
-    if (selectedFolder) {
-      selectedFile = [selectedFolder, sep, name, '.ditto'].join('');
-    } else if (currentFile) {
-      const dirName = await dirname(currentFile);
-      selectedFile = [dirName, sep, name, '.ditto'].join('');
-    } else if (projectData?.length) {
-      selectedFile = [projectData[0].key, sep, name, '.ditto'].join('');
-    } else {
-      const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, `${name}.ditto`);
-      selectedFile = await save({
-        title: '新建页面',
-        defaultPath,
-        filters: [
-          {
-            name: 'Ditto文件',
-            extensions: ['ditto']
-          }
-        ]
-      });
-    }
-    if (selectedFile) {
-      await fileManager.savePageDSLFile(selectedFile, dslStore.dsl);
-      setCurrentFile(selectedFile);
-      fetchProjectData();
-    }
-  }
-
   const saveFile = debounce(async () => {
     if (currentFile) {
       filePathRef.current = await dirname(currentFile);
@@ -824,6 +793,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
    * 渲染项目的文件目录，当前文件的组件树
    */
   function renderProjectPanel() {
+    console.log('selected path: ', selectedPath);
+    console.log('current file: ', currentFile);
     return (
       <>
         <div className={styles.pagePanel}>
