@@ -540,4 +540,11 @@ export default class AppStore {
     modifiersWithKey.push(keyForDisplay);
     return modifiersWithKey.join(' ');
   }
+
+  /**
+   * 重置快捷键
+   */
+  resetShortKey() {
+    this.shortKeyDict = cloneDeep(this.defaultShortKeyDict);
+  }
 }
