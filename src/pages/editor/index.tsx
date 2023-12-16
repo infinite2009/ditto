@@ -123,25 +123,28 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       }
       setCurrentFile(currentFile || '');
       setSelectedPath(currentFile || '');
-      const contextId = appStore.getContextIdForProject(currentProject.id);
-      const handlers = {
-        copy,
-        paste,
-        cancelSelection,
-        exportTemplate,
-        rename,
-        newFolder,
-        newPage
-      };
-      if (!contextId) {
-        appStore.createContext(Scene.editor, {}, handlers);
-        console.log('上下文已创建： ');
-      } else {
-        appStore.registerHandlers(contextId, handlers);
-        console.log('已存在上下文');
-      }
     }
   }, [currentProject]);
+
+  useEffect(() => {
+    const contextId = appStore.getContextIdForProject(currentProject.id);
+    const handlers = {
+      copy,
+      paste,
+      cancelSelection,
+      exportTemplate,
+      rename,
+      newFolder,
+      newPage
+    };
+    if (!contextId) {
+      appStore.createContext(Scene.editor, {}, handlers);
+      console.log('上下文已创建： ');
+    } else {
+      appStore.registerHandlers(contextId, handlers);
+      console.log('已存在上下文');
+    }
+  }, [copy, paste, cancelSelection, exportTemplate, rename, newFolder, newPage]);
 
   function copy() {
     message.success('复制待实现');

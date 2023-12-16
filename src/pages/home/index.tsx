@@ -9,8 +9,8 @@ import { Scene } from '@/service/app-store';
 import style from './index.module.less';
 
 export interface IHomeProps {
-  onOpenProject: (projectId: string) => void;
   onDeleteProject: (projectId: string) => void;
+  onOpenProject: (projectId: string) => void;
   onRenameProject: (projectId: string) => void;
 }
 
@@ -45,6 +45,26 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
     );
     fetchRecentProjects();
   }, []);
+
+  useEffect(() => {
+    appStore.registerHandlers(appStore.homeContextId, {
+      createProject,
+      openLocalProject,
+      openProject,
+      openInFinder,
+      createCopy,
+      rename: handleClickRenameBtn,
+      remove: openProjectDeletingModal
+    });
+  }, [
+    createProject,
+    openLocalProject,
+    openProject,
+    openInFinder,
+    createCopy,
+    handleClickRenameBtn,
+    openProjectDeletingModal
+  ]);
 
   useEffect(() => {
     if (isEditing && selectedProject) {

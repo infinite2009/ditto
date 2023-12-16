@@ -543,7 +543,26 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       toggleDirection,
       toggleWrap
     });
-  }, []);
+  }, [
+    handleSwitchBold,
+    handleSwitchItalic,
+    toggleUnderline,
+    toggleLineThrough,
+    alignTextLeft,
+    alignTextCenter,
+    alignTextRight,
+    alignTextJustified,
+    alignStart,
+    alignCenter,
+    alignEnd,
+    justifyStart,
+    justifyCenter,
+    justifyEnd,
+    justifyBetween,
+    justifyEvenly,
+    toggleDirection,
+    toggleWrap
+  ]);
 
   function justifyStart() {
     if (onChange) {
