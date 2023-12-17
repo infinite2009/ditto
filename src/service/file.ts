@@ -534,6 +534,10 @@ class FileManager {
     await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
   }
 
+  async saveTemplateFile(fileName: string) {
+    // TODO: 读取 AppData 目录，保存模板
+  }
+
   async setCurrentProject(projectId: string) {
     await FileManager.appDataStore.setItem('currentProject', projectId);
     this.cache.currentProject = projectId;

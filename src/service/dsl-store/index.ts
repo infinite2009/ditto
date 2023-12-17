@@ -366,7 +366,16 @@ export default class DSLStore {
     return deleted;
   }
 
-  exportAsTemplate(id: string) {}
+  exportAsTemplate(id: string) {
+    // 1. 克隆副本
+    const templateDSL = cloneDeep(this.dsl);
+    // 2. 删除 pageId
+    templateDSL.id = '';
+    // 3. 移除 根节点的父节点 id
+    const root = templateDSL.componentIndexes[templateDSL.child.current];
+    root.parentId = '';
+    // 4. 保存到模板的默认位置
+  }
 
   fetchComponentInDSL(id: string) {
     const { componentIndexes } = this.dsl;
