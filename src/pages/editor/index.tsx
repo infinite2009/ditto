@@ -135,7 +135,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       copy,
       paste,
       cancelSelection,
-      exportTemplate,
+      exportAsTemplate,
       rename,
       newFolder,
       newPage
@@ -147,7 +147,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       appStore.registerHandlers(contextId, handlers);
       console.log('已存在上下文');
     }
-  }, [copy, paste, cancelSelection, exportTemplate, rename, newFolder, newPage]);
+  }, [copy, paste, cancelSelection, exportAsTemplate, rename, newFolder, newPage]);
 
   function copy() {
     message.success('复制待实现');
@@ -161,7 +161,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     message.success('取消选择待实现');
   }
 
-  function exportTemplate() {
+  function exportAsTemplate() {
     message.success('导出模板待实现');
   }
 
