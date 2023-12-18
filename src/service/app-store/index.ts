@@ -198,6 +198,46 @@ export default class AppStore {
         shift: false,
         meta: true
       },
+      remove: {
+        functionName: '删除',
+        key: 'DELETE',
+        ctrl: false,
+        alt: false,
+        shift: false,
+        meta: false
+      },
+      exportAsTemplate: {
+        functionName: '导出为模板',
+        key: 'E',
+        ctrl: false,
+        alt: false,
+        shift: true,
+        meta: true
+      },
+      rename: {
+        functionName: '重命名',
+        key: 'R',
+        ctrl: false,
+        alt: false,
+        shift: false,
+        meta: true
+      },
+      newFolder: {
+        functionName: '新增文件夹',
+        key: 'F',
+        ctrl: false,
+        alt: false,
+        shift: true,
+        meta: true
+      },
+      newPage: {
+        functionName: '新增页面',
+        key: 'P',
+        ctrl: false,
+        alt: false,
+        shift: true,
+        meta: true
+      },
       cancelSelection: {
         functionName: '取消选择',
         key: 'C',
@@ -348,38 +388,6 @@ export default class AppStore {
         ctrl: false,
         alt: true,
         shift: false,
-        meta: true
-      },
-      exportTemplate: {
-        functionName: '导出为模板',
-        key: 'E',
-        ctrl: false,
-        alt: false,
-        shift: true,
-        meta: true
-      },
-      rename: {
-        functionName: '重命名',
-        key: 'R',
-        ctrl: false,
-        alt: false,
-        shift: false,
-        meta: true
-      },
-      newFolder: {
-        functionName: '新增文件夹',
-        key: 'F',
-        ctrl: false,
-        alt: false,
-        shift: true,
-        meta: true
-      },
-      newPage: {
-        functionName: '新增页面',
-        key: 'P',
-        ctrl: false,
-        alt: false,
-        shift: true,
         meta: true
       }
     }
