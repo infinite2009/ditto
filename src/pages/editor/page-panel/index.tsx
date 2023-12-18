@@ -35,10 +35,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   useEffect(() => {
     if (selected && data.length) {
       const foundNodePath = findNodePath({ key: undefined, children: data }, selected);
-      console.log('found node path: ', foundNodePath);
-      console.log('before merge: ', expandedKeys);
       const mergedExpandedKeys = mergeExpandedKeys(expandedKeys, foundNodePath);
-      console.log('merged expanded keys: ', mergedExpandedKeys);
       setExpandedKeys(mergedExpandedKeys);
     }
   }, [selected, data]);
