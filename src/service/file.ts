@@ -115,13 +115,13 @@ class FileManager {
     return newFolderName;
   }
 
-  private static async generateNewFilePath(fileName: string, baseDir: string) {
+  private static async generateNewPath(pathName: string, baseDir: string) {
+    // TODO: 需要扩展为支持同时支持目录和文件
     try {
-      const ext = await extname(fileName);
-      debugger;
-      const fileNameWithoutExt = await basename(fileName, `.${ext}`);
-      debugger;
-      let newFileName = fileName;
+      const isDirectory = FileManager.isDirectory(pathName);
+      const ext = isDirectory ? '' : await extname(pathName);
+      const fileNameWithoutExt = await basename(pathName, ext ? `.${ext}` : '');
+      let newFileName = pathName;
       let suffix = 0;
       let whetherExists = false;
       do {
@@ -397,7 +397,7 @@ class FileManager {
     }
   }
 
-  async isDirectory(path: string) {
+  private static async isDirectory(path: string) {
     const testInfo = await new Command('isDirectory', ['-d', path]).execute();
     return testInfo.code !== 1;
   }
@@ -484,7 +484,7 @@ class FileManager {
   async pasteFileOrPath(sourcePath: string, destinationPath: string) {
     try {
       // 1. 检测 destinationPath 是文件还是文件夹
-      const isDirectory = await this.isDirectory(destinationPath);
+      const isDirectory = await FileManager.isDirectory(destinationPath);
       let destinationPathForPaste: string;
       if (isDirectory) {
         // 如果是目录，当前目录就是可以目标目录
@@ -495,7 +495,7 @@ class FileManager {
       }
       // 生成文件名
       const fileName = await basename(sourcePath);
-      const newFileName = await FileManager.generateNewFilePath(fileName, destinationPathForPaste);
+      const newFileName = await FileManager.generateNewPath(fileName, destinationPathForPaste);
       await copyFile(sourcePath, await join(destinationPathForPaste, newFileName));
       // 复制成功，正常退出
       return 0;
@@ -512,7 +512,7 @@ class FileManager {
     }
     const dir = await dirname(path);
     let newPath;
-    const isDirectory = await this.isDirectory(path);
+    const isDirectory = await FileManager.isDirectory(path);
     if (isDirectory) {
       // 如果是目录，找到上级目录
       newPath = await join(dir, newName);
