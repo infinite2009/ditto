@@ -1,7 +1,7 @@
-import { observer } from 'mobx-react';
 import { Dropdown } from 'antd';
-import styles from './index.module.less';
 import React, { ReactNode } from 'react';
+import { observer } from 'mobx-react';
+import styles from './index.module.less';
 
 export interface IComponentContextMenuProps {
   data: any;
