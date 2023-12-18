@@ -12,9 +12,16 @@ export interface IComponentContextMenuProps {
   }[][];
   onClick: (key: string, data: any) => void;
   children: React.ReactNode;
+  onOpenChange?: (open: boolean, data: any) => void;
 }
 
-export default observer(function ComponentContextMenu({ data, items, onClick, children }: IComponentContextMenuProps) {
+export default observer(function ComponentContextMenu({
+  data,
+  items,
+  onClick,
+  children,
+  onOpenChange
+}: IComponentContextMenuProps) {
   const generateDropDownMenu = () => {
     let flattedItems: any[] = [];
     items?.forEach((item, index) => {
@@ -72,6 +79,7 @@ export default observer(function ComponentContextMenu({ data, items, onClick, ch
       menu={generateDropDownMenu()}
       overlayClassName={styles.dropdownContainer}
       destroyPopupOnHide
+      onOpenChange={(open: boolean) => onOpenChange && onOpenChange(open, data)}
       trigger={['contextMenu']}
     >
       {children}

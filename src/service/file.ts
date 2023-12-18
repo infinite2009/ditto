@@ -4,13 +4,22 @@ import prettierConfig from '@/config/.prettierrc.json';
 import * as babel from 'prettier/parser-babel';
 import parserHtml from 'prettier/parser-html';
 import { RequiredOptions } from 'prettier';
-import { BaseDirectory, createDir, exists, FileEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/api/fs';
+import {
+  BaseDirectory,
+  copyFile,
+  createDir,
+  exists,
+  FileEntry,
+  readDir,
+  readTextFile,
+  writeTextFile
+} from '@tauri-apps/api/fs';
 import { open } from '@tauri-apps/api/dialog';
 import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import * as typescript from 'prettier/parser-typescript';
 import AppData, { ProjectInfo } from '@/types/app-data';
-import { dirname, documentDir, extname, homeDir, join, sep } from '@tauri-apps/api/path';
+import { basename, dirname, documentDir, extname, homeDir, join, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
 import cloneDeep from 'lodash/cloneDeep';
@@ -86,20 +95,56 @@ class FileManager {
   /**
    * 根据输入字符串生成一个同目录下的文件夹副本的名字，永不重复
    * @param folderName
+   * @param baseDir
    * @private
    */
-  private static async generateNewFolderName(folderName: string): Promise<string> {
+  private static async generateNewFolderName(
+    folderName: string,
+    baseDir: BaseDirectory = BaseDirectory.Document
+  ): Promise<string> {
     let newFolderName = folderName;
     let suffix = 0;
     let whetherExists = false;
     do {
-      whetherExists = await exists(newFolderName, { dir: BaseDirectory.Document });
+      whetherExists = await exists(newFolderName, { dir: baseDir });
       if (whetherExists) {
         suffix++;
         newFolderName = `${folderName} ${suffix}`;
       }
     } while (whetherExists);
     return newFolderName;
+  }
+
+  private static async generateNewFilePath(fileName: string, baseDir: string) {
+    try {
+      const ext = await extname(fileName);
+      debugger;
+      const fileNameWithoutExt = await basename(fileName, `.${ext}`);
+      debugger;
+      let newFileName = fileName;
+      let suffix = 0;
+      let whetherExists = false;
+      do {
+        whetherExists = await exists(await join(baseDir, newFileName));
+        if (whetherExists) {
+          suffix++;
+          newFileName = `${fileNameWithoutExt} ${suffix}.${ext}`;
+        }
+      } while (whetherExists);
+      return newFileName;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  private static async moveToTrash(path: string) {
+    try {
+      await new Command('mv', [path, await join(await homeDir(), '.Trash')]).execute();
+      return 0;
+    } catch (err) {
+      console.error(err);
+      return 1;
+    }
   }
 
   async addDirectory(parentPath: string, name: string) {
@@ -220,11 +265,18 @@ class FileManager {
       delete this.cache.recentProjects[project.id];
       delete this.cache.pathToProjectDict[project.path];
       if (deleteFolder) {
-        await new Command('mv', [project.path, await join(await homeDir(), '.Trash')]).execute();
+        await FileManager.moveToTrash(project.path);
       }
     } catch (err) {
       console.error(err);
     }
+  }
+
+  async deleteFileOrFolder(path: string) {
+    if (!(await exists(path))) {
+      return;
+    }
+    await FileManager.moveToTrash(path);
   }
 
   async exportReactPageCodeFile(filePath: string, dsl: IPageSchema) {
@@ -345,6 +397,11 @@ class FileManager {
     }
   }
 
+  async isDirectory(path: string) {
+    const testInfo = await new Command('isDirectory', ['-d', path]).execute();
+    return testInfo.code !== 1;
+  }
+
   async openFile(file: string, projectId: string): Promise<string> {
     const openedProject = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
     openedProject.openedFile = file;
@@ -424,14 +481,39 @@ class FileManager {
     this.cache.currentProject = projectId;
   }
 
+  async pasteFileOrPath(sourcePath: string, destinationPath: string) {
+    try {
+      // 1. 检测 destinationPath 是文件还是文件夹
+      const isDirectory = await this.isDirectory(destinationPath);
+      let destinationPathForPaste: string;
+      if (isDirectory) {
+        // 如果是目录，当前目录就是可以目标目录
+        destinationPathForPaste = destinationPath;
+      } else {
+        // 如果是文件，则提取它的 basename 作为目标目录
+        destinationPathForPaste = await dirname(destinationPath);
+      }
+      // 生成文件名
+      const fileName = await basename(sourcePath);
+      const newFileName = await FileManager.generateNewFilePath(fileName, destinationPathForPaste);
+      await copyFile(sourcePath, await join(destinationPathForPaste, newFileName));
+      // 复制成功，正常退出
+      return 0;
+    } catch (err) {
+      // 复制失败，出现异常
+      console.error(err);
+      return 1;
+    }
+  }
+
   async renamePage(path: string, newName: string) {
     if (!(await exists(path))) {
       throw new Error('文件不存在或文件夹不存在');
     }
     const dir = await dirname(path);
     let newPath;
-    const isDirectory = await new Command('isDirectory', ['-d', path]).execute();
-    if (isDirectory.code !== 1) {
+    const isDirectory = await this.isDirectory(path);
+    if (isDirectory) {
       // 如果是目录，找到上级目录
       newPath = await join(dir, newName);
     } else {
