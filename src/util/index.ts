@@ -167,8 +167,8 @@ export function getParentKeyPath(keyPath: string) {
 
 export function generateContextMenus(
   feature: ComponentFeature = ComponentFeature.solid,
-  visible: boolean = true,
-  hasCopiedComponent: boolean = false
+  visible = true,
+  hasCopiedComponent = false
 ) {
   switch (feature) {
     case ComponentFeature.root:
