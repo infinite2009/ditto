@@ -106,6 +106,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
                 onFocus={e => e.target.select()}
                 onBlur={e => handleRenamingPage(item.path, (e.target.value as string).trim())}
                 onPressEnter={e =>
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
                   handleRenamingPage(item.path, (e.target.value as unknown as string).trim())
                 }
@@ -146,6 +147,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
         onChange();
       }
     } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       message.error(e.toString());
     } finally {
