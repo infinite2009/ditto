@@ -127,6 +127,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }, [currentProject]);
 
   useEffect(() => {
+    if (!currentProject) {
+      return;
+    }
     const contextId = appStore.getContextIdForProject(currentProject.id);
     const handlers = {
       copy,
