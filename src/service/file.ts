@@ -10,7 +10,7 @@ import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import * as typescript from 'prettier/parser-typescript';
 import AppData, { ProjectInfo } from '@/types/app-data';
-import { basename, dirname, documentDir, extname, homeDir, join, sep } from '@tauri-apps/api/path';
+import { appLocalDataDir, basename, dirname, documentDir, extname, homeDir, join, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
 import cloneDeep from 'lodash/cloneDeep';
@@ -23,6 +23,7 @@ import { nanoid } from 'nanoid';
 import DSLStore from '@/service/dsl-store';
 import { Command } from '@tauri-apps/api/shell';
 import { Platform, platform } from '@tauri-apps/api/os';
+import { json } from 'stream/consumers';
 
 interface EntryTree {
   children?: EntryTree[];
@@ -620,9 +621,21 @@ class FileManager {
     await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
   }
 
-  async saveTemplateFile(fileName: string, content: string) {
-    await writeTextFile(fileName, content, { dir: BaseDirectory.AppData });
-    console.log('写入模板文件');
+  async saveTemplateFile(fileName: string, pageFilePath: string) {
+    try {
+      const appLocalDataDirPath = await appLocalDataDir();
+      const templateDir = await join(appLocalDataDirPath, 'templates');
+      if (!(await exists(templateDir))) {
+        await createDir(templateDir);
+      }
+      const content = await fileManager.readFile(pageFilePath);
+      const dslObj = JSON.parse(content);
+      dslObj.name = fileName;
+      await writeTextFile(await join(templateDir, `${nanoid()}.dtpl`), JSON.stringify(dslObj));
+      console.log('写入模板文件', templateDir);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async setCurrentProject(projectId: string) {

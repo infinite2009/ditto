@@ -227,6 +227,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   }
 
   function exportPageAsTemplate() {
+    fileManager.saveTemplateFile('模板名称demo', selectedPageOrFolderForMenuRef.current.path).then();
     console.log('exportPageAsTemplate works: ', selectedPageOrFolderForMenuRef.current);
   }
 
