@@ -608,8 +608,9 @@ class FileManager {
     await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
   }
 
-  async saveTemplateFile(fileName: string) {
-    // TODO: 读取 AppData 目录，保存模板
+  async saveTemplateFile(fileName: string, content: string) {
+    await writeTextFile(fileName, content, { dir: BaseDirectory.AppData });
+    console.log('写入模板文件');
   }
 
   async setCurrentProject(projectId: string) {

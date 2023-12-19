@@ -22,6 +22,8 @@ import { isArray, isObject, mergeWith } from 'lodash';
 import { detailedDiff } from 'deep-object-diff';
 import ComponentFeature from '@/types/component-feature';
 import InsertType from '@/types/insert-type';
+import fileManager from '@/service/file';
+import { nanoid } from 'nanoid';
 
 type FormValue = {
   style: CSSProperties;
@@ -366,15 +368,20 @@ export default class DSLStore {
     return deleted;
   }
 
-  exportAsTemplate(id: string) {
-    // 1. 克隆副本
-    const templateDSL = cloneDeep(this.dsl);
-    // 2. 删除 pageId
-    templateDSL.id = '';
-    // 3. 移除 根节点的父节点 id
-    const root = templateDSL.componentIndexes[templateDSL.child.current];
-    root.parentId = '';
-    // 4. 保存到模板的默认位置
+  async importTemplate(dslContent: string) {
+    try {
+      // 1. 解析内容为对象
+      const templateDSL = JSON.parse(dslContent);
+      // 2. 删除 pageId
+      templateDSL.id = '';
+      // 3. 移除 根节点的父节点 id
+      const root = templateDSL.componentIndexes[templateDSL.child.current];
+      root.parentId = '';
+      // 4. 保存到模板的默认位置
+      await fileManager.saveTemplateFile(`${nanoid()}.ditto`, JSON.stringify(templateDSL));
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   fetchComponentInDSL(id: string) {
