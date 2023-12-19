@@ -4,16 +4,7 @@ import prettierConfig from '@/config/.prettierrc.json';
 import * as babel from 'prettier/parser-babel';
 import parserHtml from 'prettier/parser-html';
 import { RequiredOptions } from 'prettier';
-import {
-  BaseDirectory,
-  copyFile,
-  createDir,
-  exists,
-  FileEntry,
-  readDir,
-  readTextFile,
-  writeTextFile
-} from '@tauri-apps/api/fs';
+import { BaseDirectory, createDir, exists, FileEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/api/fs';
 import { open } from '@tauri-apps/api/dialog';
 import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
@@ -120,18 +111,19 @@ class FileManager {
     try {
       const isDirectory = FileManager.isDirectory(pathName);
       const ext = isDirectory ? '' : await extname(pathName);
-      const fileNameWithoutExt = await basename(pathName, ext ? `.${ext}` : '');
-      let newFileName = pathName;
+      // 去掉没有前缀的文件名或者目录名
+      const pathnameWithoutExt = await basename(pathName, ext ? `.${ext}` : '');
+      let newPathName = pathName;
       let suffix = 0;
       let whetherExists = false;
       do {
-        whetherExists = await exists(await join(baseDir, newFileName));
+        whetherExists = await exists(await join(baseDir, newPathName));
         if (whetherExists) {
           suffix++;
-          newFileName = `${fileNameWithoutExt} ${suffix}.${ext}`;
+          newPathName = `${pathnameWithoutExt} ${suffix}${ext ? `.${ext}` : ''}`;
         }
       } while (whetherExists);
-      return newFileName;
+      return newPathName;
     } catch (err) {
       console.error(err);
     }
@@ -496,7 +488,7 @@ class FileManager {
       // 生成文件名
       const fileName = await basename(sourcePath);
       const newFileName = await FileManager.generateNewPath(fileName, destinationPathForPaste);
-      await copyFile(sourcePath, await join(destinationPathForPaste, newFileName));
+      await new Command('cp', ['-r', sourcePath, await join(destinationPathForPaste, newFileName)]).execute();
       // 复制成功，正常退出
       return 0;
     } catch (err) {
