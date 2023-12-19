@@ -129,6 +129,11 @@ class FileManager {
     }
   }
 
+  private static async isDirectory(path: string) {
+    const testInfo = await new Command('isDirectory', ['-d', path]).execute();
+    return testInfo.code !== 1;
+  }
+
   private static async moveToTrash(path: string) {
     try {
       await new Command('mv', [path, await join(await homeDir(), '.Trash')]).execute();
@@ -247,6 +252,13 @@ class FileManager {
     }
   }
 
+  async deleteFileOrFolder(path: string) {
+    if (!(await exists(path))) {
+      return;
+    }
+    await FileManager.moveToTrash(path);
+  }
+
   async deleteProject(project: ProjectInfo, deleteFolder = false): Promise<void> {
     try {
       const tasks = [FileManager.recentProjectsStore.removeItem(project.id)];
@@ -262,13 +274,6 @@ class FileManager {
     } catch (err) {
       console.error(err);
     }
-  }
-
-  async deleteFileOrFolder(path: string) {
-    if (!(await exists(path))) {
-      return;
-    }
-    await FileManager.moveToTrash(path);
   }
 
   async exportReactPageCodeFile(filePath: string, dsl: IPageSchema) {
@@ -372,6 +377,10 @@ class FileManager {
     return recentProjects;
   }
 
+  async generateNewFileName(directory: string) {
+    return await FileManager.generateNewFileName(directory);
+  }
+
   async initAppData() {
     try {
       this.cache = initialCache;
@@ -387,11 +396,6 @@ class FileManager {
     } catch (err) {
       console.error(err);
     }
-  }
-
-  private static async isDirectory(path: string) {
-    const testInfo = await new Command('isDirectory', ['-d', path]).execute();
-    return testInfo.code !== 1;
   }
 
   async openFile(file: string, projectId: string): Promise<string> {
@@ -595,6 +599,10 @@ class FileManager {
       delete this.cache.pathToProjectDict[project.path];
       this.cache.pathToProjectDict[projectInfo.path] = projectInfo;
     }
+  }
+
+  async saveFile(path: string, content: string) {
+    await writeTextFile(path, content);
   }
 
   async savePageDSLFile(filePath: string, dsl: IPageSchema) {
