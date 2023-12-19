@@ -368,6 +368,11 @@ export default class DSLStore {
     return deleted;
   }
 
+  fetchComponentInDSL(id: string) {
+    const { componentIndexes } = this.dsl;
+    return componentIndexes[id];
+  }
+
   async importTemplate(dslContent: string) {
     try {
       // 1. 解析内容为对象
@@ -382,11 +387,6 @@ export default class DSLStore {
     } catch (err) {
       console.error(err);
     }
-  }
-
-  fetchComponentInDSL(id: string) {
-    const { componentIndexes } = this.dsl;
-    return componentIndexes[id];
   }
 
   initDSL(dsl: IPageSchema) {
