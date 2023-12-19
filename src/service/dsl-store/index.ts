@@ -23,7 +23,6 @@ import { detailedDiff } from 'deep-object-diff';
 import ComponentFeature from '@/types/component-feature';
 import InsertType from '@/types/insert-type';
 import fileManager from '@/service/file';
-import { nanoid } from 'nanoid';
 
 type FormValue = {
   style: CSSProperties;
@@ -373,8 +372,13 @@ export default class DSLStore {
     return componentIndexes[id];
   }
 
-  async importTemplate(dslContent: string) {
+  /**
+   * 导入模板，必须用在创建空页面之后用，选中空页面，然后应用此函数
+   * @param templatePath
+   */
+  async importTemplate(templatePath: string) {
     try {
+      const dslContent = await fileManager.readFile(templatePath);
       // 1. 解析内容为对象
       const templateDSL = JSON.parse(dslContent);
       // 2. 删除 pageId
@@ -382,8 +386,8 @@ export default class DSLStore {
       // 3. 移除 根节点的父节点 id
       const root = templateDSL.componentIndexes[templateDSL.child.current];
       root.parentId = '';
-      // 4. 保存到模板的默认位置
-      await fileManager.saveTemplateFile(`${nanoid()}.ditto`, JSON.stringify(templateDSL));
+      // 4. 覆盖当前的 dsl
+      this.dsl = templateDSL;
     } catch (err) {
       console.error(err);
     }

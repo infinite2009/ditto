@@ -502,6 +502,10 @@ class FileManager {
     }
   }
 
+  async readFile(filePath: string) {
+    return await readTextFile(filePath);
+  }
+
   async renamePage(path: string, newName: string) {
     if (!(await exists(path))) {
       throw new Error('文件不存在或文件夹不存在');
