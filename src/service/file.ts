@@ -216,13 +216,25 @@ class FileManager {
 
   /**
    * @param directory 绝对路径
+   * @param tplPath
    */
-  async createNewPage(directory: string) {
-    const dslStoreService = new DSLStore();
-    const fileName = await FileManager.generateNewFileName(directory);
-    dslStoreService.createEmptyDSL(fileName, '');
-    const filePath = await join(directory, fileName);
-    await writeTextFile(filePath, JSON.stringify(dslStoreService.dsl));
+  async createNewPage(directory: string, tplPath: string = undefined) {
+    try {
+      const dslStoreService = new DSLStore();
+      const fileName = await FileManager.generateNewFileName(directory);
+      dslStoreService.createEmptyDSL(fileName, '');
+      if (tplPath && (await exists(tplPath))) {
+        const content = await readTextFile(tplPath);
+        if (content) {
+          dslStoreService.initDSL(JSON.parse(content));
+        }
+      }
+      const filePath = await join(directory, fileName);
+      await writeTextFile(filePath, JSON.stringify(dslStoreService.dsl));
+      return filePath;
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**
@@ -689,6 +701,10 @@ class FileManager {
       });
     });
     return dslClone;
+  }
+
+  async getParentDir(path: string) {
+    return await dirname(path);
   }
 }
 

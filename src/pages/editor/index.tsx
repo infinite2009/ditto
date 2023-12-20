@@ -26,7 +26,6 @@ import DropAnchor from '@/pages/editor/drop-anchor';
 import { DragCancelEvent, DragEndEvent } from '@dnd-kit/core/dist/types';
 import { snapCenterToCursor } from '@dnd-kit/modifiers';
 import PageAction from '@/types/page-action';
-import { useForm } from 'antd/es/form/Form';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
 import { save } from '@tauri-apps/api/dialog';
 import { dirname, documentDir, join } from '@tauri-apps/api/path';
@@ -83,8 +82,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
   const [selectedComponentForRenaming, setSelectedComponentForRenaming] = useState<ComponentId>('');
   const [pageWidth, setPageWidth] = useState<number>(PageWidth.auto);
-
-  const [form] = useForm();
+  const [activePanelTabKey, setActivePanelTabKey] = useState<string>(undefined);
 
   const dslStore = useContext(DSLStoreContext);
   const editorStore = useContext(EditorStoreContext);
@@ -111,9 +109,13 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     documentDir().then(p => {
       defaultPathRef.current = p;
     });
-    fetchProjectData().then();
-    fetchCurrentProject();
+    init();
   }, []);
+
+  function init() {
+    fetchCurrentProject();
+    fetchProjectData().then();
+  }
 
   useEffect(() => {
     if (currentProject) {
@@ -658,7 +660,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function handleTogglePanel(type: PanelType) {
-    // TODO:
     setLeftPanelType(type);
   }
 
@@ -821,7 +822,32 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
    * 渲染模板、组件托盘
    */
   function renderComponentPanel() {
-    return <CompositionPanel />;
+    return (
+      <CompositionPanel
+        onApplyTemplate={onApplyTemplate}
+        onChangeTab={setActivePanelTabKey}
+        activeKey={activePanelTabKey}
+      />
+    );
+  }
+
+  async function onApplyTemplate(path: string) {
+    try {
+      // 1. 强制保存一次用户之前的页面
+      await saveFile();
+      // 2. 创建一个新的页面
+      const dir = await fileManager.getParentDir(currentFile);
+      // 3. 调用 file service 应用这个模板
+      const filePath = await fileManager.createNewPage(dir, path);
+      // 4. 选中这个页面
+      await openFile(filePath);
+      // 5. 刷新项目数据
+      init();
+      // 6. 切换到组件托盘，提高用户操作效率
+      setActivePanelTabKey('2');
+    } catch (err) {
+      message.error(err);
+    }
   }
 
   /**
