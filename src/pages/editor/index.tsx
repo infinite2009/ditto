@@ -47,6 +47,7 @@ import ComponentContextMenu from '@/pages/editor/component-context-menu';
 import { generateContextMenus } from '@/util';
 import InsertType from '@/types/insert-type';
 import { Scene } from '@/service/app-store';
+import FloatTemplatePanel from '@/pages/editor/float-template-panel';
 
 const collisionOffset = 4;
 
@@ -824,7 +825,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   function renderComponentPanel() {
     return (
       <CompositionPanel
-        onApplyTemplate={onApplyTemplate}
+        // onApplyTemplate={onApplyTemplate}
         onChangeTab={setActivePanelTabKey}
         activeKey={activePanelTabKey}
       />
@@ -889,6 +890,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
               <div className={styles.canvasInner}>
                 {currentFile ? <PageRenderer mode="edit" scale={scale} pageWidth={pageWidth} /> : <Empty />}
               </div>
+              {renderMoreTemplatePanel()}
             </div>
           </div>
           {createPortal(
@@ -909,6 +911,14 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     return <div>code works!</div>;
   }
 
+  function onApplyTemplate2(path: string) {
+    dslStore.applyTemplate(path).then();
+  }
+
+  function renderMoreTemplatePanel() {
+    return <FloatTemplatePanel onApplyTemplate={onApplyTemplate2} />;
+  }
+
   return (
     <div className={styles.main} style={style}>
       <div className={styles.topBar}>
@@ -921,7 +931,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         <Toolbar onDo={handleOnDo} pageWidth={pageWidth} projectId={currentProject?.id} />
       </div>
       <div className={styles.editArea}>{showDesign ? renderDesignSection() : renderCodeSection()}</div>
-
       <DropAnchor style={anchorStyle} />
     </div>
   );

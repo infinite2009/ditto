@@ -77,6 +77,18 @@ export default class DSLStore {
     }
   }
 
+  /**
+   * 页面是否为空
+   */
+  get isEmpty() {
+    // 如果尚未初始化，则不认为是空的
+    if (!this.dsl?.componentIndexes) {
+      return false;
+    }
+    // 不算入根组件
+    return Object.keys(this.dsl.componentIndexes).length === 1;
+  }
+
   get canRedo() {
     return this.redoStack.length > 0;
   }
@@ -125,6 +137,24 @@ export default class DSLStore {
     });
 
     return result;
+  }
+
+  /**
+   * 应用模板，仅应该对空页面进行应用
+   * @param path
+   */
+  @execute
+  async applyTemplate(path: string) {
+    try {
+      const content = await fileManager.readFile(path);
+      if (content) {
+        this.initDSL(JSON.parse(content));
+      } else {
+        console.error('模板文件为空');
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**
