@@ -1,6 +1,6 @@
 import { useTemplateData } from '@/hooks';
-import style from './index.module.less';
 import { TemplateInfo } from '@/service/db-store';
+import style from './index.module.less';
 
 export interface IFloatTemplatePanelProps {
   onApplyTemplate: (path: string) => void;

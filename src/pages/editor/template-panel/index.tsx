@@ -1,45 +1,43 @@
 import { TemplateInfo } from '@/service/db-store';
 
 import style from './index.module.less';
-import { useTemplateData } from '@/hooks';
+import { useEffect, useState } from 'react';
 
 export interface ITemplatePanelProps {
-  onApplyTemplate: (path: string) => void;
+  onApplyModule: (path: string) => void;
 }
 
-export default function TemplatePanel({ onApplyTemplate }: ITemplatePanelProps) {
-  const tplList = useTemplateData();
+export default function ModulePanel({ onApplyModule }: ITemplatePanelProps) {
+  const [moduleList, setModuleList] = useState<any[]>([]);
 
-  function renderTemplateList() {
-    return tplList.map(item => {
-      return (
-        <div key={item.category}>
-          <h3 className={style.categoryTitle}>{item.category}</h3>
-          <div className={style.templateList}>
-            {item.data.map((tpl, index) => {
-              return renderTemplate(tpl, index.toString());
-            })}
-          </div>
-        </div>
-      );
-    });
+  useEffect(() => {
+    fetchModuleData().then();
+  }, []);
+
+  async function fetchModuleData() {
+    const res = await new Promise(resolve => resolve([]));
+    setModuleList(res as any[]);
   }
 
-  function handleClickingTemplate(path: string) {
-    if (onApplyTemplate) {
-      onApplyTemplate(path);
+  function renderModuleList() {
+    return <div>敬请期待</div>;
+  }
+
+  function handleClickingModule(path: string) {
+    if (onApplyModule) {
+      onApplyModule(path);
     }
   }
 
-  function renderTemplate(templateInfo: TemplateInfo, key: string) {
+  function renderModule(templateInfo: TemplateInfo, key: string) {
     const { name, path } = templateInfo;
     return (
-      <div key={key} className={style.template} onClick={() => handleClickingTemplate(path)}>
-        <div className={style.templateImage} />
-        <h3 className={style.templateName}>{name}</h3>
+      <div key={key} className={style.module} onClick={() => handleClickingModule(path)}>
+        <div className={style.moduleImage} />
+        <h3 className={style.moduleName}>{name}</h3>
       </div>
     );
   }
 
-  return <div className={style.main}>{renderTemplateList()}</div>;
+  return <div className={style.main}>{renderModuleList()}</div>;
 }

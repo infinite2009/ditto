@@ -5,19 +5,18 @@ import FavoritePanel from '@/pages/editor/favorite-panel';
 import styles from './index.module.less';
 
 export interface ICompositionPanelProps {
-  onApplyTemplate?: (path: string) => void;
+  onApplyModule?: (path: string) => void;
   activeKey: string;
   onChangeTab?: (activeKey: string) => void;
 }
 
-export default function CompositionPanel({ onApplyTemplate, onChangeTab, activeKey = '1' }: ICompositionPanelProps) {
+export default function CompositionPanel({ onApplyModule, onChangeTab, activeKey = '2' }: ICompositionPanelProps) {
   const items = [
-    {
-      key: '1',
-      label: '模块',
-      // children: <TemplatePanel onApplyTemplate={onApplyTemplate} />
-      children: <div>敬请期待</div>
-    },
+    // {
+    //   key: '1',
+    //   label: '模块',
+    //   children: <ModulePanel onApplyModule={onApplyModule} />
+    // },
     {
       key: '2',
       label: '组件',
@@ -30,7 +29,5 @@ export default function CompositionPanel({ onApplyTemplate, onChangeTab, activeK
     }
   ];
 
-  return (
-    <Tabs className={styles.main} items={items} activeKey={activeKey} onChange={onChangeTab || (() => void 0)}></Tabs>
-  );
+  return <Tabs className={styles.main} items={items} activeKey={activeKey} onChange={onChangeTab || (() => void 0)} />;
 }
