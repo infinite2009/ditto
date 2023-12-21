@@ -59,6 +59,7 @@
     "nanoid": "^4.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "tauri-plugin-sql-api": "github:tauri-apps/tauri-plugin-sql#v1",
     "wouter": "2.12.0-beta.1"
   },
   "devDependencies": {

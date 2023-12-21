@@ -1,6 +1,21 @@
+import Database from 'tauri-plugin-sql-api';
+
 export type TemplateInfo = { name: string; path: string; category: string; createdTime: number };
 
 export default class DbStore {
+  /**
+   * 初始化数据库
+   */
+  static async init() {
+    const tableCreationSql = 'CREATE TABLE template (name TEXT, category TEXT, createdTime NUMERIC, path TEXT)';
+    try {
+      const db = await Database.load('sqlite:ditto.db');
+      console.log('db 已加载: ', db);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   static async fetchTemplates(): Promise<TemplateInfo[]> {
     return await new Promise(resolve => {
       resolve([

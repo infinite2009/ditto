@@ -9,6 +9,7 @@ import DSLStore from '@/service/dsl-store';
 import { AppStoreContext, DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import EditorStore from '@/service/editor-store';
 import { Scene } from '@/service/app-store';
+import DbStore from '@/service/db-store';
 
 export default observer(function App() {
   const [showUI, setShowUI] = useState<boolean>(false);
@@ -96,6 +97,8 @@ export default observer(function App() {
   }
 
   async function init() {
+    // 初始化数据库
+    DbStore.init().then();
     await fileManager.initAppData();
     fetchOpenedProjects();
     fetchAndOpenCurrentProject();
