@@ -277,3 +277,11 @@ export function parsePadding(padding: number | string) {
   // 返回解析后的值
   return parsedValues;
 }
+
+export function camelToSnake(str: string) {
+  return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+}
+
+export function snakeToCamel(str: string) {
+  return str.replace(/(_\w)/g, match => match[1].toUpperCase());
+}

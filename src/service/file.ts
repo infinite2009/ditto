@@ -24,6 +24,7 @@ import DSLStore from '@/service/dsl-store';
 import { Command } from '@tauri-apps/api/shell';
 import { Platform, platform } from '@tauri-apps/api/os';
 import { json } from 'stream/consumers';
+import DbStore from '@/service/db-store';
 
 interface EntryTree {
   children?: EntryTree[];
@@ -256,6 +257,11 @@ class FileManager {
         openedFile: ''
       };
       await FileManager.recentProjectsStore.setItem(project.id, project);
+      debugger;
+      await DbStore.createProject({
+        name: folder,
+        path: projectPath
+      });
       this.cache.recentProjects[project.id] = project;
       this.cache.pathToProjectDict[project.path] = project;
       return project;
