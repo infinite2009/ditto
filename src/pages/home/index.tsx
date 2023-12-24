@@ -81,7 +81,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
   }, [selectedProject]);
 
   async function fetchRecentProjects() {
-    const res = await fileManager.fetchRecentProjects();
+    const res = await fileManager.fetchProjects();
     setRecentProjects(res);
   }
 
@@ -266,11 +266,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
     if (!selectedProjectInfoRef.current) {
       return;
     }
-    const projectCp = await fileManager.copyProject(selectedProjectInfoRef.current);
-    if (!projectCp) {
-      message.error('创建副本失败，请重试');
-      return;
-    }
+    await fileManager.copyProject(selectedProjectInfoRef.current);
     await fetchRecentProjects();
   }
 

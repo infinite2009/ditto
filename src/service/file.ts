@@ -9,7 +9,7 @@ import { open } from '@tauri-apps/api/dialog';
 import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
 import * as typescript from 'prettier/parser-typescript';
-import AppData, { ProjectInfo } from '@/types/app-data';
+import { ProjectInfo } from '@/types/app-data';
 import { appLocalDataDir, basename, dirname, documentDir, extname, homeDir, join, sep } from '@tauri-apps/api/path';
 import VueCodeGenerator from './code-generator/vue';
 import VueTransformer from './dsl-process/vue-transformer';
@@ -18,12 +18,10 @@ import { PropsId } from '@/types';
 import { isEqual } from 'lodash';
 import { createAsyncTask, fetchComponentConfig, getFileName } from '@/util';
 import ActionType from '@/types/action-type';
-import * as localforage from 'localforage';
 import { nanoid } from 'nanoid';
 import DSLStore from '@/service/dsl-store';
 import { Command } from '@tauri-apps/api/shell';
 import { Platform, platform } from '@tauri-apps/api/os';
-import { json } from 'stream/consumers';
 import DbStore from '@/service/db-store';
 
 interface EntryTree {
@@ -35,27 +33,27 @@ interface EntryTree {
   title: string;
 }
 
-const initialCache = {
-  currentProject: '',
-  recentProjects: {},
-  pathToProjectDict: {}
-};
+// const initialCache = {
+//   currentProject: '',
+//   recentProjects: {},
+//   pathToProjectDict: {}
+// };
 
 class FileManager {
-  static APP_DATA_STORE_NAME = 'appData';
-  static RECENT_PROJECTS_STORE_NAME = 'recentProjects';
+  // static APP_DATA_STORE_NAME = 'appData';
+  // static RECENT_PROJECTS_STORE_NAME = 'recentProjects';
   // Danger: 不要改数据库的名字
-  static appDataStore = localforage.createInstance({
-    name: 'Ditto',
-    storeName: FileManager.APP_DATA_STORE_NAME
-  });
-  static recentProjectsStore = localforage.createInstance({
-    name: 'Ditto',
-    storeName: FileManager.RECENT_PROJECTS_STORE_NAME
-  });
+  // static appDataStore = localforage.createInstance({
+  //   name: 'Ditto',
+  //   storeName: FileManager.APP_DATA_STORE_NAME
+  // });
+  // static recentProjectsStore = localforage.createInstance({
+  //   name: 'Ditto',
+  //   storeName: FileManager.RECENT_PROJECTS_STORE_NAME
+  // });
   private static instance = new FileManager();
-  appDataPath = 'appData.json';
-  cache: AppData = {} as AppData;
+  // appDataPath = 'appData.json';
+  // cache: AppData = {} as AppData;
   os: Platform;
 
   constructor() {
@@ -162,15 +160,24 @@ class FileManager {
     }
   }
 
+  /**
+   * 关闭项目
+   * @param projectId
+   */
   async closeProject(projectId: string) {
-    const projectInfo = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
-    projectInfo.isOpen = false;
-    await FileManager.recentProjectsStore.setItem(projectId, projectInfo);
-    this.cache.recentProjects[projectId] = projectInfo;
-    if (projectId === this.cache.currentProject) {
-      await FileManager.appDataStore.removeItem('currentProject');
-      this.cache.currentProject = '';
-    }
+    // const projectInfo = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
+    // projectInfo.isOpen = false;
+    // await FileManager.recentProjectsStore.setItem(projectId, projectInfo);
+    // this.cache.recentProjects[projectId] = projectInfo;
+    // if (projectId === this.cache.currentProject) {
+    //   await FileManager.appDataStore.removeItem('currentProject');
+    //   this.cache.currentProject = '';
+    // }
+    return await DbStore.updateProject({
+      id: projectId,
+      isOpen: false,
+      isActive: false
+    });
   }
 
   async copyProject(project: ProjectInfo): Promise<ProjectInfo | null> {
@@ -178,20 +185,23 @@ class FileManager {
       const documentPath = await documentDir();
       const folder = await FileManager.generateNewFolderName(project.path.split(sep).pop() as string);
       const cpPath = await join(documentPath, folder);
-      const log = await new Command('cp', ['-r', project.path, cpPath]).execute();
-      const projectCp = {
-        id: nanoid(),
+      await new Command('cp', ['-r', project.path, cpPath]).execute();
+      // const projectCp = {
+      //   name: folder,
+      //   path: cpPath,
+      //   isOpen: false,
+      //   openedFile: '',
+      //   isActive: false
+      // };
+      // await FileManager.recentProjectsStore.setItem(projectCp.id, projectCp);
+      // // 更新缓存
+      // this.cache.recentProjects[projectCp.id] = projectCp;
+      // this.cache.pathToProjectDict[projectCp.path] = projectCp;
+      // return projectCp;
+      await DbStore.createProject({
         name: folder,
-        path: cpPath,
-        lastModified: new Date().getTime(),
-        isOpen: false,
-        openedFile: ''
-      };
-      await FileManager.recentProjectsStore.setItem(projectCp.id, projectCp);
-      // 更新缓存
-      this.cache.recentProjects[projectCp.id] = projectCp;
-      this.cache.pathToProjectDict[projectCp.path] = projectCp;
-      return projectCp;
+        path: cpPath
+      });
     } catch (err) {
       console.error(err);
       return null;
@@ -248,22 +258,21 @@ class FileManager {
       const documentPath = await documentDir();
       const projectPath = await join(documentPath, folder);
       await this.createNewPage(projectPath);
-      const project = {
-        id: nanoid(),
-        name: folder,
-        path: projectPath,
-        lastModified: new Date().getTime(),
-        isOpen: false,
-        openedFile: ''
-      };
-      await FileManager.recentProjectsStore.setItem(project.id, project);
-      debugger;
-      await DbStore.createProject({
+      // const project = {
+      //   id: nanoid(),
+      //   name: folder,
+      //   path: projectPath,
+      //   lastModified: new Date().getTime(),
+      //   isOpen: false,
+      //   openedFile: ''
+      // };
+      // await FileManager.recentProjectsStore.setItem(project.id, project);
+      const project = await DbStore.createProject({
         name: folder,
         path: projectPath
       });
-      this.cache.recentProjects[project.id] = project;
-      this.cache.pathToProjectDict[project.path] = project;
+      // this.cache.recentProjects[project.id] = project;
+      // this.cache.pathToProjectDict[project.path] = project;
       return project;
     } catch (err) {
       console.error(err);
@@ -280,13 +289,16 @@ class FileManager {
 
   async deleteProject(project: ProjectInfo, deleteFolder = false): Promise<void> {
     try {
-      const tasks = [FileManager.recentProjectsStore.removeItem(project.id)];
-      if (project.id === this.cache.currentProject) {
-        tasks.push(FileManager.appDataStore.removeItem('currentProject'));
-      }
-      await Promise.all(tasks);
-      delete this.cache.recentProjects[project.id];
-      delete this.cache.pathToProjectDict[project.path];
+      // const tasks = [FileManager.recentProjectsStore.removeItem(project.id)];
+      // 替换为使用数据库
+      await DbStore.deletePathProjectMapping(project.path, project.id);
+      await DbStore.deleteProject(project.id);
+      // if (project.id === this.cache.currentProject) {
+      //   tasks.push(FileManager.appDataStore.removeItem('currentProject'));
+      // }
+      // await Promise.all(tasks);
+      // delete this.cache.recentProjects[project.id];
+      // delete this.cache.pathToProjectDict[project.path];
       if (deleteFolder) {
         await FileManager.moveToTrash(project.path);
       }
@@ -322,13 +334,15 @@ class FileManager {
     await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
   }
 
-  fetchCurrentProjectId() {
-    return this.cache.currentProject;
+  async fetchCurrentProjectId() {
+    // return this.cache.currentProject;
+    return await DbStore.selectProjects({ isActive: true });
   }
 
-  fetchOpenedProjects() {
+  async fetchOpenedProjects() {
     const result: Record<string, ProjectInfo> = {};
-    (Object.values(this.cache.recentProjects) as unknown as ProjectInfo[]).forEach((project: ProjectInfo) => {
+    const projects = await DbStore.selectProjects();
+    (Object.values(projects) as unknown as ProjectInfo[]).forEach((project: ProjectInfo) => {
       if (project.isOpen) {
         result[project.id] = project;
       }
@@ -337,10 +351,15 @@ class FileManager {
   }
 
   async fetchProjectData() {
-    if (!this.cache.currentProject) {
+    // if (!this.cache.currentProject) {
+    //   return [];
+    // }
+    // const currentProjectPath = this.cache.recentProjects[this.cache.currentProject].path;
+    const projects = await DbStore.selectProjects({ isActive: true });
+    if (!projects.length) {
       return [];
     }
-    const currentProjectPath = this.cache.recentProjects[this.cache.currentProject].path;
+    const currentProjectPath = projects[0].path;
     const doesExist = await exists(currentProjectPath);
     if (!doesExist) {
       return [];
@@ -377,51 +396,76 @@ class FileManager {
     return recursiveMap([project], '');
   }
 
-  fetchProjectInfo(projectId: string) {
-    return this.cache.recentProjects[projectId];
+  async fetchProjectInfo(projectId: string) {
+    // return this.cache.recentProjects[projectId];
+    const projects = await DbStore.selectProjects({ id: projectId });
+    if (!projects.length) {
+      return;
+    }
+    return projects[0];
   }
 
   /**
    * 获取用户的全部项目
    */
-  async fetchRecentProjects(): Promise<ProjectInfo[]> {
-    if (Object.keys(this.cache.recentProjects).length > 0) {
-      return Object.values(this.cache.recentProjects);
-    }
-    const recentProjects: ProjectInfo[] = [];
-    await FileManager.recentProjectsStore.iterate(val => {
-      recentProjects.push(val as ProjectInfo);
-      this.cache.pathToProjectDict[(val as ProjectInfo).path] = val as ProjectInfo;
-    });
-    return recentProjects;
+  async fetchProjects(): Promise<ProjectInfo[]> {
+    // if (Object.keys(this.cache.recentProjects).length > 0) {
+    //   return Object.values(this.cache.recentProjects);
+    // }
+    // const recentProjects: ProjectInfo[] = [];
+    // await FileManager.recentProjectsStore.iterate(val => {
+    //   recentProjects.push(val as ProjectInfo);
+    //   this.cache.pathToProjectDict[(val as ProjectInfo).path] = val as ProjectInfo;
+    // });
+    const projects: ProjectInfo[] = await DbStore.selectProjects();
+    // recentProjects.forEach((project: ProjectInfo) => {
+    //   this.cache.pathToProjectDict[project.path] = project;
+    // });
+    return projects;
   }
 
   async generateNewFileName(directory: string) {
     return await FileManager.generateNewFileName(directory);
   }
 
+  async getParentDir(path: string) {
+    return await dirname(path);
+  }
+
   async initAppData() {
     try {
-      this.cache = initialCache;
-      await Promise.all([
-        FileManager.appDataStore.iterate((val, key) => {
-          this.cache[key] = val;
-        }),
-        FileManager.recentProjectsStore.iterate((val: ProjectInfo, key: string) => {
-          this.cache.recentProjects[key] = val;
-          this.cache.pathToProjectDict[val.path] = val;
-        })
-      ]);
+      // this.cache = initialCache;
+      // FileManager.appDataStore.iterate((val, key) => {
+      //   this.cache[key] = val;
+      // });
+      // await Promise.all([
+      //   FileManager.appDataStore.iterate((val, key) => {
+      //     this.cache[key] = val;
+      //   }),
+      //   FileManager.recentProjectsStore.iterate((val: ProjectInfo, key: string) => {
+      //     this.cache.recentProjects[key] = val;
+      //     this.cache.pathToProjectDict[val.path] = val;
+      //   })
+      // ]);
+      // const projects = await DbStore.selectProjects();
+      // projects.forEach((project: ProjectInfo) => {
+      //   this.cache.pathToProjectDict[project.path] = project;
+      // });
     } catch (err) {
       console.error(err);
     }
   }
 
   async openFile(file: string, projectId: string): Promise<string> {
-    const openedProject = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
-    openedProject.openedFile = file;
-    await FileManager.recentProjectsStore.setItem(projectId, openedProject);
-    this.cache.recentProjects[projectId] = openedProject;
+    // const openedProject = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
+    // openedProject.openedFile = file;
+    // await FileManager.recentProjectsStore.setItem(projectId, openedProject);
+    // this.cache.recentProjects[projectId] = openedProject;
+    await DbStore.updateProject({
+      id: projectId,
+      isOpen: true,
+      isActive: true
+    });
     return readTextFile(file);
   }
 
@@ -449,33 +493,35 @@ class FileManager {
       })) as string;
       if (selected) {
         // 检查是否是一个已经存在的项目
-        if (this.cache.pathToProjectDict[selected]) {
-          return this.cache.pathToProjectDict[selected];
+        const existingProject = await DbStore.selectProjects({ path: selected });
+        if (existingProject.length > 0) {
+          return existingProject[0];
         } else {
           // 没有命中缓存，查一下数据库
-          let project;
-          await FileManager.recentProjectsStore.iterate(async val => {
-            // 如果查到了，更新缓存，并且返回
-            if ((val as ProjectInfo).path === selected) {
-              project = val as ProjectInfo;
-            }
+          const projects = await DbStore.selectProjects({
+            path: selected
           });
-          if (project) {
-            this.cache.pathToProjectDict[selected] = project;
-            return project;
+          // await FileManager.recentProjectsStore.iterate(async val => {
+          //   // 如果查到了，更新缓存，并且返回
+          //   if ((val as ProjectInfo).path === selected) {
+          //     project = val as ProjectInfo;
+          //   }
+          // });
+          if (projects.length) {
+            // this.cache.pathToProjectDict[selected] = projects[0];
+            return projects[0];
           } else {
             const project = {
-              id: nanoid(),
               name: selected.split(sep).pop() as string,
               path: selected,
-              lastModified: new Date().getTime(),
               isOpen: true,
-              openedFile: ''
+              isActive: true
             };
-            await FileManager.recentProjectsStore.setItem(project.id, project);
-            // 更新缓存
-            this.cache.recentProjects[project.id] = project;
-            this.cache.pathToProjectDict[project.path] = project;
+            // await FileManager.recentProjectsStore.setItem(project.id, project);
+            // // 更新缓存
+            // this.cache.recentProjects[project.id] = project;
+            // this.cache.pathToProjectDict[project.path] = project;
+            await DbStore.createProject(project);
             return project;
           }
         }
@@ -488,12 +534,17 @@ class FileManager {
   }
 
   async openProject(projectId: string) {
-    const openedProject = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
-    openedProject.isOpen = true;
-    await FileManager.recentProjectsStore.setItem(projectId, openedProject);
-    this.cache.recentProjects[projectId] = openedProject;
-    await FileManager.appDataStore.setItem('currentProject', projectId);
-    this.cache.currentProject = projectId;
+    // const openedProject = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
+    // openedProject.isOpen = true;
+    // await FileManager.recentProjectsStore.setItem(projectId, openedProject);
+    // this.cache.recentProjects[projectId] = openedProject;
+    // await FileManager.appDataStore.setItem('currentProject', projectId);
+    // this.cache.currentProject = projectId;
+    return await DbStore.updateProject({
+      id: projectId,
+      isOpen: true,
+      isActive: true
+    });
   }
 
   async pasteFileOrPath(sourcePath: string, destinationPath: string) {
@@ -525,12 +576,18 @@ class FileManager {
     return await readTextFile(filePath);
   }
 
+  /**
+   * 重命名项目，注意处理好文件名、路径相关的问题
+   *
+   * @param path
+   * @param newName
+   */
   async renamePage(path: string, newName: string) {
     if (!(await exists(path))) {
       throw new Error('文件不存在或文件夹不存在');
     }
     const dir = await dirname(path);
-    let newPath;
+    let newPath: string;
     const isDirectory = await FileManager.isDirectory(path);
     if (isDirectory) {
       // 如果是目录，找到上级目录
@@ -547,22 +604,31 @@ class FileManager {
       if (log.code !== 0) {
         throw new Error(log.stderr);
       }
-      const currentProject = (await FileManager.recentProjectsStore.getItem(this.cache.currentProject)) as ProjectInfo;
+      // const currentProject = (await FileManager.recentProjectsStore.getItem(this.cache.currentProject)) as ProjectInfo;
+      const currentProject = (await DbStore.selectProjects({ isActive: true }))[0];
       const { openedFile, path: projectPath } = currentProject;
       if (path === projectPath) {
         const newCurrentFile = openedFile.replace(path, newPath);
         // 如果 path 是项目目录，则需要更新数据库
-        const newProjectInfo = {
-          ...currentProject,
+        // const newProjectInfo = {
+        //   ...currentProject,
+        //   name: newName,
+        //   path: newPath,
+        //   openedFile: newCurrentFile
+        // };
+        // await FileManager.recentProjectsStore.setItem(currentProject.id, newProjectInfo);
+
+        await DbStore.updateProject({
+          id: currentProject.id,
           name: newName,
           path: newPath,
           openedFile: newCurrentFile
-        };
-        await FileManager.recentProjectsStore.setItem(currentProject.id, newProjectInfo);
-        this.cache.recentProjects[newProjectInfo.id] = newProjectInfo;
-        this.cache.currentProject = newProjectInfo.id;
-        delete this.cache.pathToProjectDict[path];
-        this.cache.pathToProjectDict[path] = newProjectInfo;
+        });
+
+        // this.cache.recentProjects[newProjectInfo.id] = newProjectInfo;
+        // this.cache.currentProject = newProjectInfo.id;
+        // delete this.cache.pathToProjectDict[path];
+        // this.cache.pathToProjectDict[path] = newProjectInfo;
       } else if (openedFile.startsWith(path)) {
         // 如果 path 是当前页面目录，则需要更新数据库
         const newProjectInfo = {
@@ -573,9 +639,16 @@ class FileManager {
         } else {
           newProjectInfo.openedFile = openedFile.replace(path, newPath);
         }
-        await FileManager.recentProjectsStore.setItem(currentProject.id, newProjectInfo);
-        this.cache.recentProjects[newProjectInfo.id] = newProjectInfo;
-        this.cache.currentProject = newProjectInfo.id;
+        // await FileManager.recentProjectsStore.setItem(currentProject.id, newProjectInfo);
+
+        await DbStore.updateProject({
+          id: currentProject.id,
+          name: newName,
+          path: newPath,
+          openedFile: newProjectInfo.openedFile
+        });
+        // this.cache.recentProjects[newProjectInfo.id] = newProjectInfo;
+        // this.cache.currentProject = newProjectInfo.id;
       }
     } catch (err) {
       throw new Error(err);
@@ -583,7 +656,8 @@ class FileManager {
   }
 
   async renameProject(project: ProjectInfo, newName: string) {
-    const projectInfo = (await FileManager.recentProjectsStore.getItem(project.id)) as ProjectInfo;
+    // const projectInfo = (await FileManager.recentProjectsStore.getItem(project.id)) as ProjectInfo;
+    const projectInfo = (await DbStore.selectProjects({ id: project.id }))[0];
     if (projectInfo) {
       const documentPath = await documentDir();
       const newPath = await join(documentPath, newName);
@@ -616,11 +690,18 @@ class FileManager {
       projectInfo.path = newPath;
       projectInfo.lastModified = new Date().getTime();
 
-      await FileManager.recentProjectsStore.setItem(projectInfo.id, projectInfo);
-      this.cache.recentProjects[projectInfo.id] = projectInfo;
+      // await FileManager.recentProjectsStore.setItem(projectInfo.id, projectInfo);
 
-      delete this.cache.pathToProjectDict[project.path];
-      this.cache.pathToProjectDict[projectInfo.path] = projectInfo;
+      await DbStore.updateProject({
+        id: projectInfo.id,
+        name: projectInfo.name,
+        path: projectInfo.path
+      });
+
+      // this.cache.recentProjects[projectInfo.id] = projectInfo;
+
+      // delete this.cache.pathToProjectDict[project.path];
+      // this.cache.pathToProjectDict[projectInfo.path] = projectInfo;
     }
   }
 
@@ -657,8 +738,19 @@ class FileManager {
   }
 
   async setCurrentProject(projectId: string) {
-    await FileManager.appDataStore.setItem('currentProject', projectId);
-    this.cache.currentProject = projectId;
+    // 关闭其他的项目
+    const projects = await DbStore.selectProjects({ isActive: true });
+    if (projects.length) {
+      const project = projects[0];
+      await DbStore.updateProject({ id: project.id, isActive: false });
+    }
+    return await DbStore.updateProject({
+      id: projectId,
+      isActive: true,
+      isOpen: true
+    });
+    // await FileManager.appDataStore.setItem('currentProject', projectId);
+    // this.cache.currentProject = projectId;
   }
 
   /**
@@ -707,10 +799,6 @@ class FileManager {
       });
     });
     return dslClone;
-  }
-
-  async getParentDir(path: string) {
-    return await dirname(path);
   }
 }
 

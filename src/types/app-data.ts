@@ -1,15 +1,18 @@
 export default interface AppData {
-  currentProject: string;
-  recentProjects: Record<string, ProjectInfo>;
-  pathToProjectDict: Record<string, ProjectInfo>;
+  currentProject: number;
+  pathToProjectDict: Record<string, Partial<ProjectInfo>>;
+  // recentProjects: Record<string, ProjectInfo>;
+
   [key: string]: any;
 }
 
 export interface ProjectInfo {
+  createdTime: number;
   id: string;
-  lastModified: number;
-  name: string;
-  path: string;
-  openedFile: string;
+  isActive: boolean;
   isOpen: boolean;
+  name: string;
+  openedFile: string;
+  path: string;
+  updatedTime: number;
 }

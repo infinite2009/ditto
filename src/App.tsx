@@ -14,8 +14,8 @@ import DbStore from '@/service/db-store';
 export default observer(function App() {
   const [showUI, setShowUI] = useState<boolean>(false);
   const [openedProjects, setOpenedProjects] = useState<ProjectInfo[]>([]);
-  const [currentProject, setCurrentProject] = useState<string>('');
-  const [previewProjects, setPreviewProjects] = useState<string[]>([]);
+  const [currentProjectId, setCurrentProjectId] = useState<string>('');
+  const [previewProjectIds, setPreviewProjectIds] = useState<string[]>([]);
   const [editorDict, setEditorDict] = useState<
     Record<
       string,
@@ -37,22 +37,22 @@ export default observer(function App() {
   }, []);
 
   useEffect(() => {
-    if (!currentProject && appStore.homeContextId) {
+    if (!currentProjectId && appStore.homeContextId) {
       appStore.activateSceneContext(appStore.homeContextId);
-    } else if (!(currentProject in appStore.contextIdDictForProject)) {
-      if (currentProject) {
+    } else if (!(currentProjectId in appStore.contextIdDictForProject)) {
+      if (currentProjectId) {
         // 创建一个新的上下文
         appStore.setContextIdForProject(
           appStore.createContext(Scene.editor, {
-            projectId: currentProject
+            projectId: currentProjectId
           }),
-          currentProject
+          currentProjectId
         );
       }
     } else {
-      appStore.activateSceneContext(appStore.getContextIdForProject(currentProject));
+      appStore.activateSceneContext(appStore.getContextIdForProject(currentProjectId));
     }
-  }, [currentProject]);
+  }, [currentProjectId]);
 
   function handleKeyEvent(e) {
     e.stopPropagation();
@@ -71,19 +71,19 @@ export default observer(function App() {
       return {
         id: item.id,
         title: item.name,
-        isPreview: previewProjects.some(id => item.id === id)
+        isPreview: previewProjectIds.some(id => item.id === id)
       };
     });
-  }, [openedProjects, previewProjects]);
+  }, [openedProjects, previewProjectIds]);
 
   function fetchOpenedProjects() {
     const openedProjectsDict = fileManager.fetchOpenedProjects();
     setOpenedProjects(Object.values(openedProjectsDict));
   }
 
-  function fetchAndOpenCurrentProject() {
-    const currentProject = fileManager.fetchCurrentProjectId();
-    setCurrentProject(currentProject);
+  async function fetchAndOpenCurrentProject() {
+    const currentProject = await fileManager.fetchCurrentProjectId();
+    setCurrentProjectId(currentProject);
     if (currentProject) {
       if (!(currentProject in editorDict)) {
         setEditorDict(
@@ -98,43 +98,47 @@ export default observer(function App() {
 
   async function init() {
     // 初始化数据库
-    DbStore.init().then();
-    await fileManager.initAppData();
+    await DbStore.init();
+    // await fileManager.initAppData();
     fetchOpenedProjects();
-    fetchAndOpenCurrentProject();
+    await fetchAndOpenCurrentProject();
     setShowUI(true);
   }
 
   function handlePreviewProject(projectId: string) {
-    previewProjects.splice(0, 0, projectId);
-    setPreviewProjects([...previewProjects]);
+    previewProjectIds.splice(0, 0, projectId);
+    setPreviewProjectIds([...previewProjectIds]);
   }
 
   function handlePreviewProjectClose(projectId: string) {
-    const index = previewProjects.indexOf(projectId);
+    const index = previewProjectIds.indexOf(projectId);
     if (index > -1) {
-      previewProjects.splice(index, 1);
-      setPreviewProjects([...previewProjects]);
+      previewProjectIds.splice(index, 1);
+      setPreviewProjectIds([...previewProjectIds]);
     }
   }
 
   async function handleSelectingProject(projectId: string) {
     if (!projectId) {
-      setCurrentProject('');
+      setCurrentProjectId('');
       return;
     }
     await fileManager.setCurrentProject(projectId);
     fetchAndOpenCurrentProject();
-    setCurrentProject(projectId);
+    setCurrentProjectId(projectId);
     // 激活上下文
     // appStore.activateSceneContext(appStore.getContextIdForProject(projectId));
     // console.log('当前上下文id： ', appStore.getContextIdForProject(projectId));
   }
 
   async function handleOpeningProject(projectId: string) {
-    await Promise.all([fileManager.openProject(projectId), fileManager.setCurrentProject(projectId)]);
-    fetchOpenedProjects();
-    fetchAndOpenCurrentProject();
+    try {
+      await Promise.all([fileManager.openProject(projectId), fileManager.setCurrentProject(projectId)]);
+      fetchOpenedProjects();
+      fetchAndOpenCurrentProject();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async function handleClosingProject(projectId: string) {
@@ -159,7 +163,7 @@ export default observer(function App() {
             <Editor
               onPreview={handlePreviewProject}
               onPreviewClose={handlePreviewProjectClose}
-              style={key === currentProject ? undefined : { display: 'none' }}
+              style={key === currentProjectId.toString() ? undefined : { display: 'none' }}
             />
           </EditorStoreContext.Provider>
         </DSLStoreContext.Provider>
@@ -168,7 +172,7 @@ export default observer(function App() {
   }
 
   function renderHome() {
-    if (currentProject) {
+    if (currentProjectId) {
       return null;
     }
     return (
@@ -185,7 +189,7 @@ export default observer(function App() {
       <AppStoreContext.Provider value={appStore}>
         <CustomTitleBar
           data={projectItems}
-          selectedProjectId={currentProject}
+          selectedProjectId={currentProjectId}
           onSelect={handleSelectingProject}
           onClose={handleClosingProject}
         />

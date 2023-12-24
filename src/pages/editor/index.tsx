@@ -180,9 +180,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     message.success('新建页面待实现');
   }
 
-  function fetchCurrentProject() {
-    const projectId = fileManager.fetchCurrentProjectId();
-    const currentProject = fileManager.fetchProjectInfo(projectId);
+  async function fetchCurrentProject() {
+    const projectId = await fileManager.fetchCurrentProjectId();
+    const currentProject = await fileManager.fetchProjectInfo(projectId);
     setCurrentProject(currentProject);
   }
 

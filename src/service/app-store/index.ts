@@ -15,17 +15,18 @@ type ShortKeyHandler = (data: any, scene: string, functionKey: string) => void;
 type FunctionKey = string;
 
 export interface SceneContext {
-  id: string;
-  scene: Scene;
   // data 的具体类型需要具体的场景下利用上下文数据的代码决定，往往是根据 handler 的需要来确定
   data: any;
   handlers: Record<FunctionKey, ShortKeyHandler>;
+  id: string;
+  scene: Scene;
 }
 
 export default class AppStore {
-  // 场景
-  scene: Scene;
-
+  activeContext: SceneContext;
+  // projectId 为 key，contextId 为 value
+  contextIdDictForProject = {};
+  contexts: Record<FunctionKey, SceneContext> = {};
   defaultShortKeyDict = {
     [Scene.projectManagement]: {
       createProject: {
@@ -392,33 +393,22 @@ export default class AppStore {
       }
     }
   };
-
+  homeContextId: string;
+  // 场景
+  scene: Scene;
   // 快捷键的注册字典，分场景，分功能
   shortKeyDict = this.defaultShortKeyDict;
 
-  activeContext: SceneContext;
-
-  homeContextId: string;
-
-  contexts: Record<FunctionKey, SceneContext> = {};
-
-  // projectId 为 key，contextId 为 value
-  contextIdDictForProject = {};
-
-  setContextIdForProject(contextId: string, projectId: string) {
-    this.contextIdDictForProject[projectId] = contextId;
-  }
-
-  setHomeContext(contextId: string) {
-    this.homeContextId = contextId;
-  }
-
-  getContextIdForProject(projectId: string) {
-    return this.contextIdDictForProject[projectId];
-  }
-
   constructor() {
     makeAutoObservable(this);
+  }
+
+  /**
+   * 切换场景
+   * @param id
+   */
+  activateSceneContext(id: string) {
+    this.activeContext = this.contexts[id];
   }
 
   createContext(scene: Scene, data: any, handlers: Record<FunctionKey, ShortKeyHandler> = {}) {
@@ -435,41 +425,6 @@ export default class AppStore {
 
   createHomeContext(scene: Scene, data: any, handlers: Record<FunctionKey, ShortKeyHandler> = {}) {
     this.homeContextId = this.createContext(scene, data, handlers);
-  }
-
-  /**
-   * 给指定场景下指定快捷键注册处理器
-   * @param shortKey
-   * @param scene
-   * @param functionKey
-   */
-  registerShortKey(scene: Scene, functionKey: string, shortKey: string) {
-    Object.entries(this.shortKeyDict).find(([, sceneDict]) => {
-      if (sceneDict[functionKey] === shortKey) {
-        sceneDict[functionKey].shortKey = '';
-        throw new Error(`检测到冲突的按键，${sceneDict[functionKey].functionName}`);
-      }
-    });
-    if (this.shortKeyDict[scene]?.[functionKey]) {
-      delete this.shortKeyDict[scene][shortKey];
-    }
-  }
-
-  /**
-   * 切换场景
-   * @param id
-   */
-  activateSceneContext(id: string) {
-    this.activeContext = this.contexts[id];
-  }
-
-  /**
-   * 取消处理器注册
-   * @param scene
-   * @param functionKey
-   */
-  unregisterShortKey(scene: Scene, functionKey: string) {
-    this.scene[functionKey].shortKey = '';
   }
 
   /**
@@ -505,18 +460,6 @@ export default class AppStore {
   }
 
   /**
-   * 给当前的上下文注册处理器
-   * @param contextId
-   * @param handlers
-   */
-  registerHandlers(contextId: string, handlers: Record<FunctionKey, ShortKeyHandler>) {
-    if (!this.contexts[contextId]) {
-      return '不存在的上下文';
-    }
-    this.contexts[contextId].handlers = Object.assign(this.contexts[contextId].handlers || {}, handlers);
-  }
-
-  /**
    * 生成展示快捷键功能的名字
    * @param scene
    * @param functionKey
@@ -549,10 +492,61 @@ export default class AppStore {
     return modifiersWithKey.join(' ');
   }
 
+  getContextIdForProject(projectId: string) {
+    return this.contextIdDictForProject[projectId];
+  }
+
+  /**
+   * 给当前的上下文注册处理器
+   * @param contextId
+   * @param handlers
+   */
+  registerHandlers(contextId: string, handlers: Record<FunctionKey, ShortKeyHandler>) {
+    if (!this.contexts[contextId]) {
+      return '不存在的上下文';
+    }
+    this.contexts[contextId].handlers = Object.assign(this.contexts[contextId].handlers || {}, handlers);
+  }
+
+  /**
+   * 给指定场景下指定快捷键注册处理器
+   * @param shortKey
+   * @param scene
+   * @param functionKey
+   */
+  registerShortKey(scene: Scene, functionKey: string, shortKey: string) {
+    Object.entries(this.shortKeyDict).find(([, sceneDict]) => {
+      if (sceneDict[functionKey] === shortKey) {
+        sceneDict[functionKey].shortKey = '';
+        throw new Error(`检测到冲突的按键，${sceneDict[functionKey].functionName}`);
+      }
+    });
+    if (this.shortKeyDict[scene]?.[functionKey]) {
+      delete this.shortKeyDict[scene][shortKey];
+    }
+  }
+
   /**
    * 重置快捷键
    */
   resetShortKey() {
     this.shortKeyDict = cloneDeep(this.defaultShortKeyDict);
+  }
+
+  setContextIdForProject(contextId: string, projectId: string) {
+    this.contextIdDictForProject[projectId] = contextId;
+  }
+
+  setHomeContext(contextId: string) {
+    this.homeContextId = contextId;
+  }
+
+  /**
+   * 取消处理器注册
+   * @param scene
+   * @param functionKey
+   */
+  unregisterShortKey(scene: Scene, functionKey: string) {
+    this.scene[functionKey].shortKey = '';
   }
 }

@@ -4,15 +4,15 @@ import style from './index.module.less';
 
 interface ProjectItem {
   id: string;
-  title: string;
   isPreview?: boolean;
+  title: string;
 }
 
 export interface ICustomTitleBarProps {
   data?: ProjectItem[];
-  selectedProjectId?: string;
   onClose?: (project: string) => Promise<void>;
   onSelect?: (projectId: string) => Promise<void>;
+  selectedProjectId?: string;
 }
 
 export default function CustomTitleBar({ selectedProjectId, data, onSelect, onClose }: ICustomTitleBarProps) {
