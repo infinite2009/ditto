@@ -453,7 +453,7 @@ class FileManager {
     }
   }
 
-  async openFile(file: string, projectId: string): Promise<string> {
+  async openFile(path: string, projectId: string): Promise<string> {
     // const openedProject = (await FileManager.recentProjectsStore.getItem(projectId)) as ProjectInfo;
     // openedProject.openedFile = file;
     // await FileManager.recentProjectsStore.setItem(projectId, openedProject);
@@ -461,9 +461,10 @@ class FileManager {
     await DbStore.updateProject({
       id: projectId,
       isOpen: true,
-      isActive: true
+      isActive: true,
+      openedFile: path
     });
-    return readTextFile(file);
+    return readTextFile(path);
   }
 
   /**
@@ -655,6 +656,7 @@ class FileManager {
   async renameProject(project: ProjectInfo, newName: string) {
     // const projectInfo = (await FileManager.recentProjectsStore.getItem(project.id)) as ProjectInfo;
     const projectInfo = (await DbStore.selectProjects({ id: project.id }))[0];
+    debugger;
     if (projectInfo) {
       const documentPath = await documentDir();
       const newPath = await join(documentPath, newName);
@@ -683,16 +685,16 @@ class FileManager {
         }
       }
 
-      projectInfo.name = newName;
-      projectInfo.path = newPath;
-      projectInfo.lastModified = new Date().getTime();
-
       // await FileManager.recentProjectsStore.setItem(projectInfo.id, projectInfo);
 
       await DbStore.updateProject({
-        id: projectInfo.id,
-        name: projectInfo.name,
-        path: projectInfo.path
+        id: project.id,
+        name: newName,
+        path: newPath,
+        // 如果该项目有打开的页面，需要进行路径替换
+        openedFile: projectInfo.openedFile
+          ? projectInfo.openedFile.replace(projectInfo.name, newName)
+          : projectInfo.openedFile
       });
 
       // this.cache.recentProjects[projectInfo.id] = projectInfo;

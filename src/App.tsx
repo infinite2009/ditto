@@ -156,18 +156,15 @@ export default observer(function App() {
   }
 
   function renderEditorTabs() {
+    console.log('重绘');
     return Object.entries(editorDict).map(([key, value]) => {
-      return (
+      return key === currentProjectId.toString() ? (
         <DSLStoreContext.Provider key={key} value={value.dslStore}>
           <EditorStoreContext.Provider value={value.editorStore}>
-            <Editor
-              onPreview={handlePreviewProject}
-              onPreviewClose={handlePreviewProjectClose}
-              style={key === currentProjectId.toString() ? undefined : { display: 'none' }}
-            />
+            <Editor onPreview={handlePreviewProject} onPreviewClose={handlePreviewProjectClose} />
           </EditorStoreContext.Provider>
         </DSLStoreContext.Provider>
-      );
+      ) : null;
     });
   }
 
