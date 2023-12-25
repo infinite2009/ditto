@@ -656,7 +656,6 @@ class FileManager {
   async renameProject(project: ProjectInfo, newName: string) {
     // const projectInfo = (await FileManager.recentProjectsStore.getItem(project.id)) as ProjectInfo;
     const projectInfo = (await DbStore.selectProjects({ id: project.id }))[0];
-    debugger;
     if (projectInfo) {
       const documentPath = await documentDir();
       const newPath = await join(documentPath, newName);
