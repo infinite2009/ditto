@@ -336,18 +336,15 @@ class FileManager {
 
   async fetchCurrentProjectId() {
     // return this.cache.currentProject;
-    return await DbStore.selectProjects({ isActive: true });
+    const result = await DbStore.selectProjects({ isActive: true });
+    if (result.length) {
+      return result[0].id;
+    }
   }
 
   async fetchOpenedProjects() {
-    const result: Record<string, ProjectInfo> = {};
     const projects = await DbStore.selectProjects();
-    (Object.values(projects) as unknown as ProjectInfo[]).forEach((project: ProjectInfo) => {
-      if (project.isOpen) {
-        result[project.id] = project;
-      }
-    });
-    return result;
+    return projects.filter((item: ProjectInfo) => item.isOpen);
   }
 
   async fetchProjectData() {
@@ -744,13 +741,13 @@ class FileManager {
       const project = projects[0];
       await DbStore.updateProject({ id: project.id, isActive: false });
     }
-    return await DbStore.updateProject({
-      id: projectId,
-      isActive: true,
-      isOpen: true
-    });
-    // await FileManager.appDataStore.setItem('currentProject', projectId);
-    // this.cache.currentProject = projectId;
+    if (projectId) {
+      return await DbStore.updateProject({
+        id: projectId,
+        isActive: true,
+        isOpen: true
+      });
+    }
   }
 
   /**

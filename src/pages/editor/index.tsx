@@ -182,6 +182,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   async function fetchCurrentProject() {
     const projectId = await fileManager.fetchCurrentProjectId();
+    if (!projectId) {
+      return;
+    }
     const currentProject = await fileManager.fetchProjectInfo(projectId);
     setCurrentProject(currentProject);
   }

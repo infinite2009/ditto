@@ -132,7 +132,13 @@ export default class DbStore {
     } else if (conditionsCp.isOpen === false) {
       conditionsCp.isOpen = 0;
     }
-    return await DbStore.selectRows('project_info', conditionsCp);
+    const result = await DbStore.selectRows('project_info', conditionsCp);
+    // 修改布尔值
+    result.forEach(item => {
+      item.isOpen = !!item.isOpen;
+      item.isActive = !!item.isActive;
+    });
+    return result;
   }
 
   static async selectTemplates(conditions: Record<string, any> = {}) {

@@ -76,9 +76,9 @@ export default observer(function App() {
     });
   }, [openedProjects, previewProjectIds]);
 
-  function fetchOpenedProjects() {
-    const openedProjectsDict = fileManager.fetchOpenedProjects();
-    setOpenedProjects(Object.values(openedProjectsDict));
+  async function fetchOpenedProjects() {
+    const openProjects = await fileManager.fetchOpenedProjects();
+    setOpenedProjects(openProjects);
   }
 
   async function fetchAndOpenCurrentProject() {
@@ -119,12 +119,12 @@ export default observer(function App() {
   }
 
   async function handleSelectingProject(projectId: string) {
+    await fileManager.setCurrentProject(projectId);
     if (!projectId) {
       setCurrentProjectId('');
       return;
     }
-    await fileManager.setCurrentProject(projectId);
-    fetchAndOpenCurrentProject();
+    await fetchAndOpenCurrentProject();
     setCurrentProjectId(projectId);
     // 激活上下文
     // appStore.activateSceneContext(appStore.getContextIdForProject(projectId));
