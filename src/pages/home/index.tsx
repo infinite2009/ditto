@@ -117,8 +117,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
     }
   }
 
-  function generateDropDownMenu(data: ProjectInfo) {
-    selectedProjectInfoRef.current = data;
+  function generateDropDownMenu() {
     return {
       items: [
         {
@@ -341,6 +340,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
   function onOpenChange(open: boolean, data: ProjectInfo) {
     if (open) {
       setSelectedProject(data);
+      selectedProjectInfoRef.current = data;
     } else {
       // 防止菜单关闭以后，快捷键依旧生效
       selectedProjectInfoRef.current = null;
