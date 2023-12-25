@@ -1,8 +1,8 @@
 import Database from 'tauri-plugin-sql-api';
 import { camelToSnake, snakeToCamel } from '@/util';
 import { ProjectInfo } from '@/types/app-data';
-import { appLocalDataDir, join } from '@tauri-apps/api/path';
 import { nanoid } from 'nanoid';
+import { appLocalDataDir, join } from '@tauri-apps/api/path';
 
 export type TemplateInfo = { name: string; path: string; category: string; createdTime: number };
 
@@ -88,7 +88,7 @@ export default class DbStore {
    */
   static async init() {
     try {
-      DbStore.db = await Database.load(await join(await appLocalDataDir(), 'ditto.db'));
+      DbStore.db = await Database.load(`sqlite:${await join(await appLocalDataDir(), 'ditto.db')}`);
       console.log('db 已加载: ', DbStore.db);
       const db = DbStore.db;
       // 创建四张表
