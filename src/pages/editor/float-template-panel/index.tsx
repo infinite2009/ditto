@@ -1,17 +1,19 @@
-import { useTemplateData } from '@/hooks';
 import { TemplateInfo } from '@/service/db-store';
+import { observer } from 'mobx-react';
 import style from './index.module.less';
+import { AppStoreContext } from '@/hooks/context';
+import { useContext } from 'react';
 
 export interface IFloatTemplatePanelProps {
   onApplyTemplate: (path: string) => void;
 }
 
-export default function FloatTemplatePanel({ onApplyTemplate }: IFloatTemplatePanelProps) {
-  const tplList = useTemplateData();
+export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatTemplatePanelProps) {
+  const appStore = useContext(AppStoreContext);
 
   function renderTemplateList() {
     let convertedList = [];
-    tplList.forEach(item => {
+    appStore.templateList.forEach(item => {
       convertedList = convertedList.concat(item.data);
     });
     console.log('convertedList: ', convertedList);
@@ -19,7 +21,7 @@ export default function FloatTemplatePanel({ onApplyTemplate }: IFloatTemplatePa
       return renderTemplate(tpl, index.toString());
     });
     tpl.push(
-      <div className={style.moreTemplate}>
+      <div className={style.moreTemplate} key={tpl.length}>
         <h3 className={style.moreTemplateTitle}>更多模板</h3>
         <div className={style.moreTemplateImage} />
       </div>
@@ -44,4 +46,4 @@ export default function FloatTemplatePanel({ onApplyTemplate }: IFloatTemplatePa
   }
 
   return <div className={style.main}>{renderTemplateList()}</div>;
-}
+});

@@ -728,8 +728,10 @@ class FileManager {
       const content = await fileManager.readFile(pageFilePath);
       const dslObj = JSON.parse(content);
       dslObj.name = fileName;
-      await writeTextFile(await join(templateDir, `${nanoid()}.dtpl`), JSON.stringify(dslObj));
-      console.log('写入模板文件', templateDir);
+      const templateFilePath = await join(templateDir, `${nanoid()}.dtpl`);
+      await writeTextFile(templateFilePath, JSON.stringify(dslObj));
+      // 模板文件路径写入数据库
+      return await DbStore.createTemplate({ name: fileName, path: templateFilePath, category: '基础' });
     } catch (err) {
       console.error(err);
     }

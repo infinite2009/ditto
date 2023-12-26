@@ -48,6 +48,7 @@ import { generateContextMenus } from '@/util';
 import InsertType from '@/types/insert-type';
 import { Scene } from '@/service/app-store';
 import FloatTemplatePanel from '@/pages/editor/float-template-panel';
+import DbStore, { TemplateInfo } from '@/service/db-store';
 
 const collisionOffset = 4;
 
@@ -116,6 +117,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   function init() {
     fetchCurrentProject();
     fetchProjectData().then();
+    fetchTemplateData();
   }
 
   useEffect(() => {
@@ -795,6 +797,27 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   function handleChangingProject() {
     fetchProjectData().then();
     fetchCurrentProject();
+    // 刷新模板
+    fetchTemplateData();
+  }
+
+  async function fetchTemplateData() {
+    const res = await DbStore.fetchTemplates();
+    if (!res.length) {
+      appStore.setTemplateList([]);
+    } else {
+      const dataTmp: Record<string, { category: string; data: TemplateInfo[] }> = {};
+      res.forEach(item => {
+        if (!dataTmp[item.category]) {
+          dataTmp[item.category] = {
+            category: item.category,
+            data: []
+          };
+        }
+        dataTmp[item.category].data.push(item);
+      });
+      appStore.setTemplateList(Object.values(dataTmp));
+    }
   }
 
   /**

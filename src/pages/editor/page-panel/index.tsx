@@ -226,9 +226,11 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
     console.log('renamePageOrFolder works: ', selectedPageOrFolderForMenuRef.current);
   }
 
-  function exportPageAsTemplate() {
-    fileManager.saveTemplateFile('模板名称demo', selectedPageOrFolderForMenuRef.current.path).then();
-    console.log('exportPageAsTemplate works: ', selectedPageOrFolderForMenuRef.current);
+  async function exportPageAsTemplate() {
+    await fileManager.saveTemplateFile('模板名称demo', selectedPageOrFolderForMenuRef.current.path).then();
+    if (onChange) {
+      onChange();
+    }
   }
 
   /**

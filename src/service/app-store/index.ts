@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { nanoid } from 'nanoid';
 import cloneDeep from 'lodash/cloneDeep';
+import { TemplateInfo } from '@/service/db-store';
 
 export type Modifier = 'ctrl' | 'meta' | 'alt' | 'shift';
 
@@ -23,6 +24,7 @@ export interface SceneContext {
 }
 
 export default class AppStore {
+  templateList: { category: string; data: TemplateInfo[] }[] = [];
   activeContext: SceneContext;
   // projectId 为 key，contextId 为 value
   contextIdDictForProject = {};
@@ -409,6 +411,10 @@ export default class AppStore {
    */
   activateSceneContext(id: string) {
     this.activeContext = this.contexts[id];
+  }
+
+  setTemplateList(data: { category: string; data: TemplateInfo[] }[]) {
+    this.templateList = data;
   }
 
   createContext(scene: Scene, data: any, handlers: Record<FunctionKey, ShortKeyHandler> = {}) {
