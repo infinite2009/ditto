@@ -849,32 +849,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
    * 渲染模板、组件托盘
    */
   function renderComponentPanel() {
-    return (
-      <CompositionPanel
-        // onApplyTemplate={onApplyTemplate}
-        onChangeTab={setActivePanelTabKey}
-        activeKey={activePanelTabKey}
-      />
-    );
-  }
-
-  async function onApplyTemplate(path: string) {
-    try {
-      // 1. 强制保存一次用户之前的页面
-      await saveFile();
-      // 2. 创建一个新的页面
-      const dir = await fileManager.getParentDir(currentFile);
-      // 3. 调用 file service 应用这个模板
-      const filePath = await fileManager.createNewPage(dir, path);
-      // 4. 选中这个页面
-      await openFile(filePath);
-      // 5. 刷新项目数据
-      init();
-      // 6. 切换到组件托盘，提高用户操作效率
-      setActivePanelTabKey('2');
-    } catch (err) {
-      message.error(err);
-    }
+    return <CompositionPanel onChangeTab={setActivePanelTabKey} activeKey={activePanelTabKey} />;
   }
 
   /**
@@ -938,7 +913,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function onApplyTemplate2(path: string) {
-    dslStore.applyTemplate(path).then();
+    dslStore.applyTemplate(path);
   }
 
   function renderMoreTemplatePanel() {
