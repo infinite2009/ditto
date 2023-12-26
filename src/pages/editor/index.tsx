@@ -147,10 +147,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     };
     if (!contextId) {
       appStore.createContext(Scene.editor, {}, handlers);
-      console.log('上下文已创建： ');
     } else {
       appStore.registerHandlers(contextId, handlers);
-      console.log('已存在上下文');
     }
   }, [copy, paste, cancelSelection, exportAsTemplate, rename, newFolder, newPage]);
 
@@ -657,8 +655,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     }
   }
 
-  function handleSelectingPageOrFolder(page: { path: string; name: string } & DataNode) {
+  async function handleSelectingPageOrFolder(page: { path: string; name: string } & DataNode) {
     if (page.isLeaf) {
+      await fileManager.savePageDSLFile(currentFile, dslStore.dsl);
       openFile(page.path as string).then();
       setCurrentFile(page.path as string);
     }
