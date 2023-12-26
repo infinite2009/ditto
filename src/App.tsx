@@ -156,9 +156,8 @@ export default observer(function App() {
   }
 
   function renderEditorTabs() {
-    console.log('重绘');
     return Object.entries(editorDict).map(([key, value]) => {
-      return key === currentProjectId.toString() ? (
+      return key === currentProjectId ? (
         <DSLStoreContext.Provider key={key} value={value.dslStore}>
           <EditorStoreContext.Provider value={value.editorStore}>
             <Editor onPreview={handlePreviewProject} onPreviewClose={handlePreviewProjectClose} />
