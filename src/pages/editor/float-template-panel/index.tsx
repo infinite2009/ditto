@@ -16,10 +16,11 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
     appStore.templateList.forEach(item => {
       convertedList = convertedList.concat(item.data);
     });
-    console.log('convertedList: ', convertedList);
-    const tpl = convertedList.map((tpl, index) => {
-      return renderTemplate(tpl, index.toString());
-    });
+    const tpl = convertedList
+      .filter((_, index) => index < 3)
+      .map((tpl, index) => {
+        return renderTemplate(tpl, index.toString());
+      });
     tpl.push(
       <div className={style.moreTemplate} key={tpl.length}>
         <h3 className={style.moreTemplateTitle}>更多模板</h3>
