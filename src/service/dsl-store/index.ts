@@ -49,7 +49,11 @@ function execute(target: any, name: string, descriptor: PropertyDescriptor) {
       return;
     }
     const { added, updated, deleted } = diff;
-    if (Object.keys(added).length === 0 && Object.keys(updated).length === 0 && Object.keys(deleted).length === 0) {
+    if (
+      Object.keys(added || {}).length === 0 &&
+      Object.keys(updated || {}).length === 0 &&
+      Object.keys(deleted || {}).length === 0
+    ) {
       return;
     }
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
