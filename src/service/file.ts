@@ -642,7 +642,6 @@ class FileManager {
         await DbStore.updateProject({
           id: currentProject.id,
           name: newName,
-          path: newPath,
           openedFile: newProjectInfo.openedFile
         });
         // this.cache.recentProjects[newProjectInfo.id] = newProjectInfo;
