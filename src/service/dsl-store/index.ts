@@ -143,7 +143,6 @@ export default class DSLStore {
    * 应用模板，仅应该对空页面进行应用
    * @param path
    */
-  @execute
   async applyTemplate(path: string) {
     try {
       const content = await fileManager.readFile(path);
@@ -423,6 +422,7 @@ export default class DSLStore {
     }
   }
 
+  @execute
   initDSL(dsl: IPageSchema) {
     if (dsl) {
       this.dsl = dsl;

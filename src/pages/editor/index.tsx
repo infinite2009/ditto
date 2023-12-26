@@ -911,12 +911,12 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     return <div>code works!</div>;
   }
 
-  function onApplyTemplate2(path: string) {
+  function onApplyTemplate(path: string) {
     dslStore.applyTemplate(path);
   }
 
   function renderMoreTemplatePanel() {
-    return <FloatTemplatePanel onApplyTemplate={onApplyTemplate2} />;
+    return <FloatTemplatePanel onApplyTemplate={onApplyTemplate} />;
   }
 
   return (
