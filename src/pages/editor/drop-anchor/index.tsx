@@ -12,8 +12,9 @@ export default function DropAnchor({ style }: IDropAnchorProps) {
     const result = {
       position: 'fixed',
       zIndex: 99,
-      ...style,
-      backgroundColor: '#194BFF'
+      borderRadius: 4,
+      backgroundColor: '#194BFF',
+      ...style
     };
     if (result.width > 20) {
       (result.width as number) -= 16;
