@@ -289,12 +289,18 @@ export default observer(function EditWrapper({
     }
   }
 
+  function renderSelectedUI() {
+    return (
+      <>
+        <div className={styles.topLeft} />
+        <div className={styles.topRight} />
+        <div className={styles.bottomRight} />
+        <div className={styles.bottomLeft} />
+      </>
+    );
+  }
+
   return (
-    // <ComponentContextMenu
-    //   data={dslStore.dsl.componentIndexes[id]}
-    //   onClick={handleClickContextMenu}
-    //   items={generateContextMenus(feature, editorStore.isVisible(id), editorStore.hasCopiedComponent)}
-    // >
     <div
       className={className}
       id={id}
@@ -305,10 +311,7 @@ export default observer(function EditWrapper({
       onClick={handleClick}
     >
       {children}
-      <div className={styles.topLeft} />
-      <div className={styles.topRight} />
-      <div className={styles.bottomRight} />
-      <div className={styles.bottomLeft} />
+      {id === dslStore.selectedComponent?.id ? renderSelectedUI() : null}
     </div>
     // </ComponentContextMenu>
   );
