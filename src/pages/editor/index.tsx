@@ -357,8 +357,11 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
    * droppableContainers: 所有可以放入的矩形的节点信息，包括 id，data 等
    */
   const customDetection: CollisionDetection = useCallback(
-    ({ active, collisionRect, droppableRects, droppableContainers }) => {
+    ({ active, collisionRect, droppableRects, droppableContainers, pointerCoordinates }) => {
       const collisions: CollisionDescriptor[] = [];
+
+      console.log('collision rect: ', collisionRect);
+      console.log('pointerCoordinates: ', pointerCoordinates);
 
       const parentDict: {
         [key: string]: string;
@@ -895,7 +898,11 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
           </div>
           {createPortal(
             <DragOverlay dropAnimation={dropAnimation}>
-              <div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>
+              <div className={styles.dragOverlay}>
+                <div className={styles.componentPlaceholder} />
+                <div className={styles.cursorBlock} />
+              </div>
+              {/*<div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>*/}
             </DragOverlay>,
             document.body
           )}
