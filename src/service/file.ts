@@ -550,6 +550,9 @@ class FileManager {
   }
 
   async savePageDSLFile(filePath: string, dsl: IPageSchema) {
+    if (!dsl) {
+      return;
+    }
     const formattedContent = await createAsyncTask(() =>
       prettier.format(JSON.stringify(dsl), {
         ...prettierConfig,
