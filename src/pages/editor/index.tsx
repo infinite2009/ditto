@@ -21,7 +21,6 @@ import PagePanel from '@/pages/editor/page-panel';
 import FormPanel from '@/pages/editor/form-panel';
 import PageRenderer from '@/pages/components/page-renderer';
 import styles from './index.module.less';
-import { createPortal } from 'react-dom';
 import DropAnchor from '@/pages/editor/drop-anchor';
 import { DragCancelEvent, DragEndEvent } from '@dnd-kit/core/dist/types';
 import { snapCenterToCursor } from '@dnd-kit/modifiers';
@@ -49,6 +48,7 @@ import InsertType from '@/types/insert-type';
 import { Scene } from '@/service/app-store';
 import FloatTemplatePanel from '@/pages/editor/float-template-panel';
 import DbStore, { TemplateInfo } from '@/service/db-store';
+import { createPortal } from 'react-dom';
 
 const collisionOffset = 4;
 
@@ -291,6 +291,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     }
   ) {
     const pointer = {
+      // 这里因为 drag overlay 位置的原因，需要修正
       top: collisionRect.top,
       left: collisionRect.left
     };
@@ -900,7 +901,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             <DragOverlay dropAnimation={dropAnimation}>
               <div className={styles.dragOverlay}>
                 <div className={styles.componentPlaceholder} />
-                <div className={styles.cursorBlock} />
               </div>
               {/*<div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>*/}
             </DragOverlay>,
