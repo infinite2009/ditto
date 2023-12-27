@@ -350,6 +350,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   function setAnchorCoordinates(anchor: IAnchorCoordinates) {
     anchorCoordinatesRef.current = anchor;
+    console.log('当前坐标：', anchor);
   }
 
   /**
@@ -358,11 +359,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
    * droppableContainers: 所有可以放入的矩形的节点信息，包括 id，data 等
    */
   const customDetection: CollisionDetection = useCallback(
-    ({ active, collisionRect, droppableRects, droppableContainers, pointerCoordinates }) => {
+    ({ active, collisionRect, droppableRects, droppableContainers }) => {
       const collisions: CollisionDescriptor[] = [];
-
-      console.log('collision rect: ', collisionRect);
-      console.log('pointerCoordinates: ', pointerCoordinates);
 
       const parentDict: {
         [key: string]: string;
