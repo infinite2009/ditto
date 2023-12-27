@@ -1,6 +1,6 @@
 {
   "name": "ditto",
-  "version": "0.0.1",
+  "version": "0.0.1.71d8bdbd",
   "private": true,
   "type": "module",
   "scripts": {

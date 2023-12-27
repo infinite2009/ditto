@@ -1056,13 +1056,13 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         value: 'fill',
         label: (
           <div className={styles.option}>
-            <Grow />
+            <Grow style={{ marginRight: 4 }} />
             <span>Fill·撑满容器宽度</span>
           </div>
         ),
         tag: (
           <span>
-            <Grow />
+            <Grow style={{ marginRight: 4 }} />
             Fill
           </span>
         )
@@ -1071,13 +1071,13 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         value: 'fixed',
         label: (
           <div className={styles.option}>
-            <Fixed />
+            <Fixed style={{ marginRight: 4 }} />
             <span>Fixed·固定宽度</span>
           </div>
         ),
         tag: (
           <span>
-            <Fixed />
+            <Fixed style={{ marginRight: 4 }} />
             Fixed
           </span>
         )
@@ -1086,13 +1086,13 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         value: 'hug',
         label: (
           <div className={styles.option}>
-            <Compact />
+            <Compact style={{ marginRight: 4 }} />
             <span>Hug·紧凑内容</span>
           </div>
         ),
         tag: (
           <span>
-            <Compact />
+            <Compact style={{ marginRight: 4 }} />
             Hug
           </span>
         )
@@ -1514,7 +1514,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     newValue.textAlign = val;
     if (val === 'justify') {
       newValue.textAlignLast = val;
-    } else {
+    } else if (val === 'left') {
       delete newValue.textAlign;
     }
     if (onChange) {
@@ -1614,7 +1614,10 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
           </Popover>
           <div className={styles.textBtnBar}>
             <TextAlignLeft
-              className={classNames({ [styles.icon]: true, [styles.selected]: value?.textAlign === 'left' })}
+              className={classNames({
+                [styles.icon]: true,
+                [styles.selected]: value?.textAlign === undefined || value?.textAlign === 'left'
+              })}
               onClick={alignTextLeft}
             />
             <TextAlignCenter

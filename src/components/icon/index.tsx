@@ -2,7 +2,8 @@ import { createFromIconfontCN } from '@ant-design/icons';
 import { IconFontProps } from '@ant-design/icons/lib/components/IconFont';
 
 export const Icon = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/c/font_4341626_o1uczollh9t.js' // 在 iconfont.cn 上生成
+  // 必需要使用 https 协议，否则会使用 tauri 协议
+  scriptUrl: 'https://at.alicdn.com/t/c/font_4341626_04z3y6vn3url.js' // 在 iconfont.cn 上生成
 });
 
 export function Plus(props: Omit<IconFontProps, 'type'>) {
@@ -158,7 +159,7 @@ export function Width(props: Omit<IconFontProps, 'type'>) {
 }
 
 export function ShortBar(props: Omit<IconFontProps, 'type'>) {
-  return <Icon {...props} type="icon-bujuweizhi-duan" />;
+  return <Icon {...props} type="icon-bujuweizhi-hengxiang-duan" />;
 }
 
 export function TextAlignJustify(props: Omit<IconFontProps, 'type'>) {
@@ -170,7 +171,7 @@ export function Border(props: Omit<IconFontProps, 'type'>) {
 }
 
 export function AlignStart(props: Omit<IconFontProps, 'type'>) {
-  return <Icon {...props} type="icon-bujuweizhi2" />;
+  return <Icon {...props} type="icon-bujuweizhi-hengxiang-shang" />;
 }
 
 export function Bold(props: Omit<IconFontProps, 'type'>) {
@@ -190,7 +191,7 @@ export function CircleCorner(props: Omit<IconFontProps, 'type'>) {
 }
 
 export function Gap(props: Omit<IconFontProps, 'type'>) {
-  return <Icon {...props} type="icon-zuoyoujianju" />;
+  return <Icon {...props} type="icon-jianju" />;
 }
 
 export function UnderLine(props: Omit<IconFontProps, 'type'>) {
@@ -218,7 +219,7 @@ export function PlusThin(props: Omit<IconFontProps, 'type'>) {
 }
 
 export function Padding(props: Omit<IconFontProps, 'type'>) {
-  return <Icon {...props} type="icon-shangxiazuoyoubianju" />;
+  return <Icon {...props} type="icon-shuangbianju" />;
 }
 
 export function Thickness(props: Omit<IconFontProps, 'type'>) {
@@ -226,7 +227,7 @@ export function Thickness(props: Omit<IconFontProps, 'type'>) {
 }
 
 export function Compact(props: Omit<IconFontProps, 'type'>) {
-  return <Icon {...props} type="icon-jincouneirong" />;
+  return <Icon {...props} type="icon-kuandu-jincouneirong" />;
 }
 
 export function SingleBorder(props: Omit<IconFontProps, 'type'>) {
@@ -242,7 +243,7 @@ export function Fixed(props: Omit<IconFontProps, 'type'>) {
 }
 
 export function LongBar(props: Omit<IconFontProps, 'type'>) {
-  return <Icon {...props} type="icon-bujuweizhi-chang" />;
+  return <Icon {...props} type="icon-bujuweizhi-hengxiang-chang" />;
 }
 
 export function AlignCenter2(props: Omit<IconFontProps, 'type'>) {

@@ -47,9 +47,11 @@
   flex-wrap: wrap;
   border: 1px solid #f1f2f3;
   border-radius: 4px;
+
   .icon {
     height: 18px;
     width: 18px;
+    color: #6188FF;
   }
 }
 
@@ -117,9 +119,11 @@
   text-align: center;
   font-size: 16px;
   color: #9499a0;
+
   &.selected {
     color: #1A4BFF;
     background-color: #fff;
+
     &:hover {
       background-color: #fff;
     }
@@ -147,6 +151,7 @@
   padding: 8px 0;
   height: 40px;
   gap: 8px;
+
   .icon {
     font-size: 20px;
   }
@@ -192,7 +197,20 @@
 
 .adjustmentContainer {
   .row();
+  padding: 0 4px;
   gap: 12px;
+  background-color: #F6F7F8;
+
+  .icon {
+    &.iconSelected {
+      background-color: #fff;
+    }
+
+    &.iconSelected,
+    &:hover {
+      color: #1A4BFF;
+    }
+  }
 }
 
 .wrapContainer {
@@ -310,6 +328,7 @@
 
 .alignStart {
   .lateralLayout('start');
+
   &:hover {
     cursor: pointer;
     background-color: #F6F7F8;
@@ -318,6 +337,7 @@
 
 .alignCenter {
   .lateralLayout('center');
+
   &:hover {
     cursor: pointer;
     background-color: #F6F7F8;
@@ -326,6 +346,7 @@
 
 .alignEnd {
   .lateralLayout('end');
+
   &:hover {
     cursor: pointer;
     background-color: #F6F7F8;
