@@ -27,7 +27,7 @@ export function Clear(props: Omit<IconFontProps, 'type'>) {
 }
 
 export function Arrow(props: Omit<IconFontProps, 'type'>) {
-  return <Icon {...props} type="icon-jiantou" />;
+  return <Icon {...props} type="icon-jiantou-xiangyou" />;
 }
 
 export function Eye(props: Omit<IconFontProps, 'type'>) {
