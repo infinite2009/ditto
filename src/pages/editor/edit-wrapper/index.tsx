@@ -68,11 +68,6 @@ export default observer(function EditWrapper({
     const result: CSSProperties = {};
     const styleNames: (keyof CSSProperties)[] = [
       'display',
-      // 'margin',
-      // 'marginLeft',
-      // 'marginTop',
-      // 'marginRight',
-      // 'marginBottom',
       'height',
       'width',
       'position',
@@ -92,32 +87,6 @@ export default observer(function EditWrapper({
         result[name] = childrenStyle[name];
       }
     });
-    // // 额外处理下 margin
-    // const { margin, marginLeft, marginTop, marginRight, marginBottom } = result;
-    //
-    // const mergedMarginTop = marginTop || margin;
-    //
-    // if (mergedMarginTop !== undefined) {
-    //   result.marginTop = mergedMarginTop;
-    // }
-    //
-    // const mergedMarginRight = marginRight || margin;
-    //
-    // if (mergedMarginRight !== undefined) {
-    //   result.marginRight = mergedMarginRight;
-    // }
-    //
-    // const mergedMarginBottom = marginBottom || margin;
-    //
-    // if (mergedMarginBottom !== undefined) {
-    //   result.marginTop = mergedMarginBottom;
-    // }
-    //
-    // const mergedMarginLeft = marginLeft || margin;
-    //
-    // if (mergedMarginLeft !== undefined) {
-    //   result.marginLeft = mergedMarginLeft;
-    // }
 
     const wrapperElement = document.getElementById(id);
     if (!wrapperElement) {
@@ -162,18 +131,6 @@ export default observer(function EditWrapper({
       }
     }
 
-    // 处理Flex布局的拉伸问题
-    // if (wrapperElement.parentElement) {
-    //   const computedParentStyle = getComputedStyle(wrapperElement.parentElement);
-    //   const alignItems = computedParentStyle.alignItems;
-    //   if (alignItems === 'stretch' || alignItems === 'normal') {
-    //     if (computedParentStyle.flexDirection === 'column') {
-    //       childElement.style.width = '100%';
-    //     } else {
-    //       childElement.style.height = '100%';
-    //     }
-    //   }
-    // }
     childElement.style.width = '100%';
     childElement.style.height = '100%';
 
@@ -267,6 +224,5 @@ export default observer(function EditWrapper({
       {children}
       {id === dslStore.selectedComponent?.id ? renderSelectedUI() : null}
     </div>
-    // </ComponentContextMenu>
   );
 });
