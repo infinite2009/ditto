@@ -1,5 +1,5 @@
 import { InputNumber } from 'antd';
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useMemo, useRef, useState } from 'react';
 
 import styles from './index.module.less';
 import classNames from 'classnames';
@@ -13,6 +13,7 @@ export interface INumberInputProps {
 
 export default function NumberInput({ disabled, value, onChange, icon }: INumberInputProps) {
   const [bordered, setBordered] = useState<boolean>(false);
+  const inputRef = useRef<any>();
 
   const inputClass = useMemo(() => {
     if (bordered) {
@@ -36,6 +37,7 @@ export default function NumberInput({ disabled, value, onChange, icon }: INumber
 
   return (
     <InputNumber
+      ref={inputRef}
       className={inputClass}
       disabled={disabled}
       prefix={icon}
@@ -43,7 +45,9 @@ export default function NumberInput({ disabled, value, onChange, icon }: INumber
       onFocus={handleFocus}
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      onPressEnter={e => handleChanging(+e.target.value)}
+      onPressEnter={() => {
+        inputRef.current.blur();
+      }}
       onBlur={e => {
         setBordered(false);
         handleChanging(+e.target.value);

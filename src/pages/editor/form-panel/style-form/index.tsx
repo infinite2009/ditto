@@ -1056,13 +1056,13 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         value: 'fill',
         label: (
           <div className={styles.option}>
-            <Grow style={{ marginRight: 4 }} />
+            <Grow style={{ marginRight: 8 }} />
             <span>Fill·撑满容器宽度</span>
           </div>
         ),
         tag: (
           <span>
-            <Grow style={{ marginRight: 4 }} />
+            <Grow style={{ marginRight: 8 }} />
             Fill
           </span>
         )
@@ -1071,13 +1071,13 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         value: 'fixed',
         label: (
           <div className={styles.option}>
-            <Fixed style={{ marginRight: 4 }} />
+            <Fixed style={{ marginRight: 8 }} />
             <span>Fixed·固定宽度</span>
           </div>
         ),
         tag: (
           <span>
-            <Fixed style={{ marginRight: 4 }} />
+            <Fixed style={{ marginRight: 8 }} />
             Fixed
           </span>
         )
@@ -1086,13 +1086,13 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         value: 'hug',
         label: (
           <div className={styles.option}>
-            <Compact style={{ marginRight: 4 }} />
+            <Compact style={{ marginRight: 8 }} />
             <span>Hug·紧凑内容</span>
           </div>
         ),
         tag: (
           <span>
-            <Compact style={{ marginRight: 4 }} />
+            <Compact style={{ marginRight: 8 }} />
             Hug
           </span>
         )

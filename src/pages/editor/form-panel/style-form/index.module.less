@@ -13,6 +13,11 @@
   align-items: stretch;
   gap: 12px;
   margin: 8px 12px;
+  :global {
+    .ant-input-number-handler {
+      transform: scale(0.7);
+    }
+  }
 }
 
 .row {
@@ -225,7 +230,12 @@
 
 .sizeSelector {
   .row();
-  gap: 16px;
+  :global {
+    .ant-select-selector {
+      padding-left: 4px !important;
+      padding-right: 13px !important;
+    }
+  }
 }
 
 .colorPalette {
