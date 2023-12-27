@@ -6,8 +6,6 @@ import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import classNames from 'classnames';
 
 import { observer } from 'mobx-react';
-import IComponentSchema from '@/types/component.schema';
-import { message } from 'antd';
 import styles from './index.module.less';
 
 export interface IEditorProps {
@@ -205,42 +203,17 @@ export default observer(function EditWrapper({
       childElement.style.left = '0px';
     }
 
-    // const marginStyleNames: (keyof CSSProperties)[] = [
-    //   'margin',
-    //   'marginTop',
-    //   'marginRight',
-    //   'marginBottom',
-    //   'marginLeft'
-    // ];
-    // marginStyleNames.forEach(name => {
-    //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //   // @ts-ignore
-    //   if (result[name] === undefined && childElement.style[name] !== '') {
-    //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //     // @ts-ignore
-    //     result[name] = childElement.style[name];
-    //   }
-    //   childElement.style.margin = '0px';
-    // });
-
-    let backgroundColor;
     switch (feature) {
       case ComponentFeature.slot:
-        backgroundColor = '#4f0';
         break;
       case ComponentFeature.container:
-        backgroundColor = '#fa0';
         break;
       default:
-        backgroundColor = '#0ff';
         break;
     }
 
     return {
       opacity: isDragging ? 0.5 : 1,
-      // outline: isOver ? '2px solid #7193f1' : undefined,
-      // outlineOffset: isOver ? -2 : undefined,
-      backgroundColor,
       ...result
     } as CSSProperties;
   }
@@ -269,25 +242,6 @@ export default observer(function EditWrapper({
     [styles.isOver]: isOver,
     [styles.main]: true
   });
-
-  function handleClickContextMenu(key: string, data: IComponentSchema) {
-    switch (key) {
-      case 'copy':
-        message.warning('复制待实现');
-        break;
-      case 'paste':
-        message.warning('粘贴待实现');
-        break;
-      case 'rename':
-        message.warning('重命名待实现');
-        break;
-      case 'delete':
-        dslStore.deleteComponent(data.id);
-        break;
-      default:
-        break;
-    }
-  }
 
   function renderSelectedUI() {
     return (
