@@ -350,10 +350,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   function setAnchorCoordinates(anchor: IAnchorCoordinates) {
     anchorCoordinatesRef.current = anchor;
-    if (anchor?.left === 0) {
-      debugger;
-    }
-    console.log('当前坐标：', anchor);
   }
 
   /**
@@ -468,6 +464,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
                 style.height = height;
                 style.width = 2;
 
+                // 拖入的组件在目标组件的左侧
                 if (collisionLeft <= left + collisionOffset) {
                   insertIndexRef.current = i;
                   style.left = left;
