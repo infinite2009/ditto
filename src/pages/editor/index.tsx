@@ -350,6 +350,10 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   function setAnchorCoordinates(anchor: IAnchorCoordinates) {
     anchorCoordinatesRef.current = anchor;
+    if (anchor?.left === 0) {
+      debugger;
+    }
+    console.log('当前坐标：', anchor);
   }
 
   /**
@@ -358,11 +362,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
    * droppableContainers: 所有可以放入的矩形的节点信息，包括 id，data 等
    */
   const customDetection: CollisionDetection = useCallback(
-    ({ active, collisionRect, droppableRects, droppableContainers, pointerCoordinates }) => {
+    ({ active, collisionRect, droppableRects, droppableContainers }) => {
       const collisions: CollisionDescriptor[] = [];
-
-      console.log('collision rect: ', collisionRect);
-      console.log('pointerCoordinates: ', pointerCoordinates);
 
       const parentDict: {
         [key: string]: string;
@@ -461,6 +462,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             // 判断碰撞左上角和这些矩形的位置关系，落在两者之间的，设下一个 index 为插入位置
             if (!vertical) {
               // 如果在当前矩形同行
+              // TODO：这一行存在bug，因为当一行中的元素不等高，这种判断方式会漏过后边的某些元素，造成定位错误
               if (collisionTop >= top && collisionTop <= bottom) {
                 style.top = top;
                 style.height = height;
@@ -923,6 +925,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function renderMoreTemplatePanel() {
+    if (Object.keys(dslStore?.dsl?.componentIndexes || {}).length > 1) {
+      return null;
+    }
     return <FloatTemplatePanel onApplyTemplate={onApplyTemplate} />;
   }
 
