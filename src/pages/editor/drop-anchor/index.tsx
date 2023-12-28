@@ -16,13 +16,15 @@ export default function DropAnchor({ style }: IDropAnchorProps) {
       backgroundColor: '#194BFF',
       ...style
     };
-    if (result.width > 20) {
-      (result.width as number) -= 16;
-      (result.left as number) += 8;
+    if (result.width > 2) {
+      const originWidth = result.width as number;
+      result.width = Math.max((result.width as number) - 16, 12);
+      result.left = (result.left as number) + Math.round((originWidth - result.width) / 2);
     }
-    if (result.height > 20) {
-      (result.height as number) -= 16;
-      (result.top as number) += 8;
+    if (result.height > 2) {
+      const originHeight = result.height as number;
+      result.height = Math.max((result.height as number) - 16, 12);
+      result.top = (result.top as number) + Math.round((originHeight - result.height) / 2);
     }
     return result;
   }, [style]);
