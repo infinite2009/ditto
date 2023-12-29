@@ -433,7 +433,11 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       const result = collisions.sort(sortCollisionsDesc);
 
       if (result.length) {
-        const { vertical, childrenId = [] } = result[0].data;
+        const {
+          vertical,
+          childrenId = [],
+          droppableContainer: { rect: containerRect }
+        } = result[0].data;
 
         // 从结果中过滤出子节点
         const childrenRects = childrenId
@@ -452,51 +456,146 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             height: 0
           };
 
-          for (let i = 0, l = childrenRects.length; i < l; i++) {
-            const { top, right, bottom, left, height, width } = childrenRects[i];
+          if (!vertical) {
+            // 扫描子元素，确定横向排列的情况
+            const flexRowInfo: {
+              // top 和 bottom 表示当前行的边界
+              top: number;
+              bottom: number;
+              items: { index: number; right: number; left: number; height: number }[];
+            }[] = [];
+
+            let currentGridIndex = -1;
+            for (let i = 0, l = childrenRects.length; i < l; i++) {
+              const { top, right, bottom, left, height } = childrenRects[i];
+              if (i === 0) {
+                flexRowInfo.push({
+                  top: containerRect.current.top,
+                  bottom,
+                  items: [
+                    {
+                      index: i,
+                      left,
+                      right,
+                      height
+                    }
+                  ]
+                });
+                currentGridIndex++;
+                continue;
+              }
+              const { right: preRight, bottom: preBottom } = childrenRects[i - 1];
+              // 如果发现换行，重新推入一个网格数组
+              if (top > preBottom && left < preRight) {
+                const item = {
+                  top,
+                  bottom,
+                  items: [
+                    {
+                      index: i,
+                      left,
+                      right,
+                      height
+                    }
+                  ]
+                };
+                // 它一定不是第一行，不用判空，直接修正上一行的 bottom
+                item.bottom = Math.floor((flexRowInfo[flexRowInfo.length - 1].bottom + item.top) / 2);
+                flexRowInfo.push(item);
+                currentGridIndex++;
+              } else {
+                // 没有换行，尝试比较当前元素和当前行的top和bottom
+                flexRowInfo[currentGridIndex].top = Math.min(flexRowInfo[currentGridIndex].top, top);
+                flexRowInfo[currentGridIndex].bottom = Math.max(flexRowInfo[currentGridIndex].bottom, bottom);
+                flexRowInfo[currentGridIndex].items.push({ index: i, left, right, height });
+              }
+            }
+
+            // 修正最后一行信息的bottom
+            flexRowInfo[flexRowInfo.length - 1].bottom = containerRect.current.bottom;
+
+            console.log('网格信息：', flexRowInfo);
+
             const { top: collisionTop, left: collisionLeft } = collisionRect;
-            // 判断碰撞左上角和这些矩形的位置关系，落在两者之间的，设下一个 index 为插入位置
-            if (!vertical) {
-              // 如果在当前矩形同行
-              // TODO：这一行存在bug，因为当一行中的元素不等高，这种判断方式会漏过后边的某些元素，造成定位错误
-              if (collisionTop >= top && collisionTop <= bottom) {
+
+            // 根据鼠标所在坐标，逐行进行扫描
+            for (let i = 0, l = flexRowInfo.length; i < l; i++) {
+              const { top, bottom, items } = flexRowInfo[i];
+              // 如果碰撞矩形的左上角在当前行
+              if (collisionTop >= top + collisionOffset && collisionTop <= bottom + collisionOffset) {
                 style.top = top;
-                style.height = height;
                 style.width = 2;
-
-                // 拖入的组件在目标组件的左侧
-                if (collisionLeft <= left + collisionOffset) {
-                  insertIndexRef.current = i;
-                  style.left = left;
-                  if (i > 0) {
-                    const { bottom: preBottom, right: preRight } = childrenRects[i - 1];
-                    // 如果和前一个没有换行
-                    if (!(top > preBottom && left < preRight)) {
-                      style.left = Math.round((preRight + left) / 2);
+                for (let j = 0, ll = items.length; j < ll; j++) {
+                  style.height = items[j].height;
+                  // 插入当前元素的左侧
+                  if (collisionLeft < Math.round((items[j].left + items[j].right) / 2)) {
+                    insertIndexRef.current = i;
+                    // 计算下当前的 left 应该是多少
+                    if (j === 0) {
+                      // 当前行第一个，则把 left 定位父容器左边界和当前元素左边界的中间
+                      style.left = Math.round((items[j].left + containerRect.current.left) / 2);
+                    } else {
+                      style.left = Math.round(items[j].left / 2);
                     }
-                  }
-                  break;
-                }
-
-                if (i < l - 1) {
-                  const { top: nextTop, left: nextLeft } = childrenRects[i + 1];
-                  // 如果下一个矩形发生了换行
-                  if (bottom < nextTop && nextLeft < right) {
-                    if (collisionLeft > right - collisionOffset) {
-                      style.left = right;
-                      insertIndexRef.current = i + 1;
-                      break;
-                    }
-                  }
-                } else {
-                  if (collisionLeft > right - collisionOffset) {
-                    style.left = right;
-                    insertIndexRef.current = i + 1;
-                    break;
+                  } else {
                   }
                 }
               }
-            } else {
+            }
+
+            // for (let i = 0, l = childrenRects.length; i < l; i++) {
+            //   const { top, right, bottom, left, height, width } = childrenRects[i];
+            //   const { top: collisionTop, left: collisionLeft } = collisionRect;
+            // 判断碰撞左上角和这些矩形的位置关系，落在两者之间的，设下一个 index 为插入位置
+            // 如果在当前矩形同行
+            // TODO：这一行存在bug，因为当一行中的元素不等高，这种判断方式会漏过后边的某些元素，造成定位错误
+            // if (collisionTop >= top && collisionTop <= bottom) {
+            //   style.top = top;
+            //   style.height = height;
+            //   style.width = 2;
+            //   // 拖入的组件在目标组件的左侧
+            //   if (collisionLeft <= left + collisionOffset) {
+            //     insertIndexRef.current = i;
+            //     style.left = left;
+            //     if (i > 0) {
+            //       const { bottom: preBottom, right: preRight } = childrenRects[i - 1];
+            //       // 如果和前一个没有换行
+            //       if (!(top > preBottom && left < preRight)) {
+            //         style.left = Math.round((preRight + left) / 2);
+            //       }
+            //     }
+            //     break;
+            //   }
+            //
+            //   if (i < l - 1) {
+            //     const { top: nextTop, left: nextLeft } = childrenRects[i + 1];
+            //     // 如果下一个矩形发生了换行
+            //     if (bottom < nextTop && nextLeft < right) {
+            //       if (collisionLeft > right - collisionOffset) {
+            //         style.left = right;
+            //         insertIndexRef.current = i + 1;
+            //         break;
+            //       }
+            //     } else {
+            //       // fix: 当没有发生换行，锚点坐标就是当前元素的右边
+            //       style.left = right;
+            //       insertIndexRef.current = i + 1;
+            //     }
+            //   } else {
+            //     if (collisionLeft > right - collisionOffset) {
+            //       style.left = right;
+            //       insertIndexRef.current = i + 1;
+            //       break;
+            //     }
+            //   }
+            // }
+            // }
+          } else {
+            for (let i = 0, l = childrenRects.length; i < l; i++) {
+              const { top, right, bottom, left, height, width } = childrenRects[i];
+              const { top: collisionTop, left: collisionLeft } = collisionRect;
+              // 判断碰撞左上角和这些矩形的位置关系，落在两者之间的，设下一个 index 为插入位置
+              //
               if (collisionTop < top + collisionOffset) {
                 style.height = 2;
                 style.width = width;
@@ -518,6 +617,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
                 insertIndexRef.current = i + 1;
                 style.top = bottom;
               }
+              //
             }
           }
           setAnchorCoordinates(style);
