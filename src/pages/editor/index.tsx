@@ -469,17 +469,17 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             for (let i = 0, l = childrenRects.length; i < l; i++) {
               const { top, right, bottom, left, height } = childrenRects[i];
               if (i === 0) {
+                const item = {
+                  index: i,
+                  left: containerRect.current.left,
+                  height
+                };
+                // TODO: 修正右边
+                // item.right =
                 flexRowInfo.push({
                   top: containerRect.current.top,
                   bottom,
-                  items: [
-                    {
-                      index: i,
-                      left,
-                      right,
-                      height
-                    }
-                  ]
+                  items: [item]
                 });
                 currentGridIndex++;
                 continue;
@@ -525,9 +525,11 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
               if (collisionTop >= top + collisionOffset && collisionTop <= bottom + collisionOffset) {
                 style.top = top;
                 style.width = 2;
+                // 遍历当前行中的所有元素
                 for (let j = 0, ll = items.length; j < ll; j++) {
+                  // 确定高度为当前组件的高度
                   style.height = items[j].height;
-                  // 插入当前元素的左侧
+                  // 插入当前元素中心的左侧，都会认为是这个组件的左侧
                   if (collisionLeft < Math.round((items[j].left + items[j].right) / 2)) {
                     insertIndexRef.current = i;
                     // 计算下当前的 left 应该是多少
@@ -538,10 +540,22 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
                       style.left = Math.round(items[j].left / 2);
                     }
                   } else {
+                    // 如果认为是在组件中心的右侧
+                    if (j === items.length - 1) {
+                      // 如果当前元素是当前行最后一个，则竖线的 left 坐标为当前元素右边和容器右边的中间
+                      style.left = Math.round((items[j].right + containerRect.current.right) / 2);
+                    } else {
+                      // 如果不是最后一个，则竖线的 left 坐标为当前元素右边和下一个元素左边的中间
+                      style.left = Math.round((items[j].right + items[j + 1].left) / 2);
+                    }
                   }
                 }
+                // 如果在当前行，就需要在找到后直接break;
+                break;
               }
             }
+
+            console.log('当前选中的位置：', style);
 
             // for (let i = 0, l = childrenRects.length; i < l; i++) {
             //   const { top, right, bottom, left, height, width } = childrenRects[i];
