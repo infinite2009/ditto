@@ -84,8 +84,17 @@ export default observer(() => {
   }
 
   function renderStyleForm() {
-    if (!dslStore.formConfigOfSelectedComponent || !dslStore.selectedComponent) {
-      return null;
+    if (!dslStore.selectedComponent) {
+      return <div>请选择一个组件</div>;
+    }
+    if (
+      !(
+        dslStore.formConfigOfSelectedComponent &&
+        (dslStore.formConfigOfSelectedComponent?.formComponent?.style ||
+          dslStore.formConfigOfSelectedComponent?.schema?.style)
+      )
+    ) {
+      return <div>该组件暂不支持样式属性设置</div>;
     }
 
     const { configName, dependency, parentId } = dslStore.selectedComponent;
@@ -130,21 +139,31 @@ export default observer(() => {
   }
 
   function renderBasicForm() {
-    if (!dslStore.formConfigOfSelectedComponent) {
-      return null;
+    if (
+      !(
+        dslStore.formConfigOfSelectedComponent &&
+        (dslStore.formConfigOfSelectedComponent.formComponent?.basic ||
+          dslStore.formConfigOfSelectedComponent.schema?.basic)
+      )
+    ) {
+      return <div>当前组件暂不支持基础属性设置</div>;
     }
     if (dslStore.formConfigOfSelectedComponent.formComponent?.basic) {
       const FormComponent = dslStore.formConfigOfSelectedComponent.formComponent.basic;
-      return <FormComponent value={getBasicValue()} onChange={handleChangingBasicFormValues} />;
+      return (
+        <FormComponent value={dslStore.valueOfSelectedComponent?.basic} onChange={handleChangingBasicFormValues} />
+      );
     }
-    return (
-      <BasicForm
-        key="basic"
-        onChange={handleChangingBasicFormValues}
-        value={dslStore.valueOfSelectedComponent?.style}
-        formSchema={dslStore.formConfigOfSelectedComponent.schema?.basic as unknown as FormSchema}
-      />
-    );
+    if (dslStore.formConfigOfSelectedComponent.schema?.basic) {
+      return (
+        <BasicForm
+          key="basic"
+          onChange={handleChangingBasicFormValues}
+          value={dslStore.valueOfSelectedComponent?.basic}
+          formSchema={dslStore.formConfigOfSelectedComponent.schema?.basic as unknown as FormSchema}
+        />
+      );
+    }
   }
 
   function renderEventForm() {

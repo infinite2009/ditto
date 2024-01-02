@@ -20,3 +20,8 @@ export type TemplateInfo = {
   currentKeyPath: string;
   nodeId: string;
 };
+
+export interface ICustomFormProps {
+  value: Record<string, any>;
+  onChange: (value: Record<string, any>) => void;
+}

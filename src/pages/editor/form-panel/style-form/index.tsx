@@ -1784,6 +1784,10 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     );
   }
 
+  if (!config) {
+    return null;
+  }
+
   return (
     <div>
       {renderLayout()}

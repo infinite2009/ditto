@@ -585,7 +585,9 @@ export default class DSLStore {
           }
         }
       } else {
-        const node = this.createEmptyContainer();
+        const node = this.createEmptyContainer('', {
+          feature: ComponentFeature.slot
+        });
         parent[key] = {
           current: node.id,
           isText: false

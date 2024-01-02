@@ -1,5 +1,8 @@
 import IFormConfig from '@/types/form-config';
 import { getCamelotComponentPropsFrom } from '../load-config/camelot';
+import CustomTabForm from '@/pages/components/custom-forms/custom-tab-form';
+import { FC } from 'react';
+import CustomTableForm from '@/pages/components/custom-forms/custom-table-form';
 
 const flexTransformerStr =
   'return (values => {' +
@@ -332,6 +335,18 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
             decoration: true
           }
         }
+      }
+    },
+    Tabs: {
+      configName: 'Tabs',
+      formComponent: {
+        basic: CustomTabForm as FC<any>
+      }
+    },
+    Table: {
+      configName: 'Table',
+      formComponent: {
+        basic: CustomTableForm as FC<any>
       }
     },
     ...camelotComponentProps
