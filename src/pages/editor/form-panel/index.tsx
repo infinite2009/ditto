@@ -97,13 +97,13 @@ export default observer(() => {
       return <div>该组件暂不支持样式属性设置</div>;
     }
 
-    const { configName, dependency, parentId } = dslStore.selectedComponent;
+    const { configName, dependency, parentId, feature } = dslStore.selectedComponent;
     // 默认父组件的flexDirection 是 column
     let parentDirection: 'column' | 'row' = 'column';
     // PageRoot 没有 parentId
     if (parentId) {
       const parentSchema = dslStore.dsl.componentIndexes[parentId];
-      if (parentSchema) {
+      if (parentSchema && parentSchema.feature === 'container') {
         parentDirection = dslStore.dsl.props[parentSchema.id].vertical.value ? 'column' : 'row';
       }
     }

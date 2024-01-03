@@ -49,6 +49,7 @@ import { Scene } from '@/service/app-store';
 import FloatTemplatePanel from '@/pages/editor/float-template-panel';
 import DbStore, { TemplateInfo } from '@/service/db-store';
 import { createPortal } from 'react-dom';
+import { toJS } from 'mobx';
 
 const collisionOffset = 4;
 
@@ -1020,6 +1021,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     }
     return <FloatTemplatePanel onApplyTemplate={onApplyTemplate} />;
   }
+
+  console.log('dsl: ', toJS(dslStore.dsl));
 
   return (
     <div className={styles.main} style={style}>

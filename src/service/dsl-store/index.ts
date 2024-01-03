@@ -405,26 +405,26 @@ export default class DSLStore {
     return componentIndexes[id];
   }
 
-  /**
-   * 导入模板，必须用在创建空页面之后用，选中空页面，然后应用此函数
-   * @param templatePath
-   */
-  async importTemplate(templatePath: string) {
-    try {
-      const dslContent = await fileManager.readFile(templatePath);
-      // 1. 解析内容为对象
-      const templateDSL = JSON.parse(dslContent);
-      // 2. 删除 pageId
-      templateDSL.id = '';
-      // 3. 移除 根节点的父节点 id
-      const root = templateDSL.componentIndexes[templateDSL.child.current];
-      root.parentId = '';
-      // 4. 覆盖当前的 dsl
-      this.dsl = templateDSL;
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  // /**
+  //  * 导入模板，必须用在创建空页面之后用，选中空页面，然后应用此函数
+  //  * @param templatePath
+  //  */
+  // async importTemplate(templatePath: string) {
+  //   try {
+  //     const dslContent = await fileManager.readFile(templatePath);
+  //     // 1. 解析内容为对象
+  //     const templateDSL = JSON.parse(dslContent);
+  //     // 2. 删除 pageId
+  //     templateDSL.id = '';
+  //     // 3. 移除 根节点的父节点 id
+  //     const root = templateDSL.componentIndexes[templateDSL.child.current];
+  //     root.parentId = '';
+  //     // 4. 覆盖当前的 dsl
+  //     this.dsl = templateDSL;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }
 
   @execute
   initDSL(dsl: IPageSchema) {
@@ -585,11 +585,12 @@ export default class DSLStore {
           }
         }
       } else {
-        const node = this.createEmptyContainer('', {
+        const component = this.createEmptyContainer('', {
           feature: ComponentFeature.slot
         });
+        component.parentId = nodeId;
         parent[key] = {
-          current: node.id,
+          current: component.id,
           isText: false
         };
       }

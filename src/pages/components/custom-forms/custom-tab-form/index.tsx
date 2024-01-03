@@ -88,6 +88,13 @@ export default function CustomTabForm({ value, onChange }: ICustomFormProps) {
       feature: ComponentFeature.slot
     });
     dslStore.dsl.componentIndexes[node.id] = node;
+    if (dslStore.selectedComponent?.id) {
+      node.parentId = dslStore.selectedComponent.id;
+    } else {
+      // 如果没有选中节点，父节点设置为 page root，这本身其实是 bug
+      node.parentId = dslStore.dsl.child.current;
+    }
+    console.log('page id for new tab: ', node.parentId);
     return {
       current: node.id,
       isText: false
