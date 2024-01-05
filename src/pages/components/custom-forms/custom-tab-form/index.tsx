@@ -1,15 +1,17 @@
 import { ICustomFormProps } from '@/types';
 import { useForm } from 'antd/es/form/Form';
 import { Button, Form, Input } from 'antd';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { nanoid } from 'nanoid';
 import { DSLStoreContext } from '@/hooks/context';
 import ComponentFeature from '@/types/component-feature';
 
 import styles from './index.module.less';
+import cloneDeep from 'lodash/cloneDeep';
 
 export default function CustomTabForm({ value, onChange }: ICustomFormProps) {
+  const [key, setKey] = useState<number>(0);
   // const [fields, setFields] = useState<{ key: string; label: string }[]>([]);
 
   // const templatesRef = useRef<any>({});
@@ -19,26 +21,38 @@ export default function CustomTabForm({ value, onChange }: ICustomFormProps) {
   const [form] = useForm();
 
   useEffect(() => {
+    resetFields();
+  }, [value]);
+
+  function resetFields() {
     if (value?.items) {
       const { items } = value;
       const obj = {};
       items.forEach((item: { key: string; label: string }) => {
         obj[item.key] = item.label;
       });
-      console.log('value changed: ', obj);
       form.setFieldsValue(obj);
     }
-  }, [value]);
+  }
 
-  // useEffect(() => {
-  //   // TODO：会有问题，此时可能会有空的标签页名称
-  //   form.setFieldsValue(fields);
-  // }, [fields]);
+  function handleChangingValues(changedValues: any) {
+    let needChange = false;
+    const newValue = cloneDeep(value);
+    newValue.items.forEach(item => {
+      if (changedValues[item.key]) {
+        item.label = changedValues[item.key];
+        needChange = true;
+      }
+    });
+    if (onChange && needChange) {
+      onChange(newValue);
+    }
+  }
 
-  function handleChangingValues(changedValues: any, allValues: any) {
-    console.log('all fields: ', allValues);
-
-    console.log('changed values: ', changedValues);
+  function resetComponent(e) {
+    if (!e.target.value) {
+      resetFields();
+    }
   }
 
   function renderFormItems() {
@@ -51,9 +65,9 @@ export default function CustomTabForm({ value, onChange }: ICustomFormProps) {
       return (
         <div key={item.key} className={styles.formItem}>
           <Form.Item label={`标签页${index}名称`} name={item.key}>
-            <Input style={{ width: 100 }} />
+            <Input style={{ width: 100 }} onBlur={resetComponent} />
           </Form.Item>
-          <DeleteOutlined onClick={() => deleteTab(item.key)} />
+          {items.length > 1 ? <DeleteOutlined onClick={() => deleteTab(item.key)} /> : null}
         </div>
       );
     });
@@ -65,25 +79,14 @@ export default function CustomTabForm({ value, onChange }: ICustomFormProps) {
       label: '新建标签页',
       children: createTemplate()
     };
-    const newValue = {
-      ...value
-    };
-    newValue.items = [...value.items, result];
+    const newValue = cloneDeep(value);
+    newValue.items.push(result);
     if (onChange) {
       onChange(newValue);
     }
-    // templatesRef.current[result.key] = {
-    //   ...result,
-    //   children: createTemplate()
-    // };
-    // setFields({
-    //   ...fields,
-    //   [result.key]: result.label
-    // });
   }
 
   function createTemplate() {
-    // TODO: 这里的 id 可能会有问题，需要仔细测试下
     const node = dslStore.createEmptyContainer('', {
       feature: ComponentFeature.slot
     });
@@ -94,7 +97,6 @@ export default function CustomTabForm({ value, onChange }: ICustomFormProps) {
       // 如果没有选中节点，父节点设置为 page root，这本身其实是 bug
       node.parentId = dslStore.dsl.child.current;
     }
-    console.log('page id for new tab: ', node.parentId);
     return {
       current: node.id,
       isText: false
@@ -102,13 +104,15 @@ export default function CustomTabForm({ value, onChange }: ICustomFormProps) {
   }
 
   function deleteTab(key: string) {
-    // delete templatesRef.current[key];
-    // delete fields[key];
-    // setFields(fields);
+    const newValue = cloneDeep(value);
+    newValue.items = newValue.items.filter(item => item.key !== key);
+    if (onChange) {
+      onChange(newValue);
+    }
   }
 
   return (
-    <div>
+    <div key={key}>
       <Form form={form} onValuesChange={handleChangingValues}>
         {renderFormItems()}
       </Form>
