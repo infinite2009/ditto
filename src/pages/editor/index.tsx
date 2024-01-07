@@ -49,7 +49,6 @@ import { Scene } from '@/service/app-store';
 import FloatTemplatePanel from '@/pages/editor/float-template-panel';
 import DbStore, { TemplateInfo } from '@/service/db-store';
 import { createPortal } from 'react-dom';
-import { toJS } from 'mobx';
 import { Eye, EyeClose } from '@/components/icon';
 
 const collisionOffset = 4;
@@ -549,8 +548,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
               firstElementInRow.left = containerRect.current.left;
             }
 
-            // console.log('网格信息：', flexRowInfo);
-
             const { top: collisionTop, left: collisionLeft } = collisionRect;
 
             // 根据鼠标所在坐标，逐行进行扫描
@@ -562,20 +559,15 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
               if (collisionTop >= top && collisionTop <= bottom) {
                 style.top = top;
                 style.width = 2;
-                console.log('当前行元素：', items);
                 // 遍历当前行中的所有元素
                 for (let j = 0, ll = items.length; j < ll; j++) {
-                  console.log('collisionLeft: ', collisionLeft);
-                  console.log('collisionTop: ', collisionTop);
                   // 插入当前元素中心的左侧，都会认为是这个组件的左侧
                   if (collisionLeft < Math.round((items[j].left + items[j].right) / 2)) {
-                    console.log('命中左侧：', items[j].index);
                     insertIndexRef.current = items[j].index;
                     // 计算下当前的 left 应该是多少
                     style.left = items[j].left;
                     break;
                   } else {
-                    console.log('命中右侧：', items[j].index + 1);
                     insertIndexRef.current = items[j].index + 1;
                     style.left = items[j].right;
                   }
@@ -584,7 +576,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
                 break;
               }
             }
-            console.log('当前选中的位置：', style);
           } else {
             for (let i = 0, l = childrenRects.length; i < l; i++) {
               const { top, right, bottom, left, height, width } = childrenRects[i];
@@ -837,8 +828,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       return node.children?.some(item => !item.isText);
     };
 
-    console.log('dsl hidden in tree: ', dslStore?.isHidden);
-
     const renderTreeNodeTitle = (componentSchema: IComponentSchema) => {
       const { id: componentId } = componentSchema;
       return (
@@ -906,7 +895,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             };
           });
           if (children.length) {
-            console.log('children: ', toJS(children));
             node.children = recursiveMap(children);
           } else {
             node.isLeaf = true;
@@ -1052,8 +1040,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     }
     return <FloatTemplatePanel onApplyTemplate={onApplyTemplate} />;
   }
-
-  console.log('dsl: ', toJS(dslStore.dsl));
 
   return (
     <div className={styles.main} style={style}>
