@@ -256,6 +256,8 @@ export default class DSLStore {
       const typeOfChildren = typeOf(value);
       if (typeOfChildren === 'array') {
         const emptyContainer = this.createEmptyContainer('', { feature: ComponentFeature.slot });
+        // 修正父节点 id
+        emptyContainer.parentId = componentId;
         children = [
           {
             current: emptyContainer.id,
