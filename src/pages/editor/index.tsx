@@ -22,7 +22,7 @@ import FormPanel from '@/pages/editor/form-panel';
 import PageRenderer from '@/pages/components/page-renderer';
 import styles from './index.module.less';
 import DropAnchor from '@/pages/editor/drop-anchor';
-import { DragCancelEvent, DragEndEvent } from '@dnd-kit/core/dist/types';
+import { DragEndEvent } from '@dnd-kit/core/dist/types';
 import { snapCenterToCursor } from '@dnd-kit/modifiers';
 import PageAction from '@/types/page-action';
 import IAnchorCoordinates from '@/types/anchor-coordinate';
@@ -116,9 +116,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }, []);
 
   function init() {
-    fetchCurrentProject();
+    fetchCurrentProject().then();
     fetchProjectData().then();
-    fetchTemplateData();
+    fetchTemplateData().then();
   }
 
   useEffect(() => {
@@ -154,31 +154,31 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }, [copy, paste, cancelSelection, exportAsTemplate, rename, newFolder, newPage]);
 
   function copy() {
-    message.success('复制待实现');
+    message.success('复制待实现').then();
   }
 
   function paste() {
-    message.success('粘贴待实现');
+    message.success('粘贴待实现').then();
   }
 
   function cancelSelection() {
-    message.success('取消选择待实现');
+    message.success('取消选择待实现').then();
   }
 
   function exportAsTemplate() {
-    message.success('导出模板待实现');
+    message.success('导出模板待实现').then();
   }
 
   function rename() {
-    message.success('重命名待实现');
+    message.success('重命名待实现').then();
   }
 
   function newFolder() {
-    message.success('新建文件夹待实现');
+    message.success('新建文件夹待实现').then();
   }
 
   function newPage() {
-    message.success('新建页面待实现');
+    message.success('新建页面待实现').then();
   }
 
   async function fetchCurrentProject() {
@@ -242,7 +242,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     hideAnchor();
   }
 
-  function handleDraggingCancel({ active, over }: DragCancelEvent) {
+  function handleDraggingCancel() {
     // 重置插入索引
     resetInsertIndexRef();
     hideAnchor();
@@ -250,14 +250,14 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   function isInRect(
     point: {
-      top: any;
-      left: any;
+      top: number;
+      left: number;
     },
     rect: {
-      top: any;
-      right: any;
-      bottom: any;
-      left: any;
+      top: number;
+      right: number;
+      bottom: number;
+      left: number;
     },
     offset = 0
   ) {
@@ -578,8 +578,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             }
           } else {
             for (let i = 0, l = childrenRects.length; i < l; i++) {
-              const { top, right, bottom, left, height, width } = childrenRects[i];
-              const { top: collisionTop, left: collisionLeft } = collisionRect;
+              const { top, bottom, left, width } = childrenRects[i];
+              const { top: collisionTop } = collisionRect;
               // 判断碰撞左上角和这些矩形的位置关系，落在两者之间的，设下一个 index 为插入位置
               //
               if (collisionTop < top + collisionOffset) {
@@ -610,7 +610,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         } else {
           const rect = droppableRects.get(result[0].id);
           if (rect) {
-            let style;
+            let style: IAnchorCoordinates;
             if (!vertical) {
               style = {
                 top: rect.top,
@@ -703,7 +703,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         redirectToPreview();
         break;
       case PageAction.saveFile:
-        saveFile();
+        saveFile().then();
         break;
       case PageAction.openProject:
         await fileManager.openLocalProject();
@@ -800,7 +800,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         break;
       case 'hide':
       case 'show':
-        message.warning('待实现');
+        message.warning('待实现').then();
         break;
       default:
         break;
@@ -823,11 +823,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     if (!dslStore.dsl) {
       return [];
     }
-
-    const hasNonTextChild = (node: IComponentSchema) => {
-      return node.children?.some(item => !item.isText);
-    };
-
     const renderTreeNodeTitle = (componentSchema: IComponentSchema) => {
       const { id: componentId } = componentSchema;
       return (
@@ -908,9 +903,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   function handleChangingProject() {
     fetchProjectData().then();
-    fetchCurrentProject();
+    fetchCurrentProject().then();
     // 刷新模板
-    fetchTemplateData();
+    fetchTemplateData().then();
   }
 
   async function fetchTemplateData() {
@@ -1028,7 +1023,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function onApplyTemplate(path: string) {
-    dslStore.applyTemplate(path);
+    dslStore.applyTemplate(path).then();
   }
 
   function renderMoreTemplatePanel() {
