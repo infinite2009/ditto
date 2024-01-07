@@ -145,4 +145,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  &.selected {
+    .icon {
+      opacity: 1;
+    }
+  }
+
+  .icon {
+    opacity: 0;
+  }
+
+  &:hover {
+    .icon {
+      opacity: 1;
+    }
+  }
 }

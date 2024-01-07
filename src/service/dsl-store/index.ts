@@ -407,7 +407,7 @@ export default class DSLStore {
     return componentIndexes[id];
   }
 
-  findChildren(id: ComponentId) {
+  findChildren(id: ComponentId): IComponentSchema[] {
     if (!id || !this.dsl.componentIndexes) {
       return [];
     }
@@ -417,6 +417,13 @@ export default class DSLStore {
   hideComponent(id: ComponentId) {
     if (id) {
       this.hiddenComponentDict[id] = true;
+      // 子节点也隐藏下
+      const children = this.findChildren(id);
+      if (children.length) {
+        children.forEach(child => {
+          this.hideComponent(child.id);
+        });
+      }
       if (id === this.selectedComponent?.id) {
         this.resetSelectedComponent();
       }
@@ -660,6 +667,12 @@ export default class DSLStore {
 
   showComponent(id: ComponentId) {
     delete this.hiddenComponentDict[id];
+    const children = this.findChildren(id);
+    if (children.length) {
+      children.forEach(item => {
+        this.showComponent(item.id);
+      });
+    }
   }
 
   /**

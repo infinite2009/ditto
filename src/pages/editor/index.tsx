@@ -50,6 +50,7 @@ import FloatTemplatePanel from '@/pages/editor/float-template-panel';
 import DbStore, { TemplateInfo } from '@/service/db-store';
 import { createPortal } from 'react-dom';
 import { Eye, EyeClose } from '@/components/icon';
+import classNames from 'classnames';
 
 const collisionOffset = 4;
 
@@ -816,6 +817,32 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     setSelectedComponentForRenaming('');
   }
 
+  function renderDisplayControlBtn(componentSchema: IComponentSchema) {
+    const { id, feature } = componentSchema;
+    if (feature === ComponentFeature.slot || feature === ComponentFeature.root) {
+      return null;
+    }
+    if (dslStore.isHidden(id)) {
+      return (
+        <EyeClose
+          onClick={e => {
+            e.stopPropagation();
+            dslStore?.showComponent(id);
+          }}
+        />
+      );
+    }
+    return (
+      <Eye
+        className={styles.icon}
+        onClick={e => {
+          e.stopPropagation();
+          dslStore?.hideComponent(id);
+        }}
+      />
+    );
+  }
+
   /**
    * 由于技术上文字节点具有特殊性（会被当作文字组件的 children props 处理），故不会在组件树里出现
    */
@@ -824,50 +851,36 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       return [];
     }
     const renderTreeNodeTitle = (componentSchema: IComponentSchema) => {
-      const { id: componentId } = componentSchema;
+      const { id, feature } = componentSchema;
+      const titleClassName = classNames({
+        [styles.componentTitle]: true,
+        [styles.selected]: dslStore.selectedComponent.id === id
+      });
       return (
         <ComponentContextMenu
           data={componentSchema}
           onClick={handleClickDropDownMenu}
-          items={generateContextMenus(
-            componentSchema.feature,
-            editorStore.isVisible(componentId),
-            editorStore.hasCopiedComponent
-          )}
+          items={generateContextMenus(feature, editorStore.isVisible(id), editorStore.hasCopiedComponent)}
         >
-          <div className={styles.componentTitle}>
-            {componentId === selectedComponentForRenaming ? (
+          <div className={titleClassName}>
+            {id === selectedComponentForRenaming ? (
               <Input
                 defaultValue={componentSchema.displayName}
                 autoFocus
                 onFocus={e => e.target.select()}
-                onBlur={e => handleRenamingComponent(componentId, (e.target.value as unknown as string).trim())}
+                onBlur={e => handleRenamingComponent(id, (e.target.value as unknown as string).trim())}
                 onPressEnter={e =>
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
-                  handleRenamingComponent(componentId, (e.target.value as unknown as string).trim())
+                  handleRenamingComponent(id, (e.target.value as unknown as string).trim())
                 }
               />
             ) : (
-              <div onDoubleClick={() => handleSelectingComponentForRenaming(componentId)}>
+              <div onDoubleClick={() => handleSelectingComponentForRenaming(id)}>
                 {componentSchema.displayName || componentSchema.name}
               </div>
             )}
-            {dslStore?.isHidden(componentId) ? (
-              <EyeClose
-                onClick={e => {
-                  e.stopPropagation();
-                  dslStore?.showComponent(componentId);
-                }}
-              />
-            ) : (
-              <Eye
-                onClick={e => {
-                  e.stopPropagation();
-                  dslStore?.hideComponent(componentId);
-                }}
-              />
-            )}
+            {renderDisplayControlBtn(componentSchema)}
           </div>
         </ComponentContextMenu>
       );
