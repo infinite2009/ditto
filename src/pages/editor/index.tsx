@@ -420,14 +420,27 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
           // 这里的 collisionRect 就是移动的矩形
           const intersectionType = calcIntersectionType(rect, collisionRect);
           if (intersectionType === 2) {
-            collisions.push({
-              id,
-              data: {
-                droppableContainer,
-                value: calculateDepth(id as string, parentDict),
-                ...droppableContainer.data.current
+            if (dslStore.isLayerShown()) {
+              if (dslStore.isInLayer(id as string)) {
+                collisions.push({
+                  id,
+                  data: {
+                    droppableContainer,
+                    value: calculateDepth(id as string, parentDict),
+                    ...droppableContainer.data.current
+                  }
+                });
               }
-            });
+            } else {
+              collisions.push({
+                id,
+                data: {
+                  droppableContainer,
+                  value: calculateDepth(id as string, parentDict),
+                  ...droppableContainer.data.current
+                }
+              });
+            }
           }
         }
       }

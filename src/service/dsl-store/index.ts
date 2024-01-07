@@ -498,6 +498,34 @@ export default class DSLStore {
     return this.hiddenComponentDict[id];
   }
 
+  isInLayer(id: ComponentId) {
+    const componentSchema = this.dsl.componentIndexes[id];
+    if (!componentSchema) {
+      return false;
+    }
+    let parentId = componentSchema.parentId;
+    while (parentId) {
+      const parent = this.dsl.componentIndexes[parentId];
+      const parentConfig = fetchComponentConfig(parent.configName, parent.dependency);
+      if (parentConfig.isLayer) {
+        return true;
+      } else {
+        parentId = parent.parentId;
+      }
+    }
+    return false;
+  }
+
+  isLayerShown(): boolean {
+    if (!this.dsl?.componentIndexes) {
+      return false;
+    }
+    return Object.values(this.dsl.componentIndexes).some(item => {
+      const componentConfig = fetchComponentConfig(item.configName, item.dependency);
+      return !!(!this.isHidden(item.id) && componentConfig.isLayer);
+    });
+  }
+
   @execute
   moveComponent(parentId: string, childId: string, insertIndex = -1) {
     this.currentParentNode = this.fetchComponentInDSL(parentId);
@@ -721,7 +749,6 @@ export default class DSLStore {
         props[key].value = val;
       }
     });
-    console.log('updated props: ', toJS(props));
   }
 
   updateComponentStats(componentName: string) {
