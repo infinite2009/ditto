@@ -458,6 +458,13 @@ export default class DSLStore {
     if (dsl) {
       this.dsl = dsl;
       this.selectComponent(this.dsl.child.current);
+      // 隐藏图层组件
+      Object.values(this.dsl.componentIndexes).forEach(item => {
+        const config = fetchComponentConfig(item.configName, item.dependency);
+        if (config?.isLayer) {
+          this.hideComponent(item.id);
+        }
+      });
     }
   }
 
