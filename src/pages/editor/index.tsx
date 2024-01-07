@@ -50,6 +50,7 @@ import FloatTemplatePanel from '@/pages/editor/float-template-panel';
 import DbStore, { TemplateInfo } from '@/service/db-store';
 import { createPortal } from 'react-dom';
 import { toJS } from 'mobx';
+import { Eye, EyeClose } from '@/components/icon';
 
 const collisionOffset = 4;
 
@@ -836,6 +837,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       return node.children?.some(item => !item.isText);
     };
 
+    console.log('dsl hidden in tree: ', dslStore?.isHidden);
+
     const renderTreeNodeTitle = (componentSchema: IComponentSchema) => {
       const { id: componentId } = componentSchema;
       return (
@@ -848,7 +851,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             editorStore.hasCopiedComponent
           )}
         >
-          <div onDoubleClick={() => handleSelectingComponentForRenaming(componentId)}>
+          <div className={styles.componentTitle}>
             {componentId === selectedComponentForRenaming ? (
               <Input
                 defaultValue={componentSchema.displayName}
@@ -862,7 +865,24 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
                 }
               />
             ) : (
-              componentSchema.displayName || componentSchema.name
+              <div onDoubleClick={() => handleSelectingComponentForRenaming(componentId)}>
+                {componentSchema.displayName || componentSchema.name}
+              </div>
+            )}
+            {dslStore?.isHidden(componentId) ? (
+              <EyeClose
+                onClick={e => {
+                  e.stopPropagation();
+                  dslStore?.showComponent(componentId);
+                }}
+              />
+            ) : (
+              <Eye
+                onClick={e => {
+                  e.stopPropagation();
+                  dslStore?.hideComponent(componentId);
+                }}
+              />
             )}
           </div>
         </ComponentContextMenu>

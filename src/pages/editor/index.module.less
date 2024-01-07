@@ -74,6 +74,14 @@
 .componentTree {
   flex-grow: 1;
   overflow: auto;
+  :global {
+    .ant-tree-treenode {
+      align-self: stretch;
+    }
+    .ant-tree-node-content-wrapper {
+      flex-grow: 1;
+    }
+  }
 }
 
 .shortKey {
@@ -131,4 +139,10 @@
   border-radius: 8px;
   background: #fff;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.06);
+}
+
+.componentTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

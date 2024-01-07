@@ -24,7 +24,9 @@ export default observer((props: IPageRendererProps) => {
     return null;
   }
 
-  const dslStore = toJS(useContext(DSLStoreContext));
+  const dslStore = useContext(DSLStoreContext);
+
+  const { dsl } = toJS(dslStore);
 
   const { mode = 'preview', scale, pageWidth } = props;
 
@@ -111,11 +113,11 @@ export default observer((props: IPageRendererProps) => {
       }
     } else if (valueSource === 'handler') {
       // 获取 eventSchema
-      const eventSchema = dslStore.dsl.events[value as string];
+      const eventSchema = dsl.events[value as string];
       if (eventSchema) {
-        const handlerSchema = dslStore.dsl.handlers[eventSchema.handlerRef];
+        const handlerSchema = dsl.handlers[eventSchema.handlerRef];
         if (handlerSchema) {
-          const actionsSchema = handlerSchema.actionRefs.map(ref => dslStore.dsl.actions[ref]);
+          const actionsSchema = handlerSchema.actionRefs.map(ref => dsl.actions[ref]);
           wrapper.value = () => {
             actionsSchema.forEach(action => {
               executeComponentEvent(action);
@@ -214,7 +216,7 @@ export default observer((props: IPageRendererProps) => {
     if (nodeRef.isText) {
       return nodeRef.current;
     }
-    const node = dslStore.dsl.componentIndexes[nodeRef.current];
+    const node = dsl.componentIndexes[nodeRef.current];
 
     // 检查组件的运行时显隐情况，如果是隐藏状态，则不予渲染。（通过组件 props 控制的组件不在此列）
     if (componentVisibilityState[node.id] === false) {
@@ -222,7 +224,7 @@ export default observer((props: IPageRendererProps) => {
     }
 
     // 处理组件
-    const { props = {} } = dslStore.dsl;
+    const { props = {} } = dsl;
     const {
       parentId,
       configName,
@@ -263,7 +265,7 @@ export default observer((props: IPageRendererProps) => {
       rootProps = {
         id: componentId,
         childrenId,
-        parentId: dslStore.dsl.id,
+        parentId: dsl.id,
         scale,
         pageWidth
       };
@@ -302,6 +304,10 @@ export default observer((props: IPageRendererProps) => {
     //   feature = ComponentFeature.solid;
     // }
 
+    if (dslStore?.isHidden && dslStore?.isHidden(componentId)) {
+      return null;
+    }
+
     return mode === 'edit' && !isRoot ? (
       <EditWrapper
         key={componentId}
@@ -320,8 +326,8 @@ export default observer((props: IPageRendererProps) => {
   }
 
   function render() {
-    return recursivelyRenderTemplate(dslStore.dsl.child, true, true);
+    return recursivelyRenderTemplate(dsl.child, true, true);
   }
 
-  return dslStore.dsl ? <>{render()}</> : <div>未获得有效的DSL</div>;
+  return dsl ? <>{render()}</> : <div>未获得有效的DSL</div>;
 });

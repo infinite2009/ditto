@@ -70,6 +70,8 @@ export default class DSLStore {
   currentParentNode: IComponentSchema | IPageSchema | null = null;
   dsl: IPageSchema;
   selectedComponent: IComponentSchema;
+  // 存储组件的隐藏状态
+  private hiddenComponentDict: Record<ComponentId, boolean> = {};
   private redoStack: any[] = [];
   private totalFormConfig: Record<string, IFormConfig>;
   private undoStack: any[] = [];
@@ -79,18 +81,6 @@ export default class DSLStore {
     if (dsl) {
       this.initDSL(dsl);
     }
-  }
-
-  /**
-   * 页面是否为空
-   */
-  get isEmpty() {
-    // 如果尚未初始化，则不认为是空的
-    if (!this.dsl?.componentIndexes) {
-      return false;
-    }
-    // 不算入根组件
-    return Object.keys(this.dsl.componentIndexes).length === 1;
   }
 
   get canRedo() {
@@ -110,6 +100,18 @@ export default class DSLStore {
     }
     const { configName, name } = this.selectedComponent;
     return this.totalFormConfig[configName || name];
+  }
+
+  /**
+   * 页面是否为空
+   */
+  get isEmpty() {
+    // 如果尚未初始化，则不认为是空的
+    if (!this.dsl?.componentIndexes) {
+      return false;
+    }
+    // 不算入根组件
+    return Object.keys(this.dsl.componentIndexes).length === 1;
   }
 
   get valueOfSelectedComponent() {
@@ -395,7 +397,7 @@ export default class DSLStore {
     const deleted = this.deleteSubtree(id);
     // 如果当前已选中的组件，已经被删除了，就清空
     if (this.selectedComponent?.id && !this.dsl.componentIndexes[this.selectedComponent.id]) {
-      this.selectedComponent = null;
+      this.resetSelectedComponent();
     }
     return deleted;
   }
@@ -403,6 +405,23 @@ export default class DSLStore {
   fetchComponentInDSL(id: string) {
     const { componentIndexes } = this.dsl;
     return componentIndexes[id];
+  }
+
+  hideComponent(id: ComponentId) {
+    if (id) {
+      this.hiddenComponentDict[id] = true;
+      if (id === this.selectedComponent?.id) {
+        this.resetSelectedComponent();
+      }
+    }
+  }
+
+  @execute
+  initDSL(dsl: IPageSchema) {
+    if (dsl) {
+      this.dsl = dsl;
+      this.selectComponent(this.dsl.child.current);
+    }
   }
 
   // /**
@@ -425,14 +444,6 @@ export default class DSLStore {
   //     console.error(err);
   //   }
   // }
-
-  @execute
-  initDSL(dsl: IPageSchema) {
-    if (dsl) {
-      this.dsl = dsl;
-      this.selectComponent(this.dsl.child.current);
-    }
-  }
 
   initTotalFormConfig(formConfig: Record<string, IFormConfig>) {
     this.totalFormConfig = formConfig;
@@ -461,6 +472,14 @@ export default class DSLStore {
     } else {
       throw new Error(`未找到有效的父节点：${parentId}`);
     }
+  }
+
+  /**
+   * 判断当前组件是否是隐藏的
+   * @param id
+   */
+  isHidden(id: ComponentId) {
+    return this.hiddenComponentDict[id];
   }
 
   @execute
@@ -519,6 +538,10 @@ export default class DSLStore {
   renameComponent(componentId: ComponentId, newName: string) {
     const componentSchema = this.dsl.componentIndexes[componentId];
     componentSchema.displayName = newName;
+  }
+
+  resetSelectedComponent(): void {
+    this.selectComponent('pageRoot0');
   }
 
   selectComponent(componentId: ComponentId) {
@@ -626,6 +649,10 @@ export default class DSLStore {
         });
       }
     }
+  }
+
+  showComponent(id: ComponentId) {
+    delete this.hiddenComponentDict[id];
   }
 
   /**
