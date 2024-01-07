@@ -898,8 +898,18 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             key: componentSchema.id,
             title: renderTreeNodeTitle(componentSchema)
           };
-          if (hasNonTextChild(componentSchema)) {
-            node.children = recursiveMap(componentSchema.children);
+          // 组件内的插槽也需要加到 children 里
+          const children = Object.values(dslStore.dsl.componentIndexes)
+            .filter(cmp => cmp.parentId === componentSchema.id)
+            .map(cmp => {
+              return {
+                current: cmp.id,
+                isText: false
+              };
+            });
+          if (children.length) {
+            console.log('children: ', toJS(children));
+            node.children = recursiveMap(children);
           } else {
             node.isLeaf = true;
           }
