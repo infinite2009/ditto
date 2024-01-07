@@ -675,6 +675,17 @@ export default class DSLStore {
         this.showComponent(item.id);
       });
     }
+    const componentSchema = this.dsl.componentIndexes[id];
+    const componentConfig = fetchComponentConfig(componentSchema.configName, componentSchema.dependency);
+    if (componentConfig.isLayer) {
+      Object.values(this.dsl.componentIndexes).forEach(item => {
+        const config = fetchComponentConfig(item.configName, item.dependency);
+        // 如果存在其他的图层类组件
+        if (config.isLayer && item.id !== componentSchema.id) {
+          this.hideComponent(item.id);
+        }
+      });
+    }
   }
 
   /**
