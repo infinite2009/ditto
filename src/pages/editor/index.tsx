@@ -899,14 +899,12 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             title: renderTreeNodeTitle(componentSchema)
           };
           // 组件内的插槽也需要加到 children 里
-          const children = Object.values(dslStore.dsl.componentIndexes)
-            .filter(cmp => cmp.parentId === componentSchema.id)
-            .map(cmp => {
-              return {
-                current: cmp.id,
-                isText: false
-              };
-            });
+          const children = dslStore.findChildren(componentSchema.id).map(cmp => {
+            return {
+              current: cmp.id,
+              isText: false
+            };
+          });
           if (children.length) {
             console.log('children: ', toJS(children));
             node.children = recursiveMap(children);

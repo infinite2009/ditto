@@ -407,20 +407,19 @@ export default class DSLStore {
     return componentIndexes[id];
   }
 
+  findChildren(id: ComponentId) {
+    if (!id || !this.dsl.componentIndexes) {
+      return [];
+    }
+    return Object.values(this.dsl.componentIndexes).filter(cmp => cmp.parentId === id);
+  }
+
   hideComponent(id: ComponentId) {
     if (id) {
       this.hiddenComponentDict[id] = true;
       if (id === this.selectedComponent?.id) {
         this.resetSelectedComponent();
       }
-    }
-  }
-
-  @execute
-  initDSL(dsl: IPageSchema) {
-    if (dsl) {
-      this.dsl = dsl;
-      this.selectComponent(this.dsl.child.current);
     }
   }
 
@@ -444,6 +443,14 @@ export default class DSLStore {
   //     console.error(err);
   //   }
   // }
+
+  @execute
+  initDSL(dsl: IPageSchema) {
+    if (dsl) {
+      this.dsl = dsl;
+      this.selectComponent(this.dsl.child.current);
+    }
+  }
 
   initTotalFormConfig(formConfig: Record<string, IFormConfig>) {
     this.totalFormConfig = formConfig;
