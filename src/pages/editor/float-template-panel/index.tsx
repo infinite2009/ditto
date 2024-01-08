@@ -1,8 +1,9 @@
 import { TemplateInfo } from '@/service/db-store';
 import { observer } from 'mobx-react';
-import style from './index.module.less';
 import { AppStoreContext } from '@/hooks/context';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
+import { Button, Input, Modal } from 'antd';
+import style from './index.module.less';
 
 export interface IFloatTemplatePanelProps {
   onApplyTemplate: (path: string) => void;
@@ -10,6 +11,39 @@ export interface IFloatTemplatePanelProps {
 
 export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatTemplatePanelProps) {
   const appStore = useContext(AppStoreContext);
+
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  function openModal() {
+    setModalVisible(true);
+  }
+
+  function closeModal() {
+    setModalVisible(false);
+  }
+
+  function renderModalTitle() {
+    return (
+      <div className={style.modalTitleWrapper}>
+        <span>模板库</span>
+        <div>
+          <Input />
+          <div>
+            <Button>1</Button>
+            <Button>2</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function renderModal() {
+    return (
+      <Modal open={modalVisible} title={renderModalTitle()}>
+        <div className={style.modalContent}></div>
+      </Modal>
+    );
+  }
 
   function renderTemplateList() {
     let convertedList = [];
@@ -22,7 +56,7 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
         return renderTemplate(tpl, index.toString());
       });
     tpl.push(
-      <div className={style.moreTemplate} key={tpl.length}>
+      <div className={style.moreTemplate} key={tpl.length} onClick={openModal}>
         <h3 className={style.moreTemplateTitle}>更多模板</h3>
         <div className={style.moreTemplateImage} />
       </div>
