@@ -863,9 +863,16 @@ export default class DSLStore {
       return null;
     }
 
+    const children = this.findChildren(id).map(item => {
+      return {
+        current: item.id,
+        isText: false
+      };
+    });
+
     // 1. 如果存在子树，递归地删除子树
-    if (component.children.length) {
-      component.children.forEach(item => {
+    if (children.length) {
+      children.forEach(item => {
         // 如果不是文本节点，递归地删除子树
         if (!item.isText) {
           this.deleteSubtree(item.current);

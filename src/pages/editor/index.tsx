@@ -1053,9 +1053,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function renderMoreTemplatePanel() {
-    // if (Object.keys(dslStore?.dsl?.componentIndexes || {}).length > 1) {
-    //   return null;
-    // }
     if (!dslStore?.isEmpty) {
       return null;
     }
