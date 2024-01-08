@@ -295,14 +295,6 @@ export default observer((props: IPageRendererProps) => {
         {childrenTemplate}
       </Component>
     );
-    // let feature;
-    // if (isSlot) {
-    //   feature = ComponentFeature.slot;
-    // } else if (componentConfig?.isContainer) {
-    //   feature = ComponentFeature.container;
-    // } else {
-    //   feature = ComponentFeature.solid;
-    // }
 
     if (dslStore?.isHidden && dslStore?.isHidden(componentId)) {
       return null;
@@ -316,7 +308,6 @@ export default observer((props: IPageRendererProps) => {
         childrenId={childrenId}
         feature={feature}
         childrenStyle={componentProps?.style}
-        undeletable={isSlot}
       >
         {tpl}
       </EditWrapper>
