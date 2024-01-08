@@ -321,11 +321,11 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
   async function deleteProject(data: ProjectInfo) {
     try {
       await fileManager.deleteProject(data, deleteFolder.current);
-      Modal.info({
-        icon: null,
-        title: '已删除',
-        content: '请重新'
-      });
+      // Modal.info({
+      //   icon: null,
+      //   title: '已删除',
+      //   content: '请重新'
+      // });
       if (onDeleteProject) {
         onDeleteProject(data.id);
       }
