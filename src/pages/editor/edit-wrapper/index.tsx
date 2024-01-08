@@ -2,7 +2,7 @@ import { useCombinedRefs } from '@dnd-kit/utilities';
 import React, { CSSProperties, useContext, useEffect, useMemo, useState } from 'react';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import ComponentFeature from '@/types/component-feature';
-import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
+import { DSLStoreContext } from '@/hooks/context';
 import classNames from 'classnames';
 
 import { observer } from 'mobx-react';
@@ -15,7 +15,6 @@ export interface IEditorProps {
   feature?: ComponentFeature;
   id: string;
   parentId: string;
-  undeletable?: boolean;
 }
 
 export default observer(function EditWrapper({
@@ -29,7 +28,6 @@ export default observer(function EditWrapper({
 }: IEditorProps) {
   const [styleState, setStyleState] = useState<CSSProperties>({});
   const dslStore = useContext(DSLStoreContext);
-  const editorStore = useContext(EditorStoreContext);
 
   const vertical = useMemo(() => {
     if (React.isValidElement(children)) {
