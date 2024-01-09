@@ -41,6 +41,9 @@ dependencies:
   fs-extra:
     specifier: ^11.1.1
     version: 11.1.1
+  html-to-image:
+    specifier: ^1.11.11
+    version: 1.11.11
   localforage:
     specifier: ^1.10.0
     version: 1.10.0
@@ -64,7 +67,7 @@ dependencies:
     version: 18.2.0(react@18.2.0)
   tauri-plugin-sql-api:
     specifier: github:tauri-apps/tauri-plugin-sql#v1
-    version: github.com/tauri-apps/tauri-plugin-sql/0ff47f365d6f331c78bc75ed90a2246e0d4a8b39
+    version: github.com/tauri-apps/tauri-plugin-sql/a31253b6a3da1f97a8a815747761f7ab6c21420a
   wouter:
     specifier: 2.12.0-beta.1
     version: 2.12.0-beta.1(react@18.2.0)
@@ -4102,6 +4105,10 @@ packages:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
     dev: true
 
+  /html-to-image@1.11.11:
+    resolution: {integrity: sha512-9gux8QhvjRO/erSnDPv28noDZcPZmYE7e1vFsBLKLlRlKDSqNJYebj6Qz1TGd5lsRV+X+xYyjCKjuZdABinWjA==}
+    dev: false
+
   /human-signals@2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
     engines: {node: '>=10.17.0'}
@@ -7842,8 +7849,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/tauri-apps/tauri-plugin-sql/0ff47f365d6f331c78bc75ed90a2246e0d4a8b39:
-    resolution: {tarball: https://codeload.github.com/tauri-apps/tauri-plugin-sql/tar.gz/0ff47f365d6f331c78bc75ed90a2246e0d4a8b39}
+  github.com/tauri-apps/tauri-plugin-sql/a31253b6a3da1f97a8a815747761f7ab6c21420a:
+    resolution: {tarball: https://codeload.github.com/tauri-apps/tauri-plugin-sql/tar.gz/a31253b6a3da1f97a8a815747761f7ab6c21420a}
     name: tauri-plugin-sql-api
     version: 0.0.0
     dependencies:
