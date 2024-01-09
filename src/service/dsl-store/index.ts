@@ -110,8 +110,12 @@ export default class DSLStore {
     if (!this.dsl?.componentIndexes) {
       return false;
     }
-    // 不算入根组件
-    return Object.keys(this.dsl.componentIndexes).length === 1;
+    const pageRoot = this.dsl.componentIndexes[this.dsl.child.current];
+    if (pageRoot) {
+      console.log('page.children.length: ', pageRoot.children.length);
+      return pageRoot.children.length === 0;
+    }
+    return false;
   }
 
   get valueOfSelectedComponent() {
