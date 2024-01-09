@@ -19,7 +19,7 @@ export function Undo(props: Omit<IconFontProps, 'type'>) {
 }
 
 export function Close(props: Omit<IconFontProps, 'type'>) {
-  return <Icon {...props} type="icon-guanbi1" />;
+  return <Icon {...props} type="icon-guanbi" />;
 }
 
 export function Clear(props: Omit<IconFontProps, 'type'>) {

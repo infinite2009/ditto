@@ -24,7 +24,7 @@ export default observer(function PageRoot({
   childrenId,
   parentId,
   children,
-  scale = 1,
+  scale = 100,
   pageWidth
 }: IPageRootProps) {
   const dslStore = useContext(DSLStoreContext);

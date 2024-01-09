@@ -4,7 +4,16 @@ import prettierConfig from '@/config/.prettierrc.json';
 import * as babel from 'prettier/parser-babel';
 import parserHtml from 'prettier/parser-html';
 import { RequiredOptions } from 'prettier';
-import { BaseDirectory, createDir, exists, FileEntry, readDir, readTextFile, writeTextFile } from '@tauri-apps/api/fs';
+import {
+  BaseDirectory,
+  createDir,
+  exists,
+  FileEntry,
+  readDir,
+  readTextFile,
+  writeBinaryFile,
+  writeTextFile
+} from '@tauri-apps/api/fs';
 import { open } from '@tauri-apps/api/dialog';
 import ReactCodeGenerator from '@/service/code-generator/react';
 import TypeScriptCodeGenerator from '@/service/code-generator/typescript';
@@ -563,7 +572,7 @@ class FileManager {
     await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
   }
 
-  async saveTemplateFile(fileName: string, pageFilePath: string) {
+  async saveTemplateFile(fileName: string, pageFilePath: string, coverBuffer: ArrayBuffer) {
     try {
       const appLocalDataDirPath = await appLocalDataDir();
       const templateDir = await join(appLocalDataDirPath, 'templates');
@@ -573,10 +582,15 @@ class FileManager {
       const content = await fileManager.readFile(pageFilePath);
       const dslObj = JSON.parse(content);
       dslObj.name = fileName;
-      const templateFilePath = await join(templateDir, `${nanoid()}.dtpl`);
+
+      const id = nanoid();
+
+      const templateFilePath = await join(templateDir, `${id}.dtpl`);
+      const coverPath = await join(templateDir, `${id}.png`);
       await writeTextFile(templateFilePath, JSON.stringify(dslObj));
+      await writeBinaryFile({ path: coverPath, contents: coverBuffer });
       // 模板文件路径写入数据库
-      return await DbStore.createTemplate({ name: fileName, path: templateFilePath, category: '基础' });
+      return await DbStore.createTemplate({ name: fileName, path: templateFilePath, category: '基础', coverPath });
     } catch (err) {
       console.error(err);
     }

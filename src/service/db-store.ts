@@ -8,6 +8,7 @@ export type TemplateInfo = {
   id: string;
   name: string;
   path: string;
+  coverPath: string;
   category: string;
   createdTime: number;
   updatedTime: number;
@@ -71,7 +72,7 @@ export default class DbStore {
       // 创建四张表
       await Promise.all([
         db.execute(
-          'CREATE TABLE IF NOT EXISTS template_info (id TEXT NOT NULL, name TEXT, path TEXT, category TEXT, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'
+          'CREATE TABLE IF NOT EXISTS template_info (id TEXT NOT NULL, name TEXT, path TEXT, cover_path TEXT, category TEXT, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'
         ),
         db.execute(
           'CREATE TABLE IF NOT EXISTS module_info (id TEXT NOT NULL, name TEXT, path TEXT, category TEXT, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'

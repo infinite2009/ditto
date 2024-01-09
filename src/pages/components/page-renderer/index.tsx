@@ -1,5 +1,5 @@
 import { toJS } from 'mobx';
-import React, { FC, PropsWithChildren, Reducer, useContext, useReducer } from 'react';
+import React, { FC, PropsWithChildren, Reducer, useContext, useEffect, useReducer } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
@@ -12,11 +12,14 @@ import ActionType from '@/types/action-type';
 import { open } from '@tauri-apps/api/shell';
 import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
+import DSLStore from '@/service/dsl-store';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
-  pageWidth: number;
+  pageWidth?: number;
   scale?: number;
+  extraStore?: DSLStore;
+  onRender?: () => void;
 }
 
 export default observer((props: IPageRendererProps) => {
@@ -24,11 +27,11 @@ export default observer((props: IPageRendererProps) => {
     return null;
   }
 
+  const { extraStore, onRender, mode = 'preview', scale, pageWidth } = props;
+
   const dslStore = useContext(DSLStoreContext);
 
-  const { dsl } = toJS(dslStore);
-
-  const { mode = 'preview', scale, pageWidth } = props;
+  const dsl = extraStore ? toJS(extraStore.dsl) : toJS(dslStore.dsl);
 
   const [transferredComponentState, componentStateDispatch] = useReducer<
     Reducer<Record<ComponentId, Record<PropsId, any>>, any>
@@ -36,6 +39,12 @@ export default observer((props: IPageRendererProps) => {
   const [componentVisibilityState, componentVisibilityDispatch] = useReducer<
     Reducer<Record<ComponentId, boolean>, any>
   >(componentHiddenReducer, {});
+
+  useEffect(() => {
+    if (onRender) {
+      onRender();
+    }
+  }, []);
 
   function stateTransitionReducer(
     state: Record<ComponentId, Record<PropsId, any>>,

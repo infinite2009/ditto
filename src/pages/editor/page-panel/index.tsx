@@ -9,6 +9,11 @@ import fileManager from '@/service/file';
 import { AppStoreContext } from '@/hooks/context';
 import { Scene } from '@/service/app-store';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
+import { createPortal } from 'react-dom';
+import PageRenderer from '@/pages/components/page-renderer';
+import DSLStore from '@/service/dsl-store';
+import html2canvas from 'html2canvas';
+import { PageWidth } from '@/pages/editor/toolbar';
 import styles from './index.module.less';
 
 interface PageData {
@@ -32,6 +37,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
   const [selectedPath, setSelectedPath] = useState<ComponentId>('');
   const [pageOrFolderPathForCopy, setPageOrFolderPathForCopy] = useState<string>('');
+  const [storeForCover, setStoreForCover] = useState<DSLStore>(null);
 
   const clickTimeoutIdRef = useRef<NodeJS.Timeout>();
   const selectedPageOrFolderForMenuRef = useRef<{
@@ -198,11 +204,9 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
 
   function copyPageOrFolder() {
     if (!selectedPageOrFolderForMenuRef.current) {
-      console.log('selectedPageOrFolderForMenuRef.current: ', selectedPageOrFolderForMenuRef.current);
       return;
     }
     setPageOrFolderPathForCopy(selectedPageOrFolderForMenuRef.current.path);
-    console.log('copy page or folder works: ', selectedPageOrFolderForMenuRef.current);
   }
 
   async function pastePageOrFolder() {
@@ -210,7 +214,6 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
     if (onChange) {
       onChange();
     }
-    console.log('copy page or folder works: ', selectedPageOrFolderForMenuRef.current);
   }
 
   async function removePageOrFolder() {
@@ -218,19 +221,44 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
     if (onChange) {
       onChange();
     }
-    console.log('removePageOrFolder works: ', selectedPageOrFolderForMenuRef.current);
   }
 
   function renamePageOrFolder() {
     setSelectedPath(selectedPageOrFolderForMenuRef.current.path);
-    console.log('renamePageOrFolder works: ', selectedPageOrFolderForMenuRef.current);
+  }
+
+  async function onRender() {
+    const portal = document.getElementById('templatePortal');
+    if (portal) {
+      const canvas = await html2canvas(portal);
+      canvas.toBlob(async blob => {
+        const buffer = await blob.arrayBuffer();
+        await fileManager.saveTemplateFile('模板名称demo', selectedPageOrFolderForMenuRef.current.path, buffer);
+        portal.remove();
+        if (onChange) {
+          onChange();
+        }
+      });
+    }
   }
 
   async function exportPageAsTemplate() {
-    await fileManager.saveTemplateFile('模板名称demo', selectedPageOrFolderForMenuRef.current.path).then();
-    if (onChange) {
-      onChange();
+    const extraStore = new DSLStore();
+    const dsl = JSON.parse(await fileManager.readFile(selectedPageOrFolderForMenuRef.current.path));
+    extraStore.initDSL(dsl);
+    setStoreForCover(extraStore);
+  }
+
+  function renderTemplateForCover() {
+    if (!storeForCover) {
+      return null;
     }
+    return createPortal(
+      <div id="templatePortal" className={styles.templatePortals}>
+        <PageRenderer extraStore={storeForCover} onRender={onRender} pageWidth={PageWidth.wechat} />
+      </div>,
+      document.body
+    );
   }
 
   /**
@@ -339,6 +367,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
           />
         </div>
       ) : null}
+      {renderTemplateForCover()}
     </div>
   );
 }

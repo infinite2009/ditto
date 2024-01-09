@@ -13,6 +13,13 @@
   "tauri": {
     "allowlist": {
       "all": false,
+      "protocol": {
+        "asset": true,
+        "assetScope": [
+          "$APPDATA/**",
+          "$APPLOCALDATA/**"
+        ]
+      },
       "fs": {
         "all": true,
         "scope": [
@@ -133,7 +140,7 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
     },
     "windows": [
       {
