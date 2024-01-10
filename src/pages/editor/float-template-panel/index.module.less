@@ -142,7 +142,8 @@
   }
 
   &:hover {
-    .hoverAnimation();
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.16), 0 0 2px 0 rgba(0, 0, 0, 0.04);
+    transition: box-shadow .3s ease-in-out;
     .previewBtnGroup {
       opacity: 1;
       transition: opacity .3s ease-in-out;
@@ -179,6 +180,7 @@
 
 .templateCover {
   border-radius: 4px;
+  border: 1px solid #F1F2F3;
   width: 100%;
   height: calc(100% - 22px);
   object-fit: contain;
@@ -213,9 +215,14 @@
     line-height: 16px;
     color: #9499A0;
     background-color: transparent;
+    transition: all .3s ease-in-out;
+    svg {
+      font-size: 16px;
+    }
     &.selected {
       color: #1A4BFF;
       background-color: #fff;
+      transition: all .3s ease-in-out;
     }
     &:not(.selected):hover {
       border: unset;

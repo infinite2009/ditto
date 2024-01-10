@@ -572,16 +572,18 @@ class FileManager {
     await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
   }
 
-  async saveTemplateFile(fileName: string, pageFilePath: string, coverBuffer: ArrayBuffer) {
+  async saveTemplateFile(page: { name: string; path: string }, coverBuffer: ArrayBuffer) {
     try {
+      const { name, path } = page;
       const appLocalDataDirPath = await appLocalDataDir();
       const templateDir = await join(appLocalDataDirPath, 'templates');
       if (!(await exists(templateDir))) {
         await createDir(templateDir);
       }
-      const content = await fileManager.readFile(pageFilePath);
+      const content = await fileManager.readFile(path);
       const dslObj = JSON.parse(content);
-      dslObj.name = fileName;
+      const nameWithoutExt = name.replace('.ditto', '');
+      dslObj.name = nameWithoutExt;
 
       const id = nanoid();
 
@@ -590,7 +592,12 @@ class FileManager {
       await writeTextFile(templateFilePath, JSON.stringify(dslObj));
       await writeBinaryFile({ path: coverPath, contents: coverBuffer });
       // 模板文件路径写入数据库
-      return await DbStore.createTemplate({ name: fileName, path: templateFilePath, category: '基础', coverPath });
+      return await DbStore.createTemplate({
+        name: nameWithoutExt,
+        path: templateFilePath,
+        category: '基础',
+        coverPath
+      });
     } catch (err) {
       console.error(err);
     }

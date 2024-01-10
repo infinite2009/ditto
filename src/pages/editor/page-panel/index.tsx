@@ -233,13 +233,13 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
     setSelectedPath(selectedPageOrFolderForMenuRef.current.path);
   }
 
-  async function onRender() {
+  async function executeExport() {
     const portal = document.getElementById('templatePortal');
     if (portal) {
       const canvas = await html2canvas(portal);
       canvas.toBlob(async blob => {
         const buffer = await blob.arrayBuffer();
-        await fileManager.saveTemplateFile('模板名称demo', selectedPageOrFolderForMenuRef.current.path, buffer);
+        await fileManager.saveTemplateFile(selectedPageOrFolderForMenuRef.current, buffer);
         setShowCover(false);
         if (onChange) {
           onChange();
@@ -259,7 +259,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
     if (!storeForCover || !showCover) {
       return null;
     }
-    return <PageRenderer extraStore={storeForCover} onRender={onRender} pageWidth={PageWidth.wechat} />;
+    return <PageRenderer extraStore={storeForCover} onRender={executeExport} pageWidth={PageWidth.wechat} />;
   }
 
   /**

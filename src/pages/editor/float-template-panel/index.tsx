@@ -4,7 +4,7 @@ import { AppStoreContext } from '@/hooks/context';
 import React, { useContext, useRef, useState } from 'react';
 import { Button, ConfigProvider, Divider, Dropdown, Input, Modal } from 'antd';
 import style from './index.module.less';
-import { Close, ExpandThin, More } from '@/components/icon';
+import { Close, ExpandThin, Menu2, More, Playlist2 } from '@/components/icon';
 import { convertFileSrc } from '@tauri-apps/api/tauri';
 import classNames from 'classnames';
 import { Scene } from '@/service/app-store';
@@ -72,10 +72,10 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
           <Input.Search onSearch={filterTemplateByKeyword} />
           <div className={style.buttonGroup}>
             <button className={smallBtnClass} onClick={() => toggleListMode('small')}>
-              <Close />
+              <Playlist2 />
             </button>
             <button className={largeBtnClass} onClick={() => toggleListMode('large')}>
-              <Close />
+              <Menu2 />
             </button>
           </div>
           <Divider type="vertical" />
@@ -113,6 +113,7 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
             <Input
               defaultValue={selectedTemplateInfoForRename.name}
               onPressEnter={e => renameTemplate(e.target.value.trim())}
+              onBlur={e => renameTemplate(e.target.value.trim())}
             />
           ) : (
             <h3 className={style.templateName}>{tplInfo.name}</h3>
