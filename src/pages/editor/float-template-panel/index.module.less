@@ -5,6 +5,11 @@
   transform: translateX(-50%);
 }
 
+.hoverAnimation() {
+  transform: translateY(-8px);
+  transition: transform .3s ease-in-out;
+}
+
 .templateList {
   display: flex;
   flex-direction: row;
@@ -26,8 +31,7 @@
   .templateCore();
   transition: transform .3s ease-in-out;
   &:hover {
-    transform: translateY(-8px);
-    transition: transform .3s ease-in-out;
+    .hoverAnimation();
   }
 }
 
@@ -98,36 +102,52 @@
   background-color: #E3E5E7;
 }
 
+.smallTemplatePreview {
+  width: 216px;
+  height: 178px;
+}
+
+.largeTemplatePreview {
+  width: 448px;
+  height: 340px;
+}
+
 .templatePreview {
   position: relative;
   border-radius: 8px;
   padding: 8px;
-  width: 216px;
-  height: 178px;
+
   background-color: #fff;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.02), 0 0 2px 0 rgba(0, 0, 0, 0.04);
+  transition: transform .3s ease-in-out;
 
   .previewBtnGroup {
-    display: none;
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    flex-direction: row;
+    width: 100%;
+    gap: 8px;
+    padding: 8px;
+    justify-content: space-between;
+    opacity: 0;
+    transform: translateX(-50%);
+    transition: opacity .3s ease-in-out;
   }
 
   &:hover {
+    .hoverAnimation();
     .previewBtnGroup {
-      display: flex;
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      flex-direction: row;
-      width: 216px;
-      padding: 8px;
-      justify-content: space-between;
-      transform: translateX(-50%);
+      opacity: 1;
+      transition: opacity .3s ease-in-out;
     }
   }
 }
 
 .previewBtn,
 .previewBtn2 {
+  flex-grow: 1;
   border-radius: 6px;
   width: 96px;
   height: 28px;
@@ -154,22 +174,53 @@
 
 .templateCover {
   border-radius: 4px;
-  width: 200px;
-  height: 140px;
+  width: 100%;
+  height: calc(100% - 22px);
   object-fit: contain;
   pointer-events: none;
 }
 
-.templateNameWrapper,
-.buttonWrapper,
-.buttonGroup {
+.lateralLayout() {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  align-items: center;
+  align-content: center;
+}
+
+.buttonWrapper {
+  .lateralLayout();
+  gap: 12px;
+}
+
+.buttonGroup {
+  .lateralLayout();
+  border-radius: 6px;
+  padding: 2px;
+  width: 86px;
+  height: 28px;
+  background-color: #F1F2F3;
+  .btn {
+    border-radius: 4px;
+    border: unset;
+    width: 40px;
+    height: 24px;
+    padding: 4px 12px;
+    line-height: 16px;
+    color: #9499A0;
+    background-color: transparent;
+    &.selected {
+      color: #1A4BFF;
+      background-color: #fff;
+    }
+    &:not(.selected):hover {
+      border: unset;
+      color: #9499A0 !important;
+    }
+  }
 }
 
 .templateNameWrapper {
+  .lateralLayout();
   gap: 6px;
 }
 

@@ -6,6 +6,7 @@ import { Button, ConfigProvider, Divider, Input, Modal } from 'antd';
 import style from './index.module.less';
 import { Close, ExpandThin } from '@/components/icon';
 import { convertFileSrc } from '@tauri-apps/api/tauri';
+import classNames from 'classnames';
 
 export interface IFloatTemplatePanelProps {
   onApplyTemplate: (path: string) => void;
@@ -15,6 +16,7 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
   const appStore = useContext(AppStoreContext);
 
   const [keyword, setKeyword] = useState<string>('');
+  const [listMode, setListMode] = useState<'small' | 'large'>('small');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [templateInfoInPreview, setTemplateInfoInPreview] = useState<TemplateInfo>(null);
 
@@ -48,14 +50,29 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
         </div>
       );
     }
+
+    const smallBtnClass = classNames({
+      [style.btn]: true,
+      [style.selected]: listMode === 'small'
+    });
+
+    const largeBtnClass = classNames({
+      [style.btn]: true,
+      [style.selected]: listMode === 'large'
+    });
+
     return (
       <div className={style.modalTitleWrapper}>
         <h3 className={style.modalTitle}>模板库</h3>
         <div className={style.buttonWrapper}>
           <Input.Search onSearch={filterTemplateByKeyword} />
           <div className={style.buttonGroup}>
-            <Button>1</Button>
-            <Button>2</Button>
+            <button className={smallBtnClass} onClick={() => toggleListMode('small')}>
+              <Close />
+            </button>
+            <button className={largeBtnClass} onClick={() => toggleListMode('large')}>
+              <Close />
+            </button>
           </div>
           <Divider type="vertical" />
           <Close className={style.closeIcon} onClick={closeModal} />
@@ -64,13 +81,23 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
     );
   }
 
+  function toggleListMode(mode: 'small' | 'large') {
+    setListMode(mode);
+  }
+
   function previewTemplate(tplInfo: TemplateInfo) {
     setTemplateInfoInPreview(tplInfo);
   }
 
   function renderTemplatePreview(tplInfo: TemplateInfo) {
+    const templatePreviewClass = classNames({
+      [style.templatePreview]: true,
+      [style.smallTemplatePreview]: listMode === 'small',
+      [style.largeTemplatePreview]: listMode === 'large'
+    });
+
     return (
-      <div className={style.templatePreview}>
+      <div className={templatePreviewClass}>
         <h3 className={style.templateName}>{tplInfo.name}</h3>
         <img className={style.templateCover} src={convertFileSrc(tplInfo.coverPath)} alt="图片加载失败" />
         <div className={style.previewBtnGroup}>
