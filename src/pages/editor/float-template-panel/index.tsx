@@ -212,14 +212,6 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
     );
   }
 
-  function renderPreview() {
-    return (
-      <Modal>
-        <div> template preview works!</div>
-      </Modal>
-    );
-  }
-
   return (
     <div className={style.main}>
       {renderTemplateList()}
