@@ -1,5 +1,5 @@
 import { toJS } from 'mobx';
-import React, { FC, PropsWithChildren, Reducer, useContext, useEffect, useReducer } from 'react';
+import React, { FC, PropsWithChildren, Reducer, useContext, useLayoutEffect, useReducer } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
 import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
@@ -40,11 +40,11 @@ export default observer((props: IPageRendererProps) => {
     Reducer<Record<ComponentId, boolean>, any>
   >(componentHiddenReducer, {});
 
-  useEffect(() => {
-    if (onRender) {
+  useLayoutEffect(() => {
+    if (onRender && extraStore) {
       onRender();
     }
-  }, []);
+  }, [extraStore]);
 
   function stateTransitionReducer(
     state: Record<ComponentId, Record<PropsId, any>>,

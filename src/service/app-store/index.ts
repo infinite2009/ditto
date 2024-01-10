@@ -1,12 +1,13 @@
 import { makeAutoObservable } from 'mobx';
 import { nanoid } from 'nanoid';
 import cloneDeep from 'lodash/cloneDeep';
-import { TemplateInfo } from '@/service/db-store';
+import DbStore, { TemplateInfo } from '@/service/db-store';
 
 export type Modifier = 'ctrl' | 'meta' | 'alt' | 'shift';
 
 export enum Scene {
   projectManagement = 'projectManagement',
+  templateManagement = 'templateManagement',
   editor = 'editor',
   preview = 'preview'
 }
@@ -94,6 +95,24 @@ export default class AppStore {
         alt: false,
         shift: false,
         meta: true
+      }
+    },
+    [Scene.templateManagement]: {
+      renameTemplate: {
+        functionName: '重命名',
+        key: 'R',
+        ctrl: false,
+        alt: false,
+        shift: false,
+        meta: true
+      },
+      deleteTemplate: {
+        functionName: '删除',
+        key: 'DELETE',
+        ctrl: false,
+        alt: false,
+        shift: false,
+        meta: false
       }
     },
     [Scene.editor]: {
@@ -417,6 +436,26 @@ export default class AppStore {
     this.templateList = data;
   }
 
+  async fetchTemplates() {
+    const res = await DbStore.fetchTemplates();
+    if (!res.length) {
+      this.setTemplateList([]);
+    } else {
+      const dataTmp: Record<string, { category: string; data: TemplateInfo[] }> = {};
+      res.forEach(item => {
+        if (!dataTmp[item.category]) {
+          dataTmp[item.category] = {
+            category: item.category,
+            data: []
+          };
+        }
+        dataTmp[item.category].data.push(item);
+      });
+      this.setTemplateList(Object.values(dataTmp));
+    }
+    return this.templateList;
+  }
+
   createContext(scene: Scene, data: any, handlers: Record<FunctionKey, ShortKeyHandler> = {}) {
     const contextId = nanoid();
     this.contexts[contextId] = {
@@ -530,6 +569,13 @@ export default class AppStore {
     if (this.shortKeyDict[scene]?.[functionKey]) {
       delete this.shortKeyDict[scene][shortKey];
     }
+  }
+
+  async renameTemplate(templateId: string, name: string) {
+    return await DbStore.updateTemplate({
+      id: templateId,
+      name
+    });
   }
 
   /**

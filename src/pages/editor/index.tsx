@@ -47,7 +47,6 @@ import { generateContextMenus } from '@/util';
 import InsertType from '@/types/insert-type';
 import { Scene } from '@/service/app-store';
 import FloatTemplatePanel from '@/pages/editor/float-template-panel';
-import DbStore, { TemplateInfo } from '@/service/db-store';
 import { createPortal } from 'react-dom';
 import { Eye, EyeClose } from '@/components/icon';
 import classNames from 'classnames';
@@ -935,22 +934,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   async function fetchTemplateData() {
-    const res = await DbStore.fetchTemplates();
-    if (!res.length) {
-      appStore.setTemplateList([]);
-    } else {
-      const dataTmp: Record<string, { category: string; data: TemplateInfo[] }> = {};
-      res.forEach(item => {
-        if (!dataTmp[item.category]) {
-          dataTmp[item.category] = {
-            category: item.category,
-            data: []
-          };
-        }
-        dataTmp[item.category].data.push(item);
-      });
-      appStore.setTemplateList(Object.values(dataTmp));
-    }
+    await appStore.fetchTemplates();
   }
 
   /**

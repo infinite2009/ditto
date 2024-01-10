@@ -135,7 +135,7 @@ export default class DbStore {
     return await DbStore.updateRow('project_info', data);
   }
 
-  static async updateTemplate(data: Omit<TemplateInfo, 'createdTime' | 'updatedTime'>) {
+  static async updateTemplate(data: Omit<Partial<TemplateInfo>, 'createdTime' | 'updatedTime'>) {
     const cp = { ...data };
     return await DbStore.updateRow('template_info', data);
   }

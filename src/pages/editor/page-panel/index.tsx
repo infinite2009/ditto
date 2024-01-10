@@ -9,7 +9,6 @@ import fileManager from '@/service/file';
 import { AppStoreContext } from '@/hooks/context';
 import { Scene } from '@/service/app-store';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
-import { createPortal } from 'react-dom';
 import PageRenderer from '@/pages/components/page-renderer';
 import DSLStore from '@/service/dsl-store';
 import html2canvas from 'html2canvas';
@@ -38,6 +37,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   const [selectedPath, setSelectedPath] = useState<ComponentId>('');
   const [pageOrFolderPathForCopy, setPageOrFolderPathForCopy] = useState<string>('');
   const [storeForCover, setStoreForCover] = useState<DSLStore>(null);
+  const [showCover, setShowCover] = useState<boolean>(false);
 
   const clickTimeoutIdRef = useRef<NodeJS.Timeout>();
   const selectedPageOrFolderForMenuRef = useRef<{
@@ -54,6 +54,12 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
       setExpandedKeys(mergedExpandedKeys);
     }
   }, [selected, data]);
+
+  useEffect(() => {
+    if (storeForCover) {
+      setShowCover(true);
+    }
+  }, [storeForCover]);
 
   const selectedKeys = useMemo(() => {
     if (selected && data.length) {
@@ -234,7 +240,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
       canvas.toBlob(async blob => {
         const buffer = await blob.arrayBuffer();
         await fileManager.saveTemplateFile('模板名称demo', selectedPageOrFolderForMenuRef.current.path, buffer);
-        portal.remove();
+        setShowCover(false);
         if (onChange) {
           onChange();
         }
@@ -250,15 +256,10 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   }
 
   function renderTemplateForCover() {
-    if (!storeForCover) {
+    if (!storeForCover || !showCover) {
       return null;
     }
-    return createPortal(
-      <div id="templatePortal" className={styles.templatePortals}>
-        <PageRenderer extraStore={storeForCover} onRender={onRender} pageWidth={PageWidth.wechat} />
-      </div>,
-      document.body
-    );
+    return <PageRenderer extraStore={storeForCover} onRender={onRender} pageWidth={PageWidth.wechat} />;
   }
 
   /**
@@ -367,7 +368,9 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
           />
         </div>
       ) : null}
-      {renderTemplateForCover()}
+      <div id="templatePortal" className={styles.templatePortals}>
+        {renderTemplateForCover()}
+      </div>
     </div>
   );
 }

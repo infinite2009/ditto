@@ -43,7 +43,7 @@ export function Layout(props: Omit<IconFontProps, 'type'>) {
 }
 
 export function More(props: Omit<IconFontProps, 'type'>) {
-  return <Icon {...props} type="icon-gengduo1" />;
+  return <Icon {...props} type="icon-gengduo" />;
 }
 
 export function AscendingOrder(props: Omit<IconFontProps, 'type'>) {

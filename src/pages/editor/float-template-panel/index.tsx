@@ -1,12 +1,13 @@
-import { TemplateInfo } from '@/service/db-store';
+import DbStore, { TemplateInfo } from '@/service/db-store';
 import { observer } from 'mobx-react';
 import { AppStoreContext } from '@/hooks/context';
-import { useContext, useState } from 'react';
-import { Button, ConfigProvider, Divider, Input, Modal } from 'antd';
+import React, { useContext, useRef, useState } from 'react';
+import { Button, ConfigProvider, Divider, Dropdown, Input, Modal } from 'antd';
 import style from './index.module.less';
-import { Close, ExpandThin } from '@/components/icon';
+import { Close, ExpandThin, More } from '@/components/icon';
 import { convertFileSrc } from '@tauri-apps/api/tauri';
 import classNames from 'classnames';
+import { Scene } from '@/service/app-store';
 
 export interface IFloatTemplatePanelProps {
   onApplyTemplate: (path: string) => void;
@@ -18,7 +19,10 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
   const [keyword, setKeyword] = useState<string>('');
   const [listMode, setListMode] = useState<'small' | 'large'>('small');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [selectedTemplateInfoForRename, setSelectedTemplateInfoForRename] = useState<TemplateInfo>(null);
   const [templateInfoInPreview, setTemplateInfoInPreview] = useState<TemplateInfo>(null);
+
+  const selectedTemplateInfoRef = useRef<TemplateInfo>(null);
 
   function openModal() {
     setModalVisible(true);
@@ -42,7 +46,7 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
     if (templateInfoInPreview) {
       return (
         <div className={style.modalTitleWrapper}>
-          <div className={style.templateNameWrapper}>
+          <div className={style.templateNameWrapperInPreview}>
             <ExpandThin className={style.backIcon} onClick={goBackToTemplateList} />
             <h3 className={style.modalTitle}>{templateInfoInPreview.name}</h3>
           </div>
@@ -89,6 +93,12 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
     setTemplateInfoInPreview(tplInfo);
   }
 
+  async function renameTemplate(name: string) {
+    await appStore.renameTemplate(selectedTemplateInfoForRename.id, name);
+    await appStore.fetchTemplates();
+    setSelectedTemplateInfoForRename(null);
+  }
+
   function renderTemplatePreview(tplInfo: TemplateInfo) {
     const templatePreviewClass = classNames({
       [style.templatePreview]: true,
@@ -98,7 +108,17 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
 
     return (
       <div className={templatePreviewClass}>
-        <h3 className={style.templateName}>{tplInfo.name}</h3>
+        <div className={style.templateNameWrapper}>
+          {selectedTemplateInfoForRename ? (
+            <Input
+              defaultValue={selectedTemplateInfoForRename.name}
+              onPressEnter={e => renameTemplate(e.target.value.trim())}
+            />
+          ) : (
+            <h3 className={style.templateName}>{tplInfo.name}</h3>
+          )}
+          {renderDropdown(tplInfo)}
+        </div>
         <img className={style.templateCover} src={convertFileSrc(tplInfo.coverPath)} alt="图片加载失败" />
         <div className={style.previewBtnGroup}>
           <ConfigProvider autoInsertSpaceInButton={false}>
@@ -210,6 +230,88 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
         <img className={style.templateImage} src={convertFileSrc(coverPath)} alt="图片加载失败" />
       </div>
     );
+  }
+
+  function handleClickDropdownMenu() {
+    console.log('dropdown works');
+  }
+
+  function onOpenChange(open: boolean, data: TemplateInfo) {
+    if (open) {
+      selectedTemplateInfoRef.current = data;
+    } else {
+      // 防止菜单关闭以后，快捷键依旧生效
+      selectedTemplateInfoRef.current = null;
+    }
+  }
+
+  function renderDropdown(data: TemplateInfo) {
+    return (
+      <Dropdown
+        menu={generateDropDownMenu()}
+        overlayClassName={style.dropdownContainer}
+        destroyPopupOnHide
+        onOpenChange={(open: boolean) => onOpenChange(open, data)}
+        trigger={['click']}
+      >
+        <More
+          id="dropdownBtn"
+          className={style.dropDownBtn}
+          onContextMenu={(e: any) => {
+            e.stopPropagation();
+            e.preventDefault();
+            e.target.click();
+          }}
+        />
+      </Dropdown>
+    );
+  }
+
+  function selectTemplate() {
+    if (selectedTemplateInfoRef.current) {
+      setSelectedTemplateInfoForRename(selectedTemplateInfoRef.current);
+    }
+  }
+
+  async function deleteTemplate() {
+    if (selectedTemplateInfoRef.current) {
+      await DbStore.deleteTemplate(selectedTemplateInfoRef.current.id);
+      await fetchTemplateData();
+    }
+  }
+
+  async function fetchTemplateData() {
+    await appStore.fetchTemplates();
+  }
+
+  function generateDropDownMenu() {
+    return {
+      items: [
+        {
+          key: '1',
+          label: (
+            <div className={style.dropDownItem} onClick={selectTemplate}>
+              <span>重命名</span>
+              <span className={style.menuShortKey}>
+                {appStore.generateShortKeyDisplayName(Scene.templateManagement, 'renameTemplate')}
+              </span>
+            </div>
+          )
+        },
+        {
+          key: '2',
+          label: (
+            <div className={style.dropDownItem} onClick={deleteTemplate}>
+              <span>删除</span>
+              <span className={style.menuShortKey}>
+                {appStore.generateShortKeyDisplayName(Scene.templateManagement, 'deleteTemplate')}
+              </span>
+            </div>
+          )
+        }
+      ],
+      onClick: handleClickDropdownMenu
+    };
   }
 
   return (
