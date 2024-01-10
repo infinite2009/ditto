@@ -30,6 +30,12 @@
 .template {
   .templateCore();
   transition: transform .3s ease-in-out;
+  .templateName {
+    margin-bottom: 6px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #18191C;
+  }
   &:hover {
     .hoverAnimation();
   }
@@ -38,13 +44,44 @@
 .templateNameWrapper {
   .lateralLayout();
   justify-content: space-between;
+  .templateName {
+    margin-bottom: 6px;
+    height: 24px;
+    font-family: PingFang SC, serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 24px;
+    color: #18191C;
+  }
 }
 
-.templateName {
+.renameWrapper {
   margin-bottom: 6px;
-  font-weight: 500;
-  line-height: 16px;
-  color: #18191C;
+  .lateralLayout();
+  justify-content: space-between;
+  .renameInput {
+    border-radius: 4px;
+    border: 1px solid #1A4BFF;
+    padding: 3px;
+    width: 140px;
+    height: 24px;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .renameIconWrapper {
+    .lateralLayout();
+    gap: 4px;
+    .renameIcon {
+      padding: 4px;
+      width: 24px;
+      height: 24px;
+      color: #9499A0;
+      svg {
+        font-size: 16px;
+      }
+    }
+  }
 }
 
 .templateImage {
@@ -109,7 +146,7 @@
 
 .smallTemplatePreview {
   width: 216px;
-  height: 178px;
+  height: 186px;
 }
 
 .largeTemplatePreview {
@@ -168,21 +205,11 @@
   background-color: #1A4BFF;
 }
 
-.templateName {
-  margin-bottom: 6px;
-  font-family: PingFang SC, serif;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
-  height: 16px;
-  color: #18191C;
-}
-
 .templateCover {
   border-radius: 4px;
   border: 1px solid #F1F2F3;
   width: 100%;
-  height: calc(100% - 22px);
+  height: calc(100% - 30px);
   object-fit: contain;
   pointer-events: none;
 }

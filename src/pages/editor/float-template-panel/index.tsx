@@ -23,6 +23,7 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
   const [templateInfoInPreview, setTemplateInfoInPreview] = useState<TemplateInfo>(null);
 
   const selectedTemplateInfoRef = useRef<TemplateInfo>(null);
+  const templateNameRef = useRef<string>('');
 
   function openModal() {
     setModalVisible(true);
@@ -94,8 +95,17 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
   }
 
   async function renameTemplate(name: string) {
+    if (!name) {
+      setSelectedTemplateInfoForRename(null);
+      return;
+    }
     await appStore.renameTemplate(selectedTemplateInfoForRename.id, name);
     await appStore.fetchTemplates();
+    setSelectedTemplateInfoForRename(null);
+  }
+
+  function resetRenaming() {
+    templateNameRef.current = '';
     setSelectedTemplateInfoForRename(null);
   }
 
@@ -108,18 +118,26 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
 
     return (
       <div className={templatePreviewClass}>
-        <div className={style.templateNameWrapper}>
-          {selectedTemplateInfoForRename ? (
+        {selectedTemplateInfoForRename ? (
+          <div className={style.renameWrapper}>
             <Input
+              className={style.renameInput}
               defaultValue={selectedTemplateInfoForRename.name}
-              onPressEnter={e => renameTemplate(e.target.value.trim())}
-              onBlur={e => renameTemplate(e.target.value.trim())}
+              onInput={(e: any) => (templateNameRef.current = e.target.value.trim())}
+              onPressEnter={(e: any) => renameTemplate(e.target.value.trim())}
             />
-          ) : (
+            <div className={style.renameIconWrapper}>
+              <Close className={style.renameIcon} onClick={() => renameTemplate(templateNameRef.current)} />
+              <Close className={style.renameIcon} onClick={resetRenaming} />
+            </div>
+          </div>
+        ) : (
+          <div className={style.templateNameWrapper}>
             <h3 className={style.templateName}>{tplInfo.name}</h3>
-          )}
-          {renderDropdown(tplInfo)}
-        </div>
+            {renderDropdown(tplInfo)}
+          </div>
+        )}
+
         <img className={style.templateCover} src={convertFileSrc(tplInfo.coverPath)} alt="图片加载失败" />
         <div className={style.previewBtnGroup}>
           <ConfigProvider autoInsertSpaceInButton={false}>
