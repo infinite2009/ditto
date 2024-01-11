@@ -34,6 +34,12 @@ type FormValue = {
   [key: string]: any;
 };
 
+interface TemplateTree {
+  configName: string;
+  dependency: string;
+  children?: TemplateTree[];
+}
+
 function execute(target: any, name: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
   descriptor.value = function (...args: any[]) {
@@ -112,7 +118,6 @@ export default class DSLStore {
     }
     const pageRoot = this.dsl.componentIndexes[this.dsl.child.current];
     if (pageRoot) {
-      console.log('page.children.length: ', pageRoot.children.length);
       return pageRoot.children.length === 0;
     }
     return false;
@@ -294,12 +299,12 @@ export default class DSLStore {
       children
     } as IComponentSchema;
 
+    const componentSchema = this.dsl.componentIndexes[componentId];
+
     // pageRoot 不用赋值
     if (this.currentParentNode?.id) {
-      this.dsl.componentIndexes[componentId].parentId = this.currentParentNode?.id;
+      componentSchema.parentId = this.currentParentNode?.id;
     }
-
-    const componentSchema = this.dsl.componentIndexes[componentId];
 
     if (componentConfig.importName) {
       componentSchema.importName = componentConfig.importName;
@@ -332,7 +337,7 @@ export default class DSLStore {
         const wrapper = { cp };
         this.setTemplateTo(
           {
-            data: cp,
+            value: cp,
             keyPathRegs: templateKeyPathsReg,
             parent: wrapper,
             key: 'cp',
@@ -497,8 +502,10 @@ export default class DSLStore {
         this.currentParentNode.children.splice(insertIndex, 0, ref);
       }
     } else {
+      this.currentParentNode = null;
       throw new Error(`未找到有效的父节点：${parentId}`);
     }
+    this.currentParentNode = null;
   }
 
   /**
@@ -570,8 +577,10 @@ export default class DSLStore {
         }
       }
     } else {
+      this.currentParentNode = null;
       throw new Error(`未找到有效的父节点：${parentId}`);
     }
+    this.currentParentNode = null;
   }
 
   /**
@@ -605,7 +614,7 @@ export default class DSLStore {
 
   setTemplateTo(tplInfo: TemplateInfo, propsConfig: { [key: string]: IPropsConfigItem }) {
     const basicTplInfo: Partial<TemplateInfo> = {
-      data: undefined,
+      value: undefined,
       keyPathRegs: [],
       parent: undefined,
       key: '',
@@ -613,7 +622,7 @@ export default class DSLStore {
     };
     const fullTplInfo: TemplateInfo = Object.assign(basicTplInfo, tplInfo);
 
-    const { data, keyPathRegs, parent, key, currentKeyPath, nodeId } = fullTplInfo;
+    const { value, keyPathRegs, parent, key, currentKeyPath, nodeId } = fullTplInfo;
     const keyPathMatchResult =
       keyPathRegs.length &&
       keyPathRegs.find(pathObj => {
@@ -663,24 +672,57 @@ export default class DSLStore {
           }
         }
       } else {
-        const component = this.createEmptyContainer('', {
-          feature: ComponentFeature.slot
-        });
-        component.parentId = nodeId;
+        let component: IComponentSchema;
+
+        // 如果 value 是非真值或者空对象，则插入插槽
+        if (!value || Object.values(value).length === 0) {
+          component = this.createEmptyContainer('', {
+            feature: ComponentFeature.slot
+          });
+          component.parentId = nodeId;
+        } else {
+          // 如果不是空的，则插入一颗子树
+          const recursiveMap = (
+            tree: TemplateTree[],
+            parentId: string,
+            feature: ComponentFeature = undefined
+          ): IComponentSchema[] => {
+            return tree.map(node => {
+              const { configName, dependency } = node;
+              // 创建组件
+              this.currentParentNode = this.dsl.componentIndexes[parentId];
+              const component = this.createComponent(configName, dependency);
+              // 顶部的节点的 feature 需要被修正为 solid，防止 editor 拖入其他的元素
+              if (feature) {
+                component.feature = feature;
+              }
+              if (node.children.length) {
+                component.children = recursiveMap(node.children, component.id).map(item => {
+                  return {
+                    current: item.id,
+                    isText: false
+                  };
+                });
+              }
+              return component;
+            });
+          };
+          component = recursiveMap([value], nodeId, ComponentFeature.solid)[0];
+        }
         parent[key] = {
           current: component.id,
           isText: false
         };
       }
     } else {
-      const type = typeOf(data);
+      const type = typeOf(value);
       if (type === 'object') {
-        Object.entries(data).forEach(([key, val]) => {
+        Object.entries(value).forEach(([key, val]) => {
           this.setTemplateTo(
             {
-              data: val,
+              value: val,
               keyPathRegs,
-              parent: data,
+              parent: value,
               key,
               currentKeyPath: `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`,
               nodeId
@@ -689,12 +731,12 @@ export default class DSLStore {
           );
         });
       } else if (type === 'array') {
-        data.forEach((item: any, index: number) => {
+        value.forEach((item: any, index: number) => {
           this.setTemplateTo(
             {
-              data: item,
+              value: item,
               keyPathRegs,
-              parent: data,
+              parent: value,
               key: index.toString(),
               currentKeyPath: `${currentKeyPath}[${index}]`,
               nodeId
@@ -992,6 +1034,7 @@ export default class DSLStore {
             Object.keys(srcValue).forEach(key => {
               objValue[key as unknown as number] = mergeWith(
                 objValue[key as unknown as number],
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 srcValue[key],
                 customizer
@@ -1011,10 +1054,12 @@ export default class DSLStore {
             return objValue.filter((item, index) => !(index in srcValue));
           } else if (isObject(objValue) && isObject(srcValue)) {
             Object.keys(srcValue).forEach(key => {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               if (srcValue[key] === undefined) {
                 delete (objValue as Record<string, any>)[key];
               } else {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 mergeWith(objValue[key], srcValue[key], customizer);
               }
