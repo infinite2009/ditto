@@ -14,7 +14,7 @@ export interface TemplateKeyPathsReg {
   repeatType?: 'list' | 'table';
   type: 'object' | 'function';
   // key path 的渲染类型：如果为 slot 则渲染一个插槽，用户可以拖入新组件，如果是 template，用户只能通过表单设置一些简单的组件作为一个模板，它往往用在表格和表单里
-  renderType: 'slot' | 'template';
+  renderType?: 'slot' | 'template';
 }
 
 /**

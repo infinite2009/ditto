@@ -635,7 +635,8 @@ export default class DSLStore {
         repeatPropRef,
         indexKey = '',
         columnKey = '',
-        repeatType = ''
+        repeatType = '',
+        renderType = 'slot'
       } = keyPathMatchResult as TemplateKeyPathsReg;
       if (repeatPropRef) {
         // 找到这个 prop
@@ -673,14 +674,8 @@ export default class DSLStore {
         }
       } else {
         let component: IComponentSchema;
-
         // 如果 value 是非真值或者空对象，则插入插槽
-        if (!value || Object.values(value).length === 0) {
-          component = this.createEmptyContainer('', {
-            feature: ComponentFeature.slot
-          });
-          component.parentId = nodeId;
-        } else {
+        if (renderType === 'template') {
           // 如果不是空的，则插入一颗子树
           const recursiveMap = (
             tree: TemplateTree[],
@@ -708,6 +703,11 @@ export default class DSLStore {
             });
           };
           component = recursiveMap([value], nodeId, ComponentFeature.solid)[0];
+        } else {
+          component = this.createEmptyContainer('', {
+            feature: ComponentFeature.slot
+          });
+          component.parentId = nodeId;
         }
         parent[key] = {
           current: component.id,
