@@ -2,21 +2,13 @@ import styles from './index.module.less';
 import { Divider, message, Radio, Select, Space } from 'antd';
 import PageAction from '@/types/page-action';
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  ClearOutlined,
-  DownloadOutlined,
-  ExpandOutlined,
-  LayoutOutlined,
-  RedoOutlined,
-  SaveOutlined,
-  UndoOutlined,
-  YoutubeOutlined
-} from '@ant-design/icons';
 import classNames from 'classnames';
 import { AppStoreContext, DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import { RadioChangeEvent } from 'antd/es/radio/interface';
 import { Scene } from '@/service/app-store';
+import { Clean, Download, ExpandScreen, More, Preview, Redo, Share, Undo } from '@/components/icon';
+import ComponentContextMenu from '@/pages/editor/component-context-menu';
 
 export enum PageWidth {
   wechat = 900,
@@ -116,6 +108,10 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
     }
   }
 
+  function handleShare() {
+    message.success('敬请期待').then();
+  }
+
   function handleExportingCode() {
     if (onDo) {
       onDo({
@@ -200,12 +196,36 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
     }
   }
 
+  function handleClickingMenu(key: string) {
+    console.log('点击菜单：', key);
+    switch (key) {
+      case 'save':
+        handleSave();
+        break;
+    }
+  }
+
+  function generateContextMenus() {
+    const { save } = appStore.shortKeyDict[Scene.editor];
+    return [
+      [
+        {
+          key: 'save',
+          title: save.functionName,
+          shortKey: [appStore.generateShortKeyDisplayName(Scene.editor, 'save')]
+        }
+      ]
+    ];
+  }
+
   return (
     <div className={styles.main}>
       <div className={calcIconClassNames()}>
-        <Divider type="vertical" style={{ marginLeft: 0, borderColor: '#F1F2F3' }} />
-        <UndoOutlined className={calClassNames(!dslStore.canUndo)} onClick={handleUndo} />
-        <RedoOutlined className={calClassNames(!dslStore.canRedo)} onClick={handleRedo} />
+        <Divider className={styles.divider} type="vertical" style={{ marginLeft: 0, marginRight: 3 }} />
+        <div className={styles.doWrapper}>
+          <Undo className={calClassNames(!dslStore.canUndo)} onClick={handleUndo} />
+          <Redo className={calClassNames(!dslStore.canRedo)} onClick={handleRedo} />
+        </div>
         <Divider className={styles.divider} type="vertical" />
         {/*<DesktopOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('pc')} />*/}
         {/*<TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('tablet')} />*/}
@@ -302,15 +322,18 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
           </Option>
         </Select>
         <Divider className={styles.divider} type="vertical" />
-        <ClearOutlined className={styles.iconBtn} onClick={handleClear} />
-        <ExpandOutlined className={styles.iconBtn} onClick={handleExpand} />
-        <LayoutOutlined className={styles.iconBtn} style={{ marginLeft: 'auto' }} onClick={handleShowLayout} />
-        <Divider type="vertical" style={{ marginRight: 0, borderColor: '#F1F2F3' }} />
+        <Clean className={styles.iconBtn} onClick={handleClear} />
+        <ExpandScreen className={styles.iconBtn} onClick={handleExpand} />
+        {/*<LayoutOutlined className={styles.iconBtn} style={{ marginLeft: 'auto' }} onClick={handleShowLayout} />*/}
+        <Divider className={styles.divider} type="vertical" style={{ marginLeft: 'auto', borderColor: '#F1F2F3' }} />
       </div>
       <div className={styles.rightBtnWrapper}>
-        <SaveOutlined className={styles.iconBtn} onClick={handleSave} />
-        <DownloadOutlined className={styles.iconBtn} onClick={handleExportingCode} />
-        <YoutubeOutlined className={styles.iconBtn} onClick={handlePreview} />
+        <Download className={styles.iconBtn} onClick={handleExportingCode} />
+        <Preview className={styles.iconBtn} onClick={handlePreview} />
+        <Share className={styles.iconBtn} onClick={handleShare} />
+        <ComponentContextMenu trigger={['click']} onClick={handleClickingMenu} items={generateContextMenus()}>
+          <More className={styles.iconBtn} />
+        </ComponentContextMenu>
         <Radio.Group
           options={[
             { label: '设计', value: 'design' },
@@ -320,6 +343,7 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
           defaultValue="design"
           optionType="button"
           buttonStyle="solid"
+          size="small"
         />
       </div>
     </div>

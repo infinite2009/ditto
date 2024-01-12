@@ -52,33 +52,39 @@
   justify-content: space-between;
 }
 
-.newBtn {
-  margin-right: 16px;
+.largeBtn() {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   border-radius: 8px;
+  padding: 0;
   width: 150px;
   height: 36px;
   font-family: PingFang SC, serif;
   font-size: 14px;
   font-style: normal;
   line-height: 28px;
+}
+
+.newBtn {
+  .largeBtn();
+  margin-right: 16px;
+
   color: #fff;
   background: #1A4BFF;
 }
 
 .openBtn {
-  border-radius: 8px;
-  width: 150px;
-  height: 36px;
-  font-family: PingFang SC, serif;
-  font-size: 14px;
-  font-style: normal;
-  line-height: 28px;
+  .largeBtn();
   color: #1A4BFF;
   border-color: #1A4BFF;
 }
 
 .btnIcon {
-  font-size: 16px;
+  svg {
+    font-size: 16px;
+  }
 }
 
 .left {

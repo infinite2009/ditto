@@ -1,6 +1,7 @@
-import { CloseOutlined, HomeOutlined, VideoCameraOutlined } from '@ant-design/icons';
+import { VideoCameraOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import style from './index.module.less';
+import { Close, Home } from '@/components/icon';
 
 interface ProjectItem {
   id: string;
@@ -78,7 +79,7 @@ export default function CustomTitleBar({ selectedProjectId, data, onSelect, onCl
             {item.isPreview ? <VideoCameraOutlined className={style.previewIcon} /> : null}
             {item.title}
           </div>
-          <CloseOutlined className={style.closeIcon} onClick={(e: any) => handleCloseProject(e, item)} />
+          <Close onClick={(e: any) => handleCloseProject(e, item)} />
         </div>
       );
     });
@@ -87,7 +88,7 @@ export default function CustomTitleBar({ selectedProjectId, data, onSelect, onCl
   return (
     <div data-tauri-drag-region={true} className={style.main}>
       <div className={homeClass} onClick={handleClickHome}>
-        <HomeOutlined className={style.homeIcon} />
+        <Home className={style.homeIcon} />
       </div>
       {renderTitle()}
     </div>

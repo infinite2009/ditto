@@ -1,8 +1,9 @@
 import { Input } from 'antd';
 import React from 'react';
-import { FileAddOutlined, FolderAddOutlined, SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 
 import styles from './index.module.less';
+import { NewFolder, NewPage } from '@/components/icon';
 
 export interface IProjectToolBarProps {
   onSearch: (keyword: string) => void;
@@ -38,12 +39,8 @@ export default function ProjectToolBar({ onSearch, onCreatingDirectory, onCreati
         onBlur={handleSearch}
         style={{ width: 112 }}
       />
-      <div className={styles.iconWrapper} onClick={handleClickingCreateProject}>
-        <FolderAddOutlined className={styles.icon} />
-      </div>
-      <div className={styles.iconWrapper} onClick={handleClickingCreatePage}>
-        <FileAddOutlined className={styles.icon} />
-      </div>
+      <NewFolder className={styles.icon} onClick={handleClickingCreateProject} />
+      <NewPage className={styles.icon} onClick={handleClickingCreatePage} />
     </div>
   );
 }

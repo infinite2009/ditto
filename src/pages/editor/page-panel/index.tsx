@@ -188,7 +188,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
    * @param key 用户按键
    * @param data 菜单对应的数据
    */
-  function handleClickingMenu(key: string, data: any) {
+  function handleClickingMenu(key: string) {
     switch (key) {
       case 'copy':
         copyPageOrFolder();

@@ -53,7 +53,7 @@ export default observer(function PageRoot({
       transform: `scale(${scale / 100}) `,
       transformOrigin: 'top left',
       width: pageWidth === 0 ? 'initial' : pageWidth,
-      margin: pageWidth === 0 ? '10px 0' : '10px auto'
+      margin: pageWidth === 0 ? '0' : '0 auto'
     };
   }, [scale, pageWidth]);
 

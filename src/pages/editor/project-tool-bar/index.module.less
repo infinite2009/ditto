@@ -3,25 +3,19 @@
   flex-direction: row;
   align-items: center;
   padding: 0 12px;
-}
-
-.iconWrapper {
-  margin-left: 8px;
-  padding: 0 12px;
-  height: 24px;
-  width: 24px;
-  line-height: 24px;
-  text-align: center;
-  cursor: pointer;
-  &:hover {
-    .icon {
-      color: #1A4BFF;
-    }
-  }
+  gap: 8px;
 }
 
 .icon {
-  width: 16px;
-  height: 16px;
-  font-size: 16px;
+  height: 24px;
+  width: 24px;
+  padding: 4px;
+  cursor: pointer;
+  color: #9499A0;
+  &:hover {
+    color: #1A4BFF;
+  }
+  svg {
+    font-size: 16px;
+  }
 }

@@ -1,4 +1,4 @@
-@gap: 10px;
+@gap: 7px;
 @panelWidth: 200px;
 
 .lateral() {
@@ -45,10 +45,11 @@
 
 .canvas {
   position: relative;
+  border: 1px solid #F1F2F3;
   flex-grow: 1;
-  padding: 0 @gap;
+  padding: @gap;
   overflow: auto;
-  background: #e3e3e3;
+  background: rgba(175, 192, 213, 0.25);
 }
 
 .canvasInner {

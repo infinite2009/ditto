@@ -1,6 +1,7 @@
 .lateral {
   display: flex;
   align-items: center;
+  gap: 8px;
 }
 
 .main {
@@ -18,42 +19,25 @@
   margin-right: 10px;
 }
 
-//.iconBtnWrapper {
-//  margin: 0 8px;
-//  height: 24px;
-//  width: 24px;
-//  border-radius: 6px;
-//  font-size: 16px;
-//  line-height: 24px;
-//  text-align: center;
-//  color: #61666D;
-//  &.selected {
-//    color: #1A4BFF;
-//    background-color: rgba(76, 109, 228, 0.10);
-//    &:hover {
-//      background-color: rgba(76, 109, 228, 0.10);
-//    }
-//  }
-//  &:hover {
-//    background-color: #F6F7F8;
-//  }
-//}
-
 .disabled() {
   color: #C9CCD0;
   pointer-events: none;
   cursor: not-allowed;
 }
 
+.doWrapper {
+  .lateral();
+  gap: 4px;
+}
+
 .iconBtn {
-  margin: 0 8px;
-  padding: 0 4px;
+  padding: 4px;
   height: 24px;
   width: 24px;
   border-radius: 6px;
-  font-size: 16px;
-  line-height: 24px;
-  text-align: center;
+  svg {
+    font-size: 16px;
+  }
   color: #61666D;
   &.selected {
     color: #1A4BFF;
@@ -87,8 +71,23 @@
   width: 280px;
   flex-shrink: 0;
   justify-content: flex-end;
+  :global {
+    .ant-radio-button-wrapper {
+      border-color: #F6F7F8;
+      color: #9499A0;
+      background-color: #F6F7F8;
+      &.ant-radio-button-wrapper-checked {
+        border-color: #1A4BFF;
+        background-color: #1A4BFF;
+      }
+    }
+
+  }
 }
 
 .divider {
+  margin: 0;
+  border-radius: 7px;
   border-color: #F1F2F3;
+  height: 12px;
 }

@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import styles from './index.module.less';
 
 export interface IComponentContextMenuProps {
-  data: any;
+  data?: any;
   items: {
     key: string;
     title: string;
@@ -13,6 +13,7 @@ export interface IComponentContextMenuProps {
   onClick: (key: string, data: any) => void;
   children: React.ReactNode;
   onOpenChange?: (open: boolean, data: any) => void;
+  trigger?: ('click' | 'hover' | 'contextMenu')[];
 }
 
 export default observer(function ComponentContextMenu({
@@ -20,7 +21,8 @@ export default observer(function ComponentContextMenu({
   items,
   onClick,
   children,
-  onOpenChange
+  onOpenChange,
+  trigger
 }: IComponentContextMenuProps) {
   const generateDropDownMenu = () => {
     let flattedItems: any[] = [];
@@ -80,7 +82,7 @@ export default observer(function ComponentContextMenu({
       overlayClassName={styles.dropdownContainer}
       destroyPopupOnHide
       onOpenChange={(open: boolean) => onOpenChange && onOpenChange(open, data)}
-      trigger={['contextMenu']}
+      trigger={trigger || ['contextMenu']}
     >
       {children}
     </Dropdown>

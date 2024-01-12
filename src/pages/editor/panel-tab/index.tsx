@@ -1,7 +1,7 @@
 import styles from './index.module.less';
-import { HomeOutlined } from '@ant-design/icons';
 import { CSSProperties, useMemo, useState } from 'react';
 import classNames from 'classnames';
+import { Menu, Playlist } from '@/components/icon';
 
 export interface IPanelTabProps {
   onSelect: (type: PanelType) => void;
@@ -40,10 +40,10 @@ export default function PanelTab({ onSelect, style }: IPanelTabProps) {
   return (
     <div className={styles.main} style={style}>
       <button className={fileBtnClassNames} onClick={() => togglePanel(PanelType.file)}>
-        <HomeOutlined />
+        <Menu className={styles.tabIcon} />
       </button>
       <button className={componentClassNames} onClick={() => togglePanel(PanelType.component)}>
-        <HomeOutlined />
+        <Playlist className={styles.tabIcon} />
       </button>
     </div>
   );

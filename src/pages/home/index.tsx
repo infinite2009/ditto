@@ -1,4 +1,4 @@
-import { CloseOutlined, FileFilled, PlusOutlined, SelectOutlined, SortAscendingOutlined } from '@ant-design/icons';
+import { CloseOutlined, FileFilled, SortAscendingOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Input, InputRef, message, Modal } from 'antd';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import fileManager from '@/service/file';
@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { AppStoreContext } from '@/hooks/context';
 import { Scene } from '@/service/app-store';
 import style from './index.module.less';
+import { ArrowSmall, Plus } from '@/components/icon';
 
 export interface IHomeProps {
   onDeleteProject: (projectId: string) => void;
@@ -414,14 +415,14 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
         <div className={style.btnWrapper}>
           <div className={style.left}>
             <Button className={style.newBtn} type="primary" onClick={createProject}>
-              <PlusOutlined className={style.btnIcon} />
+              <Plus className={style.btnIcon} />
               新建
               <span className={style.shortKey}>
                 {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'createProject')}
               </span>
             </Button>
             <Button className={style.openBtn} onClick={openLocalProject}>
-              <SelectOutlined />
+              <ArrowSmall />
               打开
               <span className={style.shortKey} style={{ color: '#0958d9' }}>
                 {appStore.generateShortKeyDisplayName(Scene.projectManagement, 'openLocalProject')}
