@@ -12,4 +12,13 @@
     -ms-user-select: initial;     /* Internet Explorer/Edge */
     user-select: initial;
   }
+
+  /* 如果你想更精确地定位，可以使用更具体的选择器 */
+  code[class*="language-"] {
+    &,
+    * {
+      font-size: 16px !important;
+    }
+  }
+
 }
