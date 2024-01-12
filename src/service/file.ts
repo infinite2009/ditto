@@ -259,17 +259,20 @@ class FileManager {
   }
 
   async exportReactPageCodeFile(filePath: string, dsl: IPageSchema) {
-    const simplifiedDSL = this.simplifyProps(dsl);
-    const react = new ReactCodeGenerator(simplifiedDSL as unknown as IPageSchema, new TypeScriptCodeGenerator());
-    const originalCodeContent = react.generatePageCode().join('\n');
-    const formattedContent = await createAsyncTask(() =>
-      prettier.format(originalCodeContent, {
+    const formattedContent = await this.generateReactCode(dsl);
+    await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
+  }
+
+  async generateReactCode(dsl: IPageSchema) {
+    return await createAsyncTask(() => {
+      const simplifiedDSL = this.simplifyProps(dsl);
+      const react = new ReactCodeGenerator(simplifiedDSL as unknown as IPageSchema, new TypeScriptCodeGenerator());
+      return prettier.format(react.generatePageCode().join('\n'), {
         ...prettierConfig,
         parser: 'typescript',
         plugins: [typescript]
-      } as unknown as Partial<RequiredOptions>)
-    );
-    await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
+      } as unknown as Partial<RequiredOptions>);
+    });
   }
 
   async exportVuePageCodeFile(filePath: string, dsl: IPageSchema) {

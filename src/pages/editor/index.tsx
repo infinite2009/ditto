@@ -50,6 +50,7 @@ import FloatTemplatePanel from '@/pages/editor/float-template-panel';
 import { createPortal } from 'react-dom';
 import { Eye, EyeClose } from '@/components/icon';
 import classNames from 'classnames';
+import CodePreview from '@/pages/editor/code-preview';
 
 const collisionOffset = 4;
 
@@ -86,6 +87,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [selectedComponentForRenaming, setSelectedComponentForRenaming] = useState<ComponentId>('');
   const [pageWidth, setPageWidth] = useState<number>(PageWidth.auto);
   const [activePanelTabKey, setActivePanelTabKey] = useState<string>(undefined);
+  const [rawCode, setRawCode] = useState<string>('');
 
   const dslStore = useContext(DSLStoreContext);
   const editorStore = useContext(EditorStoreContext);
@@ -690,7 +692,10 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     setRightPanelVisible(!rightPanelVisible);
   }
 
-  function toggleDesignAndCode(showDesign: boolean) {
+  async function toggleDesignAndCode(showDesign: boolean) {
+    if (!showDesign) {
+      setRawCode(await fileManager.generateReactCode(dslStore.dsl));
+    }
     setShowDesign(showDesign);
   }
 
@@ -1029,7 +1034,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function renderCodeSection() {
-    return <div>code works!</div>;
+    return <CodePreview code={rawCode} />;
   }
 
   function onApplyTemplate(path: string) {
