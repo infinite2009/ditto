@@ -75,10 +75,12 @@
 .componentTree {
   flex-grow: 1;
   overflow: auto;
+
   :global {
     .ant-tree-treenode {
       align-self: stretch;
     }
+
     .ant-tree-node-content-wrapper {
       flex-grow: 1;
     }
@@ -127,19 +129,29 @@
 .dragOverlay {
   width: 6px;
   height: 6px;
-  border: 1px solid #1A4BFF;
-  background: #FFF;
+  //border: 1px solid #1A4BFF;
+  background: transparent;
 }
 
 .componentPlaceholder {
   position: absolute;
   top: 13px;
   left: 10px;
-  width: 134px;
-  height: 45px;
+  width: 130px;
+  height: 38px;
   border-radius: 8px;
-  background: #fff;
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--Library-Bl3, rgba(97, 136, 255, 0.50));
+  padding: 8px;
+  opacity: 0.98;
+  background: rgba(97, 136, 255, 0.12);
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.08), 0 0 2px 0 rgba(0, 0, 0, 0.04);
+
+  .inner {
+    border-radius: 4px;
+    width: 114px;
+    height: 22px;
+    background-color: #fff;
+  }
 }
 
 .componentTitle {
