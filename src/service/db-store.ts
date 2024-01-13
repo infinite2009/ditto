@@ -209,7 +209,6 @@ export default class DbStore {
       .concat(`updated_time = ${new Date().getTime()}`)
       .join(', ');
     const updateSql = `UPDATE ${tableName} SET ${setClause} WHERE id = '${data.id}'`;
-    console.log('update sql: ', updateSql);
     return await DbStore.db.execute(updateSql);
   }
 }
