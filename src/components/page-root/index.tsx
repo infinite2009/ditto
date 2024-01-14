@@ -7,8 +7,9 @@ import ComponentFeature from '@/types/component-feature';
 import { Flex } from 'antd';
 import { observer } from 'mobx-react';
 import { DSLStoreContext } from '@/hooks/context';
+import { FlexProps } from 'antd/lib';
 
-export interface IPageRootProps {
+export interface IPageRootProps extends FlexProps {
   children: ReactNode[];
   childrenId: string[];
   id: string;
@@ -25,7 +26,11 @@ export default observer(function PageRoot({
   parentId,
   children,
   scale = 100,
-  pageWidth
+  pageWidth,
+  justify,
+  align,
+  gap,
+  style
 }: IPageRootProps) {
   const dslStore = useContext(DSLStoreContext);
 
@@ -64,7 +69,9 @@ export default observer(function PageRoot({
 
   return (
     <div className={classes} ref={setNodeRef} style={composedStyle} onClick={handleSelecting}>
-      <Flex vertical>{children}</Flex>
+      <Flex vertical justify={justify} align={align} gap={gap} style={style}>
+        {children}
+      </Flex>
     </div>
   );
 });
