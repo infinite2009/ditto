@@ -948,14 +948,12 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   function renderProjectPanel() {
     return (
       <>
-        <div className={styles.pagePanel}>
-          <PagePanel
-            data={projectData}
-            onSelect={handleSelectingPageOrFolder}
-            selected={selectedPath}
-            onChange={handleChangingProject}
-          />
-        </div>
+        <PagePanel
+          data={projectData}
+          onSelect={handleSelectingPageOrFolder}
+          selected={selectedPath}
+          onChange={handleChangingProject}
+        />
         <div className={styles.componentTree}>
           <ComponentTree
             data={generateComponentTreeData()}

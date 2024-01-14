@@ -1,16 +1,33 @@
 .projectTree {
-  padding: 4px 8px;
-  :global {
-    .ant-tree-title {
-      flex-grow: 1;
-    }
-    .ant-tree-node-content-wrapper {
-      display: flex;
-    }
-  }
+  padding: 0 8px;
+  height: 320px;
+  overflow: auto;
 }
 
 .templatePortals {
   display: inline-block;
-  transform: translateY(10000);
+  position: fixed;
+  top: 10000px;
+  left: 10000px;
+}
+
+.fileIcon {
+  svg {
+    color: #C19D84;
+  }
+}
+
+.nodeTitle {
+  height: 32px;
+  line-height: 32px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.pagePanel {
+  width: 200px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #dbdbdb;
 }

@@ -3,7 +3,7 @@ import { IconFontProps } from '@ant-design/icons/lib/components/IconFont';
 
 export const Icon = createFromIconfontCN({
   // 必需要使用 https 协议，否则会使用 tauri 协议
-  scriptUrl: 'https://at.alicdn.com/t/c/font_4341626_8a7o6s0voei.js' // 在 iconfont.cn 上生成
+  scriptUrl: 'https://at.alicdn.com/t/c/font_4341626_sfqmrrrpfz.js'
 });
 
 export function Playlist2(props: Omit<IconFontProps, 'type'>) {

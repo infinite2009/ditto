@@ -1,7 +1,6 @@
 import { Input, message, Tree } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import React, { Key, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { DownOutlined, FileOutlined, FolderOpenOutlined, FolderOutlined } from '@ant-design/icons';
 import ProjectToolBar from '@/pages/editor/project-tool-bar';
 import { findNodePath } from '@/util';
 import { ComponentId } from '@/types';
@@ -14,6 +13,7 @@ import DSLStore from '@/service/dsl-store';
 import html2canvas from 'html2canvas';
 import { PageWidth } from '@/pages/editor/toolbar';
 import styles from './index.module.less';
+import { Desktop, Expand } from '@/components/icon';
 
 interface PageData {
   children?: PageData[];
@@ -123,9 +123,9 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
             converted.children = recursiveMap(item.children);
           }
           if (item.isLeaf) {
-            converted.icon = <FileOutlined />;
+            converted.icon = <Desktop className={styles.fileIcon} />;
           } else {
-            converted.icon = (props: any) => (props.expanded ? <FolderOpenOutlined /> : <FolderOutlined />);
+            converted.icon = (props: any) => null;
           }
           if (item.path === selectedPath) {
             converted.title = (
@@ -348,7 +348,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   function handleSearchingPage() {}
 
   return (
-    <div>
+    <div className={styles.pagePanel}>
       <ProjectToolBar
         onCreatingPage={handleCreatingPage}
         onCreatingDirectory={handleCreatingDirectory}
@@ -357,7 +357,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
       {dataWithIcon?.length > 0 ? (
         <div className={styles.projectTree}>
           <Tree
-            switcherIcon={<DownOutlined />}
+            switcherIcon={<Expand />}
             showIcon
             blockNode
             selectedKeys={selectedKeys}

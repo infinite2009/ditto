@@ -1,8 +1,9 @@
 import { ComponentId } from '@/types';
 import { Tree } from 'antd';
-import { Key, useContext } from 'react';
+import React, { Key, useContext } from 'react';
 import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
+import { Expand } from '@/components/icon';
 
 export interface IComponentTreeProps {
   data: any[];
@@ -25,5 +26,12 @@ export default observer(function ComponentTree({ data, onSelect, onCancelSelect 
     }
   }
 
-  return <Tree selectedKeys={[dslStore.selectedComponent?.id]} treeData={data} onSelect={handleSelectingComponent} />;
+  return (
+    <Tree
+      switcherIcon={<Expand />}
+      selectedKeys={[dslStore.selectedComponent?.id]}
+      treeData={data}
+      onSelect={handleSelectingComponent}
+    />
+  );
 });
