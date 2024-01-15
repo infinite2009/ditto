@@ -167,7 +167,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '主轴对齐',
         schemaType: 'props',
         category: 'hidden',
-        value: 'normal',
+        value: 'start',
         valueType: 'string',
         valueSource: 'editorInput'
       },
@@ -177,7 +177,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'align',
         title: '副轴对齐',
         category: 'hidden',
-        value: 'normal',
+        value: 'start',
         valueType: 'string',
         valueSource: 'editorInput'
       },
@@ -242,7 +242,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'justify',
         schemaType: 'props',
         category: 'hidden',
-        value: 'normal',
+        value: 'start',
         valueType: 'string',
         valueSource: 'editorInput'
       },
@@ -317,7 +317,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         name: 'justify',
         schemaType: 'props',
         category: 'hidden',
-        value: 'normal',
+        value: 'start',
         valueType: 'string',
         valueSource: 'editorInput'
       },
@@ -327,7 +327,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         title: '副轴对齐',
         name: 'align',
         category: 'hidden',
-        value: 'normal',
+        value: 'start',
         valueType: 'string',
         valueSource: 'editorInput'
       },
