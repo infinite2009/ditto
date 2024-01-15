@@ -1017,21 +1017,29 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
 
   function handleChangingRowPadding(val: number) {
     if (onChange) {
-      doChange({
+      const newValue = {
         ...value,
         paddingTop: val,
-        paddingBottom: val
-      });
+        paddingBottom: val,
+        paddingLeft: value.paddingLeft || value.padding || 0,
+        paddingRight: value.paddingRight || value.padding || 0
+      };
+      delete newValue.padding;
+      doChange(newValue);
     }
   }
 
   function handleChangingColumnPadding(val: number) {
     if (onChange) {
-      doChange({
+      const newValue = {
         ...value,
         paddingLeft: val,
-        paddingRight: val
-      });
+        paddingRight: val,
+        paddingTop: value.paddingTop || value.padding || 0,
+        paddingBottom: value.paddingBottom || value.padding || 0
+      };
+      delete newValue.padding;
+      doChange(newValue);
     }
   }
 
@@ -1106,8 +1114,8 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       paddingObj = parsePadding(value.padding) || {};
     } else {
       paddingObj = {
-        paddingTop: value.paddingTop as number,
-        paddingLeft: value.paddingLeft as number
+        paddingTop: (value.paddingTop as number) || 0,
+        paddingLeft: (value.paddingLeft as number) || 0
       };
     }
 
@@ -1257,7 +1265,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     });
     return (
       <div className={styles.directionContainer}>
-        {config?.layout === true || config?.layout?.direction === true || config?.layout?.direction?.row === true ? (
+        {config?.layout === true || (config?.layout as Record<string, any>)?.direction === true || (config?.layout as Record<string, any>)?.direction?.row === true ? (
           <Arrow className={rowSelectedClass} onClick={() => handleSwitchDirection('row')} />
         ) : null}
         <Arrow className={columnSelectedClass} onClick={() => handleSwitchDirection('column')} />
@@ -1280,12 +1288,16 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     });
     return (
       <div className={styles.wrapContainer}>
-        {config?.layout === true || config?.layout?.wrap === true || config?.layout?.wrap.wrap === true ? (
-          <Wrap className={wrapClass} onClick={() => handleSwitchWrap('wrap')} />
-        ) : null}
-        {config?.layout === true || config?.layout?.wrap === true || config?.layout?.wrap.nowrap === true ? (
-          <NoWrap className={noWrapClass} onClick={() => handleSwitchWrap('nowrap')} />
-        ) : null}
+        {config?.layout === true ||
+        (config?.layout as Record<string, any>)?.wrap === true ||
+        (config?.layout as Record<string, any>)?.wrap.wrap === true ? (
+            <Wrap className={wrapClass} onClick={() => handleSwitchWrap('wrap')} />
+          ) : null}
+        {config?.layout === true ||
+        (config?.layout as Record<string, any>)?.wrap === true ||
+        (config?.layout as Record<string, any>).nowrap === true ? (
+            <NoWrap className={noWrapClass} onClick={() => handleSwitchWrap('nowrap')} />
+          ) : null}
       </div>
     );
   }
