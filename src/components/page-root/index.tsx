@@ -46,7 +46,6 @@ export default observer(function PageRoot({
   });
 
   const classes = useMemo(() => {
-    console.log('pageRoot id === dslStore?.selectedComponent?.id:  ', id === dslStore?.selectedComponent?.id);
     return classNames({
       [styles.withoutChildren]: !children?.length,
       [styles.main]: true,
