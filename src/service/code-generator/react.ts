@@ -409,6 +409,10 @@ export default class ReactCodeGenerator {
         return;
       }
       const { value, valueType, valueSource, isValue, templateKeyPathsReg = [], name } = props;
+
+      // 解决 valueType 是数字，但是 value 本身不是数字的问题，一般是 css 样式问题
+      const correctedValueType = valueType === 'number' ? typeOf(value) : valueType;
+
       const basicValueTypes = ['string', 'number', 'boolean'];
       // 基础类型固定值走字面，其他情况走变量（常量、state、memo、callback）
       if (valueSource === 'editorInput') {
@@ -418,7 +422,7 @@ export default class ReactCodeGenerator {
             this.generatePropAssignmentExpWithVariable({
               name: ref,
               variableName,
-              variableType: valueType
+              variableType: correctedValueType
             })
           );
 
@@ -485,17 +489,17 @@ export default class ReactCodeGenerator {
             this.generatePropAssignmentExpWithVariable({
               name: ref,
               variableName,
-              variableType: valueType
+              variableType: correctedValueType
             })
           );
           // 变量需要转为 state
           if (result.stateInfo) {
             result.stateInfo[variableName] = {
               name: variableName,
-              initialValue: basicValueTypes.includes(valueType)
+              initialValue: basicValueTypes.includes(correctedValueType)
                 ? value
                 : this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
-              valueType
+              valueType: correctedValueType
             };
           }
         }
@@ -509,7 +513,7 @@ export default class ReactCodeGenerator {
             this.generatePropAssignmentExpWithVariable({
               name: ref,
               variableName: handlerInfo.functionName,
-              variableType: valueType
+              variableType: correctedValueType
             })
           );
           result.handlerInfo[handlerInfo.functionName] = handlerInfo;
@@ -529,17 +533,17 @@ export default class ReactCodeGenerator {
           this.generatePropAssignmentExpWithVariable({
             name: ref,
             variableName,
-            variableType: valueType
+            variableType: correctedValueType
           })
         );
         // 使用状态的变量
         if (result.stateInfo) {
           result.stateInfo[variableName] = {
             name: variableName,
-            initialValue: basicValueTypes.includes(valueType)
+            initialValue: basicValueTypes.includes(correctedValueType)
               ? value
               : this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
-            valueType
+            valueType: correctedValueType
           };
         }
       }
