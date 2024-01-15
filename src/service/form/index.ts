@@ -99,7 +99,8 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
           },
           backgroundColor: true
         }
-      }
+      },
+      transformerStr: flexTransformerStr
     },
     Button: {
       configName: 'Button',
