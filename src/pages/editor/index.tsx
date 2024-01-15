@@ -1017,9 +1017,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
           {createPortal(
             <DragOverlay dropAnimation={dropAnimation}>
               <div className={styles.dragOverlay}>
-                <div className={styles.componentPlaceholder}>
-                  <div className={styles.inner} />
-                </div>
+                <div className={styles.componentPlaceholder} />
               </div>
               {/*<div style={{ height: 40, width: 40, backgroundColor: '#f00' }}></div>*/}
             </DragOverlay>,
