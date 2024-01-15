@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "ditto",
+    "productName": "voltron",
     "version": "0.0.1"
   },
   "tauri": {
@@ -127,7 +127,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.ditto.dev",
+      "identifier": "com.voltron.dev",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -151,7 +151,7 @@
         "maximized": true,
         "fullscreen": false,
         "resizable": true,
-        "title": "Ditto",
+        "title": "Voltron",
         "width": 1300,
         "height": 800,
         "minWidth": 1300,

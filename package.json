@@ -1,6 +1,6 @@
 {
-  "name": "ditto",
-  "version": "0.0.1.6f132288",
+  "name": "voltron",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "scripts": {

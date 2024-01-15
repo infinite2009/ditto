@@ -1,4 +1,4 @@
-# Ditto（百变怪）
+# Voltron（百变怪）
 
 # Tauri + React + Typescript
 

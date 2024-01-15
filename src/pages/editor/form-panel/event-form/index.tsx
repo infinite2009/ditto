@@ -19,6 +19,6 @@ export default function EventForm({ value, onChange }: IEventFormProps) {
     }
   }
 
-  // TODO: 事件每个组件都一样，Ditto 自己实现即可
+  // TODO: 事件每个组件都一样，Voltron 自己实现即可
   return <Form form={form} onValuesChange={handleChangingForm}></Form>;
 }

@@ -66,7 +66,7 @@ export default class DbStore {
    */
   static async init() {
     try {
-      DbStore.db = await Database.load(`sqlite:${await join(await appLocalDataDir(), 'ditto.db')}`);
+      DbStore.db = await Database.load(`sqlite:${await join(await appLocalDataDir(), 'voltron.db')}`);
       console.log('db 已加载: ', DbStore.db);
       const db = DbStore.db;
       // 创建四张表

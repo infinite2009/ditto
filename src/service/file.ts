@@ -58,7 +58,7 @@ class FileManager {
 
   private static async generateNewFileName(directory: string) {
     const fileName = '未命名页面';
-    const ext = '.ditto';
+    const ext = '.voltron';
     if (!(await exists(`${directory}${sep}${fileName}${ext}`))) {
       return `${fileName}${ext}`;
     }
@@ -315,7 +315,7 @@ class FileManager {
 
     const recursiveMap = (entries: FileEntry[], parentKey: string) => {
       return entries
-        .filter(entry => (entry.name as string).endsWith('.ditto') || entry.children)
+        .filter(entry => (entry.name as string).endsWith('.voltron') || entry.children)
         .map((entry, index) => {
           const r: EntryTree = {
             key: parentKey ? `${parentKey}-${index}` : index.toString(),
@@ -585,7 +585,7 @@ class FileManager {
       }
       const content = await fileManager.readFile(path);
       const dslObj = JSON.parse(content);
-      const nameWithoutExt = name.replace('.ditto', '');
+      const nameWithoutExt = name.replace('.voltron', '');
       dslObj.name = nameWithoutExt;
 
       const id = nanoid();

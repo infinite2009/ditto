@@ -710,9 +710,9 @@ export default class ReactCodeGenerator {
             if (payload.isExternal) {
               return `window.open('${payload.href}', '${payload.target}')`;
             }
-            return '// TODO: 请使用项目所用的路由跳转函数实现，Ditto 暂时无法为你生成它';
+            return '// TODO: 请使用项目所用的路由跳转函数实现，Voltron 暂时无法为你生成它';
           case ActionType.httpRequest:
-            return '// TODO: 请使用项目所用的接口请求函数实现，Ditto 暂时无法为你生成它';
+            return '// TODO: 请使用项目所用的接口请求函数实现，Voltron 暂时无法为你生成它';
           default:
             return '';
         }
