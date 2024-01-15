@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 /**
- * 转换函数的字符串，入参是所有表单项的值（对象形式）values。 返回一个对象，对象的每一个属性对应一个表单项。 Voltron 会使用这个字符串生成转换函数进行调用，请确保它只进行数据转换，没有额外的副作用，以避免Ditto产生意外的行为。
+ * 转换函数的字符串，入参是所有表单项的值（对象形式）values。 返回一个对象，对象的每一个属性对应一个表单项。 Voltron 会使用这个字符串生成转换函数进行调用，请确保它只进行数据转换，没有额外的副作用，以避免产生意外的行为。
  * 非必选，如果没有，则认为将表单项的值直接传给 props
  */
 export type PropsFormTransformer = string;
@@ -36,8 +36,8 @@ export type StyleFormConfig = {
         height?: boolean;
         widthGrow?: boolean;
         heightGrow?: boolean;
-        wrap?: boolean;
-        direction?: boolean;
+        wrap?: boolean | { wrap?: boolean; nowrap?: boolean };
+        direction?: { row?: boolean; column?: boolean } | boolean;
         alignItems?: boolean;
         justifyContent?: boolean;
         padding?: boolean;

@@ -86,8 +86,12 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
             height: true,
             widthGrow: true,
             heightGrow: true,
-            wrap: true,
-            direction: true,
+            wrap: {
+              nowrap: true
+            },
+            direction: {
+              column: true
+            },
             alignItems: true,
             justifyContent: true,
             padding: true,

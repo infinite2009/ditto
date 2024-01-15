@@ -501,6 +501,8 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     } else {
       setHeightSizeMode('hug');
     }
+
+    console.log('value input: ', value);
   }, [value]);
 
   function doChange(newValue: Record<string, any>) {
@@ -1255,7 +1257,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     });
     return (
       <div className={styles.directionContainer}>
-        <Arrow className={rowSelectedClass} onClick={() => handleSwitchDirection('row')} />
+        {config?.layout === true || config?.layout?.direction === true || config?.layout?.direction?.row === true ? (
+          <Arrow className={rowSelectedClass} onClick={() => handleSwitchDirection('row')} />
+        ) : null}
         <Arrow className={columnSelectedClass} onClick={() => handleSwitchDirection('column')} />
       </div>
     );
@@ -1276,8 +1280,12 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     });
     return (
       <div className={styles.wrapContainer}>
-        <Wrap className={wrapClass} onClick={() => handleSwitchWrap('wrap')} />
-        <NoWrap className={noWrapClass} onClick={() => handleSwitchWrap('nowrap')} />
+        {config?.layout === true || config?.layout?.wrap === true || config?.layout?.wrap.wrap === true ? (
+          <Wrap className={wrapClass} onClick={() => handleSwitchWrap('wrap')} />
+        ) : null}
+        {config?.layout === true || config?.layout?.wrap === true || config?.layout?.wrap.nowrap === true ? (
+          <NoWrap className={noWrapClass} onClick={() => handleSwitchWrap('nowrap')} />
+        ) : null}
       </div>
     );
   }

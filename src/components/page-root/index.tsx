@@ -81,6 +81,8 @@ export default observer(function PageRoot({
     return parentId === id;
   }
 
+  console.log('justify: ', justify);
+
   return (
     <div className={classes} ref={setNodeRef} style={composedStyle} onClick={handleSelecting}>
       <Flex vertical justify={justify} align={align} gap={gap} style={style}>

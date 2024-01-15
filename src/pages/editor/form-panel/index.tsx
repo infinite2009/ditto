@@ -53,12 +53,15 @@ export default observer(() => {
   }
 
   function handleChangingStyleForm(value: CSSProperties) {
+    console.log('onchange: ', value);
     // 把样式配置转换为普通属性，并把需要转换的样式属性删除掉，避免重复传入属性导致组件出现超预期行为
     let transformedObj = {};
     const valueCopy = { ...value };
+    debugger;
     if (dslStore.formConfigOfSelectedComponent?.transformerStr) {
       const transformer = new Function('values', dslStore.formConfigOfSelectedComponent.transformerStr);
       try {
+        debugger;
         transformedObj = transformer(value);
         (dslStore.formConfigOfSelectedComponent?.valuesToIgnore || []).forEach(key => {
           delete valueCopy[key];
@@ -67,6 +70,8 @@ export default observer(() => {
         console.error(e.toString());
       }
     }
+    console.log('transformed obj: ', transformedObj);
+    console.log('style: ', valueCopy);
     dslStore.updateComponentProps({
       style: {
         ...valueCopy
