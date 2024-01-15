@@ -237,6 +237,13 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
               ]
             },
             initialValue: 'middle'
+          },
+          children: {
+            name: 'children',
+            type: 'string',
+            title: '标题',
+            component: 'Input',
+            initialValue: '按钮'
           }
         }
       }

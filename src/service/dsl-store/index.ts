@@ -151,6 +151,10 @@ export default class DSLStore {
       }
     });
 
+    if (this.formConfigOfSelectedComponent?.schema?.basic && 'children' in this.formConfigOfSelectedComponent.schema.basic) {
+      result.basic.children = this.selectedComponent.children[0].current;
+    }
+
     return result;
   }
 
@@ -798,9 +802,23 @@ export default class DSLStore {
       });
     }
     Object.entries(propsPartial).forEach(([key, val]) => {
-      if (props[key]) {
-        props[key].value = val;
+      // 这里是一个补丁，children 本不是 props，但是为了让某些子节点为 text 的组件能简便地设置 children，就先这么打补丁
+      if (key === 'children') {
+        const component = this.dsl.componentIndexes[id];
+        if (component) {
+          component.children = [
+            {
+              isText: true,
+              current: val
+            }
+          ];
+        }
+      } else {
+        if (props[key]) {
+          props[key].value = val;
+        }
       }
+
     });
   }
 
