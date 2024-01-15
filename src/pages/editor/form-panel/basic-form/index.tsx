@@ -3,6 +3,8 @@ import { FC, useEffect } from 'react';
 import { FormSchema } from '@/types/form-config';
 import { useForm } from 'antd/es/form/Form';
 
+import style from './index.module.less';
+
 export interface IBasicFormProps {
   onChange: (value: Record<string, any>) => void;
   value?: Record<string, any>;
@@ -46,8 +48,10 @@ export default function BasicForm({ value, onChange, formSchema }: IBasicFormPro
   }
 
   return (
-    <Form form={form} onValuesChange={handleChanging}>
-      {renderFormItems()}
-    </Form>
+    <div className={style.basicForm}>
+      <Form form={form} onValuesChange={handleChanging}>
+        {renderFormItems()}
+      </Form>
+    </div>
   );
 }
