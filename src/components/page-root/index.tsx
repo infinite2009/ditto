@@ -46,12 +46,15 @@ export default observer(function PageRoot({
   });
 
   const classes = useMemo(() => {
+    console.log('pageRoot id === dslStore?.selectedComponent?.id:  ', id === dslStore?.selectedComponent?.id);
     return classNames({
       [styles.withoutChildren]: !children?.length,
       [styles.main]: true,
-      [styles.outline]: isOver
+      [styles.outline]: isOver,
+      [styles.selected]: id === dslStore?.selectedComponent?.id,
+      [styles.showOutline]: isParentOfSelected()
     });
-  }, [children]);
+  }, [children, id, dslStore?.selectedComponent?.id]);
 
   const composedStyle: CSSProperties = useMemo(() => {
     return {
@@ -65,6 +68,18 @@ export default observer(function PageRoot({
   function handleSelecting(e) {
     e.stopPropagation();
     dslStore.selectComponent(id);
+  }
+
+  function isParentOfSelected() {
+    const selected = dslStore.selectedComponent;
+    if (!selected) {
+      return false;
+    }
+    const parentId = selected.parentId;
+    if (!parentId) {
+      return false;
+    }
+    return parentId === id;
   }
 
   return (

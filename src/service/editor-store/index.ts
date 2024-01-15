@@ -4,6 +4,8 @@ import { ComponentId } from '@/types';
 export default class EditorStore {
   componentIdForCopy: ComponentId;
   private hiddenComponents: Record<ComponentId, boolean> = {};
+  leftPanelVisible = true;
+  rightPanelVisible = true;
 
   constructor() {
     makeAutoObservable(this);
@@ -11,6 +13,19 @@ export default class EditorStore {
 
   get hasCopiedComponent() {
     return !!this.componentIdForCopy;
+  }
+
+  toggleExpandingCanvas() {
+    this.toggleLeftPanelVisible();
+    this.toggleRightPanelVisible();
+  }
+
+  toggleLeftPanelVisible() {
+    this.leftPanelVisible = !this.leftPanelVisible;
+  }
+
+  toggleRightPanelVisible() {
+    this.rightPanelVisible = !this.rightPanelVisible;
   }
 
   /**

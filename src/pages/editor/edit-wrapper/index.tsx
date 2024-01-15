@@ -195,8 +195,22 @@ export default observer(function EditWrapper({
   const className = classNames({
     [styles.selected]: id === dslStore.selectedComponent?.id,
     [styles.isOver]: isOver,
-    [styles.main]: true
+    [styles.main]: true,
+    [styles.canDrop]: feature !== 'solid',
+    [styles.showOutline]: isParentOfSelected()
   });
+
+  function isParentOfSelected() {
+    const selected = dslStore.selectedComponent;
+    if (!selected) {
+      return false;
+    }
+    const parentId = selected.parentId;
+    if (!parentId) {
+      return false;
+    }
+    return parentId === id;
+  }
 
   function renderSelectedUI() {
     return (

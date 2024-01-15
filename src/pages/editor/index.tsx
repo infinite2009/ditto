@@ -79,8 +79,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [currentFile, setCurrentFile] = useState<string>('');
   const [selectedPath, setSelectedPath] = useState<string>('');
   const [leftPanelType, setLeftPanelType] = useState<PanelType>(PanelType.file);
-  const [leftPanelVisible, setLeftPanelVisible] = useState<boolean>(true);
-  const [rightPanelVisible, setRightPanelVisible] = useState<boolean>(true);
   const [showDesign, setShowDesign] = useState<boolean>(true);
   const [scale, setScale] = useState<number>(100);
   const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
@@ -688,8 +686,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function toggleExpandingCanvas() {
-    setLeftPanelVisible(!leftPanelVisible);
-    setRightPanelVisible(!rightPanelVisible);
+    editorStore.toggleExpandingCanvas();
   }
 
   async function toggleDesignAndCode(showDesign: boolean) {
@@ -1004,7 +1001,10 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
           onDragCancel={handleDraggingCancel}
         >
           <div className={styles.draggableArea}>
-            <div className={styles.panel} style={leftPanelVisible ? undefined : { width: 0, overflow: 'hidden' }}>
+            <div
+              className={styles.panel}
+              style={editorStore?.leftPanelVisible ? undefined : { width: 0, overflow: 'hidden' }}
+            >
               {renderLeftPanel()}
             </div>
             <div className={styles.canvas}>
@@ -1024,7 +1024,10 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
             document.body
           )}
         </DndContext>
-        <div className={styles.formPanel} style={rightPanelVisible ? undefined : { width: 0, overflow: 'hidden' }}>
+        <div
+          className={styles.formPanel}
+          style={editorStore?.rightPanelVisible ? undefined : { width: 0, overflow: 'hidden' }}
+        >
           <FormPanel />
         </div>
       </>
@@ -1052,7 +1055,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         {showDesign ? (
           <PanelTab
             onSelect={handleTogglePanel}
-            style={leftPanelVisible ? undefined : { width: 0, overflow: 'hidden', margin: 0, padding: 0 }}
+            style={editorStore?.leftPanelVisible ? undefined : { width: 0, overflow: 'hidden', margin: 0, padding: 0 }}
           />
         ) : null}
         <Toolbar onDo={handleOnDo} pageWidth={pageWidth} projectId={currentProject?.id} />

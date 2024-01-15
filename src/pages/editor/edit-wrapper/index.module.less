@@ -2,10 +2,27 @@
   position: relative;
   box-sizing: border-box;
   outline-width: 1px;
-  outline-offset: -1px;
   outline-style: none;
   cursor: default;
   transition: border 0.5s ease-in-out;
+}
+
+.showOutline() {
+  cursor: pointer;
+  border-radius: 4px;
+  outline: 1px dashed #A7BAFF;
+  outline-offset: -1px;
+  background: linear-gradient(0deg, rgba(167, 186, 255, 0.04) 0%, rgba(167, 186, 255, 0.04) 100%), #FFF;
+}
+
+.showOutline {
+  .showOutline();
+}
+
+.canDrop {
+  &:not(.selected):hover {
+    .showOutline();
+  }
 }
 
 .isOver {

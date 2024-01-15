@@ -3,12 +3,13 @@ import { Divider, message, Radio, Select, Space } from 'antd';
 import PageAction from '@/types/page-action';
 import React, { useContext, useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { AppStoreContext, DSLStoreContext } from '@/hooks/context';
+import { AppStoreContext, DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import { RadioChangeEvent } from 'antd/es/radio/interface';
 import { Scene } from '@/service/app-store';
 import { Clean, Download, ExpandScreen, More, Preview, Redo, Share, Undo } from '@/components/icon';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
+import EditorStore from '@/service/editor-store';
 
 export enum PageWidth {
   wechat = 900,
@@ -34,6 +35,7 @@ const { Option } = Select;
 export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
   const dslStore = useContext(DSLStoreContext);
   const appStore = useContext(AppStoreContext);
+  const editorStore = useContext(EditorStoreContext);
 
   const [view, setView] = useState<'code' | 'design'>('design');
 
@@ -323,7 +325,13 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
         </Select>
         <Divider className={styles.divider} type="vertical" />
         <Clean className={styles.iconBtn} onClick={handleClear} />
-        <ExpandScreen className={styles.iconBtn} onClick={handleExpand} />
+        <ExpandScreen
+          className={classNames({
+            [styles.iconBtn]: true,
+            [styles.selected]: !editorStore?.leftPanelVisible && !editorStore?.rightPanelVisible
+          })}
+          onClick={handleExpand}
+        />
         {/*<LayoutOutlined className={styles.iconBtn} style={{ marginLeft: 'auto' }} onClick={handleShowLayout} />*/}
         <Divider className={styles.divider} type="vertical" style={{ marginLeft: 'auto', borderColor: '#F1F2F3' }} />
       </div>
