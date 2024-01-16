@@ -20,7 +20,7 @@ export interface ITSXOptions {
 export interface IPropsOptions {
   name: string;
   variableName?: string;
-  value?: string;
+  value?: string | undefined;
   variableType: string;
   variableValueSource?: 'editorInput' | 'httpRequest' | 'calculation';
 }
@@ -139,8 +139,15 @@ export default class ReactCodeGenerator {
 
   generatePropsStrWithLiteral(opt: IPropsOptions): string {
     const { name, variableType, value } = opt;
+    // 如果 value 的值是 undefined 或者 null，则直接忽略这个值
+    if (value === undefined || value === null) {
+      return '';
+    }
     if (variableType === 'string') {
       return `${name}="${value}"`;
+    }
+    if (variableType === 'boolean' && value === 'true') {
+      return `${name}`;
     }
     return `${name}={${value}}`;
   }
@@ -416,91 +423,101 @@ export default class ReactCodeGenerator {
       const basicValueTypes = ['string', 'number', 'boolean'];
       // 基础类型固定值走字面，其他情况走变量（常量、state、memo、callback）
       if (valueSource === 'editorInput') {
-        if (templateKeyPathsReg.length) {
-          const variableName = this.generateVariableName(componentId, name, 'const');
+        if (basicValueTypes.includes(valueType)) {
           result.propsStrArr.push(
-            this.generatePropAssignmentExpWithVariable({
+            this.generatePropsStrWithLiteral({
               name: ref,
-              variableName,
-              variableType: correctedValueType
+              value: value === undefined ? undefined : value === null ? null : value.toString(),
+              variableType: valueType
             })
           );
-
-          // 模板使用嵌套
-          if (result.constantInfo) {
-            result.constantInfo[variableName] = {
-              name: variableName,
-              value: this.tsCodeGenerator.generateObjectStrArr(
-                value,
-                templateKeyPathsReg,
-                (val: ComponentSchemaRef, wrapper: string[] = [], insertIndex = 0) => {
-                  const { tsxInfo, importInfo, effectInfo, constantInfo, memoInfo, callbackInfo, stateInfo } =
-                    this.analysisTemplate(val, propsDict);
-                  // 合并统计分析
-                  Object.assign(result.stateInfo as object, stateInfo);
-                  Object.assign(result.callbackInfo as object, callbackInfo);
-                  Object.assign(result.memoInfo as object, memoInfo);
-                  Object.assign(result.effectInfo as object, effectInfo);
-                  Object.assign(result.constantInfo as object, constantInfo);
-                  if (importInfo) {
-                    // 合并 hooks
-                    const { object } = importInfo.react;
-                    if (
-                      result.effectInfo &&
-                      Object.entries(result.effectInfo).length &&
-                      !object.includes('useEffect')
-                    ) {
-                      object.push('useEffect');
-                    }
-                    if (result.stateInfo && Object.entries(result.stateInfo).length && !object.includes('useState')) {
-                      object.push('useState');
-                    }
-                    if (result.memoInfo && Object.entries(result.memoInfo).length && !object.includes('useMemo')) {
-                      object.push('useMemo');
-                    }
-                    if (
-                      result.callbackInfo &&
-                      Object.entries(result.callbackInfo).length &&
-                      !object.includes('useCallback')
-                    ) {
-                      object.push('useCallback');
-                    }
-                    this.mergeImportInfo(result.importInfo, importInfo);
-                  }
-
-                  if (tsxInfo) {
-                    const tsxSentences = this.generateTSX(tsxInfo);
-                    // 这里如果存在 wrapper ，则按照插入索引的位置，插入 tsx 代码
-                    if (wrapper.length) {
-                      const cp = [...wrapper];
-                      cp.splice(insertIndex, 0, ...tsxSentences);
-                      return cp;
-                    }
-                    return tsxSentences;
-                  }
-                  return [];
-                }
-              )
-            };
-          }
         } else {
-          const variableName = this.generateVariableName(componentId, name, 'state');
-          result.propsStrArr.push(
-            this.generatePropAssignmentExpWithVariable({
-              name: ref,
-              variableName,
-              variableType: correctedValueType
-            })
-          );
-          // 变量需要转为 state
-          if (result.stateInfo) {
-            result.stateInfo[variableName] = {
-              name: variableName,
-              initialValue: basicValueTypes.includes(correctedValueType)
-                ? value
-                : this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
-              valueType: correctedValueType
-            };
+          if (templateKeyPathsReg.length) {
+            const variableName = this.generateVariableName(componentId, name, 'const');
+            result.propsStrArr.push(
+              this.generatePropAssignmentExpWithVariable({
+                name: ref,
+                variableName,
+                variableType: correctedValueType
+              })
+            );
+
+            // 模板使用嵌套
+            if (result.constantInfo) {
+              result.constantInfo[variableName] = {
+                name: variableName,
+                value: this.tsCodeGenerator.generateObjectStrArr(
+                  value,
+                  templateKeyPathsReg,
+                  (val: ComponentSchemaRef, wrapper: string[] = [], insertIndex = 0) => {
+                    const { tsxInfo, importInfo, effectInfo, constantInfo, memoInfo, callbackInfo, stateInfo } =
+                      this.analysisTemplate(val, propsDict);
+                    // 合并统计分析
+                    Object.assign(result.stateInfo as object, stateInfo);
+                    Object.assign(result.callbackInfo as object, callbackInfo);
+                    Object.assign(result.memoInfo as object, memoInfo);
+                    Object.assign(result.effectInfo as object, effectInfo);
+                    Object.assign(result.constantInfo as object, constantInfo);
+                    if (importInfo) {
+                      // 合并 hooks
+                      const { object } = importInfo.react;
+                      if (
+                        result.effectInfo &&
+                        Object.entries(result.effectInfo).length &&
+                        !object.includes('useEffect')
+                      ) {
+                        object.push('useEffect');
+                      }
+                      if (result.stateInfo && Object.entries(result.stateInfo).length && !object.includes('useState')) {
+                        object.push('useState');
+                      }
+                      if (result.memoInfo && Object.entries(result.memoInfo).length && !object.includes('useMemo')) {
+                        object.push('useMemo');
+                      }
+                      if (
+                        result.callbackInfo &&
+                        Object.entries(result.callbackInfo).length &&
+                        !object.includes('useCallback')
+                      ) {
+                        object.push('useCallback');
+                      }
+                      this.mergeImportInfo(result.importInfo, importInfo);
+                    }
+
+                    if (tsxInfo) {
+                      const tsxSentences = this.generateTSX(tsxInfo);
+                      // 这里如果存在 wrapper ，则按照插入索引的位置，插入 tsx 代码
+                      if (wrapper.length) {
+                        const cp = [...wrapper];
+                        cp.splice(insertIndex, 0, ...tsxSentences);
+                        return cp;
+                      }
+                      return tsxSentences;
+                    }
+                    return [];
+                  }
+                )
+              };
+            }
+          } else {
+            const variableName = this.generateVariableName(componentId, name, 'state');
+            result.propsStrArr.push(
+              this.generatePropAssignmentExpWithVariable({
+                name: ref,
+                variableName,
+                variableType: correctedValueType
+              })
+            );
+            // 变量需要转为 state
+            if (result.stateInfo) {
+              result.stateInfo[variableName] = {
+                name: variableName,
+                initialValue: basicValueTypes.includes(correctedValueType)
+                  ? value
+                  : this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
+                valueType: correctedValueType
+              };
+            }
           }
         }
       } else if (valueSource === 'handler') {
