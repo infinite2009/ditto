@@ -142,14 +142,15 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       exportAsTemplate,
       rename,
       newFolder,
-      newPage
+      newPage,
+      remove: deleteSelectedComponent
     };
     if (!contextId) {
       appStore.createContext(Scene.editor, {}, handlers);
     } else {
       appStore.registerHandlers(contextId, handlers);
     }
-  }, [copy, paste, cancelSelection, exportAsTemplate, rename, newFolder, newPage]);
+  }, [copy, deleteSelectedComponent, paste, cancelSelection, exportAsTemplate, rename, newFolder, newPage]);
 
   function copy() {
     message.success('复制待实现').then();
@@ -338,6 +339,12 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       }
     }
     return depth;
+  }
+
+  function deleteSelectedComponent() {
+    if (dslStore.selectedComponent) {
+      dslStore.deleteComponent(dslStore.selectedComponent.id);
+    }
   }
 
   function sortCollisionsDesc(

@@ -404,6 +404,10 @@ export default class DSLStore {
     };
   }
 
+  get pageRoot() {
+    return this.dsl.componentIndexes[this.dsl.child.current];
+  }
+
   /**
    * 由于 DSL 的设计特性，嵌套的 template 之间一定会有一层容器作为插槽，所以删除插槽内的节点，只需要遍历插槽的 children
    *
@@ -412,11 +416,15 @@ export default class DSLStore {
    */
   @execute
   deleteComponent(id: ComponentId): IComponentSchema | null {
+    if (this.selectedComponent.feature === 'root') {
+      return;
+    }
     const deleted = this.deleteSubtree(id);
     // 如果当前已选中的组件，已经被删除了，就清空
     if (this.selectedComponent?.id && !this.dsl.componentIndexes[this.selectedComponent.id]) {
       this.resetSelectedComponent();
     }
+    this.selectedComponent = this.pageRoot;
     return deleted;
   }
 
