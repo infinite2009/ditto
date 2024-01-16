@@ -52,10 +52,23 @@ import {
   Upload
 } from 'antd';
 import { CodeSandboxOutlined } from '@ant-design/icons';
-import IComponentConfig from '@/types/component-config';
+import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import PageRoot from '@/components/page-root';
 import Container from '@/components/container';
 import { camelotComponentConfig } from '@/service/load-config/camelot';
+
+const defaultStyleConfig: IPropsConfigItem = {
+  id: 'style',
+  schemaType: 'props',
+  name: 'style',
+  title: '样式',
+  category: 'style',
+  value: {
+    padding: 8
+  },
+  valueType: 'object',
+  valueSource: 'editorInput'
+};
 
 const flexTransformerStr =
   'return ((values) => {' +
@@ -128,16 +141,10 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     icon: CodeSandboxOutlined,
     propsConfig: {
       style: {
-        id: 'style',
-        schemaType: 'props',
-        name: 'style',
-        title: '样式',
-        category: 'style',
+        ...defaultStyleConfig,
         value: {
           padding: 8
-        },
-        valueType: 'object',
-        valueSource: 'editorInput'
+        }
       },
       vertical: {
         id: 'vertical',
@@ -203,16 +210,10 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     component: Container,
     propsConfig: {
       style: {
-        id: 'style',
-        schemaType: 'props',
-        name: 'style',
-        title: '样式',
-        category: 'style',
+        ...defaultStyleConfig,
         value: {
           padding: 8
-        },
-        valueType: 'object',
-        valueSource: 'editorInput'
+        }
       },
       vertical: {
         id: 'vertical',
@@ -278,16 +279,10 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     component: Container,
     propsConfig: {
       style: {
-        id: 'style',
-        schemaType: 'props',
-        name: 'style',
-        title: '样式',
-        category: 'style',
+        ...defaultStyleConfig,
         value: {
           padding: 8
-        },
-        valueType: 'object',
-        valueSource: 'editorInput'
+        }
       },
       vertical: {
         id: 'vertical',
@@ -431,14 +426,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         valueSource: 'editorInput'
       },
       style: {
-        id: 'style',
-        schemaType: 'props',
-        name: 'style',
-        title: '样式',
-        category: 'style',
-        value: {},
-        valueType: 'object',
-        valueSource: 'editorInput'
+        ...defaultStyleConfig
       },
       onClick: {
         id: 'onClick',
@@ -467,14 +455,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     icon: CodeSandboxOutlined,
     propsConfig: {
       style: {
-        id: 'style',
-        schemaType: 'props',
-        name: 'style',
-        title: '样式',
-        category: 'style',
-        value: {},
-        valueType: 'object',
-        valueSource: 'editorInput'
+        ...defaultStyleConfig
       },
       copyable: {
         id: 'copyable',
@@ -584,14 +565,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     icon: CodeSandboxOutlined,
     propsConfig: {
       style: {
-        id: 'style',
-        schemaType: 'props',
-        name: 'style',
-        title: '样式',
-        category: 'style',
-        value: {},
-        valueType: 'object',
-        valueSource: 'editorInput'
+        ...defaultStyleConfig
       },
       copyable: {
         id: 'copyable',
@@ -701,14 +675,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     icon: CodeSandboxOutlined,
     propsConfig: {
       style: {
-        id: 'style',
-        schemaType: 'props',
-        name: 'style',
-        title: '样式',
-        category: 'style',
-        value: {},
-        valueType: 'object',
-        valueSource: 'editorInput'
+        ...defaultStyleConfig
       },
       copyable: {
         id: 'copyable',
@@ -1191,6 +1158,9 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     title: '表格',
     icon: CodeSandboxOutlined,
     propsConfig: {
+      style: {
+        ...defaultStyleConfig
+      },
       columns: {
         id: 'columns',
         schemaType: 'props',

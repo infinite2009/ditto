@@ -435,6 +435,14 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
       configName: 'Table',
       formComponent: {
         basic: CustomTableForm as FC<any>
+      },
+      schema: {
+        style: {
+          layout: {
+            width: true,
+            height: true
+          }
+        }
       }
     },
     ...camelotComponentProps
