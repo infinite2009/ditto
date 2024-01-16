@@ -57,8 +57,6 @@ import PageRoot from '@/components/page-root';
 import Container from '@/components/container';
 import { camelotComponentConfig } from '@/service/load-config/camelot';
 
-const Search = Input.Search;
-
 const flexTransformerStr =
   'return ((values) => {' +
   '  if (!values) {' +
@@ -882,6 +880,65 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     icon: CodeSandboxOutlined,
     propsConfig: {}
   },
+  Input: {
+    configName: 'Input',
+    callingName: 'Input',
+    dependency: 'antd',
+    component: Input,
+    category: '数据录入',
+    title: '输入框',
+    icon: CodeSandboxOutlined,
+    propsConfig: {
+      value: {
+        id: 'value',
+        schemaType: 'props',
+        name: 'value',
+        title: '值',
+        category: 'basic',
+        value: '',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      placeholder: {
+        id: 'placeholder',
+        schemaType: 'props',
+        name: 'placeholder',
+        title: '提示词',
+        category: 'basic',
+        value: '请输入',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      }
+    }
+  },
+  'Input.Search': {
+    configName: 'Input.Search',
+    callingName: 'Input.Search',
+    dependency: 'antd',
+    component: Input.Search,
+    category: '数据录入',
+    title: '搜索框',
+    icon: CodeSandboxOutlined,
+    propsConfig: {}
+  },
+  'Input.TextArea': {
+    configName: 'Input.TextArea',
+    dependency: 'antd',
+    component: Input.TextArea,
+    category: '数据录入',
+    title: '多行文本',
+    icon: CodeSandboxOutlined,
+    propsConfig: {}
+  },
+  InputNumber: {
+    configName: 'InputNumber',
+    dependency: 'antd',
+    component: InputNumber,
+    category: '数据录入',
+    title: '数字输入框',
+    icon: CodeSandboxOutlined,
+    propsConfig: {}
+  },
   Cascader: {
     configName: 'Cascader',
     dependency: 'antd',
@@ -924,34 +981,6 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     category: '数据录入',
     title: '表单',
     dependency: 'antd',
-    icon: CodeSandboxOutlined,
-    propsConfig: {}
-  },
-  'Input.Search': {
-    configName: 'Input',
-    callingName: 'Input.Search',
-    dependency: 'antd',
-    component: Search,
-    category: '数据录入',
-    title: '搜索框',
-    icon: CodeSandboxOutlined,
-    propsConfig: {}
-  },
-  'Input.TextArea': {
-    configName: 'Input.TextArea',
-    dependency: 'antd',
-    component: Input.TextArea,
-    category: '数据录入',
-    title: '多行文本',
-    icon: CodeSandboxOutlined,
-    propsConfig: {}
-  },
-  InputNumber: {
-    configName: 'InputNumber',
-    dependency: 'antd',
-    component: InputNumber,
-    category: '数据录入',
-    title: '数字输入框',
     icon: CodeSandboxOutlined,
     propsConfig: {}
   },

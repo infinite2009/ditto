@@ -310,12 +310,74 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
             gap: true
           },
           backgroundColor: true,
-          border: {
-            borderWidth: true,
-            borderColor: true,
-            borderStyle: true
+          text: {
+            // 字号和行高
+            size: true,
+            color: true,
+            decoration: true
+          }
+        },
+        basic: {
+          children: {
+            name: 'children',
+            type: 'string',
+            title: '内容',
+            component: 'Input',
+            initialValue: '默认文字'
+          }
+        }
+      }
+    },
+    Paragraph: {
+      configName: 'Paragraph',
+      transformerStr: typographyTransformerStr,
+      schema: {
+        style: {
+          layout: {
+            width: true,
+            height: true,
+            wrap: true,
+            direction: true,
+            alignItems: true,
+            justifyContent: true,
+            padding: true,
+            gap: true
           },
-          shadow: true,
+          backgroundColor: true,
+          text: {
+            // 字号和行高
+            size: true,
+            color: true,
+            decoration: true
+          }
+        },
+        basic: {
+          children: {
+            name: 'children',
+            type: 'string',
+            title: '内容',
+            component: 'Input',
+            initialValue: '默认段落'
+          }
+        }
+      }
+    },
+    Title: {
+      configName: 'Title',
+      transformerStr: typographyTransformerStr,
+      schema: {
+        style: {
+          layout: {
+            width: true,
+            height: true,
+            wrap: true,
+            direction: true,
+            alignItems: true,
+            justifyContent: true,
+            padding: true,
+            gap: true
+          },
+          backgroundColor: true,
           text: {
             // 字号和行高
             size: true,
@@ -329,7 +391,28 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
             type: 'string',
             title: '标题',
             component: 'Input',
-            initialValue: '按钮'
+            initialValue: '默认标题'
+          }
+        }
+      }
+    },
+    Input: {
+      configName: 'Input',
+      schema: {
+        basic: {
+          value: {
+            name: 'value',
+            type: 'string',
+            title: '值',
+            component: 'Input',
+            initialValue: ''
+          },
+          placeholder: {
+            name: 'placeholder',
+            type: 'string',
+            title: '提示词',
+            component: 'Input',
+            initialValue: '请输入'
           }
         }
       }
