@@ -633,7 +633,9 @@ class FileManager {
       const { id: componentId, configName, name, dependency, propsRefs } = componentSchema;
       const { propsConfig } = fetchComponentConfig(configName || name, dependency);
       const propsDict = dslClone.props[componentId];
-      propsRefs.forEach(ref => {
+      // 用赋值的数组进行遍历
+      const propsRefsCopy = [...propsRefs];
+      propsRefsCopy.forEach(ref => {
         const props = propsDict[ref];
         const actionPropsDict: Record<PropsId, { name: string; value: any }> = {};
         Object.values(actions).forEach(action => {
