@@ -299,11 +299,14 @@ export default observer((props: IPageRendererProps) => {
       componentProps.getContainer = false;
     }
 
-    const tpl = (
-      <Component key={componentId} {...componentProps} {...rootProps}>
-        {childrenTemplate}
-      </Component>
-    );
+    const tpl =
+      childrenTemplate?.length > 0 ? (
+        <Component key={componentId} {...componentProps} {...rootProps}>
+          {childrenTemplate}
+        </Component>
+      ) : (
+        <Component key={componentId} {...componentProps} {...rootProps} />
+      );
 
     if (dslStore?.isHidden && dslStore?.isHidden(componentId)) {
       return null;
