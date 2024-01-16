@@ -4,7 +4,7 @@ import { AppStoreContext } from '@/hooks/context';
 import React, { useContext, useRef, useState } from 'react';
 import { Button, ConfigProvider, Divider, Dropdown, Input, Modal } from 'antd';
 import style from './index.module.less';
-import { Close, ExpandThin, Menu2, More, Playlist2 } from '@/components/icon';
+import { Close, CloseThin, ExpandThin, Menu2, More, Ok, Playlist2 } from '@/components/icon';
 import { convertFileSrc } from '@tauri-apps/api/tauri';
 import classNames from 'classnames';
 import { Scene } from '@/service/app-store';
@@ -110,6 +110,9 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
   }
 
   function renderTemplatePreview(tplInfo: TemplateInfo) {
+    if (!tplInfo) {
+      return null;
+    }
     const templatePreviewClass = classNames({
       [style.templatePreview]: true,
       [style.smallTemplatePreview]: listMode === 'small',
@@ -118,7 +121,7 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
 
     return (
       <div className={templatePreviewClass}>
-        {selectedTemplateInfoForRename ? (
+        {selectedTemplateInfoForRename?.id === tplInfo.id ? (
           <div className={style.renameWrapper}>
             <Input
               className={style.renameInput}
@@ -127,8 +130,8 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
               onPressEnter={(e: any) => renameTemplate(e.target.value.trim())}
             />
             <div className={style.renameIconWrapper}>
-              <Close className={style.renameIcon} onClick={() => renameTemplate(templateNameRef.current)} />
-              <Close className={style.renameIcon} onClick={resetRenaming} />
+              <Ok className={classNames({ [style.renameIcon]: true, [style.okIcon]: true})} onClick={() => renameTemplate(templateNameRef.current)} />
+              <CloseThin className={style.renameIcon} onClick={resetRenaming} />
             </div>
           </div>
         ) : (

@@ -3,8 +3,12 @@ import { IconFontProps } from '@ant-design/icons/lib/components/IconFont';
 
 export const Icon = createFromIconfontCN({
   // 必需要使用 https 协议，否则会使用 tauri 协议
-  scriptUrl: 'https://at.alicdn.com/t/c/font_4341626_sfqmrrrpfz.js'
+  scriptUrl: 'https://at.alicdn.com/t/c/font_4341626_1gagblx6c7o.js'
 });
+
+export function Ok(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-gou-queren" />;
+}
 
 export function Playlist2(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-bodan2" />;
@@ -24,6 +28,10 @@ export function Menu(props: Omit<IconFontProps, 'type'>) {
 
 export function Undo(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-chexiao-xianghou" />;
+}
+
+export function CloseThin(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-guanbi-1" />;
 }
 
 export function Close(props: Omit<IconFontProps, 'type'>) {
