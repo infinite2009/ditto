@@ -139,8 +139,8 @@ export default class ReactCodeGenerator {
 
   generatePropsStrWithLiteral(opt: IPropsOptions): string {
     const { name, variableType, value } = opt;
-    // 如果 value 的值是 undefined 或者 null，则直接忽略这个值
-    if (value === undefined || value === null) {
+    // 如果 value 的值是 undefined，则直接忽略这个值
+    if (value === undefined) {
       return '';
     }
     if (variableType === 'string') {
