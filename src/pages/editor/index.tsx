@@ -77,7 +77,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [currentProject, setCurrentProject] = useState<ProjectInfo>();
   const [projectData, setProjectData] = useState<any[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
-  const [selectedPath, setSelectedPath] = useState<string>('');
   const [leftPanelType, setLeftPanelType] = useState<PanelType>(PanelType.file);
   const [showDesign, setShowDesign] = useState<boolean>(true);
   const [scale, setScale] = useState<number>(100);
@@ -128,7 +127,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         openFile(currentFile).then();
       }
       setCurrentFile(currentFile || '');
-      setSelectedPath(currentFile || '');
+      editorStore.setSelectedPath(currentFile || '');
     }
   }, [currentProject]);
 
@@ -762,7 +761,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   async function handleSelectingPageOrFolder(page: ({ path: string; name: string } & DataNode) | null) {
     if (!page) {
       // 如果 page 是非真值，表示用户删除了当前的文件
-      setSelectedPath('');
+      editorStore.setSelectedPath('');
       dslStore.initDSL();
       return;
     }
@@ -772,7 +771,8 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       openFile(page.path as string).then();
       setCurrentFile(page.path as string);
     }
-    setSelectedPath(page.path);
+    // setSelectedPath(page.path);
+    editorStore.setSelectedPath(page.path);
   }
 
   function handleTogglePanel(type: PanelType) {
@@ -955,7 +955,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         <PagePanel
           data={projectData}
           onSelect={handleSelectingPageOrFolder}
-          selected={selectedPath}
+          // selected={selectedPath}
           onChange={handleChangingProject}
         />
         <div className={styles.componentTree}>

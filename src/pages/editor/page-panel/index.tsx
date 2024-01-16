@@ -5,7 +5,7 @@ import ProjectToolBar from '@/pages/editor/project-tool-bar';
 import { findNodePath } from '@/util';
 import { ComponentId } from '@/types';
 import fileManager from '@/service/file';
-import { AppStoreContext } from '@/hooks/context';
+import { AppStoreContext, EditorStoreContext } from '@/hooks/context';
 import { Scene } from '@/service/app-store';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
 import PageRenderer from '@/pages/components/page-renderer';
@@ -14,6 +14,7 @@ import html2canvas from 'html2canvas';
 import { PageWidth } from '@/pages/editor/toolbar';
 import styles from './index.module.less';
 import { Desktop, Expand } from '@/components/icon';
+import { observer } from 'mobx-react';
 
 interface PageData {
   children?: PageData[];
@@ -29,12 +30,12 @@ export interface IPagePanel {
   data: PageData[];
   onChange: () => void;
   onSelect: (page: ({ path: string; name: string } & DataNode) | null) => void;
-  selected: string;
+  // selected: string;
 }
 
-export default function PagePanel({ data = [], selected, onSelect, onChange }: IPagePanel) {
+export default observer(function PagePanel({ data = [], /*selected,*/ onSelect, onChange }: IPagePanel) {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
-  const [selectedPath, setSelectedPath] = useState<ComponentId>('');
+  const [selectedPathForRenaming, setSelectedPathForRenaming] = useState<ComponentId>('');
   const [pageOrFolderPathForCopy, setPageOrFolderPathForCopy] = useState<string>('');
   const [storeForCover, setStoreForCover] = useState<DSLStore>(null);
   const [showCover, setShowCover] = useState<boolean>(false);
@@ -50,14 +51,15 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   }>();
 
   const appStore = useContext(AppStoreContext);
+  const editorStore = useContext(EditorStoreContext);
 
   useEffect(() => {
-    if (selected && data.length) {
-      const foundNodePath = findNodePath({ key: undefined, children: data }, selected);
+    if (editorStore.selectedPath && data.length) {
+      const foundNodePath = findNodePath({ key: undefined, children: data }, editorStore.selectedPath);
       const mergedExpandedKeys = mergeExpandedKeys(expandedKeys, foundNodePath);
       setExpandedKeys(mergedExpandedKeys);
     }
-  }, [selected, data]);
+  }, [editorStore.selectedPath, data]);
 
   useEffect(() => {
     if (storeForCover) {
@@ -66,12 +68,12 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   }, [storeForCover]);
 
   const selectedKeys = useMemo(() => {
-    if (selected && data.length) {
+    if (editorStore.selectedPath && data.length) {
       // warning: 不能破坏原始数据
       let q = [...data];
       while (q.length) {
         const node = q.shift();
-        if (node?.path === selected) {
+        if (node?.path === editorStore.selectedPath) {
           selectedPathRef.current = node;
           return [node?.key];
         } else if (node?.children?.length) {
@@ -81,7 +83,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
       return [];
     }
     return [];
-  }, [selected, data]);
+  }, [editorStore.selectedPath, data]);
 
   function mergeExpandedKeys(arr1: string[], arr2: string[]): string[] {
     const result = [...arr1];
@@ -132,7 +134,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
           } else {
             converted.icon = (props: any) => null;
           }
-          if (item.path === selectedPath) {
+          if (item.path === selectedPathForRenaming) {
             converted.title = (
               <Input
                 defaultValue={item.title as string}
@@ -158,7 +160,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
                     clearTimeout(clickTimeoutIdRef.current);
                     clickTimeoutIdRef.current = undefined;
                   }
-                  setSelectedPath(converted.path);
+                  setSelectedPathForRenaming(converted.path);
                 }}
               >
                 {converted.title}
@@ -186,7 +188,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
       return recursiveMap(data);
     }
     return [];
-  }, [data, selectedPath, pageOrFolderPathForCopy]);
+  }, [data, selectedPathForRenaming, pageOrFolderPathForCopy]);
 
   /**
    * 响应菜单项点击的回调
@@ -241,7 +243,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   }
 
   function renamePageOrFolder() {
-    setSelectedPath(selectedPageOrFolderForMenuRef.current.path);
+    setSelectedPathForRenaming(selectedPageOrFolderForMenuRef.current.path);
   }
 
   async function executeExport() {
@@ -334,7 +336,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
       // @ts-ignore
       message.error(e.toString());
     } finally {
-      setSelectedPath('');
+      setSelectedPathForRenaming('');
     }
   }
 
@@ -343,20 +345,22 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
   }
 
   async function handleCreatingPage() {
-    await fileManager.createNewPage(selected);
+    await fileManager.createNewPage(editorStore.selectedPath);
     if (onChange) {
       onChange();
     }
   }
 
   async function handleCreatingDirectory() {
-    await fileManager.createNewDirectory(selected);
+    await fileManager.createNewDirectory(editorStore.selectedPath);
     if (onChange) {
       onChange();
     }
   }
 
-  function handleSearchingPage() {}
+  function handleSearchingPage() {
+    console.log('page searching works!');
+  }
 
   return (
     <div className={styles.pagePanel}>
@@ -384,4 +388,4 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
       </div>
     </div>
   );
-}
+});

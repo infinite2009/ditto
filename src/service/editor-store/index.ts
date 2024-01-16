@@ -6,6 +6,7 @@ export default class EditorStore {
   private hiddenComponents: Record<ComponentId, boolean> = {};
   leftPanelVisible = true;
   rightPanelVisible = true;
+  selectedPath: string;
 
   constructor() {
     makeAutoObservable(this);
@@ -40,5 +41,9 @@ export default class EditorStore {
 
   setComponentIdForCopy(componentId: ComponentId) {
     this.componentIdForCopy = componentId;
+  }
+
+  setSelectedPath(path: string) {
+    this.selectedPath = path;
   }
 }
