@@ -78,7 +78,6 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const [projectData, setProjectData] = useState<any[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
   const [leftPanelType, setLeftPanelType] = useState<PanelType>(PanelType.file);
-  const [showDesign, setShowDesign] = useState<boolean>(true);
   const [scale, setScale] = useState<number>(100);
   const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
   const [selectedComponentForRenaming, setSelectedComponentForRenaming] = useState<ComponentId>('');
@@ -688,11 +687,11 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     editorStore.toggleExpandingCanvas();
   }
 
-  async function toggleDesignAndCode(showDesign: boolean) {
-    if (!showDesign) {
+  async function toggleDesignAndCode() {
+    if (editorStore.viewMode !== 'code') {
       setRawCode(await fileManager.generateReactCode(dslStore.dsl));
     }
-    setShowDesign(showDesign);
+    editorStore.toggleViewMode();
   }
 
   function togglePageScale(scale: number) {
@@ -727,7 +726,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         toggleExpandingCanvas();
         break;
       case PageAction.changeView:
-        toggleDesignAndCode(e?.payload?.showDesign);
+        toggleDesignAndCode();
         break;
       case PageAction.changeScale:
         togglePageScale(e?.payload?.scale);
@@ -1059,7 +1058,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   return (
     <div className={styles.main} style={style}>
       <div className={styles.topBar}>
-        {showDesign ? (
+        {editorStore.viewMode === 'design' ? (
           <PanelTab
             onSelect={handleTogglePanel}
             style={editorStore?.leftPanelVisible ? undefined : { width: 0, overflow: 'hidden', margin: 0, padding: 0 }}
@@ -1067,7 +1066,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         ) : null}
         <Toolbar onDo={handleOnDo} pageWidth={pageWidth} projectId={currentProject?.id} />
       </div>
-      <div className={styles.editArea}>{showDesign ? renderDesignSection() : renderCodeSection()}</div>
+      <div className={styles.editArea}>
+        {editorStore.viewMode === 'design' ? renderDesignSection() : renderCodeSection()}
+      </div>
       <DropAnchor style={anchorStyle} />
     </div>
   );

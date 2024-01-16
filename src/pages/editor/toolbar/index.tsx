@@ -7,9 +7,8 @@ import { AppStoreContext, DSLStoreContext, EditorStoreContext } from '@/hooks/co
 import { observer } from 'mobx-react';
 import { RadioChangeEvent } from 'antd/es/radio/interface';
 import { Scene } from '@/service/app-store';
-import { Clean, Download, ExpandScreen, More, Preview, Redo, Share, Undo } from '@/components/icon';
+import { Clean, Download, ExpandScreen, ExpandThin, More, Preview, Redo, Share, Undo } from '@/components/icon';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
-import EditorStore from '@/service/editor-store';
 
 export enum PageWidth {
   wechat = 900,
@@ -36,8 +35,6 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
   const dslStore = useContext(DSLStoreContext);
   const appStore = useContext(AppStoreContext);
   const editorStore = useContext(EditorStoreContext);
-
-  const [view, setView] = useState<'code' | 'design'>('design');
 
   useEffect(() => {
     const handlers = {
@@ -142,16 +139,12 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
     // TODO: 展示布局
   }
 
-  function handleChangeView({ target: { value } }: RadioChangeEvent) {
+  function handleChangeView() {
     if (onDo) {
       onDo({
-        type: PageAction.changeView,
-        payload: {
-          showDesign: value === 'design'
-        }
+        type: PageAction.changeView
       });
     }
-    setView(value);
   }
 
   function calClassNames(disabled: boolean) {
@@ -186,7 +179,7 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
   function calcIconClassNames() {
     return classNames({
       [styles.leftBtnWrapper]: true,
-      [styles.disabled]: view === 'code'
+      [styles.disabled]: editorStore.viewMode === 'code'
     });
   }
 
@@ -233,13 +226,14 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
         {/*<TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('tablet')} />*/}
         {/*<MobileOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('phone')} />*/}
         <Select
-          disabled={view !== 'design'}
+          disabled={editorStore.viewMode !== 'design'}
           value={pageWidth}
           style={{ width: 100 }}
           bordered={false}
           optionLabelProp="label"
           dropdownStyle={{ width: 140 }}
           onChange={handleChangePageSize}
+          suffixIcon={<ExpandThin style={{ pointerEvents: 'none' }} />}
         >
           <Option value={PageWidth.auto} label="自适应">
             <Space>
@@ -272,13 +266,14 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
           </Option>
         </Select>
         <Select
-          disabled={view !== 'design'}
+          disabled={editorStore.viewMode !== 'design'}
           defaultValue={100}
           style={{ width: 100 }}
           bordered={false}
           optionLabelProp="label"
           dropdownStyle={{ width: 140 }}
           onChange={handleChangeScale}
+          suffixIcon={<ExpandThin style={{ pointerEvents: 'none' }} />}
         >
           <Option value={50} label="50%">
             <Space>
@@ -348,7 +343,7 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
             { label: '源码', value: 'code' }
           ]}
           onChange={handleChangeView}
-          defaultValue="design"
+          value={editorStore.viewMode}
           optionType="button"
           buttonStyle="solid"
           size="small"

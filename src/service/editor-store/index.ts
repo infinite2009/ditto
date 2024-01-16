@@ -1,12 +1,15 @@
 import { makeAutoObservable } from 'mobx';
 import { ComponentId } from '@/types';
 
+export type ViewMode = 'design' | 'code';
+
 export default class EditorStore {
   componentIdForCopy: ComponentId;
   private hiddenComponents: Record<ComponentId, boolean> = {};
   leftPanelVisible = true;
   rightPanelVisible = true;
   selectedPath: string;
+  viewMode: ViewMode = 'design';
 
   constructor() {
     makeAutoObservable(this);
@@ -14,6 +17,10 @@ export default class EditorStore {
 
   get hasCopiedComponent() {
     return !!this.componentIdForCopy;
+  }
+
+  toggleViewMode() {
+    this.viewMode = this.viewMode === 'design' ? 'code' : 'design';
   }
 
   toggleExpandingCanvas() {
