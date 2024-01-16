@@ -90,7 +90,6 @@ export default function CustomTabForm({ value, onChange }: ICustomFormProps) {
     const node = dslStore.createEmptyContainer('', {
       feature: ComponentFeature.slot
     });
-    debugger;
     dslStore.dsl.componentIndexes[node.id] = node;
     if (dslStore.selectedComponent?.id) {
       node.parentId = dslStore.selectedComponent.id;
@@ -98,7 +97,6 @@ export default function CustomTabForm({ value, onChange }: ICustomFormProps) {
       // 如果没有选中节点，父节点设置为 page root，这本身其实是 bug
       node.parentId = dslStore.dsl.child.current;
     }
-    debugger;
     return {
       current: node.id,
       isText: false

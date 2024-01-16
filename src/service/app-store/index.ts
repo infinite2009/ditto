@@ -478,7 +478,6 @@ export default class AppStore {
    * @return 将来录入日志
    */
   execute(key: string, modifiers: Record<Modifier, boolean>) {
-    debugger;
     if (!this.activeContext) {
       return '不存在激活的上下文';
     }
