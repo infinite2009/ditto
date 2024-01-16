@@ -183,6 +183,8 @@ export default observer(() => {
   }
 
   return (
-    <div className={styles.main}>{dslStore.selectedComponent ? <Tabs items={tabsItems} /> : <div>请选择组件</div>}</div>
+    <div className={styles.main}>
+      {dslStore.selectedComponent ? <Tabs className={styles.tab} items={tabsItems} /> : <div>请选择组件</div>}
+    </div>
   );
 });

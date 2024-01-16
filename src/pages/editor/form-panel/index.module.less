@@ -8,8 +8,11 @@
   }
 }
 
-.tabContent {
-  overflow: auto;
-  height: calc(100vh - 122px);
-  padding-right: 10px;
+.tab {
+  :global {
+    .ant-tabs-content-holder {
+      overflow: auto;
+      height: calc(100vh - 112px);
+    }
+  }
 }
