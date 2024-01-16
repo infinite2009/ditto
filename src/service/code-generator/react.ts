@@ -415,19 +415,19 @@ export default class ReactCodeGenerator {
       if (!props) {
         return;
       }
-      const { value, valueType, valueSource, isValue, templateKeyPathsReg = [], name } = props;
+      const { value, valueSource, isValue, templateKeyPathsReg = [], name } = props;
 
       // 解决 valueType 是数字，但是 value 本身不是数字的问题，一般是 css 样式问题
-      const correctedValueType = valueType === 'number' ? typeOf(value) : valueType;
+      const valueType = typeOf(value);
 
-      const basicValueTypes = ['string', 'number', 'boolean'];
+      const basicValueTypes = ['string', 'number', 'boolean', undefined, null];
       // 基础类型固定值走字面，其他情况走变量（常量、state、memo、callback）
       if (valueSource === 'editorInput') {
         if (basicValueTypes.includes(valueType)) {
           result.propsStrArr.push(
             this.generatePropsStrWithLiteral({
               name: ref,
-              value: value === undefined ? undefined : value === null ? null : value.toString(),
+              value: value as any,
               variableType: valueType
             })
           );
@@ -438,7 +438,7 @@ export default class ReactCodeGenerator {
               this.generatePropAssignmentExpWithVariable({
                 name: ref,
                 variableName,
-                variableType: correctedValueType
+                variableType: valueType
               })
             );
 
@@ -500,23 +500,33 @@ export default class ReactCodeGenerator {
               };
             }
           } else {
-            const variableName = this.generateVariableName(componentId, name, 'state');
-            result.propsStrArr.push(
-              this.generatePropAssignmentExpWithVariable({
-                name: ref,
-                variableName,
-                variableType: correctedValueType
-              })
-            );
-            // 变量需要转为 state
-            if (result.stateInfo) {
-              result.stateInfo[variableName] = {
-                name: variableName,
-                initialValue: basicValueTypes.includes(correctedValueType)
-                  ? value
-                  : this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
-                valueType: correctedValueType
-              };
+            if (this.useLiteralAssignment(value, valueType)) {
+              result.propsStrArr.push(
+                this.generatePropsStrWithLiteral({
+                  name: ref,
+                  value: this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
+                  variableType: valueType
+                })
+              );
+            } else {
+              const variableName = this.generateVariableName(componentId, name, 'state');
+              result.propsStrArr.push(
+                this.generatePropAssignmentExpWithVariable({
+                  name: ref,
+                  variableName,
+                  variableType: valueType
+                })
+              );
+              // 变量需要转为 state
+              if (result.stateInfo) {
+                result.stateInfo[variableName] = {
+                  name: variableName,
+                  initialValue: basicValueTypes.includes(valueType)
+                    ? value
+                    : this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
+                  valueType: valueType
+                };
+              }
             }
           }
         }
@@ -530,7 +540,7 @@ export default class ReactCodeGenerator {
             this.generatePropAssignmentExpWithVariable({
               name: ref,
               variableName: handlerInfo.functionName,
-              variableType: correctedValueType
+              variableType: valueType
             })
           );
           result.handlerInfo[handlerInfo.functionName] = handlerInfo;
@@ -550,17 +560,17 @@ export default class ReactCodeGenerator {
           this.generatePropAssignmentExpWithVariable({
             name: ref,
             variableName,
-            variableType: correctedValueType
+            variableType: valueType
           })
         );
         // 使用状态的变量
         if (result.stateInfo) {
           result.stateInfo[variableName] = {
             name: variableName,
-            initialValue: basicValueTypes.includes(correctedValueType)
+            initialValue: basicValueTypes.includes(valueType)
               ? value
               : this.tsCodeGenerator.generateObjectStrArr(value).join(' '),
-            valueType: correctedValueType
+            valueType: valueType
           };
         }
       }
@@ -692,6 +702,14 @@ export default class ReactCodeGenerator {
         });
       }
     );
+  }
+
+  useLiteralAssignment(value: any, valueType: string) {
+    const basicValueTypes = ['string', 'number', 'boolean', 'undefined', 'null'];
+    if (basicValueTypes.includes(valueType)) {
+      return true;
+    }
+    return Object.values(value).every(item => basicValueTypes.includes(typeOf(item)));
   }
 
   // 生成 handler 函数定义，目前 handler 内部的调用代码还不能重构为不冗余的代码
