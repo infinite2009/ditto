@@ -77,15 +77,11 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
     console.log(err);
   }
   return {
-    pageRoot: {
-      configName: 'pageRoot',
+    PageRoot: {
+      configName: 'PageRoot',
       schema: {
         style: {
           layout: {
-            width: true,
-            height: true,
-            widthGrow: true,
-            heightGrow: true,
             wrap: {
               nowrap: true
             },
@@ -109,8 +105,6 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
           layout: {
             width: true,
             height: true,
-            widthGrow: true,
-            heightGrow: true,
             wrap: true,
             direction: true,
             alignItems: true,
@@ -257,8 +251,6 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
           layout: {
             width: true,
             height: true,
-            widthGrow: true,
-            heightGrow: true,
             wrap: true,
             direction: true,
             alignItems: true,
@@ -271,14 +263,8 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
             borderWidth: true,
             borderColor: true,
             borderStyle: true
-          },
-          shadow: true,
-          text: {
-            // 字号和行高
-            size: true,
-            color: true,
-            decoration: true
           }
+          // shadow: true,
         }
       }
     },
@@ -291,8 +277,6 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
           layout: {
             width: true,
             height: true,
-            widthGrow: true,
-            heightGrow: true,
             wrap: true,
             direction: true,
             alignItems: true,
@@ -305,14 +289,8 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
             borderWidth: true,
             borderColor: true,
             borderStyle: true
-          },
-          shadow: true,
-          text: {
-            // 字号和行高
-            size: true,
-            color: true,
-            decoration: true
           }
+          // shadow: true
         }
       }
     },
@@ -324,8 +302,6 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
           layout: {
             width: true,
             height: true,
-            widthGrow: true,
-            heightGrow: true,
             wrap: true,
             direction: true,
             alignItems: true,

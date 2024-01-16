@@ -151,7 +151,10 @@ export default class DSLStore {
       }
     });
 
-    if (this.formConfigOfSelectedComponent?.schema?.basic && 'children' in this.formConfigOfSelectedComponent.schema.basic) {
+    if (
+      this.formConfigOfSelectedComponent?.schema?.basic &&
+      'children' in this.formConfigOfSelectedComponent.schema.basic
+    ) {
       result.basic.children = this.selectedComponent.children[0].current;
     }
 
@@ -818,7 +821,6 @@ export default class DSLStore {
           props[key].value = val;
         }
       }
-
     });
   }
 
@@ -914,7 +916,7 @@ export default class DSLStore {
   }
 
   private createPageRoot() {
-    const component = this.createComponent('pageRoot', 'antd');
+    const component = this.createComponent('PageRoot', 'antd');
     component.feature = ComponentFeature.root;
     return component;
   }

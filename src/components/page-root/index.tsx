@@ -85,7 +85,7 @@ export default observer(function PageRoot({
 
   return (
     <div className={classes} ref={setNodeRef} style={composedStyle} onClick={handleSelecting}>
-      <Flex vertical justify={justify} align={align} gap={gap} style={style}>
+      <Flex flex="1 0" vertical justify={justify} align={align} gap={gap} style={style}>
         {children}
       </Flex>
     </div>

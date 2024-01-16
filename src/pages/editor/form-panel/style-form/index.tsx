@@ -1119,12 +1119,16 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
       };
     }
 
-    return (
-      <div className={styles.p12}>
-        <div className={styles.titleWrapper}>
-          <p className={styles.title}>布局</p>
-        </div>
-        <div className={styles.body}>
+    function renderSizeSection() {
+      if (
+        !config.layout ||
+        (!(config.layout as Record<string, any>)?.width && !(config.layout as Record<string, any>)?.height)
+      ) {
+        return null;
+      }
+
+      return (
+        <>
           <div className={styles.row}>
             {config.layout === true || config.layout.width ? (
               <NumberInput
@@ -1144,7 +1148,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
             ) : null}
           </div>
           <div className={styles.sizeSelector}>
-            {config.layout === true || config.layout.widthGrow ? (
+            {config.layout === true || config.layout.width ? (
               <Select
                 bordered={false}
                 value={widthSizeMode}
@@ -1154,7 +1158,7 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
                 options={options}
               />
             ) : null}
-            {config.layout === true || config.layout.heightGrow ? (
+            {config.layout === true || config.layout.height ? (
               <Select
                 bordered={false}
                 value={heightSizeMode}
@@ -1165,6 +1169,17 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
               />
             ) : null}
           </div>
+        </>
+      );
+    }
+
+    return (
+      <div className={styles.p12}>
+        <div className={styles.titleWrapper}>
+          <p className={styles.title}>布局</p>
+        </div>
+        <div className={styles.body}>
+          {renderSizeSection()}
           <div className={styles.row} style={{ height: 'auto' }}>
             {config.layout === true || config.layout.direction ? (
               <>
@@ -1265,7 +1280,9 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     });
     return (
       <div className={styles.directionContainer}>
-        {config?.layout === true || (config?.layout as Record<string, any>)?.direction === true || (config?.layout as Record<string, any>)?.direction?.row === true ? (
+        {config?.layout === true ||
+        (config?.layout as Record<string, any>)?.direction === true ||
+        (config?.layout as Record<string, any>)?.direction?.row === true ? (
           <Arrow className={rowSelectedClass} onClick={() => handleSwitchDirection('row')} />
         ) : null}
         <Arrow className={columnSelectedClass} onClick={() => handleSwitchDirection('column')} />
@@ -1291,13 +1308,13 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
         {config?.layout === true ||
         (config?.layout as Record<string, any>)?.wrap === true ||
         (config?.layout as Record<string, any>)?.wrap.wrap === true ? (
-            <Wrap className={wrapClass} onClick={() => handleSwitchWrap('wrap')} />
-          ) : null}
+          <Wrap className={wrapClass} onClick={() => handleSwitchWrap('wrap')} />
+        ) : null}
         {config?.layout === true ||
         (config?.layout as Record<string, any>)?.wrap === true ||
-        (config?.layout as Record<string, any>).nowrap === true ? (
-            <NoWrap className={noWrapClass} onClick={() => handleSwitchWrap('nowrap')} />
-          ) : null}
+        (config?.layout as Record<string, any>).wrap.nowrap === true ? (
+          <NoWrap className={noWrapClass} onClick={() => handleSwitchWrap('nowrap')} />
+        ) : null}
       </div>
     );
   }

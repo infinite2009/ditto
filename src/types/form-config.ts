@@ -34,8 +34,6 @@ export type StyleFormConfig = {
     | {
         width?: boolean;
         height?: boolean;
-        widthGrow?: boolean;
-        heightGrow?: boolean;
         wrap?: boolean | { wrap?: boolean; nowrap?: boolean };
         direction?: { row?: boolean; column?: boolean } | boolean;
         alignItems?: boolean;

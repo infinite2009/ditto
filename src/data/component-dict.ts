@@ -119,8 +119,8 @@ const typographyTransformerStr =
   '})(values)';
 
 const antdComponentConfig: { [key: string]: IComponentConfig } = {
-  pageRoot: {
-    configName: 'pageRoot',
+  PageRoot: {
+    configName: 'PageRoot',
     callingName: 'Flex',
     category: '通用',
     isHidden: true,
