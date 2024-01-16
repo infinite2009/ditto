@@ -28,7 +28,7 @@ interface PageData {
 export interface IPagePanel {
   data: PageData[];
   onChange: () => void;
-  onSelect: (page: { path: string; name: string } & DataNode) => void;
+  onSelect: (page: ({ path: string; name: string } & DataNode) | null) => void;
   selected: string;
 }
 
@@ -41,6 +41,10 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
 
   const clickTimeoutIdRef = useRef<NodeJS.Timeout>();
   const selectedPageOrFolderForMenuRef = useRef<{
+    name: string;
+    path: string;
+  }>();
+  const selectedPathRef = useRef<{
     name: string;
     path: string;
   }>();
@@ -68,6 +72,7 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
       while (q.length) {
         const node = q.shift();
         if (node?.path === selected) {
+          selectedPathRef.current = node;
           return [node?.key];
         } else if (node?.children?.length) {
           q = q.concat(node?.children);
@@ -224,6 +229,12 @@ export default function PagePanel({ data = [], selected, onSelect, onChange }: I
 
   async function removePageOrFolder() {
     await fileManager.deleteFileOrFolder(selectedPageOrFolderForMenuRef.current.path);
+    if (selectedPageOrFolderForMenuRef.current.path === selectedPathRef.current.path) {
+      selectedPathRef.current = undefined;
+      if (onSelect) {
+        onSelect(null);
+      }
+    }
     if (onChange) {
       onChange();
     }

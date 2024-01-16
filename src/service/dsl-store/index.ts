@@ -470,7 +470,7 @@ export default class DSLStore {
   // }
 
   @execute
-  initDSL(dsl: IPageSchema) {
+  initDSL(dsl: IPageSchema = undefined) {
     if (dsl) {
       this.dsl = dsl;
       this.selectComponent(this.dsl.child.current);
@@ -481,6 +481,9 @@ export default class DSLStore {
           this.hideComponent(item.id);
         }
       });
+    } else {
+      this.selectedComponent = undefined;
+      this.dsl = undefined;
     }
   }
 

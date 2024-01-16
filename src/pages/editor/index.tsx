@@ -759,7 +759,14 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     }
   }
 
-  async function handleSelectingPageOrFolder(page: { path: string; name: string } & DataNode) {
+  async function handleSelectingPageOrFolder(page: ({ path: string; name: string } & DataNode) | null) {
+    if (!page) {
+      // 如果 page 是非真值，表示用户删除了当前的文件
+      setSelectedPath('');
+      dslStore.initDSL();
+      return;
+    }
+
     if (page.isLeaf) {
       await fileManager.savePageDSLFile(currentFile, dslStore.dsl);
       openFile(page.path as string).then();
