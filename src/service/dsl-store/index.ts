@@ -806,15 +806,15 @@ export default class DSLStore {
   updateComponentProps(propsPartial: Record<string, any> | CSSProperties) {
     const { id, configName, dependency } = this.selectedComponent;
     const props = this.dsl.props[id];
-    const config = fetchComponentConfig(configName, dependency);
-    if (config) {
-      Object.values(config.propsConfig || {}).forEach(prop => {
-        // 如果当前这个属性不在变更的属性对象里，就用重置为默认值
-        if (!(prop.name in propsPartial)) {
-          props[prop.name].value = prop.value;
-        }
-      });
-    }
+    // const config = fetchComponentConfig(configName, dependency);
+    // if (config) {
+    //   Object.values(config.propsConfig || {}).forEach(prop => {
+    //     // 如果当前这个属性不在变更的属性对象里，就用重置为默认值
+    //     if (!(prop.name in propsPartial)) {
+    //       props[prop.name].value = prop.value;
+    //     }
+    //   });
+    // }
     Object.entries(propsPartial).forEach(([key, val]) => {
       // 这里是一个补丁，children 本不是 props，但是为了让某些子节点为 text 的组件能简便地设置 children，就先这么打补丁
       if (key === 'children') {

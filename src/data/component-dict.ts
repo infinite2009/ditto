@@ -1312,6 +1312,16 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         ],
         value: {},
         category: 'basic'
+      },
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
       }
     }
   },

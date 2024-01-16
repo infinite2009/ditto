@@ -20,6 +20,7 @@ export default observer(function ComponentTree({ data, onSelect, onCancelSelect 
         onSelect(selectedKeys[0] as ComponentId);
       }
     } else {
+      debugger;
       if (onCancelSelect && e.selected) {
         onCancelSelect(e.node.id);
       }

@@ -421,6 +421,14 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
       configName: 'Tabs',
       formComponent: {
         basic: CustomTabForm as FC<any>
+      },
+      schema: {
+        style: {
+          layout: {
+            width: true,
+            height: true
+          }
+        }
       }
     },
     Table: {
