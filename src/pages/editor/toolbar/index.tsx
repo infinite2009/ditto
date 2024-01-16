@@ -192,7 +192,6 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
   }
 
   function handleClickingMenu(key: string) {
-    console.log('点击菜单：', key);
     switch (key) {
       case 'save':
         handleSave();

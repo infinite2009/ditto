@@ -11,8 +11,6 @@ export default function CustomTableForm(props: ICustomFormProps) {
   const [form] = useForm();
 
   useEffect(() => {
-    console.log('tab props changed: ', props);
-    console.log('columns: ', toJS(props.value));
     const convertedColumns = props.value.columns.map(col => {
       return {
         title: col.title,
@@ -27,11 +25,6 @@ export default function CustomTableForm(props: ICustomFormProps) {
     });
   }, [props]);
 
-  function handleChangingFields(changedFields, allFields) {
-    console.log('changed fields: ', changedFields);
-    console.log('all fields: ', allFields);
-  }
-
   function generateDefaultColumn() {
     return {
       title: '默认字段',
@@ -43,7 +36,7 @@ export default function CustomTableForm(props: ICustomFormProps) {
   }
 
   return (
-    <Form form={form} onFieldsChange={handleChangingFields}>
+    <Form form={form}>
       <Form.Item>
         <p>列设置</p>
         <Form.List name="columns">

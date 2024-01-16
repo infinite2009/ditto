@@ -501,8 +501,6 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     } else {
       setHeightSizeMode('hug');
     }
-
-    console.log('value input: ', value);
   }, [value]);
 
   function doChange(newValue: Record<string, any>) {

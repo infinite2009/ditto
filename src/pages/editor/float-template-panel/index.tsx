@@ -334,7 +334,7 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
   }
 
   return (
-    <div className={style.main}>
+    <div className={style.floatTemplatePanel}>
       {renderTemplateList()}
       {renderModal()}
     </div>
