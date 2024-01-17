@@ -120,7 +120,7 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
     });
 
     return (
-      <div className={templatePreviewClass}>
+      <div key={tplInfo.id} className={templatePreviewClass}>
         {selectedTemplateInfoForRename?.id === tplInfo.id ? (
           <div className={style.renameWrapper}>
             <Input
@@ -130,7 +130,10 @@ export default observer(function FloatTemplatePanel({ onApplyTemplate }: IFloatT
               onPressEnter={(e: any) => renameTemplate(e.target.value.trim())}
             />
             <div className={style.renameIconWrapper}>
-              <Ok className={classNames({ [style.renameIcon]: true, [style.okIcon]: true})} onClick={() => renameTemplate(templateNameRef.current)} />
+              <Ok
+                className={classNames({ [style.renameIcon]: true, [style.okIcon]: true })}
+                onClick={() => renameTemplate(templateNameRef.current)}
+              />
               <CloseThin className={style.renameIcon} onClick={resetRenaming} />
             </div>
           </div>
