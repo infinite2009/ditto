@@ -251,12 +251,15 @@ export default observer(function PagePanel({ data = [], /*selected,*/ onSelect, 
     if (portal) {
       const canvas = await html2canvas(portal);
       canvas.toBlob(async blob => {
-        const buffer = await blob.arrayBuffer();
-        await fileManager.saveTemplateFile(selectedPageOrFolderForMenuRef.current, buffer);
-        setShowCover(false);
-        if (onChange) {
-          onChange();
+        // 如果当前画布是空的，blob 会为空
+        if (blob) {
+          const buffer = await blob.arrayBuffer();
+          await fileManager.saveTemplateFile(selectedPageOrFolderForMenuRef.current, buffer);
+          if (onChange) {
+            onChange();
+          }
         }
+        setShowCover(false);
       });
     }
   }
