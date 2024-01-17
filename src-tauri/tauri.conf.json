@@ -137,6 +137,15 @@
       ],
       "macOS": {
         "signingIdentity": "luodongyang"
+      },
+      "windows": {
+        "wix": {
+          "language": "zh-CN"
+        },
+        "nsis": {
+          "languages": ["SimpChinese", "English"],
+          "displayLanguageSelector": true
+        }
       }
     },
     "windows": [

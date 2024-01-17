@@ -7,6 +7,7 @@
     "start": "tauri dev",
     "build:tsc": "tsc && vite build",
     "build": "vite build",
+    "build:win": "tauri build",
     "build:universal": "tauri build --target universal-apple-darwin",
     "build:universal:debug": "tauri build --target universal-apple-darwin --debug",
     "build:x86": "tauri build --target x86_64-apple-darwin",
