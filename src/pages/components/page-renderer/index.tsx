@@ -13,6 +13,7 @@ import { open } from '@tauri-apps/api/shell';
 import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import DSLStore from '@/service/dsl-store';
+import PageRootWrapper from '@/pages/editor/page-root-wrapper';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -301,31 +302,35 @@ export default observer((props: IPageRendererProps) => {
 
     const tpl =
       childrenTemplate?.length > 0 ? (
-        <Component key={componentId} {...componentProps} {...rootProps}>
+        <Component key={componentId} {...componentProps}>
           {childrenTemplate}
         </Component>
       ) : (
-        <Component key={componentId} {...componentProps} {...rootProps} />
+        <Component key={componentId} {...componentProps} />
       );
 
     if (dslStore?.isHidden && dslStore?.isHidden(componentId)) {
       return null;
     }
 
-    return mode === 'edit' && !isRoot ? (
-      <EditWrapper
-        key={componentId}
-        id={componentId}
-        parentId={parentId}
-        childrenId={childrenId}
-        feature={feature}
-        childrenStyle={componentProps?.style}
-      >
-        {tpl}
-      </EditWrapper>
-    ) : (
-      tpl
-    );
+    if (mode === 'edit') {
+      if (isRoot) {
+        return <PageRootWrapper {...rootProps}>{tpl}</PageRootWrapper>;
+      }
+      return (
+        <EditWrapper
+          key={componentId}
+          id={componentId}
+          parentId={parentId}
+          childrenId={childrenId}
+          feature={feature}
+          childrenStyle={componentProps?.style}
+        >
+          {tpl}
+        </EditWrapper>
+      );
+    }
+    return tpl;
   }
 
   function render() {
