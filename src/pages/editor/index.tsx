@@ -944,6 +944,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   function handleChangingProject() {
     fetchProjectData().then();
     fetchCurrentProject().then();
+  }
+
+  function handleExportTemplate() {
     // 刷新模板
     fetchTemplateData().then();
   }
@@ -961,7 +964,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         <PagePanel
           data={projectData}
           onSelect={handleSelectingPageOrFolder}
-          // selected={selectedPath}
+          onExportTemplate={handleExportTemplate}
           onChange={handleChangingProject}
         />
         <div className={styles.componentTree}>

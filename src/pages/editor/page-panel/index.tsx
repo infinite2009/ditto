@@ -30,10 +30,15 @@ export interface IPagePanel {
   data: PageData[];
   onChange: () => void;
   onSelect: (page: ({ path: string; name: string } & DataNode) | null) => void;
-  // selected: string;
+  onExportTemplate: () => void;
 }
 
-export default observer(function PagePanel({ data = [], /*selected,*/ onSelect, onChange }: IPagePanel) {
+export default observer(function PagePanel({
+  data = [],
+  /*selected,*/ onSelect,
+  onChange,
+  onExportTemplate
+}: IPagePanel) {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
   const [selectedPathForRenaming, setSelectedPathForRenaming] = useState<ComponentId>('');
   const [pageOrFolderPathForCopy, setPageOrFolderPathForCopy] = useState<string>('');
@@ -255,9 +260,11 @@ export default observer(function PagePanel({ data = [], /*selected,*/ onSelect, 
         if (blob) {
           const buffer = await blob.arrayBuffer();
           await fileManager.saveTemplateFile(selectedPageOrFolderForMenuRef.current, buffer);
-          if (onChange) {
-            onChange();
+          if (onExportTemplate) {
+            onExportTemplate();
           }
+        } else {
+          message.error('请选择非空白的页面');
         }
         setShowCover(false);
       });
