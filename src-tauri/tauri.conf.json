@@ -139,9 +139,6 @@
         "signingIdentity": "luodongyang"
       }
     },
-    "security": {
-      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
-    },
     "windows": [
       {
         "decorations": true,
