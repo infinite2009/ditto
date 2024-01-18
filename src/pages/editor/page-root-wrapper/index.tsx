@@ -15,7 +15,7 @@ export interface IPageRootProps {
   parentId?: string;
   scale?: number;
 }
-export default observer(function PageRoot({
+export default observer(function PageRootWrapper({
   id,
   childrenId,
   parentId,
@@ -37,8 +37,9 @@ export default observer(function PageRoot({
   });
 
   const classes = useMemo(() => {
+    console.log('page root: ', children);
     return classNames({
-      [styles.withoutChildren]: !children?.length,
+      [styles.withoutChildren]: dslStore.isEmpty,
       [styles.main]: true,
       [styles.outline]: isOver,
       [styles.selected]: id === dslStore?.selectedComponent?.id,
