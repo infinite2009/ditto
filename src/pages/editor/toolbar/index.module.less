@@ -91,3 +91,41 @@
   border-color: #F1F2F3;
   height: 12px;
 }
+
+.dropdownContainer {
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.10), 0 0 4px 0 rgba(0, 0, 0, 0.06);
+  background-color: #fff;
+  :global {
+    .ant-dropdown-menu {
+      all: initial;
+      .ant-dropdown-menu-item {
+        all: initial;
+      }
+    }
+  }
+}
+
+.lateralLayout() {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.dropDownItem {
+  .lateralLayout();
+  justify-content: space-between;
+  border-radius: 6px;
+  padding: 6px 8px;
+  width: 164px;
+  font-size: 12px;
+  line-height: 20px;
+  //font-family: PingFang SC, serif;
+  color: #18191C;
+  &:hover {
+    background-color: #F6F7F8;
+    cursor: pointer;
+  }
+}

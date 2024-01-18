@@ -669,9 +669,9 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }, 250);
 
   async function handleExportingPageCodeFile() {
-    const extension = codeType === 'react' ? 'tsx' : 'vue';
+    const extension = editorStore.framework === 'React' ? 'tsx' : 'vue';
     const exportPageCodeFile =
-      codeType === 'react' ? fileManager.exportReactPageCodeFile : fileManager.exportVuePageCodeFile;
+      editorStore.framework === 'React' ? fileManager.exportReactPageCodeFile : fileManager.exportVuePageCodeFile;
     const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, `index.${extension}`);
     const selectedFile = await save({
       title: '导出代码',
@@ -1056,7 +1056,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function renderCodeSection() {
-    return <CodePreview code={rawCode} />;
+    return <CodePreview />;
   }
 
   function onApplyTemplate(path: string) {

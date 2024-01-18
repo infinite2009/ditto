@@ -1,5 +1,5 @@
 import styles from './index.module.less';
-import { Divider, message, Radio, Select, Space } from 'antd';
+import { Divider, Dropdown, message, Radio, Select, Space } from 'antd';
 import PageAction from '@/types/page-action';
 import React, { useContext, useEffect, useState } from 'react';
 import classNames from 'classnames';
@@ -9,6 +9,9 @@ import { RadioChangeEvent } from 'antd/es/radio/interface';
 import { Scene } from '@/service/app-store';
 import { Clean, Download, ExpandScreen, ExpandThin, More, Preview, Redo, Share, Undo } from '@/components/icon';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
+import style from '@/pages/editor/float-template-panel/index.module.less';
+import fileManager from '@/service/file';
+import editor from '@/pages/editor';
 
 export enum PageWidth {
   wechat = 900,
@@ -212,6 +215,59 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
     ];
   }
 
+  function handleClickDropdownMenu({ key }: { key: string }) {
+    switch (key) {
+      case '1':
+        editorStore.framework = 'React';
+        editorStore.language = 'TypeScript';
+        break;
+      case '2':
+        editorStore.framework = 'React';
+        editorStore.language = 'JavaScript';
+        break;
+      case '3':
+        editorStore.framework = 'Vue';
+        editorStore.language = 'TypeScript';
+        break;
+    }
+    handleExportingCode();
+  }
+
+  function generateDropDownMenu() {
+    return {
+      items: [
+        {
+          key: '1',
+          label: (
+            <div className={style.dropDownItem}>
+              <span>React(TypeScript)</span>
+              <span className={style.menuShortKey}>
+                {appStore.generateShortKeyDisplayName(Scene.editor, 'downloadCode')}
+              </span>
+            </div>
+          )
+        },
+        {
+          key: '2',
+          label: (
+            <div className={style.dropDownItem}>
+              <span>React(JavaScript)</span>
+            </div>
+          )
+        },
+        {
+          key: '3',
+          label: (
+            <div className={style.dropDownItem}>
+              <span>Vue(TypeScript)</span>
+            </div>
+          )
+        }
+      ],
+      onClick: handleClickDropdownMenu
+    };
+  }
+
   return (
     <div className={styles.main}>
       <div className={calcIconClassNames()}>
@@ -330,7 +386,15 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
         <Divider className={styles.divider} type="vertical" style={{ marginLeft: 'auto', borderColor: '#F1F2F3' }} />
       </div>
       <div className={styles.rightBtnWrapper}>
-        <Download className={styles.iconBtn} onClick={handleExportingCode} />
+        <Dropdown
+          menu={generateDropDownMenu()}
+          overlayClassName={styles.dropdownContainer}
+          destroyPopupOnHide
+          // onOpenChange={(open: boolean) => onOpenChange(open, data)}
+          trigger={['hover']}
+        >
+          <Download className={styles.iconBtn} />
+        </Dropdown>
         <Preview className={styles.iconBtn} onClick={handlePreview} />
         <Share className={styles.iconBtn} onClick={handleShare} />
         <ComponentContextMenu trigger={['click']} onClick={handleClickingMenu} items={generateContextMenus()}>

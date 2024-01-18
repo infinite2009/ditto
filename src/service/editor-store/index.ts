@@ -10,6 +10,8 @@ export default class EditorStore {
   rightPanelVisible = true;
   selectedPath: string;
   viewMode: ViewMode = 'design';
+  framework: 'React' | 'Vue' = 'React';
+  language: 'TypeScript' | 'JavaScript' = 'TypeScript';
 
   constructor() {
     makeAutoObservable(this);
@@ -17,6 +19,11 @@ export default class EditorStore {
 
   get hasCopiedComponent() {
     return !!this.componentIdForCopy;
+  }
+
+  setFramework(framework: 'React' | 'Vue', language: 'TypeScript' | 'JavaScript') {
+    this.framework = framework;
+    this.language = language;
   }
 
   toggleViewMode() {

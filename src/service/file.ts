@@ -276,16 +276,21 @@ class FileManager {
   }
 
   async exportVuePageCodeFile(filePath: string, dsl: IPageSchema) {
-    const vueDslTransformer = new VueTransformer(dsl as unknown as IPageSchema);
+    const formattedContent = await this.generateVueCode(dsl);
+    await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
+  }
+
+  async generateVueCode(dsl: IPageSchema) {
+    const simplifiedDSL = this.simplifyProps(dsl);
+    const vueDslTransformer = new VueTransformer(simplifiedDSL as unknown as IPageSchema);
     const vue = new VueCodeGenerator(vueDslTransformer.transformDsl(), new TypeScriptCodeGenerator());
-    const formattedContent = await createAsyncTask(() =>
+    return await createAsyncTask(() =>
       prettier.format(vue.generatePageCode().join('\n'), {
         ...prettierConfig,
         parser: 'vue',
         plugins: [typescript, parserHtml]
       } as unknown as Partial<RequiredOptions>)
     );
-    await writeTextFile(filePath, formattedContent, { dir: BaseDirectory.Document });
   }
 
   async fetchCurrentProjectId() {
