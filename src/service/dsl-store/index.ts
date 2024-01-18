@@ -23,6 +23,8 @@ import { detailedDiff } from 'deep-object-diff';
 import ComponentFeature from '@/types/component-feature';
 import InsertType from '@/types/insert-type';
 import fileManager from '@/service/file';
+import { exists } from '@tauri-apps/api/fs';
+import * as timers from 'timers';
 
 type FormValue = {
   style: CSSProperties;
@@ -43,6 +45,14 @@ interface TemplateTree {
 function execute(target: any, name: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
   descriptor.value = function (...args: any[]) {
+    // 延时保存
+    this.shouldSave = true;
+    if (this.autoSavePid !== null) {
+      window.clearTimeout(this.autoSavePid);
+    }
+    this.autoSavePid = setTimeout(() => {
+      this.savePageDSLFile();
+    }, 10000);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const oldDsl = toJS(this.dsl);
@@ -76,11 +86,15 @@ export default class DSLStore {
   currentParentNode: IComponentSchema | IPageSchema | null = null;
   dsl: IPageSchema;
   selectedComponent: IComponentSchema;
+  shouldSave = false;
+
   // 存储组件的隐藏状态
   private hiddenComponentDict: Record<ComponentId, boolean> = {};
   private redoStack: any[] = [];
   private totalFormConfig: Record<string, IFormConfig>;
   private undoStack: any[] = [];
+  private filePath: string;
+  private autoSavePid: number = null;
 
   constructor(dsl: IPageSchema | undefined = undefined) {
     makeAutoObservable(this);
@@ -159,6 +173,24 @@ export default class DSLStore {
     }
 
     return result;
+  }
+
+  setCurrentFile(filePath: string) {
+    this.filePath = filePath;
+  }
+
+  async savePageDSLFile() {
+    if (this.shouldSave) {
+      if (await exists(this.filePath)) {
+        await fileManager.savePageDSLFile(this.filePath, this.dsl);
+        this.shouldSave = false;
+        console.log('已自动保存');
+      } else {
+        console.error(`文件路径 ${this.filePath} 不存在`);
+      }
+    } else {
+      console.log('已经保存过了');
+    }
   }
 
   /**

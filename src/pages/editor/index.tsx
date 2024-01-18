@@ -91,9 +91,10 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
 
   const insertIndexRef = useRef<number>(-1);
   const anchorCoordinatesRef = useRef<IAnchorCoordinates>();
-  // TODO: 文件路径数据需要重构为 indexedDB 存储
+
   const defaultPathRef = useRef<string>();
   const filePathRef = useRef<string>();
+  const autoSavingPidRef = useRef<number>(null);
 
   const codeType = (searchParams.get('codetype') as string) || 'react';
 
@@ -129,6 +130,10 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       editorStore.setSelectedPath(currentFile || '');
     }
   }, [currentProject]);
+
+  useEffect(() => {
+    dslStore.setCurrentFile(currentFile);
+  }, [currentFile]);
 
   useEffect(() => {
     if (!currentProject) {
@@ -658,7 +663,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   const saveFile = debounce(async () => {
     if (currentFile) {
       filePathRef.current = await dirname(currentFile);
-      await fileManager.savePageDSLFile(currentFile, dslStore.dsl);
+      await dslStore.savePageDSLFile();
       message.success('保存成功');
     }
   }, 250);
@@ -773,7 +778,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     }
 
     if (page.isLeaf) {
-      await fileManager.savePageDSLFile(currentFile, dslStore.dsl);
+      await dslStore.savePageDSLFile();
       openFile(page.path as string).then();
       setCurrentFile(page.path as string);
     }

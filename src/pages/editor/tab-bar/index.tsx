@@ -2,6 +2,8 @@ import { CloseOutlined } from '@ant-design/icons';
 import { useCallback } from 'react';
 import classNames from 'classnames';
 import styles from './index.module.less';
+import { Close } from '@/components/icon';
+import { observer } from 'mobx-react';
 
 export interface TabItem {
   title: string;
@@ -48,7 +50,7 @@ export default function TabBar({ data, selected, onSelect, onClose }: ITabBarPro
     return (
       <div key={item.val} className={calcClasses(item)} onClick={() => handleSelectingTab(item)}>
         <p className={styles.title}>{item.title}</p>
-        <CloseOutlined
+        <Close
           className={styles.closeIcon}
           onClick={e => {
             e.stopPropagation();
