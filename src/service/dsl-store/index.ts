@@ -181,7 +181,7 @@ export default class DSLStore {
 
   async savePageDSLFile() {
     if (this.shouldSave) {
-      if (await exists(this.filePath)) {
+      if (this.filePath && (await exists(this.filePath))) {
         await fileManager.savePageDSLFile(this.filePath, this.dsl);
         this.shouldSave = false;
         console.log('已自动保存');

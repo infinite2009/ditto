@@ -2,6 +2,7 @@ import { createCamelotComponent } from '@/components/camelot';
 import IComponentConfig from '@/types/component-config';
 import IFormConfig, { FormItemSchema } from '@/types/form-config';
 import { CodeSandboxOutlined } from '@ant-design/icons';
+import { fetch } from '@tauri-apps/api/http';
 
 interface PropsConfig {
   description: string;
@@ -27,9 +28,9 @@ export async function fetchCamelotComponent() {
     return camelotComponents;
   }
   const result = await fetch(
-    '//shylf-inner-boss.bilibili.co/neo-pages/mlive-dev/camelot-doc/config/components.json?aaa=1'
+    'https://shylf-inner-boss.bilibili.co/neo-pages/mlive-dev/camelot-doc/config/components.json?aaa=1'
   );
-  const data = await result.json();
+  const { data } = result;
 
   if (Array.isArray(data)) {
     camelotComponents = data;
