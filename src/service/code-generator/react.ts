@@ -219,10 +219,10 @@ export default class ReactCodeGenerator {
     dependency: string,
     importType: ImportType | undefined,
     importRelativePath: string | undefined,
-    name: string
+    importName: string
   ): { importName: string; importPath?: string; importType?: ImportType } {
     const result: { importName: string; importPath?: string; importType?: ImportType } = {
-      importName: name,
+      importName,
       importType
     };
     if (importType === undefined) {
@@ -290,11 +290,18 @@ export default class ReactCodeGenerator {
             propsRefs = [],
             children = [],
             id,
-            noImport
+            noImport,
+            importName
           } = node as IComponentSchema;
           // 提取导入信息，如果是 html 元素 或者是声明了不需要导入语句的
           if (dependency && dependency !== 'html' && !noImport) {
-            const importInfoForComponent = this.extractImportInfo(dependency, importType, importRelativePath, name);
+            const finalImportName = importName || name;
+            const importInfoForComponent = this.extractImportInfo(
+              dependency,
+              importType,
+              importRelativePath,
+              finalImportName
+            );
             if (importInfoForComponent.importPath && result.importInfo) {
               result.importInfo[importInfoForComponent.importPath] = result.importInfo[
                 importInfoForComponent.importPath
@@ -304,10 +311,10 @@ export default class ReactCodeGenerator {
               if (
                 !result.importInfo[importInfoForComponent.importPath][
                   importInfoForComponent.importType as string
-                ]?.includes(name)
+                ]?.includes(finalImportName)
               ) {
                 result.importInfo[importInfoForComponent.importPath][importInfoForComponent.importType as string]?.push(
-                  name
+                  finalImportName
                 );
               }
             }

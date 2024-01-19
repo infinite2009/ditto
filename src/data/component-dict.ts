@@ -883,6 +883,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     callingName: 'Input.Search',
     dependency: 'antd',
     component: Input.Search,
+    importName: 'Input',
     category: '数据录入',
     title: '搜索框',
     icon: CodeSandboxOutlined,
@@ -890,6 +891,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   },
   'Input.TextArea': {
     configName: 'Input.TextArea',
+    callingName: 'Input.TextArea',
+    importName: 'Input',
     dependency: 'antd',
     component: Input.TextArea,
     category: '数据录入',

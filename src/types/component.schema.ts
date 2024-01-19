@@ -17,6 +17,7 @@ export default interface IComponentSchema extends ISchema {
   desc?: string;
   displayName: string;
   feature: ComponentFeature;
+  // 导入名称，特别针对 Input.Text 这种情况
   importName?: string;
   // 导入的相对路径，缺失时系统默认为 ''
   importRelativePath?: string;
