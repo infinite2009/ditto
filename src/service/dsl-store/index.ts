@@ -332,6 +332,7 @@ export default class DSLStore {
       name: this.calculateComponentName(componentConfig),
       displayName: `${componentConfig.title}${this.dsl.componentStats[name]}`,
       configName: componentConfig.configName,
+      importName: componentConfig.importName,
       dependency: componentConfig.dependency,
       noImport: componentConfig.noImport || false,
       propsRefs: [],
