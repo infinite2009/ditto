@@ -448,7 +448,11 @@ export default class DSLStore {
    */
   @execute
   deleteComponent(id: ComponentId): IComponentSchema | null {
-    if (this.selectedComponent.feature === 'root') {
+    const componentToDelete = this.dsl.componentIndexes[id];
+    if (!componentToDelete) {
+      return;
+    }
+    if (componentToDelete.feature === 'root') {
       return;
     }
     const deleted = this.deleteSubtree(id);

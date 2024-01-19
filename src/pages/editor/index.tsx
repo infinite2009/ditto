@@ -829,7 +829,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         handleSelectingComponentForRenaming(componentId);
         break;
       case 'delete':
-        dslStore.deleteComponent(componentSchema.id);
+        dslStore.deleteComponent(componentId);
         break;
       case 'hide':
       case 'show':
