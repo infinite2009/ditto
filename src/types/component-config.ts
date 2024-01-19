@@ -13,6 +13,8 @@ export default interface IComponentConfig {
   configName: string;
   // 此等优先级
   importName?: string;
+  // 不生成导入语句
+  noImport?: boolean;
   // 最高优先级
   callingName?: string;
   component: FC<any> | string;
