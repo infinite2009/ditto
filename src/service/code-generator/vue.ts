@@ -108,12 +108,13 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
     });`;
   }
   generateCamelotRegister(importInfo: IImportInfo) {
-    const newImportInfo = {
-      '@camelot/rsc-register': {
-        object: ['register']
-      }
-    } as IImportInfo;
+    const newImportInfo = {} as IImportInfo;
     // delete importInfo.camelot;
+    if (importInfo.camelot && importInfo.camelot.object.length) {
+      newImportInfo['@camelot/rsc-register'] = {
+        object: ['register']
+      };
+    }
     return newImportInfo;
   }
   generateVueImportInfo(importInfo: IImportInfo) {

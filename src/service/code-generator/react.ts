@@ -611,6 +611,10 @@ export default class ReactCodeGenerator {
     // 生成导入语句
     Object.entries(importInfo).forEach(([importPath, item]) => {
       Object.entries(item).forEach(([importType, importNames]) => {
+        if (importPath === 'camelot') {
+          // 暂时忽略，最后处理
+          return;
+        } 
         const importSentence = this.tsCodeGenerator.generateImportSentence({
           importNames,
           importPath,
