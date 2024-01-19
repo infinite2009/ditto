@@ -289,11 +289,11 @@ export default class ReactCodeGenerator {
             name,
             propsRefs = [],
             children = [],
-            id
+            id,
+            noImport
           } = node as IComponentSchema;
-
-          // 提取导入信息
-          if (dependency && dependency !== 'html') {
+          // 提取导入信息，如果是 html 元素 或者是声明了不需要导入语句的
+          if (dependency && dependency !== 'html' && !noImport) {
             const importInfoForComponent = this.extractImportInfo(dependency, importType, importRelativePath, name);
             if (importInfoForComponent.importPath && result.importInfo) {
               result.importInfo[importInfoForComponent.importPath] = result.importInfo[

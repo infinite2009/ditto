@@ -65,7 +65,8 @@ export async function fetchCamelotComponentConfig() {
           category: '用户技术中心专用',
           title: item.title,
           icon: CodeSandboxOutlined,
-          propsConfig: propsConfig
+          propsConfig: propsConfig,
+          noImport: true
         }
       });
     });

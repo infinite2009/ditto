@@ -26,6 +26,8 @@ export default interface IComponentSchema extends ISchema {
    * 2. 如果导入相对路径存在，按照 default 处理
    */
   importType?: ImportType;
+  // 不生成导入语句
+  noImport?: boolean;
   // 组件名，用于代码生成的导入和调用环节
   name: string;
   // PageRoot 没有 parentId

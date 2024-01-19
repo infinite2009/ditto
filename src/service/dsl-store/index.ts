@@ -24,7 +24,6 @@ import ComponentFeature from '@/types/component-feature';
 import InsertType from '@/types/insert-type';
 import fileManager from '@/service/file';
 import { exists } from '@tauri-apps/api/fs';
-import * as timers from 'timers';
 
 type FormValue = {
   style: CSSProperties;
@@ -334,6 +333,7 @@ export default class DSLStore {
       displayName: `${componentConfig.title}${this.dsl.componentStats[name]}`,
       configName: componentConfig.configName,
       dependency: componentConfig.dependency,
+      noImport: componentConfig.noImport || false,
       propsRefs: [],
       children
     } as IComponentSchema;
@@ -448,7 +448,11 @@ export default class DSLStore {
    */
   @execute
   deleteComponent(id: ComponentId): IComponentSchema | null {
-    if (this.selectedComponent.feature === 'root') {
+    const componentToDelete = this.dsl.componentIndexes[id];
+    if (!componentToDelete) {
+      return;
+    }
+    if (componentToDelete.feature === 'root') {
       return;
     }
     const deleted = this.deleteSubtree(id);
