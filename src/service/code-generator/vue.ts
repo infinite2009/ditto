@@ -108,12 +108,13 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
     });`;
   }
   generateCamelotRegister(importInfo: IImportInfo) {
-    const newImportInfo = {
-      '@camelot/rsc-register': {
-        object: ['register']
-      }
-    } as IImportInfo;
+    const newImportInfo = {} as IImportInfo;
     // delete importInfo.camelot;
+    if (importInfo.camelot && importInfo.camelot.object.length) {
+      newImportInfo['@camelot/rsc-register'] = {
+        object: ['register']
+      };
+    }
     return newImportInfo;
   }
   generateVueImportInfo(importInfo: IImportInfo) {
@@ -202,11 +203,6 @@ export default class VueCodeGenerator extends ReactCodeGenerator {
     // 生成导入语句
     Object.entries(importInfo).forEach(([importPath, item]) => {
       Object.entries(item).forEach(([importType, importNames]) => {
-
-        if (importPath === 'camelot') {
-          // 暂时忽略，最后处理
-          return;
-        } 
         const importSentence = this.tsCodeGenerator.generateImportSentence({
           importNames,
           importPath,
