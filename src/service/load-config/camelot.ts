@@ -20,7 +20,6 @@ interface ICamelotComponent {
   props: PropsConfig;
 }
 
-export const camelotComponentConfig: { [key: string]: IComponentConfig } = {};
 export let camelotComponents: ICamelotComponent[] = [];
 
 export async function fetchCamelotComponent() {
@@ -41,6 +40,8 @@ export async function fetchCamelotComponent() {
 export async function fetchCamelotComponentConfig() {
   try {
     const components = await fetchCamelotComponent();
+
+    const camelotComponentConfig = {};
 
     components.forEach(item => {
       const propsConfig: IComponentConfig['propsConfig'] = {};
@@ -70,11 +71,12 @@ export async function fetchCamelotComponentConfig() {
         }
       });
     });
+
+    return camelotComponentConfig;
   } catch (e) {
     console.error(e);
   }
 }
-fetchCamelotComponentConfig();
 
 /** 组件属性表单配置 */
 export async function getCamelotComponentPropsFrom() {

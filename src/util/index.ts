@@ -1,5 +1,4 @@
 import { nanoid } from 'nanoid';
-import componentConfig from '@/data/component-dict';
 import { platform } from '@tauri-apps/api/os';
 import ComponentFeature from '@/types/component-feature';
 import {
@@ -13,6 +12,8 @@ import {
   RENAME_MENU,
   SHOW_MENU
 } from '@/data/constant';
+import * as http from '@tauri-apps/api/http';
+import { Body } from '@tauri-apps/api/http';
 
 export function toUpperCase(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -29,10 +30,6 @@ export function typeOf(value: any): string {
 
 export function generateId() {
   return nanoid();
-}
-
-export function fetchComponentConfig(configName: string, dependency: string) {
-  return componentConfig[dependency][configName];
 }
 
 export function createAsyncTask(task: (...args: any[]) => string) {
@@ -284,4 +281,173 @@ export function camelToSnake(str: string) {
 
 export function snakeToCamel(str: string) {
   return str.replace(/(_\w)/g, match => match[1].toUpperCase());
+}
+
+function parseUrlEncodedNested(str: string) {
+  const obj = {};
+
+  str.split('&').forEach(pair => {
+    let [key, value] = pair.split('=');
+    key = decodeURIComponent(key);
+    value = decodeURIComponent(value);
+
+    // 检查是否存在嵌套
+    const match = key.match(/([^[]+)\[([^\]]*)]/);
+    if (match) {
+      const [, parentKey, childKey] = match;
+      if (!obj[parentKey]) {
+        obj[parentKey] = {};
+      }
+      obj[parentKey][childKey] = value;
+    } else {
+      obj[key] = value;
+    }
+  });
+
+  return obj;
+}
+
+function prepareBody(contentType: string, body: any) {
+  if (contentType === 'application/json' && typeof body !== 'string') {
+    return JSON.stringify(body);
+  } else if (contentType === 'application/x-www-form-urlencoded') {
+    if (typeof body === 'object') {
+      return Body.form(body);
+    }
+    if (typeof body === 'string') {
+      return Body.form(parseUrlEncodedNested(body));
+    }
+    return new URLSearchParams(body).toString();
+  }
+  return body; // 对于其他类型，如 'multipart/form-data' 或 'text/plain'，不做转换
+}
+
+function constructUrlWithQuery(url: string, optionsQueryParams: { [s: string]: string } | ArrayLike<string>) {
+  // domain:bilibili.co 的证书不安全，所以降级为 http
+  const urlObj = new URL(url.startsWith('//') ? `http:${url}` : url);
+  const urlQueryParams = new URLSearchParams(urlObj.search);
+
+  if (optionsQueryParams) {
+    for (const [key, value] of Object.entries(optionsQueryParams)) {
+      urlQueryParams.set(key, value);
+    }
+  }
+
+  urlObj.search = urlQueryParams.toString();
+  return urlObj.toString();
+}
+
+export function proxyFetch() {
+  debugger;
+  // 覆盖全局的 fetch 函数
+  window.fetch = new Proxy(window.fetch, {
+    apply: async function (target, thisArg, [url, options = {}]) {
+      debugger;
+      const contentType = options.headers
+        ? options.headers['Content-Type'] || options.headers['content-type']
+        : undefined;
+      const body = contentType ? prepareBody(contentType, options.body) : options.body;
+      const finalUrl = constructUrlWithQuery(url, options.query);
+
+      const tauriOptions = {
+        method: options.method || 'GET',
+        headers: options.headers || {},
+        body
+      };
+
+      try {
+        // 使用 Tauri 的 http.fetch
+        const response = await http.fetch(finalUrl, tauriOptions);
+        return {
+          ok: response.ok,
+          status: response.status,
+          json: () => Promise.resolve(response.data),
+          text: () => Promise.resolve(JSON.stringify(response.data))
+        };
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  });
+}
+
+export function proxyXHR() {
+  const originalXHR = window.XMLHttpRequest;
+
+  function TauriProxyXHR() {
+    console.log('fetch xhr 已执行');
+    const xhrInstance = new originalXHR();
+    this.xhr = xhrInstance;
+
+    xhrInstance.onreadystatechange = () => {
+      if (xhrInstance.readyState === 4) {
+        this.status = xhrInstance.status;
+        this.statusText = xhrInstance.statusText;
+        this.responseText = xhrInstance.responseText;
+        this.readyState = xhrInstance.readyState;
+        if (this.onreadystatechange) {
+          this.onreadystatechange();
+        }
+      }
+    };
+  }
+
+  TauriProxyXHR.prototype.open = function (method, url, async, user, password) {
+    this.method = method;
+    this.url = url;
+    this.async = async;
+    this.user = user;
+    this.password = password;
+  };
+
+  TauriProxyXHR.prototype.setRequestHeader = function (header, value) {
+    if (!this.headers) {
+      this.headers = {};
+    }
+    this.headers[header] = value;
+  };
+
+  TauriProxyXHR.prototype.getAllResponseHeaders = function () {
+    return this.xhr.getAllResponseHeaders();
+  };
+
+  TauriProxyXHR.prototype.getResponseHeader = function (header) {
+    return this.xhr.getResponseHeader(header);
+  };
+
+  TauriProxyXHR.prototype.send = function (body) {
+    if (this.url.startsWith('http')) {
+      // 如果是http(s)请求，则通过Tauri后端代理
+      fetch(this.url, {
+        method: this.method,
+        body: body,
+        headers: this.headers
+      })
+        .then(res => {
+          // 代理请求成功，设置响应数据
+          this.status = res.status;
+          this.statusText = '';
+          this.responseText = res.data;
+          this.readyState = 4;
+          if (this.onload) {
+            this.onload();
+          }
+        })
+        .catch(err => {
+          // 代理请求失败
+          if (this.onerror) {
+            this.onerror(err);
+          }
+        });
+    } else {
+      // 非http(s)请求，使用原生XHR对象
+      for (const header in this.headers) {
+        this.xhr.setRequestHeader(header, this.headers[header]);
+      }
+      this.xhr.open(this.method, this.url, this.async, this.user, this.password);
+      this.xhr.send(body);
+    }
+  };
+
+  window.XMLHttpRequest = TauriProxyXHR;
 }

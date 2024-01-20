@@ -1,10 +1,10 @@
-import componentConfig from '@/data/component-dict';
 import { Collapse, Input } from 'antd';
 import { FC, ForwardedRef, useEffect, useState } from 'react';
 
 import styles from './index.module.less';
 import DraggableComponent from '@/pages/editor/component-panel/draggable-component-item';
 import { CaretRightOutlined } from '@ant-design/icons';
+import ComponentManager from '@/service/component-manager';
 
 interface IComponentIconProps {
   className: string;
@@ -27,10 +27,11 @@ export default function ComponentPanel() {
     fetchComponentList();
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   function handleSearching() {}
 
   function fetchComponentList() {
-    const components = Object.values(componentConfig).map(item => Object.values(item));
+    const components = Object.values(ComponentManager.componentConfigList).map(item => Object.values(item));
     const list = components
       .flat(1)
       .filter(item => !item.isHidden)

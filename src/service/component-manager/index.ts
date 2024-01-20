@@ -55,6 +55,7 @@ import { CodeSandboxOutlined } from '@ant-design/icons';
 import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import PageRoot from '@/components/page-root';
 import Container from '@/components/container';
+import { fetchCamelotComponentConfig } from '@/service/load-config/camelot';
 
 const defaultStyleConfig: IPropsConfigItem = {
   id: 'style',
@@ -1442,9 +1443,33 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
   }
 };
 
-// export async function loadComponentConfig() {
-//   const camelotComponentConfig = await fetchCamelotComponentConfig();
-//   return { antd: antdComponentConfig, html: htmlComponentConfig, camelot: camelotComponentConfig } as {
-//     [key: string]: { [key: string]: IComponentConfig };
-//   };
-// }
+export default class ComponentManager {
+  private static componentConfig = null;
+
+  static get componentConfigList() {
+    return ComponentManager.componentConfig;
+  }
+
+  static fetchComponentConfig(configName: string, dependency: string) {
+    if (!ComponentManager.componentConfig) {
+      return null;
+    }
+    return ComponentManager.componentConfig[dependency][configName];
+  }
+
+  static async loadComponentConfigList() {
+    if (!ComponentManager.componentConfig) {
+      const camelotComponentConfig = await fetchCamelotComponentConfig();
+      ComponentManager.componentConfig = { antd: antdComponentConfig, camelot: camelotComponentConfig } as {
+        [key: string]: { [key: string]: IComponentConfig };
+      };
+      return ComponentManager.componentConfig;
+    }
+    return ComponentManager.componentConfig;
+  }
+
+  static async refreshComponentConfig() {
+    ComponentManager.componentConfig = null;
+    return await ComponentManager.loadComponentConfigList();
+  }
+}

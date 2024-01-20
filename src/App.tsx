@@ -10,6 +10,7 @@ import { AppStoreContext, DSLStoreContext, EditorStoreContext } from '@/hooks/co
 import EditorStore from '@/service/editor-store';
 import { Scene } from '@/service/app-store';
 import DbStore from '@/service/db-store';
+import ComponentManager from '@/service/component-manager';
 
 export default observer(function App() {
   const [showUI, setShowUI] = useState<boolean>(false);
@@ -99,6 +100,8 @@ export default observer(function App() {
   async function init() {
     // 初始化数据库
     await DbStore.init();
+    // 初始化组件库
+    await ComponentManager.loadComponentConfigList();
     // await fileManager.initAppData();
     fetchOpenedProjects();
     await fetchAndOpenCurrentProject();

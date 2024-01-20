@@ -2,7 +2,7 @@
   "build": {
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build",
-    "devPath": "http://localhost:1024",
+    "devPath": "http://ff-dev.bilibili.co:1024",
     "distDir": "../dist",
     "withGlobalTauri": true
   },

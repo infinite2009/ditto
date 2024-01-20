@@ -1,9 +1,9 @@
 import { FC, ForwardedRef, useEffect, useState } from 'react';
 import { message } from 'antd';
-import componentConfig from '@/data/component-dict';
 import DraggableComponent from '@/pages/editor/component-panel/draggable-component-item';
 
 import styles from './index.module.less';
+import ComponentManager from '@/service/component-manager';
 
 interface IComponentIconProps {
   className: string;
@@ -26,7 +26,7 @@ export default function CustomComponentPanel() {
   }, []);
 
   function fetchComponentList() {
-    const components = Object.values(componentConfig).map(item => Object.values(item));
+    const components = Object.values(ComponentManager.componentConfigList).map(item => Object.values(item));
     const result = components
       .flat(1)
       .filter(item => item.category === 'custom')

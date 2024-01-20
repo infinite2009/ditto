@@ -9,8 +9,8 @@ import StyleForm from '@/pages/editor/form-panel/style-form';
 import { observer } from 'mobx-react';
 import { DSLStoreContext } from '@/hooks/context';
 import styles from './index.module.less';
-import { fetchComponentConfig } from '@/util';
 import { toJS } from 'mobx';
+import ComponentManager from '@/service/component-manager';
 
 export default observer(() => {
   const dslStore = useContext(DSLStoreContext);
@@ -109,7 +109,7 @@ export default observer(() => {
     }
 
     let mergedStyleObj: CSSProperties;
-    const componentConfig = fetchComponentConfig(configName, dependency);
+    const componentConfig = ComponentManager.fetchComponentConfig(configName, dependency);
 
     if (componentConfig.transformerStr) {
       const transformer = new Function('values', componentConfig.transformerStr);

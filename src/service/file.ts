@@ -25,13 +25,14 @@ import VueTransformer from './dsl-process/vue-transformer';
 import cloneDeep from 'lodash/cloneDeep';
 import { PropsId } from '@/types';
 import { isEqual } from 'lodash';
-import { createAsyncTask, fetchComponentConfig, getFileName } from '@/util';
+import { createAsyncTask, getFileName } from '@/util';
 import ActionType from '@/types/action-type';
 import { nanoid } from 'nanoid';
 import DSLStore from '@/service/dsl-store';
 import { Command } from '@tauri-apps/api/shell';
 import { Platform, platform } from '@tauri-apps/api/os';
 import DbStore from '@/service/db-store';
+import ComponentManager from '@/service/component-manager';
 
 interface EntryTree {
   children?: EntryTree[];
@@ -636,7 +637,7 @@ class FileManager {
     const indexes = Object.values(dslClone.componentIndexes);
     indexes.forEach(componentSchema => {
       const { id: componentId, configName, name, dependency, propsRefs } = componentSchema;
-      const { propsConfig } = fetchComponentConfig(configName || name, dependency);
+      const { propsConfig } = ComponentManager.fetchComponentConfig(configName || name, dependency);
       const propsDict = dslClone.props[componentId];
       // 用赋值的数组进行遍历
       const propsRefsCopy = [...propsRefs];

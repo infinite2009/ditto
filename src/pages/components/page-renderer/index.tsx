@@ -2,7 +2,7 @@ import { toJS } from 'mobx';
 import React, { FC, PropsWithChildren, Reducer, useContext, useLayoutEffect, useReducer } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
-import { fetchComponentConfig, generateSlotId, typeOf } from '@/util';
+import { generateSlotId, typeOf } from '@/util';
 import EditWrapper from '@/pages/editor/edit-wrapper';
 import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
@@ -14,6 +14,7 @@ import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import DSLStore from '@/service/dsl-store';
 import PageRootWrapper from '@/pages/editor/page-root-wrapper';
+import ComponentManager from '@/service/component-manager';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -249,7 +250,7 @@ export default observer((props: IPageRendererProps) => {
     let Component: string | FC<PropsWithChildren<any>> = callingName || name;
     let componentConfig: IComponentConfig | undefined;
     if (dependency) {
-      componentConfig = fetchComponentConfig(configName || name, dependency);
+      componentConfig = ComponentManager.fetchComponentConfig(configName || name, dependency);
     }
     if (componentConfig) {
       Component = componentConfig.component;

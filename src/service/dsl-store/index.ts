@@ -2,7 +2,6 @@ import { makeAutoObservable, toJS } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
 import {
-  fetchComponentConfig,
   flattenObject,
   generateId,
   generateSlotId,
@@ -24,6 +23,7 @@ import ComponentFeature from '@/types/component-feature';
 import InsertType from '@/types/insert-type';
 import fileManager from '@/service/file';
 import { exists } from '@tauri-apps/api/fs';
+import ComponentManager from '@/service/component-manager';
 
 type FormValue = {
   style: CSSProperties;
@@ -174,6 +174,10 @@ export default class DSLStore {
     return result;
   }
 
+  get pageRoot() {
+    return this.dsl.componentIndexes[this.dsl.child.current];
+  }
+
   setCurrentFile(filePath: string) {
     this.filePath = filePath;
   }
@@ -293,7 +297,7 @@ export default class DSLStore {
       componentId = this.generateComponentIdByName(name);
     }
 
-    const componentConfig = fetchComponentConfig(name, dependency);
+    const componentConfig = ComponentManager.fetchComponentConfig(name, dependency);
     let children: ComponentSchemaRef[];
     if (componentConfig.isContainer) {
       children = [];
@@ -437,10 +441,6 @@ export default class DSLStore {
     };
   }
 
-  get pageRoot() {
-    return this.dsl.componentIndexes[this.dsl.child.current];
-  }
-
   /**
    * 由于 DSL 的设计特性，嵌套的 template 之间一定会有一层容器作为插槽，所以删除插槽内的节点，只需要遍历插槽的 children
    *
@@ -521,7 +521,7 @@ export default class DSLStore {
       this.selectComponent(this.dsl.child.current);
       // 隐藏图层组件
       Object.values(this.dsl.componentIndexes).forEach(item => {
-        const config = fetchComponentConfig(item.configName, item.dependency);
+        const config = ComponentManager.fetchComponentConfig(item.configName, item.dependency);
         if (config?.isLayer) {
           this.hideComponent(item.id);
         }
@@ -579,7 +579,7 @@ export default class DSLStore {
     let parentId = componentSchema.parentId;
     while (parentId) {
       const parent = this.dsl.componentIndexes[parentId];
-      const parentConfig = fetchComponentConfig(parent.configName, parent.dependency);
+      const parentConfig = ComponentManager.fetchComponentConfig(parent.configName, parent.dependency);
       if (parentConfig.isLayer) {
         return true;
       } else {
@@ -594,7 +594,7 @@ export default class DSLStore {
       return false;
     }
     return Object.values(this.dsl.componentIndexes).some(item => {
-      const componentConfig = fetchComponentConfig(item.configName, item.dependency);
+      const componentConfig = ComponentManager.fetchComponentConfig(item.configName, item.dependency);
       return !!(!this.isHidden(item.id) && componentConfig.isLayer);
     });
   }
@@ -812,10 +812,13 @@ export default class DSLStore {
       });
     }
     const componentSchema = this.dsl.componentIndexes[id];
-    const componentConfig = fetchComponentConfig(componentSchema.configName, componentSchema.dependency);
+    const componentConfig = ComponentManager.fetchComponentConfig(
+      componentSchema.configName,
+      componentSchema.dependency
+    );
     if (componentConfig.isLayer) {
       Object.values(this.dsl.componentIndexes).forEach(item => {
-        const config = fetchComponentConfig(item.configName, item.dependency);
+        const config = ComponentManager.fetchComponentConfig(item.configName, item.dependency);
         // 如果存在其他的图层类组件
         if (config.isLayer && item.id !== componentSchema.id) {
           this.hideComponent(item.id);
@@ -899,7 +902,10 @@ export default class DSLStore {
     // 2. 生成新的 component id
     clonedComponentSchema.id = this.generateComponentIdByName(clonedComponentSchema.name);
     // 3. 生成新的 displayName
-    const componentConfig = fetchComponentConfig(clonedComponentSchema.name, clonedComponentSchema.dependency);
+    const componentConfig = ComponentManager.fetchComponentConfig(
+      clonedComponentSchema.name,
+      clonedComponentSchema.dependency
+    );
     clonedComponentSchema.displayName = `${componentConfig.title}${
       this.dsl.componentStats[clonedComponentSchema.name]
     }`;
