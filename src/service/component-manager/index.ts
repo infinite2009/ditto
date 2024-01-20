@@ -1454,12 +1454,18 @@ export default class ComponentManager {
     if (!ComponentManager.componentConfig) {
       return null;
     }
-    return ComponentManager.componentConfig[dependency][configName];
+    return ComponentManager.componentConfig[dependency]?.[configName] || null;
   }
 
   static async loadComponentConfigList() {
     if (!ComponentManager.componentConfig) {
-      const camelotComponentConfig = await fetchCamelotComponentConfig();
+      let camelotComponentConfig = {};
+      try {
+        camelotComponentConfig = await fetchCamelotComponentConfig();
+      } catch (err) {
+        console.error(err);
+      }
+      debugger;
       ComponentManager.componentConfig = { antd: antdComponentConfig, camelot: camelotComponentConfig } as {
         [key: string]: { [key: string]: IComponentConfig };
       };

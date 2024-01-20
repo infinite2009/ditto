@@ -111,7 +111,7 @@ export default observer(() => {
     let mergedStyleObj: CSSProperties;
     const componentConfig = ComponentManager.fetchComponentConfig(configName, dependency);
 
-    if (componentConfig.transformerStr) {
+    if (componentConfig?.transformerStr) {
       const transformer = new Function('values', componentConfig.transformerStr);
       let transformedValues = {};
       try {

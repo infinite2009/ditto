@@ -71,10 +71,10 @@ export async function fetchCamelotComponentConfig() {
         }
       });
     });
-
     return camelotComponentConfig;
   } catch (e) {
     console.error(e);
+    return {};
   }
 }
 

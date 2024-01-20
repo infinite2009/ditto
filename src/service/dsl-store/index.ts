@@ -299,11 +299,11 @@ export default class DSLStore {
 
     const componentConfig = ComponentManager.fetchComponentConfig(name, dependency);
     let children: ComponentSchemaRef[];
-    if (componentConfig.isContainer) {
+    if (componentConfig?.isContainer) {
       children = [];
-    } else if (componentConfig.children) {
+    } else if (componentConfig?.children) {
       // 给当前组件的 children 节点初始化一个空插槽
-      const { value } = componentConfig.children;
+      const { value } = componentConfig?.children;
       const typeOfChildren = typeOf(value);
       if (typeOfChildren === 'array') {
         const emptyContainer = this.createEmptyContainer('', { feature: ComponentFeature.slot });
@@ -334,11 +334,11 @@ export default class DSLStore {
       feature: ComponentFeature.solid,
       schemaType: 'component',
       name: this.calculateComponentName(componentConfig),
-      displayName: `${componentConfig.title}${this.dsl.componentStats[name]}`,
-      configName: componentConfig.configName,
-      importName: componentConfig.importName,
-      dependency: componentConfig.dependency,
-      noImport: componentConfig.noImport || false,
+      displayName: `${componentConfig?.title}${this.dsl.componentStats[name]}`,
+      configName: componentConfig?.configName,
+      importName: componentConfig?.importName,
+      dependency: componentConfig?.dependency,
+      noImport: componentConfig?.noImport || false,
       propsRefs: [],
       children
     } as IComponentSchema;
@@ -350,14 +350,14 @@ export default class DSLStore {
       componentSchema.parentId = this.currentParentNode?.id;
     }
 
-    if (componentConfig.importName) {
+    if (componentConfig?.importName) {
       componentSchema.importName = componentConfig.importName;
     }
-    if (componentConfig.callingName) {
+    if (componentConfig?.callingName) {
       componentSchema.callingName = componentConfig.callingName;
     }
 
-    if (componentConfig.isContainer) {
+    if (componentConfig?.isContainer) {
       // 可能有 bug，就是把本该设置为插槽的组件，设置为 container
       componentSchema.feature = ComponentFeature.container;
     }
@@ -595,7 +595,7 @@ export default class DSLStore {
     }
     return Object.values(this.dsl.componentIndexes).some(item => {
       const componentConfig = ComponentManager.fetchComponentConfig(item.configName, item.dependency);
-      return !!(!this.isHidden(item.id) && componentConfig.isLayer);
+      return !!(!this.isHidden(item.id) && componentConfig?.isLayer);
     });
   }
 
@@ -816,7 +816,7 @@ export default class DSLStore {
       componentSchema.configName,
       componentSchema.dependency
     );
-    if (componentConfig.isLayer) {
+    if (componentConfig?.isLayer) {
       Object.values(this.dsl.componentIndexes).forEach(item => {
         const config = ComponentManager.fetchComponentConfig(item.configName, item.dependency);
         // 如果存在其他的图层类组件
@@ -906,7 +906,7 @@ export default class DSLStore {
       clonedComponentSchema.name,
       clonedComponentSchema.dependency
     );
-    clonedComponentSchema.displayName = `${componentConfig.title}${
+    clonedComponentSchema.displayName = `${componentConfig?.title}${
       this.dsl.componentStats[clonedComponentSchema.name]
     }`;
     // 4. 复制子树，并重新替换父组件的 children

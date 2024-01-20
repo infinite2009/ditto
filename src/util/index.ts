@@ -338,11 +338,9 @@ function constructUrlWithQuery(url: string, optionsQueryParams: { [s: string]: s
 }
 
 export function proxyFetch() {
-  debugger;
   // 覆盖全局的 fetch 函数
   window.fetch = new Proxy(window.fetch, {
     apply: async function (target, thisArg, [url, options = {}]) {
-      debugger;
       const contentType = options.headers
         ? options.headers['Content-Type'] || options.headers['content-type']
         : undefined;

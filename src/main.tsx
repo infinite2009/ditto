@@ -5,8 +5,6 @@ import './styles.module.less';
 
 import { proxyFetch, proxyXHR } from '@/util';
 
-debugger;
-
 proxyFetch();
 proxyXHR();
 
