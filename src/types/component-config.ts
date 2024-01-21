@@ -32,7 +32,7 @@ export default interface IComponentConfig {
   children?: {
     name: string;
     value: IComponentSchema[] | string;
-    category: 'basic' | 'style' | 'interaction' | 'children';
-    disabled?: boolean;
+    type: 'text' | 'placeholder' | 'slot';
+    category: 'basic' | 'style' | 'interaction' | 'children' | 'hidden';
   };
 }

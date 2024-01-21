@@ -303,9 +303,8 @@ export default class DSLStore {
       children = [];
     } else if (componentConfig?.children) {
       // 给当前组件的 children 节点初始化一个空插槽
-      const { value } = componentConfig?.children;
-      const typeOfChildren = typeOf(value);
-      if (typeOfChildren === 'array') {
+      const { value, type } = componentConfig?.children;
+      if (type === 'slot') {
         const emptyContainer = this.createEmptyContainer('', { feature: ComponentFeature.slot });
         // 修正父节点 id
         emptyContainer.parentId = componentId;
@@ -315,7 +314,7 @@ export default class DSLStore {
             isText: false
           }
         ];
-      } else {
+      } else if (type === 'text') {
         children = [
           {
             current: value as string,
@@ -343,6 +342,7 @@ export default class DSLStore {
       children
     } as IComponentSchema;
 
+    debugger;
     const componentSchema = this.dsl.componentIndexes[componentId];
 
     // pageRoot 不用赋值

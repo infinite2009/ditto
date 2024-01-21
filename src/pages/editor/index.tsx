@@ -886,7 +886,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
       const { id, feature } = componentSchema;
       const titleClassName = classNames({
         [styles.componentTitle]: true,
-        [styles.selected]: dslStore.selectedComponent.id === id
+        [styles.selected]: dslStore?.selectedComponent?.id === id
       });
       return (
         <ComponentContextMenu

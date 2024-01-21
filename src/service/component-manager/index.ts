@@ -135,6 +135,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     callingName: 'Flex',
     category: '通用',
     isHidden: true,
+    isContainer: true,
     dependency: 'antd',
     component: PageRoot,
     title: '页面',
@@ -266,6 +267,11 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         valueSource: 'editorInput'
       }
     },
+    // children: {
+    //   value: [],
+    //   type: 'template',
+    //   category: 'hidden'
+    // },
     transformerStr: flexTransformerStr
   },
   VerticalFlex: {
@@ -335,6 +341,11 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
         valueSource: 'editorInput'
       }
     },
+    // children: {
+    //   value: [],
+    //   type: 'template',
+    //   category: 'hidden'
+    // },
     transformerStr: flexTransformerStr
   },
   Button: {
@@ -441,6 +452,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     },
     children: {
       name: 'children',
+      type: 'text',
       value: '按钮',
       category: 'children'
     }
@@ -552,6 +564,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     children: {
       name: 'children',
       value: '默认文字',
+      type: 'text',
       category: 'children'
     }
   },
@@ -662,6 +675,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     children: {
       name: 'children',
       value: '默认段落',
+      type: 'text',
       category: 'children'
     }
   },
@@ -772,6 +786,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     children: {
       name: 'children',
       value: '默认标题',
+      type: 'text',
       category: 'children'
     }
   },
@@ -952,7 +967,13 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     title: '表单',
     dependency: 'antd',
     icon: CodeSandboxOutlined,
-    propsConfig: {}
+    propsConfig: {},
+    children: {
+      value: [],
+      type: 'placeholder',
+      name: 'children',
+      category: 'children'
+    }
   },
   Mentions: {
     configName: 'Mentions',
@@ -1357,6 +1378,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     children: {
       value: [],
       name: 'children',
+      type: 'slot',
       category: 'children'
     }
   },
@@ -1393,6 +1415,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     children: {
       value: [],
       name: 'children',
+      type: 'slot',
       category: 'children'
     }
   },
@@ -1465,7 +1488,6 @@ export default class ComponentManager {
       } catch (err) {
         console.error(err);
       }
-      debugger;
       ComponentManager.componentConfig = { antd: antdComponentConfig, camelot: camelotComponentConfig } as {
         [key: string]: { [key: string]: IComponentConfig };
       };

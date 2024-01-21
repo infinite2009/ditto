@@ -15,6 +15,7 @@ import { observer } from 'mobx-react';
 import DSLStore from '@/service/dsl-store';
 import PageRootWrapper from '@/pages/editor/page-root-wrapper';
 import ComponentManager from '@/service/component-manager';
+import ComponentPlaceHolder from '@/pages/editor/place-holder';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -305,6 +306,10 @@ export default observer((props: IPageRendererProps) => {
       childrenTemplate?.length > 0 ? (
         <Component key={componentId} {...componentProps}>
           {childrenTemplate}
+        </Component>
+      ) : componentConfig?.children?.type === 'placeholder' ? (
+        <Component key={componentId} {...componentProps}>
+          <ComponentPlaceHolder />
         </Component>
       ) : (
         <Component key={componentId} {...componentProps} />
