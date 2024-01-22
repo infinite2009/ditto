@@ -307,7 +307,7 @@ export default observer((props: IPageRendererProps) => {
         <Component key={componentId} {...componentProps}>
           {childrenTemplate}
         </Component>
-      ) : componentConfig?.children?.type === 'placeholder' ? (
+      ) : componentConfig?.children?.type === 'template' ? (
         <Component key={componentId} {...componentProps}>
           <ComponentPlaceHolder />
         </Component>
@@ -342,6 +342,8 @@ export default observer((props: IPageRendererProps) => {
   function render() {
     return recursivelyRenderTemplate(dsl.child, true, true);
   }
+
+  console.log('当前 dsl: ', toJS(dsl));
 
   return dsl ? <>{render()}</> : <div>未获得有效的DSL</div>;
 });

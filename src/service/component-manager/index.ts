@@ -970,7 +970,44 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     propsConfig: {},
     children: {
       value: [],
-      type: 'placeholder',
+      type: 'template',
+      name: 'children',
+      category: 'children'
+    }
+  },
+  FormItem: {
+    configName: 'FormItem',
+    component: Form.Item,
+    category: '数据录入',
+    title: '表单项',
+    dependency: 'antd',
+    icon: CodeSandboxOutlined,
+    isHidden: true,
+    propsConfig: {
+      name: {
+        id: 'name',
+        schemaType: 'props',
+        name: 'name',
+        title: '字段名',
+        category: 'basic',
+        value: '默认name',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      label: {
+        id: 'label',
+        schemaType: 'props',
+        name: 'label',
+        title: '字段标题',
+        category: 'basic',
+        value: '默认字段',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      }
+    },
+    children: {
+      value: [],
+      type: 'template',
       name: 'children',
       category: 'children'
     }

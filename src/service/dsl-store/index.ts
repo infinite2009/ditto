@@ -342,7 +342,6 @@ export default class DSLStore {
       children
     } as IComponentSchema;
 
-    debugger;
     const componentSchema = this.dsl.componentIndexes[componentId];
 
     // pageRoot 不用赋值
@@ -556,11 +555,12 @@ export default class DSLStore {
       } else {
         this.currentParentNode.children.splice(insertIndex, 0, ref);
       }
+      this.currentParentNode = null;
+      return newComponentNode;
     } else {
       this.currentParentNode = null;
       throw new Error(`未找到有效的父节点：${parentId}`);
     }
-    this.currentParentNode = null;
   }
 
   /**

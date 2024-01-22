@@ -409,7 +409,7 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
             initialValue: ''
           },
           placeholder: {
-            name: 'placeholder',
+            name: 'template',
             type: 'string',
             title: '提示词',
             component: 'Input',

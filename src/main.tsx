@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
-import './styles.module.less';
-
 import { proxyFetch, proxyXHR } from '@/util';
+import App from './App';
+
+import './styles.module.less';
 
 proxyFetch();
 proxyXHR();

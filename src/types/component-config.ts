@@ -32,7 +32,12 @@ export default interface IComponentConfig {
   children?: {
     name: string;
     value: IComponentSchema[] | string;
-    type: 'text' | 'placeholder' | 'slot';
+    /**
+     * text：纯文本节点
+     * template：模板节点，这种就是不能拖入组件，而是靠其他方式插入的
+     * slot：插槽节点，用户将会在这个节点中拖入各种组件
+     */
+    type: 'text' | 'slot' | 'template';
     category: 'basic' | 'style' | 'interaction' | 'children' | 'hidden';
   };
 }
