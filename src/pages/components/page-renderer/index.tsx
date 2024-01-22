@@ -319,7 +319,7 @@ export default observer((props: IPageRendererProps) => {
       return null;
     }
 
-    if (mode === 'edit') {
+    if (mode === 'edit' && !dslStore?.isInSolid(componentId)) {
       if (isRoot) {
         return <PageRootWrapper {...rootProps}>{tpl}</PageRootWrapper>;
       }

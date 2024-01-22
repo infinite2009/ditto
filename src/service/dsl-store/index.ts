@@ -589,6 +589,28 @@ export default class DSLStore {
     return false;
   }
 
+  /**
+   * 判断一个组件是不是在一个 solid 组件内，如果是，则它不会被 EditorWrapper 包装
+   * @param componentId
+   */
+  isInSolid(componentId: ComponentId) {
+    const component = this.dsl.componentIndexes[componentId];
+    if (!component) {
+      return true;
+    }
+    let parent = this.dsl.componentIndexes[component.parentId];
+    while (parent) {
+      if (parent.feature === ComponentFeature.solid) {
+        return true;
+      }
+      if (!parent.parentId) {
+        return false;
+      }
+      parent = this.dsl.componentIndexes[parent.parentId];
+    }
+    return false;
+  }
+
   isLayerShown(): boolean {
     if (!this.dsl?.componentIndexes) {
       return false;
