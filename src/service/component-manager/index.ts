@@ -915,6 +915,17 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     icon: CodeSandboxOutlined,
     propsConfig: {}
   },
+  'Input.Password': {
+    configName: 'Input.Password',
+    callingName: 'Input.Password',
+    dependency: 'antd',
+    component: Input.Password,
+    importName: 'Input',
+    category: '数据录入',
+    title: '密码框',
+    icon: CodeSandboxOutlined,
+    propsConfig: {}
+  },
   InputNumber: {
     configName: 'InputNumber',
     dependency: 'antd',
@@ -957,6 +968,15 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
     component: DatePicker as unknown as FC,
     category: '数据录入',
     title: '日期选择器',
+    icon: CodeSandboxOutlined,
+    propsConfig: {}
+  },
+  RangePicker: {
+    configName: 'RangePicker',
+    dependency: 'antd',
+    component: DatePicker as unknown as FC,
+    category: '数据录入',
+    title: '时间范围选择器',
     icon: CodeSandboxOutlined,
     propsConfig: {}
   },

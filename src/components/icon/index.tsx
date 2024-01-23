@@ -95,7 +95,7 @@ export function Preview(props: Omit<IconFontProps, 'type'>) {
 }
 
 export function ExpandDown(props: Omit<IconFontProps, 'type'>) {
-  return <Icon {...props} type="icon-zhankai1" />;
+  return <Icon {...props} type="icon-zhankai-1" />;
 }
 
 export function PhoneSmall(props: Omit<IconFontProps, 'type'>) {

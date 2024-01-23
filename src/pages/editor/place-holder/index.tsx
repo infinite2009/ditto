@@ -1,5 +1,9 @@
 import style from './index.module.less';
 
-export default function ComponentPlaceHolder() {
-  return <div className={style.componentPlaceHolder}>这是占位符,无法拖入其他元素</div>;
+export interface IComponentPlaceHolderProps {
+  componentDisplayName: string;
+}
+
+export default function ComponentPlaceHolder({ componentDisplayName }: IComponentPlaceHolderProps) {
+  return <div className={style.componentPlaceHolder}>这是{componentDisplayName}占位符</div>;
 }

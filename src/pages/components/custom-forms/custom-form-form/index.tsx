@@ -1,17 +1,35 @@
-import { Minus, PlusThin } from '@/components/icon';
-import { observer } from 'mobx-react';
-import { useContext, useRef } from 'react';
-import { DSLStoreContext } from '@/hooks/context';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Select, Typography } from 'antd';
+import { observer } from 'mobx-react';
+import { DSLStoreContext } from '@/hooks/context';
+import { ExpandThin, Minus, PlusThin } from '@/components/icon';
+import IComponentSchema from '@/types/component.schema';
+import { ComponentId } from '@/types';
 
-import style from './index.module.less';
+import customFormStyle from '../../index.module.less';
 
 export default observer(function CustomFormForm() {
   const dslStore = useContext(DSLStoreContext);
 
   const fieldNamesRef = useRef<string[]>([]);
   const fieldLabelsRef = useRef<string[]>([]);
-  function removeFormItem() {}
+
+  useEffect(() => {
+    if (dslStore?.selectedComponent) {
+      const propsDict = dslStore.dsl.props;
+      dslStore.selectedComponent.children?.forEach(item => {
+        fieldLabelsRef.current.push(propsDict[item.current].label.value as string);
+        fieldNamesRef.current.push(propsDict[item.current].name.value as string);
+      });
+    }
+  }, []);
+
+  function handleSelectComponent(data: string, component: IComponentSchema) {
+    dslStore.replaceChild(component.id, 0, data, 'antd');
+  }
+  function removeFormItem(id: ComponentId) {
+    dslStore.deleteComponent(id);
+  }
 
   function renderFormItems() {
     const component = dslStore.selectedComponent;
@@ -28,24 +46,32 @@ export default observer(function CustomFormForm() {
     return formItems.map(item => {
       const { name, label } = dslStore.dsl.props[item.id];
       const childRef = item.children[0];
-      const childComponent = componentIndexes[childRef.current];
+      const childComponent = childRef ? componentIndexes[childRef.current] : null;
       return (
-        <div className={style.draggableFromItem} key={name.id}>
-          <div className={style.header}>
+        <div className={customFormStyle.draggableFromItem} key={name.value as string}>
+          <div className={customFormStyle.header}>
             <span>*</span>
-            <Select value={childComponent.configName} placeholder="请选择">
+            <Select
+              value={childComponent?.configName}
+              placeholder="请选择"
+              bordered={false}
+              dropdownStyle={{ width: 140 }}
+              onChange={e => handleSelectComponent(e, item)}
+              suffixIcon={<ExpandThin style={{ pointerEvents: 'none' }} />}
+            >
               <Select.Option value="Input">普通输入框</Select.Option>
-              <Select.Option value="PasswordInput">密码输入框</Select.Option>
+              <Select.Option value="Input.Password">密码输入框</Select.Option>
               <Select.Option value="Select">下拉选择器</Select.Option>
-              <Select.Option value="Cascade">级联选择器</Select.Option>
-              <Select.Option value="Datepicker">时间选择器</Select.Option>
+              <Select.Option value="Cascader">级联选择器</Select.Option>
+              <Select.Option value="DatePicker">日期选择器</Select.Option>
               <Select.Option value="RangePicker">时间范围选择器</Select.Option>
-              <Select.Option>单选按钮</Select.Option>
-              <Select.Option>复选框</Select.Option>
-              <Select.Option>开关</Select.Option>
+              <Select.Option value="Radio">单选按钮</Select.Option>
+              <Select.Option value="Checkbox">复选框</Select.Option>
+              <Select.Option value="Switch">开关</Select.Option>
             </Select>
+            <Minus className={customFormStyle.removeIcon} onClick={() => removeFormItem(item.id)} />
           </div>
-          <div className={style.title}>
+          <div className={customFormStyle.config}>
             <span>提示词</span>
             <Typography.Text>{name.value as string}</Typography.Text>
           </div>
@@ -93,13 +119,13 @@ export default observer(function CustomFormForm() {
   }
 
   return (
-    <div className={style.form}>
-      <div className={style.addItem}>
-        <span className={style.title}>表单项</span>
-        <PlusThin className={style.addIcon} onClick={addFormItem} />
+    <div className={customFormStyle.form}>
+      <div className={customFormStyle.addItem}>
+        <span className={customFormStyle.title}>表单项</span>
+        <PlusThin className={customFormStyle.addIcon} onClick={addFormItem} />
         {/*<Minus className={style.removeIcon} onClick={removeFormItem} />*/}
       </div>
-      <div className={style.draggableForm}>{renderFormItems()}</div>
+      <div className={customFormStyle.draggableForm}>{renderFormItems()}</div>
     </div>
   );
 });

@@ -230,6 +230,11 @@ export default observer((props: IPageRendererProps) => {
     }
     const node = dsl.componentIndexes[nodeRef.current];
 
+    // 防御性编程，由于其他dsl操作错误，导致的部分组件删除不完整
+    if (!node) {
+      return null;
+    }
+
     // 检查组件的运行时显隐情况，如果是隐藏状态，则不予渲染。（通过组件 props 控制的组件不在此列）
     if (componentVisibilityState[node.id] === false) {
       return null;
@@ -309,7 +314,7 @@ export default observer((props: IPageRendererProps) => {
         </Component>
       ) : componentConfig?.children?.type === 'template' ? (
         <Component key={componentId} {...componentProps}>
-          <ComponentPlaceHolder />
+          <ComponentPlaceHolder componentDisplayName={node.displayName} />
         </Component>
       ) : (
         <Component key={componentId} {...componentProps} />

@@ -448,20 +448,29 @@ export default class DSLStore {
    */
   @execute
   deleteComponent(id: ComponentId): IComponentSchema | null {
-    const componentToDelete = this.dsl.componentIndexes[id];
-    if (!componentToDelete) {
+    return this.dangerousDeleteComponent(id);
+  }
+
+  deleteChild(id: ComponentId, index: number): IComponentSchema | null {
+    if (index < 0) {
       return;
     }
-    if (componentToDelete.feature === 'root') {
+    const currentComponent = this.dsl.componentIndexes[id];
+    if (!currentComponent.children || typeOf(currentComponent.children) !== 'array') {
       return;
     }
-    const deleted = this.deleteSubtree(id);
-    // 如果当前已选中的组件，已经被删除了，就清空
-    if (this.selectedComponent?.id && !this.dsl.componentIndexes[this.selectedComponent.id]) {
-      this.resetSelectedComponent();
+    if (index >= currentComponent.children.length) {
+      return;
     }
-    this.selectedComponent = this.pageRoot;
-    return deleted;
+    this.deleteComponent(currentComponent.children[index].current);
+  }
+
+  /**
+   * 插入一个新的组件
+   */
+  @execute
+  insertComponent(parentId: string, name: string, dependency: string, insertIndex = -1) {
+    return this.dangerousInsertComponent(parentId, name, dependency, insertIndex);
   }
 
   fetchComponentInDSL(id: string) {
@@ -535,11 +544,46 @@ export default class DSLStore {
     this.totalFormConfig = formConfig;
   }
 
-  /**
-   * 插入一个新的组件
-   */
   @execute
-  insertComponent(parentId: string, name: string, dependency: string, insertIndex = -1) {
+  replaceChild(componentId: string, index: number, name: string, dependency: string) {
+    if (index < 0) {
+      return;
+    }
+    const currentComponent = this.dsl.componentIndexes[componentId];
+    if (!currentComponent.children || typeOf(currentComponent.children) !== 'array') {
+      return;
+    }
+    if (index >= currentComponent.children.length) {
+      return;
+    }
+    this.dangerousInsertComponent(currentComponent.id, name, dependency, index);
+    // 找到需要删除的组件
+    this.dangerousDeleteComponent(currentComponent.children[index + 1].current);
+  }
+
+  private dangerousDeleteComponent(id: ComponentId): IComponentSchema | null {
+    const componentToDelete = this.dsl.componentIndexes[id];
+    if (!componentToDelete) {
+      return;
+    }
+    if (componentToDelete.feature === 'root') {
+      return;
+    }
+    const deleted = this.deleteSubtree(id);
+    // 如果当前已选中的组件，已经被删除了，就清空
+    if (this.selectedComponent?.id && !this.dsl.componentIndexes[this.selectedComponent.id]) {
+      this.resetSelectedComponent();
+    }
+    return deleted;
+  }
+
+  private dangerousInsertComponent(parentId: string, name: string, dependency: string, insertIndex = -1) {
+    // 检查传入的组件是否有对应的配置
+    const componentConfig = ComponentManager.fetchComponentConfig(name, dependency);
+    if (!componentConfig) {
+      console.error('未找到有效的组件配置: ', `name: ${name}, dependency: ${dependency}`);
+      return;
+    }
     this.currentParentNode = this.fetchComponentInDSL(parentId);
     if (this.currentParentNode) {
       const newComponentNode = this.createComponent(name, dependency);
