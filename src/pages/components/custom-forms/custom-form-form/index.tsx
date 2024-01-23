@@ -1,12 +1,16 @@
 import { Minus, PlusThin } from '@/components/icon';
-import style from './index.module.less';
 import { observer } from 'mobx-react';
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { DSLStoreContext } from '@/hooks/context';
 import { Select, Typography } from 'antd';
 
+import style from './index.module.less';
+
 export default observer(function CustomFormForm() {
   const dslStore = useContext(DSLStoreContext);
+
+  const fieldNamesRef = useRef<string[]>([]);
+  const fieldLabelsRef = useRef<string[]>([]);
   function removeFormItem() {}
 
   function renderFormItems() {
@@ -53,9 +57,39 @@ export default observer(function CustomFormForm() {
   function addFormItem() {
     // 创建 form item
     const formItem = dslStore.insertComponent(dslStore.selectedComponent.id, 'FormItem', 'antd');
+    // 更新它的 name
+    const newFieldName = generateNewFieldName();
+    const newLabelName = generateNewLabelName();
+    dslStore.updateComponentProps({ name: newFieldName, label: newLabelName }, formItem);
     if (formItem) {
       dslStore.insertComponent(formItem.id, 'Input', 'antd');
     }
+  }
+
+  function generateNewFieldName() {
+    let nameSuffix = 1;
+    const namePrefix = 'name';
+    let nameExists = fieldNamesRef.current.some(item => item === `${namePrefix}${nameSuffix}`);
+    while (nameExists) {
+      nameSuffix++;
+      nameExists = fieldNamesRef.current.some(item => item === `${namePrefix}${nameSuffix}`);
+    }
+    const newFieldName = `${namePrefix}${nameSuffix}`;
+    fieldNamesRef.current.push(newFieldName);
+    return newFieldName;
+  }
+
+  function generateNewLabelName() {
+    let labelSuffix = 1;
+    const labelPrefix = '字段';
+    let nameExists = fieldLabelsRef.current.some(item => item === `${labelPrefix}${labelSuffix}`);
+    while (nameExists) {
+      labelSuffix++;
+      nameExists = fieldLabelsRef.current.some(item => item === `${labelPrefix}${labelSuffix}`);
+    }
+    const newLabelName = `${labelPrefix}${labelSuffix}`;
+    fieldLabelsRef.current.push(newLabelName);
+    return newLabelName;
   }
 
   return (

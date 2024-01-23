@@ -865,8 +865,9 @@ export default class DSLStore {
   }
 
   @execute
-  updateComponentProps(propsPartial: Record<string, any> | CSSProperties) {
-    const { id, configName, dependency } = this.selectedComponent;
+  updateComponentProps(propsPartial: Record<string, any> | CSSProperties, targetComponent: IComponentSchema) {
+    const component = targetComponent || this.selectedComponent;
+    const { id, configName, dependency } = component;
     const props = this.dsl.props[id];
     // const config = fetchComponentConfig(configName, dependency);
     // if (config) {
