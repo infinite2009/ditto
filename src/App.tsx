@@ -101,7 +101,7 @@ export default observer(function App() {
     // 初始化数据库
     await DbStore.init();
     // 初始化组件库
-    await ComponentManager.loadComponentConfigList();
+    await ComponentManager.init();
     // await fileManager.initAppData();
     fetchOpenedProjects();
     await fetchAndOpenCurrentProject();

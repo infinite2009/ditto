@@ -1518,11 +1518,222 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
   }
 };
 
+const defaultComponentValueConfig = {
+  PageRoot: {
+    style: undefined,
+    vertical: true,
+    wrap: 'nowrap',
+    justify: 'start',
+    align: 'start',
+    gap: 0
+  },
+  HorizontalFlex: {
+    style: undefined,
+    vertical: false,
+    wrap: 'nowrap',
+    justify: 'start',
+    align: 'start',
+    gap: 0
+  },
+  VerticalFlex: {
+    style: undefined,
+    vertical: true,
+    wrap: 'nowrap',
+    justify: 'start',
+    align: 'start',
+    gap: 0
+  },
+  Button: {
+    type: 'primary',
+    danger: false,
+    disabled: false,
+    href: undefined,
+    target: '_blank',
+    loading: false,
+    shape: 'default',
+    size: 'middle',
+    style: undefined,
+    onClick: undefined
+  },
+  Text: {
+    style: undefined,
+    copyable: false,
+    delete: false,
+    disabled: false,
+    editable: false,
+    ellipsis: false,
+    mark: false,
+    strong: false,
+    italic: false,
+    underline: false
+  },
+  Paragraph: {
+    style: undefined,
+    copyable: false,
+    delete: false,
+    disabled: false,
+    editable: false,
+    ellipsis: false,
+    mark: false,
+    strong: false,
+    italic: false,
+    underline: false
+  },
+  Title: {
+    style: undefined,
+    copyable: false,
+    delete: false,
+    disabled: false,
+    editable: false,
+    ellipsis: false,
+    mark: false,
+    strong: false,
+    italic: false,
+    underline: false
+  },
+  Divider: {},
+  Space: {},
+  Anchor: {},
+  Breadcrumb: {},
+  Dropdown: {},
+  Menu: {},
+  Pagination: {},
+  Steps: {},
+  Input: {
+    value: '',
+    placeholder: '请输入'
+  },
+  'Input.Search': {},
+  'Input.TextArea': {},
+  'Input.Password': {},
+  InputNumber: {},
+  Cascader: {},
+  Checkbox: {},
+  ColorPicker: {},
+  DatePicker: {},
+  RangePicker: {},
+  Form: {},
+  FormItem: {
+    name: '字段',
+    label: '默认字段'
+  },
+  Mentions: {},
+  Radio: {},
+  Rate: {},
+  Select: {},
+  Slider: {},
+  Switch: {},
+  TimePicker: {},
+  Transfer: {},
+  TreeSelect: {},
+  Upload: {},
+  Avatar: {},
+  Badge: {},
+  Calendar: {},
+  Card: {},
+  Carousel: {},
+  Collapse: {},
+  Descriptions: {},
+  Empty: {},
+  Image: {},
+  List: {},
+  Popover: {},
+  Statistic: {},
+  Table: {
+    style: undefined,
+    columns: [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+        render: {}
+      },
+      {
+        title: 'Age',
+        dataIndex: 'age',
+        key: 'age'
+      },
+      {
+        title: 'Action',
+        dataIndex: 'action',
+        key: 'action',
+        render: {}
+      }
+    ],
+    dataSource: [
+      {
+        key: '1',
+        firstName: 'John',
+        lastName: 'Brown',
+        age: 32,
+        address: 'New York No. 1 Lake Park',
+        tags: ['nice', 'developer']
+      },
+      {
+        key: '2',
+        name: 'Jim',
+        lastName: 'Green',
+        age: 42,
+        address: 'London No. 1 Lake Park',
+        tags: ['loser']
+      },
+      {
+        key: '3',
+        name: 'Joe',
+        lastName: 'Black',
+        age: 32,
+        address: 'Sydney No. 1 Lake Park',
+        tags: ['cool', 'teacher']
+      }
+    ]
+  },
+  Tabs: {
+    items: [
+      {
+        key: '1',
+        label: '新建标签页',
+        children: {}
+      }
+    ],
+    tabBarExtraContent: {},
+    style: undefined
+  },
+  Tag: {},
+  Tooltip: {},
+  Tree: {},
+  Alert: {},
+  Drawer: {
+    open: true
+  },
+  Modal: {
+    title: '新建弹窗',
+    open: true
+  },
+  Notification: {},
+  Popconfirm: {},
+  Result: {},
+  Affix: {},
+  FloatButton: {}
+};
+
 export default class ComponentManager {
   private static componentConfig: Record<string, Record<string, IComponentConfig>> = null;
+  private static defaultComponentValueConfig: Record<string, Record<string, any>> = null;
+
+  static async init() {
+    ComponentManager.initDefaultComponentValueConfig();
+    await ComponentManager.loadComponentConfigList();
+  }
 
   static get componentConfigList() {
     return ComponentManager.componentConfig;
+  }
+
+  /**
+   * 初始化组件的默认值配置
+   */
+  private static initDefaultComponentValueConfig() {
+    this.defaultComponentValueConfig = defaultComponentValueConfig;
   }
 
   static fetchComponentConfig(configName: string, dependency: string) {
@@ -1532,7 +1743,7 @@ export default class ComponentManager {
     return ComponentManager.componentConfig[dependency]?.[configName] || null;
   }
 
-  static async loadComponentConfigList() {
+  private static async loadComponentConfigList() {
     if (!ComponentManager.componentConfig) {
       let camelotComponentConfig: Record<string, IComponentConfig> = {};
       try {
