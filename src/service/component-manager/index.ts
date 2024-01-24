@@ -129,7 +129,7 @@ const typographyTransformerStr =
   '  return result;' +
   '})(values)';
 
-const antdComponentConfig: { [key: string]: IComponentConfig } = {
+const antdComponentConfig: Record<string, IComponentConfig> = {
   PageRoot: {
     configName: 'PageRoot',
     callingName: 'Flex',
@@ -992,7 +992,8 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
       value: [],
       type: 'template',
       name: 'children',
-      category: 'children'
+      category: 'children',
+      notInteractive: true
     }
   },
   FormItem: {
@@ -1524,7 +1525,7 @@ const antdComponentConfig: { [key: string]: IComponentConfig } = {
 };
 
 export default class ComponentManager {
-  private static componentConfig = null;
+  private static componentConfig: Record<string, Record<string, IComponentConfig>> = null;
 
   static get componentConfigList() {
     return ComponentManager.componentConfig;
@@ -1539,15 +1540,13 @@ export default class ComponentManager {
 
   static async loadComponentConfigList() {
     if (!ComponentManager.componentConfig) {
-      let camelotComponentConfig = {};
+      let camelotComponentConfig: Record<string, IComponentConfig> = {};
       try {
         camelotComponentConfig = await fetchCamelotComponentConfig();
       } catch (err) {
         console.error(err);
       }
-      ComponentManager.componentConfig = { antd: antdComponentConfig, camelot: camelotComponentConfig } as {
-        [key: string]: { [key: string]: IComponentConfig };
-      };
+      ComponentManager.componentConfig = { antd: antdComponentConfig, camelot: camelotComponentConfig };
       return ComponentManager.componentConfig;
     }
     return ComponentManager.componentConfig;

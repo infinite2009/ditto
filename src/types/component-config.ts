@@ -39,5 +39,7 @@ export default interface IComponentConfig {
      */
     type: 'text' | 'slot' | 'template';
     category: 'basic' | 'style' | 'interaction' | 'children' | 'hidden';
+    // 禁用当前节点及其后代节点的可交互性，如果为 true，那么这些节点将无法选中和编辑
+    notInteractive?: boolean;
   };
 }
