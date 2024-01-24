@@ -143,9 +143,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     propsConfig: {
       style: {
         ...defaultStyleConfig,
-        value: {
-          padding: 8
-        }
+        value: {}
       },
       vertical: {
         id: 'vertical',
@@ -193,7 +191,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
         name: 'gap',
         title: '间距',
         category: 'hidden',
-        value: 8,
+        value: 0,
         valueType: 'number',
         valueSource: 'editorInput'
       }
@@ -212,9 +210,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     propsConfig: {
       style: {
         ...defaultStyleConfig,
-        value: {
-          padding: 8
-        }
+        value: {}
       },
       vertical: {
         id: 'vertical',
@@ -262,7 +258,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
         name: 'gap',
         title: '间距',
         category: 'hidden',
-        value: 8,
+        value: 0,
         valueType: 'number',
         valueSource: 'editorInput'
       }
@@ -286,9 +282,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     propsConfig: {
       style: {
         ...defaultStyleConfig,
-        value: {
-          padding: 8
-        }
+        value: {}
       },
       vertical: {
         id: 'vertical',
@@ -336,7 +330,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
         schemaType: 'props',
         title: '间距',
         category: 'hidden',
-        value: '8px',
+        value: 0,
         valueType: 'string',
         valueSource: 'editorInput'
       }
