@@ -1,4 +1,5 @@
 @height: 60px;
+@width: 100px;
 
 .center {
   line-height: @height;
@@ -9,6 +10,7 @@
 
 .rowWithoutChildren {
   margin: 0 auto;
+  min-width: @width;
   min-height: @height;
   .center();
 }
