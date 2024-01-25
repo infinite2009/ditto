@@ -427,7 +427,7 @@ export default class ReactCodeGenerator {
       // 解决 valueType 是数字，但是 value 本身不是数字的问题，一般是 css 样式问题
       const valueType = typeOf(value);
 
-      const basicValueTypes = ['string', 'number', 'boolean', undefined, null];
+      const basicValueTypes = ['string', 'number', 'boolean', 'undefined', 'null'];
       // 基础类型固定值走字面，其他情况走变量（常量、state、memo、callback）
       if (valueSource === 'editorInput') {
         if (basicValueTypes.includes(valueType)) {
