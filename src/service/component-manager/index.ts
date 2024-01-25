@@ -1554,16 +1554,13 @@ const defaultComponentValueConfig = {
       type: 'primary',
       danger: false,
       disabled: false,
-      href: undefined,
       target: '_blank',
       loading: false,
       shape: 'default',
       size: 'middle',
-      style: undefined,
       onClick: undefined
     },
     Text: {
-      style: undefined,
       copyable: false,
       delete: false,
       disabled: false,
@@ -1575,7 +1572,6 @@ const defaultComponentValueConfig = {
       underline: false
     },
     Paragraph: {
-      style: undefined,
       copyable: false,
       delete: false,
       disabled: false,
@@ -1587,7 +1583,6 @@ const defaultComponentValueConfig = {
       underline: false
     },
     Title: {
-      style: undefined,
       copyable: false,
       delete: false,
       disabled: false,
@@ -1647,7 +1642,6 @@ const defaultComponentValueConfig = {
     Popover: {},
     Statistic: {},
     Table: {
-      style: undefined,
       columns: [
         {
           title: 'Name',
@@ -1702,8 +1696,7 @@ const defaultComponentValueConfig = {
           children: {}
         }
       ],
-      tabBarExtraContent: {},
-      style: undefined
+      tabBarExtraContent: {}
     },
     Tag: {},
     Tooltip: {},
