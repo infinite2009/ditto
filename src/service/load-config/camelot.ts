@@ -145,6 +145,5 @@ export async function getCamelotComponentPropsFrom() {
       }
     });
   });
-  console.log(formConfig);
   return formConfig;
 }

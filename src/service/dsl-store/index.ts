@@ -367,6 +367,14 @@ export default class DSLStore {
     Object.values(propsConfig).forEach(item => {
       const { name, value, templateKeyPathsReg = [] } = item;
       props[name] = item;
+      // 使用默认值配置进行属性值初始化
+      const defaultValueObj = ComponentManager.fetchDefaultValueOf(
+        componentConfig.configName,
+        componentConfig.dependency
+      );
+      if (defaultValueObj !== null) {
+        props[name].value = defaultValueObj[name];
+      }
       // 针对某些特殊情形
       if (extProps) {
         if (typeOf(props[name].value) === 'object') {
@@ -916,7 +924,7 @@ export default class DSLStore {
   }
 
   @execute
-  updateComponentProps(propsPartial: Record<string, any> | CSSProperties, targetComponent: IComponentSchema) {
+  updateComponentProps(propsPartial: Record<string, any> | CSSProperties, targetComponent?: IComponentSchema) {
     const component = targetComponent || this.selectedComponent;
     const { id, configName, dependency } = component;
     const props = this.dsl.props[id];

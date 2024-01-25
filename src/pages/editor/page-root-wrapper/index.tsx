@@ -37,7 +37,6 @@ export default observer(function PageRootWrapper({
   });
 
   const classes = useMemo(() => {
-    console.log('page root: ', children);
     return classNames({
       [styles.withoutChildren]: dslStore.isEmpty,
       [styles.main]: true,

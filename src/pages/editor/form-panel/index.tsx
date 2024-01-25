@@ -124,7 +124,7 @@ export default observer(() => {
         ...transformedValues
       };
     } else {
-      mergedStyleObj = toJS(dslStore.valueOfSelectedComponent.style);
+      mergedStyleObj = toJS(dslStore.valueOfSelectedComponent.style || {});
     }
 
     return (

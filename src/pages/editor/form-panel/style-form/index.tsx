@@ -1108,12 +1108,12 @@ export default function StyleForm({ onChange, value, config, parentDirection }: 
     ];
 
     let paddingObj: { paddingTop?: number; paddingLeft?: number } = {};
-    if (value.padding) {
+    if (value?.padding) {
       paddingObj = parsePadding(value.padding) || {};
     } else {
       paddingObj = {
-        paddingTop: (value.paddingTop as number) || 0,
-        paddingLeft: (value.paddingLeft as number) || 0
+        paddingTop: (value?.paddingTop as number) || 0,
+        paddingLeft: (value?.paddingLeft as number) || 0
       };
     }
 

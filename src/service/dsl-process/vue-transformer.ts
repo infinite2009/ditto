@@ -1,4 +1,3 @@
-
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
@@ -16,17 +15,17 @@ export default class VueTransformer {
       Space: {
         block: (node: IComponentSchema) => {
           this.ignoreProps(node, 'icon');
-        },
+        }
       },
       Anchor: {
         block: (node: IComponentSchema) => {
           this.ignoreProps(node, 'icon');
-        },
+        }
       },
       Button: {
         icon: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'icon');
-        },
+        }
       },
       FloatButton: {
         icon: (node: IComponentSchema) => {
@@ -37,7 +36,7 @@ export default class VueTransformer {
         },
         tooltip: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'tooltip');
-        },
+        }
       },
       Tabs: {
         items: (node: IComponentSchema) => {
@@ -45,7 +44,7 @@ export default class VueTransformer {
         },
         tabBarExtraContent: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'tabBarExtraContent');
-        },
+        }
       },
       Table: {
         columns: (node: IComponentSchema) => {
@@ -55,7 +54,7 @@ export default class VueTransformer {
       Breadcrumb: {
         items: (node: IComponentSchema) => {
           this.itemsToTemplate(node, 'BreadcrumbItem', 'items[].title');
-        },
+        }
       },
       Dropdown: {
         items: (node: IComponentSchema) => {
@@ -66,7 +65,7 @@ export default class VueTransformer {
         },
         autoFocus: (node: IComponentSchema) => {
           this.ignoreProps(node, 'autoFocus');
-        },
+        }
       },
       Menu: {
         expandIcon: (node: IComponentSchema) => {
@@ -74,7 +73,7 @@ export default class VueTransformer {
         },
         items: (node: IComponentSchema) => {
           this.itemsToTemplateForDropdown(node);
-        },
+        }
       },
       Cascader: {
         tagRender: (node: IComponentSchema) => {
@@ -91,7 +90,7 @@ export default class VueTransformer {
         },
         maxTagTextLength: (node: IComponentSchema) => {
           this.ignoreProps(node, 'maxTagTextLength');
-        },
+        }
       },
       DatePicker: {
         dateRender: (node: IComponentSchema) => {
@@ -102,7 +101,7 @@ export default class VueTransformer {
         },
         cellRender: (node: IComponentSchema) => {
           this.ignoreProps(node, 'cellRender');
-        },
+        }
       },
       Form: {
         initialValues: (node: IComponentSchema) => {
@@ -113,7 +112,7 @@ export default class VueTransformer {
         },
         renderExtraFooter: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'renderExtraFooter');
-        },
+        }
       },
       Input: {
         addonAfter: (node: IComponentSchema) => {
@@ -127,7 +126,7 @@ export default class VueTransformer {
         },
         suffix: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'suffix');
-        },
+        }
       },
       InputNumber: {
         addonAfter: (node: IComponentSchema) => {
@@ -141,17 +140,17 @@ export default class VueTransformer {
         },
         suffix: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'suffix');
-        },
+        }
       },
       Mentions: {
         notFoundContent: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'notFoundContent');
-        },
+        }
       },
       Rate: {
         character: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'character');
-        },
+        }
       },
       Select: {
         popupMatchSelectWidth: (node: IComponentSchema) => {
@@ -165,12 +164,12 @@ export default class VueTransformer {
         },
         tagRender: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'tagRender');
-        },
+        }
       },
       Slider: {
         mark: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'mark');
-        },
+        }
       },
       Switch: {
         checkedChildren: (node: IComponentSchema) => {
@@ -178,7 +177,7 @@ export default class VueTransformer {
         },
         unCheckedChildren: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'unCheckedChildren');
-        },
+        }
       },
       TimePicker: {
         dateRender: (node: IComponentSchema) => {
@@ -189,12 +188,12 @@ export default class VueTransformer {
         },
         cellRender: (node: IComponentSchema) => {
           this.ignoreProps(node, 'cellRender');
-        },
+        }
       },
       Transfer: {
         footer: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'footer');
-        },
+        }
       },
       TreeSelect: {
         treeData: (node: IComponentSchema) => {
@@ -211,7 +210,7 @@ export default class VueTransformer {
         },
         notFoundContent: (node: IComponentSchema) => {
           this.ignoreProps(node, 'notFoundContent');
-        },
+        }
       },
       Upload: {
         itemRender: (node: IComponentSchema) => {
@@ -222,17 +221,17 @@ export default class VueTransformer {
         },
         removeIcon: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'removeIcon');
-        },
+        }
       },
       Avatar: {
         onError: (node: IComponentSchema) => {
           this.propNameMap(node, 'onError', 'loadError');
-        },
+        }
       },
       Calendar: {
         headerRender: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'headerRender');
-        },
+        }
       },
       Card: {
         title: (node: IComponentSchema) => {
@@ -243,14 +242,14 @@ export default class VueTransformer {
         },
         avatar: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'avatar');
-        },
+        }
       },
       Collapse: {
         items: (node: IComponentSchema) => {
           this.itemsToTemplate(node, 'CollapsePanel', 'items[].children');
         }
       },
-      Descriptions:  {
+      Descriptions: {
         items: (node: IComponentSchema) => {
           this.itemsToTemplate(node, 'DescriptionsItem', 'items[].children');
         }
@@ -261,7 +260,7 @@ export default class VueTransformer {
         },
         image: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'image');
-        },
+        }
       },
       Image: {
         preview: (node: IComponentSchema) => {
@@ -274,7 +273,7 @@ export default class VueTransformer {
         renderItem: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'renderItem', {
             templateProps: {
-              "#renderItem":"{ item }"
+              '#renderItem': '{ item }'
             }
           });
         },
@@ -289,7 +288,7 @@ export default class VueTransformer {
         },
         title: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'title');
-        },
+        }
       },
       ListItemMeta: {
         avatar: (node: IComponentSchema) => {
@@ -300,7 +299,7 @@ export default class VueTransformer {
         },
         description: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'description');
-        },
+        }
       },
       Statistic: {
         formatter: (node: IComponentSchema) => {
@@ -319,20 +318,20 @@ export default class VueTransformer {
       Tag: {
         icon: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'icon');
-        },
+        }
       },
       Tooltip: {
         title: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'title');
-        },
+        }
       },
       Tree: {
         switcherIcon: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'switcherIcon');
         },
         treeData: (node: IComponentSchema) => {
-          this.vnodeToHRender(node,  ['treeData[].title']);
-        },
+          this.vnodeToHRender(node, ['treeData[].title']);
+        }
       },
       Alert: {
         description: (node: IComponentSchema) => {
@@ -346,7 +345,7 @@ export default class VueTransformer {
         },
         action: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'action');
-        },
+        }
       },
       Drawer: {
         closeIcon: (node: IComponentSchema) => {
@@ -363,7 +362,7 @@ export default class VueTransformer {
         },
         forceRender: (node: IComponentSchema) => {
           this.ignoreProps(node, 'forceRender');
-        },
+        }
       },
       Popconfirm: {
         title: (node: IComponentSchema) => {
@@ -374,7 +373,7 @@ export default class VueTransformer {
         },
         onPopupClick: (node: IComponentSchema) => {
           this.propNameMap(node, 'onPopupClick', 'openChange');
-        },
+        }
       },
       Result: {
         extra: (node: IComponentSchema) => {
@@ -388,8 +387,8 @@ export default class VueTransformer {
         },
         title: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'title');
-        },
-      }, 
+        }
+      },
       Modal: {
         modalRender: (node: IComponentSchema) => {
           this.vnodeToTemplate(node, 'modalRender');
@@ -408,9 +407,9 @@ export default class VueTransformer {
         },
         afterOpenChange: (node: IComponentSchema) => {
           this.ignoreProps(node, 'afterOpenChange');
-        },
+        }
       }
-    }; 
+    };
   }
   generateId() {
     return hyphenToCamelCase(generateId());
@@ -422,15 +421,14 @@ export default class VueTransformer {
     return this.dsl;
   }
   transformChildDsl(root: ComponentSchemaRef): IPageSchema {
-    this.breadthFirstTraversal(root, (node) => {
+    this.breadthFirstTraversal(root, node => {
       const componentHanlderMap = this.componentHanlderMap;
       const nodeName = node.name as keyof typeof this.componentHanlderMap;
-      
 
       if (componentHanlderMap[nodeName] && Array.isArray(node.propsRefs) && node.propsRefs.length > 0) {
         const copyPropsRefs = [...node.propsRefs];
         let topPropsName = copyPropsRefs.shift();
-        while(topPropsName) {
+        while (topPropsName) {
           if (componentHanlderMap[nodeName][topPropsName]) {
             componentHanlderMap[nodeName][topPropsName](node);
           }
@@ -448,12 +446,11 @@ export default class VueTransformer {
    * 广度遍历 components
    */
   breadthFirstTraversal(root: ComponentSchemaRef, callback: (node: IComponentSchema) => void) {
-
     const q: ComponentSchemaRef[] = [root];
     const { componentIndexes } = this.dsl;
     while (q.length) {
       // 弹出头部的节点
-      const nodeRef: ComponentSchemaRef  | undefined = q.shift();
+      const nodeRef: ComponentSchemaRef | undefined = q.shift();
 
       // 过滤字符串节点/空节点
       if (typeof nodeRef === 'object' && !nodeRef.isText) {
@@ -471,19 +468,24 @@ export default class VueTransformer {
       }
     }
   }
-  templateKeyPathsReg(params: {value?: any; templateKeyPathsReg?: TemplateKeyPathsReg[]}, callback: (value: Record<string, any>, type: TemplateKeyPathsReg['type']) => void) {
-    const { value, templateKeyPathsReg }  = params;
+  templateKeyPathsReg(
+    params: { value?: any; templateKeyPathsReg?: TemplateKeyPathsReg[] },
+    callback: (value: Record<string, any>, type: TemplateKeyPathsReg['type']) => void
+  ) {
+    const { value, templateKeyPathsReg } = params;
     if (!templateKeyPathsReg || !Array.isArray(value)) {
       return;
     }
-    
+
     for (let j = 0; j < value.length; j++) {
       const valueItem = value[j];
       for (const key in valueItem) {
         const currentKeyPath = `[${j}].${key}`;
-        const keyPathMatchResult = templateKeyPathsReg.length > 0 && templateKeyPathsReg.find(pathObj => {
-          return new RegExp(pathObj.path).test(currentKeyPath);
-        });
+        const keyPathMatchResult =
+          templateKeyPathsReg.length > 0 &&
+          templateKeyPathsReg.find(pathObj => {
+            return new RegExp(pathObj.path).test(currentKeyPath);
+          });
         // 不符合
         if (!keyPathMatchResult) {
           continue;
@@ -492,7 +494,6 @@ export default class VueTransformer {
         continue;
       }
     }
-    
   }
   /**
    * items转template
@@ -510,34 +511,37 @@ export default class VueTransformer {
     const [valueKey, itemKey] = keyPath.split('[].');
 
     if (componentProps[valueKey] && valueKey && itemKey) {
-      this.templateKeyPathsReg({
-        templateKeyPathsReg: componentProps[valueKey].templateKeyPathsReg,
-        value: componentProps[valueKey].value
-      }, (item) => {
-        // 先取出插槽数据，剩余的放到子组件
-        const slotProps = item[itemKey];
-        delete item[itemKey];
-        const resetProps = item;
+      this.templateKeyPathsReg(
+        {
+          templateKeyPathsReg: componentProps[valueKey].templateKeyPathsReg,
+          value: componentProps[valueKey].value
+        },
+        item => {
+          // 先取出插槽数据，剩余的放到子组件
+          const slotProps = item[itemKey];
+          delete item[itemKey];
+          const resetProps = item;
 
-        const [child, newProps] = this.createComponentDsl(node.id, childComponentName, resetProps);
-        this.addComponentToDsl(child, newProps); 
-        // 因为是副作用，需要提前赋值
-        child.children = Array.isArray(slotProps) ? slotProps : [slotProps];
-        child.children.forEach((itemChild: any) => {
-          if (typeof itemChild === 'string') {
-            // 不处理
-          } else {
-            this.transformChildDsl(itemChild);
-          } 
-        });
-        this.appendChildren(node, {
-          current: child.id,
-          isText: false,
-        });
-      });
+          const [child, newProps] = this.createComponentDsl(node.id, childComponentName, resetProps);
+          this.addComponentToDsl(child, newProps);
+          // 因为是副作用，需要提前赋值
+          child.children = Array.isArray(slotProps) ? slotProps : [slotProps];
+          child.children.forEach((itemChild: any) => {
+            if (typeof itemChild === 'string') {
+              // 不处理
+            } else {
+              this.transformChildDsl(itemChild);
+            }
+          });
+          this.appendChildren(node, {
+            current: child.id,
+            isText: false
+          });
+        }
+      );
       // 删除特定的数据
       delete componentProps[valueKey].templateKeyPathsReg;
-      componentProps[valueKey].value = []; 
+      componentProps[valueKey].value = [];
       this.removeProps(node.propsRefs, valueKey);
       return node.children;
     }
@@ -556,50 +560,52 @@ export default class VueTransformer {
     const [valueKey, itemKey] = keyPath.split('[].');
 
     if (componentProps[valueKey] && valueKey && itemKey) {
-      this.templateKeyPathsReg({
-        templateKeyPathsReg: componentProps[valueKey].templateKeyPathsReg,
-        value: componentProps[valueKey].value
-      }, (item) => {
+      this.templateKeyPathsReg(
+        {
+          templateKeyPathsReg: componentProps[valueKey].templateKeyPathsReg,
+          value: componentProps[valueKey].value
+        },
+        item => {
+          const [template, templateProps] = this.createComponentDsl(node.id, 'template', {
+            '#overlay': ''
+          });
+          this.addComponentToDsl(template, templateProps);
+          this.appendChildren(node, {
+            current: template.id,
+            isText: false
+          });
+          const [Menu, MenuProps] = this.createComponentDsl(node.id, 'Menu', {});
+          this.addComponentToDsl(Menu, MenuProps);
+          this.appendChildren(template, {
+            current: Menu.id,
+            isText: false
+          });
+          // 先取出插槽数据，剩余的放到子组件
+          const slotProps = item[itemKey];
+          delete item[itemKey];
+          const resetProps = item;
 
-        const [template, templateProps] = this.createComponentDsl(node.id, 'template', {
-          '#overlay': ''
-        });
-        this.addComponentToDsl(template, templateProps); 
-        this.appendChildren(node, {
-          current: template.id,
-          isText: false,
-        });
-        const [Menu, MenuProps] = this.createComponentDsl(node.id, 'Menu', {});
-        this.addComponentToDsl(Menu, MenuProps); 
-        this.appendChildren(template, {
-          current: Menu.id,
-          isText: false,
-        });
-        // 先取出插槽数据，剩余的放到子组件
-        const slotProps = item[itemKey];
-        delete item[itemKey];
-        const resetProps = item;
-
-        const [child, newProps] = this.createComponentDsl(node.id, 'MenuItem', resetProps);
-        this.addComponentToDsl(child, newProps); 
-        // 因为是副作用，需要提前赋值
-        child.children = Array.isArray(slotProps) ? slotProps : [slotProps];
-        child.children.forEach((itemChild: any) => {
-          if (typeof itemChild === 'string') {
-            // 不处理
-          } else {
-            this.transformChildDsl(itemChild);
-          } 
-        });
-        this.appendChildren(Menu, {
-          current: child.id,
-          isText: false,
-        });
-        delete item.label;
-      });
+          const [child, newProps] = this.createComponentDsl(node.id, 'MenuItem', resetProps);
+          this.addComponentToDsl(child, newProps);
+          // 因为是副作用，需要提前赋值
+          child.children = Array.isArray(slotProps) ? slotProps : [slotProps];
+          child.children.forEach((itemChild: any) => {
+            if (typeof itemChild === 'string') {
+              // 不处理
+            } else {
+              this.transformChildDsl(itemChild);
+            }
+          });
+          this.appendChildren(Menu, {
+            current: child.id,
+            isText: false
+          });
+          delete item.label;
+        }
+      );
       // 删除特定的数据
       delete componentProps[valueKey].templateKeyPathsReg;
-      componentProps[valueKey].value = []; 
+      componentProps[valueKey].value = [];
       this.removeProps(node.propsRefs, valueKey);
       return node.children;
     }
@@ -617,50 +623,58 @@ export default class VueTransformer {
     }
 
     if (componentProps.columns) {
-
       const [bodyCell, bodyCellProps] = this.createComponentDsl(node.id, 'template', {
-        "#bodyCell": "{ column, record }"
+        '#bodyCell': '{ column, record }'
       });
       this.addComponentToDsl(bodyCell, bodyCellProps);
 
-      this.templateKeyPathsReg({
-        templateKeyPathsReg: componentProps.columns.templateKeyPathsReg,
-        value: componentProps.columns.value
-      }, (item) => {
-        // key 差异映射
-        const itemProps = {
-          'v-if': `column.key === '${item.key}'`,
-        };
-        const [child, newProps] = this.createComponentDsl(bodyCell.id, 'template', itemProps);
-        this.addComponentToDsl(child, newProps);
-        // 因为是副作用，需要提前赋值
-        child.children = Array.isArray(item.render) ? item.render : [item.render];
-        child.children.forEach((itemChild: any) => {
-          if (typeof itemChild === 'string') {
-            // 不处理
-          } else {
-            this.transformChildDsl(itemChild);
-          }
-        });
-        bodyCell.children.push({
-          current: child.id,
-          isText: false,
-        });
-        delete item.render;
-      });
-      node.children = [{
-        current: bodyCell.id,
-        isText: false,
-      }];
+      this.templateKeyPathsReg(
+        {
+          templateKeyPathsReg: componentProps.columns.templateKeyPathsReg,
+          value: componentProps.columns.value
+        },
+        item => {
+          // key 差异映射
+          const itemProps = {
+            'v-if': `column.key === '${item.key}'`
+          };
+          const [child, newProps] = this.createComponentDsl(bodyCell.id, 'template', itemProps);
+          this.addComponentToDsl(child, newProps);
+          // 因为是副作用，需要提前赋值
+          child.children = Array.isArray(item.render) ? item.render : [item.render];
+          child.children.forEach((itemChild: any) => {
+            if (typeof itemChild === 'string') {
+              // 不处理
+            } else {
+              this.transformChildDsl(itemChild);
+            }
+          });
+          bodyCell.children.push({
+            current: child.id,
+            isText: false
+          });
+          delete item.render;
+        }
+      );
+      node.children = [
+        {
+          current: bodyCell.id,
+          isText: false
+        }
+      ];
       // 删除特定的数据
       delete componentProps.columns.templateKeyPathsReg;
       return node.children;
     }
     return [];
   }
-  vnodeToTemplate(node: IComponentSchema, name: string, opts: {
-    templateProps?: Record<string, string>;
-  } = {} as Record<string, string>) {
+  vnodeToTemplate(
+    node: IComponentSchema,
+    name: string,
+    opts: {
+      templateProps?: Record<string, string>;
+    } = {} as Record<string, string>
+  ) {
     const { props, componentIndexes } = this.dsl;
     const componentProps = props[node.id];
     const templateKeyPathsReg = componentProps[name].templateKeyPathsReg;
@@ -668,27 +682,33 @@ export default class VueTransformer {
     if (!templateKeyPathsReg || templateKeyPathsReg.length === 0) {
       return;
     }
-    console.log(templateKeyPathsReg);
-    const values: ComponentSchemaRef[] = Array.isArray(componentProps[name].value) ? componentProps[name].value as any[] : [componentProps[name].value];
-    this.templateKeyPathsReg({
-      templateKeyPathsReg: templateKeyPathsReg,
-      value: values
-    }, (item) => {
-     
-      if (item.current) {
-        const defaultTemplateProps = opts && opts.templateProps ? opts.templateProps : {
-          [`#${name}`]: ``,
-        };
-        const [template, templateProps] = this.createComponentDsl(node.id, 'template', defaultTemplateProps);
-        this.addComponentToDsl(template, templateProps);
-        this.appendChildren(node, {current: template.id, isText: false});
-        this.appendChildren(template, item as ComponentSchemaRef);
-        this.removeProps(node.propsRefs, name);
-        delete componentProps[name];
-      } else {
-        console.warn('TODO: ', item);
+    const values: ComponentSchemaRef[] = Array.isArray(componentProps[name].value)
+      ? (componentProps[name].value as any[])
+      : [componentProps[name].value];
+    this.templateKeyPathsReg(
+      {
+        templateKeyPathsReg: templateKeyPathsReg,
+        value: values
+      },
+      item => {
+        if (item.current) {
+          const defaultTemplateProps =
+            opts && opts.templateProps
+              ? opts.templateProps
+              : {
+                  [`#${name}`]: ``
+                };
+          const [template, templateProps] = this.createComponentDsl(node.id, 'template', defaultTemplateProps);
+          this.addComponentToDsl(template, templateProps);
+          this.appendChildren(node, { current: template.id, isText: false });
+          this.appendChildren(template, item as ComponentSchemaRef);
+          this.removeProps(node.propsRefs, name);
+          delete componentProps[name];
+        } else {
+          console.warn('TODO: ', item);
+        }
       }
-    });
+    );
   }
   propNameMap(node: IComponentSchema, name: string, newName: string) {
     const { props } = this.dsl;
@@ -697,8 +717,8 @@ export default class VueTransformer {
     delete componentProps[name];
   }
   /**
-   * @param node 
-   * @param name 
+   * @param node
+   * @param name
    */
   ignoreProps(node: IComponentSchema, name: string) {
     const { props } = this.dsl;
@@ -709,7 +729,7 @@ export default class VueTransformer {
     } else {
       let top = namePaths.shift();
       let propValue = componentProps[top as any].value as Record<string, any>;
-      while(namePaths.length && propValue) {
+      while (namePaths.length && propValue) {
         top = namePaths.shift();
         if (top) {
           propValue = propValue[top];
@@ -737,7 +757,7 @@ export default class VueTransformer {
       return;
     }
     const index = props.findIndex(item => item === propsName);
-    if (index > - 1) {
+    if (index > -1) {
       props.splice(index, 1);
     }
   }
@@ -746,17 +766,17 @@ export default class VueTransformer {
     const newId = `${name}_${this.generateId()}`;
     const newProps = this.createSimplePropsDsl(newId, props);
     const commentDsl = {
-      "parentId": parentId,
-      "displayName": name,
-      "id": newId,
-      "schemaType": "component",
-      "dependency": dependencyIgnore ? '' : "ant-design-vue",
-      "name": name,
-      "propsRefs": Object.keys(props),
-      "children": []
+      parentId: parentId,
+      displayName: name,
+      id: newId,
+      schemaType: 'component',
+      dependency: dependencyIgnore ? '' : 'ant-design-vue',
+      name: name,
+      propsRefs: Object.keys(props),
+      children: []
     } as IComponentSchema;
     return [commentDsl, newProps] as [IComponentSchema, ReturnType<typeof this.createSimplePropsDsl>];
-  }  
+  }
   createSimplePropsDsl(id: string, props: Record<string, string | number>) {
     const newProps: Record<string, IPropsSchema> = {} as Record<string, IPropsSchema>;
     for (const key in props) {
@@ -764,14 +784,14 @@ export default class VueTransformer {
         const value = props[key];
         // @ts-ignore
         newProps[key] = {
-          "id": id,
-          "title": "",
-          "schemaType": "props",
-          "name": key,
-          "category": "basic" as const,
-          "value": value,
-          "valueType": typeOf(value) as IPropsSchema['valueType'],
-          "valueSource": "editorInput"
+          id: id,
+          title: '',
+          schemaType: 'props',
+          name: key,
+          category: 'basic' as const,
+          value: value,
+          valueType: typeOf(value) as IPropsSchema['valueType'],
+          valueSource: 'editorInput'
         };
       }
     }
