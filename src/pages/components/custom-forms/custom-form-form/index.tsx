@@ -123,7 +123,6 @@ export default observer(function CustomFormForm() {
       <div className={customFormStyle.addItem}>
         <span className={customFormStyle.title}>表单项</span>
         <PlusThin className={customFormStyle.addIcon} onClick={addFormItem} />
-        {/*<Minus className={style.removeIcon} onClick={removeFormItem} />*/}
       </div>
       <div className={customFormStyle.draggableForm}>{renderFormItems()}</div>
     </div>
