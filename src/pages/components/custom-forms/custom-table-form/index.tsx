@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import customFormStyle from '@/pages/components/index.module.less';
 import { Select, Typography } from 'antd';
 import { ExpandThin, Minus, PlusThin } from '@/components/icon';
+import { generateSlotId } from '@/util';
 
 type ComponentRef = {
   current: string;
@@ -23,6 +24,7 @@ export default observer(function CustomTableForm() {
 
   const dataIndexesRef = useRef<string[]>([]);
   const titlesRef = useRef<string[]>([]);
+  const componentConfigNamesRef = useRef<string[]>([]);
 
   useEffect(() => {
     if (dslStore?.selectedComponent) {
@@ -73,16 +75,15 @@ export default observer(function CustomTableForm() {
       return null;
     }
     const { columns } = dslStore.dsl.props[component.id];
-    return (columns.value as ColumnInfo[]).map(item => {
-      const { key, dataIndex, title, render } = item;
+    return (columns.value as ColumnInfo[]).map((item, index) => {
+      const { key, dataIndex, title } = item;
 
-      const renderComponent = dslStore.dsl.componentIndexes[render.current];
       return (
         <div className={customFormStyle.draggableFromItem} key={key}>
           <div className={customFormStyle.header}>
             <span>*</span>
             <Select
-              value={renderComponent.configName}
+              value={componentConfigNamesRef.current[index]}
               placeholder="请选择"
               bordered={false}
               dropdownStyle={{ width: 140 }}
@@ -110,9 +111,26 @@ export default observer(function CustomTableForm() {
     });
   }
 
+  function removeRow(index: number) {
+    const { rows } = dslStore.dsl.props[dslStore.selectedComponent.id];
+    (rows.value as Record<string, any>[]).splice(index, 1);
+    dslStore.updateComponentProps({ rows: rows.value });
+  }
+
   function renderRows() {
     // 这里要通过 dslStore 中的具体值进行渲染
-    return <div></div>;
+    const { dataSource } = dslStore.dsl.props[dslStore.selectedComponent.id];
+    if (!dataSource?.value) {
+      return null;
+    }
+    return (dataSource.value as Record<string, any>[]).map((item, index) => {
+      return (
+        <div key={index}>
+          <span>第{index + 1}行</span>
+          <Minus onClick={() => removeRow(index)} />
+        </div>
+      );
+    });
   }
 
   function generateNewTitle() {
@@ -124,27 +142,52 @@ export default observer(function CustomTableForm() {
       nameExists = titlesRef.current.some(item => item === `${namePrefix}${nameSuffix}`);
     }
     const newFieldName = `${namePrefix}${nameSuffix}`;
-    fieldNamesRef.current.push(newFieldName);
+    titlesRef.current.push(newFieldName);
     return newFieldName;
   }
 
   function addColumn() {
+    const tableComponent = dslStore.selectedComponent;
     const newTitle = generateNewTitle();
     const newDataIndex = generateNewDataIndex();
-    const newRenderComponent = dslStore.createComponent(data, 'antd');
     const newColumn = {
       key: newDataIndex,
       dataIndex: newDataIndex,
-      render: {
-        current: newRenderComponent.id,
-        isText: false
-      }
+      title: newTitle,
+      render: {}
     };
 
-    dslStore.updateComponentProps({ name: newTitle, label: newDataIndex }, formItem);
-    if (formItem) {
-      dslStore.insertComponent(formItem.id, 'Input', 'antd');
-    }
+    const { columns, dataSource } = dslStore.dsl.props[tableComponent.id];
+    (columns.value as ColumnInfo[]).push(newColumn as ColumnInfo);
+    componentConfigNamesRef.current.push('Input');
+    dataSource.value = dataSource.value || [];
+    (dataSource.value as Record<string, any>[]).forEach((row, index) => {
+      (columns.value as ColumnInfo[]).forEach((column, i) => {
+        if (!row[column.dataIndex]) {
+          const componentId = generateSlotId(tableComponent.id, index, column.dataIndex);
+          if (!dslStore.dsl.componentIndexes[componentId]) {
+            dslStore.createComponent(componentConfigNamesRef.current[i], 'antd', componentId);
+          }
+        }
+      });
+    });
+    dslStore.updateComponentProps({ columns: columns.value }, tableComponent);
+  }
+
+  function addRow() {
+    const tableComponent = dslStore.selectedComponent;
+    const { columns, dataSource } = dslStore.dsl.props[tableComponent.id];
+    dataSource.value = dataSource.value || [];
+    const rowKey = (dataSource.value as ColumnInfo[]).length;
+    const newRow = {
+      key: rowKey
+    };
+    (columns.value as ColumnInfo[]).forEach(column => {
+      newRow[column.dataIndex] = '默认字段值';
+      dslStore.createComponent('Input', 'antd', generateSlotId(tableComponent.id, rowKey, column.dataIndex));
+    });
+    (dataSource.value as Record<string, any>[]).push(newRow);
+    dslStore.updateComponentProps({ rows: dataSource.value }, tableComponent);
   }
 
   function generateNewDataIndex() {
@@ -160,6 +203,25 @@ export default observer(function CustomTableForm() {
     return newLabelName;
   }
 
+  function renderColumnSetting() {
+    if (!dslStore.selectedComponent) {
+      return null;
+    }
+    const { columns } = dslStore.dsl.props[dslStore.selectedComponent.id];
+    if (!(columns.value as ColumnInfo[])?.length) {
+      return null;
+    }
+    return (
+      <>
+        <div className={customFormStyle.addItem}>
+          <span className={customFormStyle.title}>行数据</span>
+          <PlusThin className={customFormStyle.addIcon} onClick={addRow} />
+        </div>
+        <div className={customFormStyle.draggableForm}>{renderRows()}</div>
+      </>
+    );
+  }
+
   return (
     <div>
       {renderTheme()}
@@ -168,7 +230,7 @@ export default observer(function CustomTableForm() {
         <PlusThin className={customFormStyle.addIcon} onClick={addColumn} />
       </div>
       <div className={customFormStyle.draggableForm}>{renderColumns()}</div>
-      {renderRows()}
+      {renderColumnSetting()}
     </div>
   );
 });

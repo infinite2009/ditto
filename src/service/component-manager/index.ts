@@ -1660,32 +1660,6 @@ const defaultComponentValueConfig = {
           key: 'action',
           render: {}
         }
-      ],
-      dataSource: [
-        {
-          key: '1',
-          firstName: 'John',
-          lastName: 'Brown',
-          age: 32,
-          address: 'New York No. 1 Lake Park',
-          tags: ['nice', 'developer']
-        },
-        {
-          key: '2',
-          name: 'Jim',
-          lastName: 'Green',
-          age: 42,
-          address: 'London No. 1 Lake Park',
-          tags: ['loser']
-        },
-        {
-          key: '3',
-          name: 'Joe',
-          lastName: 'Black',
-          age: 32,
-          address: 'Sydney No. 1 Lake Park',
-          tags: ['cool', 'teacher']
-        }
       ]
     },
     Tabs: {
@@ -1721,20 +1695,13 @@ export default class ComponentManager {
   private static componentConfig: Record<string, Record<string, IComponentConfig>> = null;
   private static defaultComponentValueConfig: Record<string, Record<string, any>> = null;
 
-  static async init() {
-    ComponentManager.initDefaultComponentValueConfig();
-    await ComponentManager.loadComponentConfigList();
-  }
-
   static get componentConfigList() {
     return ComponentManager.componentConfig;
   }
 
-  /**
-   * 初始化组件的默认值配置
-   */
-  private static initDefaultComponentValueConfig() {
-    this.defaultComponentValueConfig = defaultComponentValueConfig;
+  static async init() {
+    ComponentManager.initDefaultComponentValueConfig();
+    await ComponentManager.loadComponentConfigList();
   }
 
   static fetchComponentConfig(configName: string, dependency: string) {
@@ -1751,6 +1718,18 @@ export default class ComponentManager {
     return ComponentManager.defaultComponentValueConfig[dependency]?.[configName] || null;
   }
 
+  static async refreshComponentConfig() {
+    ComponentManager.componentConfig = null;
+    return await ComponentManager.loadComponentConfigList();
+  }
+
+  /**
+   * 初始化组件的默认值配置
+   */
+  private static initDefaultComponentValueConfig() {
+    this.defaultComponentValueConfig = defaultComponentValueConfig;
+  }
+
   private static async loadComponentConfigList() {
     if (!ComponentManager.componentConfig) {
       let camelotComponentConfig: Record<string, IComponentConfig> = {};
@@ -1763,10 +1742,5 @@ export default class ComponentManager {
       return ComponentManager.componentConfig;
     }
     return ComponentManager.componentConfig;
-  }
-
-  static async refreshComponentConfig() {
-    ComponentManager.componentConfig = null;
-    return await ComponentManager.loadComponentConfigList();
   }
 }

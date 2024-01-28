@@ -345,6 +345,7 @@ export default observer((props: IPageRendererProps) => {
   }
 
   function render() {
+    console.log('dsl in page render: ', toJS(dslStore.dsl));
     return recursivelyRenderTemplate(dsl.child, true, true);
   }
 

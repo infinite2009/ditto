@@ -569,52 +569,6 @@ export default class DSLStore {
     this.dangerousDeleteComponent(currentComponent.children[index + 1].current);
   }
 
-  private dangerousDeleteComponent(id: ComponentId): IComponentSchema | null {
-    const componentToDelete = this.dsl.componentIndexes[id];
-    if (!componentToDelete) {
-      return;
-    }
-    if (componentToDelete.feature === 'root') {
-      return;
-    }
-    const deleted = this.deleteSubtree(id);
-    // 如果当前已选中的组件，已经被删除了，就清空
-    if (this.selectedComponent?.id && !this.dsl.componentIndexes[this.selectedComponent.id]) {
-      this.resetSelectedComponent();
-    }
-    return deleted;
-  }
-
-  private dangerousInsertComponent(parentId: string, name: string, dependency: string, insertIndex = -1) {
-    // 检查传入的组件是否有对应的配置
-    const componentConfig = ComponentManager.fetchComponentConfig(name, dependency);
-    if (!componentConfig) {
-      console.error('未找到有效的组件配置: ', `name: ${name}, dependency: ${dependency}`);
-      return;
-    }
-    this.currentParentNode = this.fetchComponentInDSL(parentId);
-    if (this.currentParentNode) {
-      const newComponentNode = this.createComponent(name, dependency);
-
-      // 如果没有 children，初始化一个，如果需要初始化，说明初始化父节点的代码有 bug
-      this.currentParentNode.children = this.currentParentNode.children || [];
-      const ref = {
-        current: newComponentNode.id,
-        isText: false
-      };
-      if (insertIndex === -1) {
-        this.currentParentNode.children.push(ref);
-      } else {
-        this.currentParentNode.children.splice(insertIndex, 0, ref);
-      }
-      this.currentParentNode = null;
-      return newComponentNode;
-    } else {
-      this.currentParentNode = null;
-      throw new Error(`未找到有效的父节点：${parentId}`);
-    }
-  }
-
   /**
    * 判断当前组件是否是隐藏的
    * @param id
@@ -926,17 +880,8 @@ export default class DSLStore {
   @execute
   updateComponentProps(propsPartial: Record<string, any> | CSSProperties, targetComponent?: IComponentSchema) {
     const component = targetComponent || this.selectedComponent;
-    const { id, configName, dependency } = component;
+    const { id } = component;
     const props = this.dsl.props[id];
-    // const config = fetchComponentConfig(configName, dependency);
-    // if (config) {
-    //   Object.values(config.propsConfig || {}).forEach(prop => {
-    //     // 如果当前这个属性不在变更的属性对象里，就用重置为默认值
-    //     if (!(prop.name in propsPartial)) {
-    //       props[prop.name].value = prop.value;
-    //     }
-    //   });
-    // }
     Object.entries(propsPartial).forEach(([key, val]) => {
       // 这里是一个补丁，children 本不是 props，但是为了让某些子节点为 text 的组件能简便地设置 children，就先这么打补丁
       if (key === 'children') {
@@ -962,6 +907,52 @@ export default class DSLStore {
       this.dsl.componentStats[componentName] = 0;
     } else {
       this.dsl.componentStats[componentName]++;
+    }
+  }
+
+  private dangerousDeleteComponent(id: ComponentId): IComponentSchema | null {
+    const componentToDelete = this.dsl.componentIndexes[id];
+    if (!componentToDelete) {
+      return;
+    }
+    if (componentToDelete.feature === 'root') {
+      return;
+    }
+    const deleted = this.deleteSubtree(id);
+    // 如果当前已选中的组件，已经被删除了，就清空
+    if (this.selectedComponent?.id && !this.dsl.componentIndexes[this.selectedComponent.id]) {
+      this.resetSelectedComponent();
+    }
+    return deleted;
+  }
+
+  private dangerousInsertComponent(parentId: string, name: string, dependency: string, insertIndex = -1) {
+    // 检查传入的组件是否有对应的配置
+    const componentConfig = ComponentManager.fetchComponentConfig(name, dependency);
+    if (!componentConfig) {
+      console.error('未找到有效的组件配置: ', `name: ${name}, dependency: ${dependency}`);
+      return;
+    }
+    this.currentParentNode = this.fetchComponentInDSL(parentId);
+    if (this.currentParentNode) {
+      const newComponentNode = this.createComponent(name, dependency);
+
+      // 如果没有 children，初始化一个，如果需要初始化，说明初始化父节点的代码有 bug
+      this.currentParentNode.children = this.currentParentNode.children || [];
+      const ref = {
+        current: newComponentNode.id,
+        isText: false
+      };
+      if (insertIndex === -1) {
+        this.currentParentNode.children.push(ref);
+      } else {
+        this.currentParentNode.children.splice(insertIndex, 0, ref);
+      }
+      this.currentParentNode = null;
+      return newComponentNode;
+    } else {
+      this.currentParentNode = null;
+      throw new Error(`未找到有效的父节点：${parentId}`);
     }
   }
 
