@@ -71,9 +71,6 @@ export default observer(function CustomTableForm() {
     if (!component) {
       return null;
     }
-    if (!component?.children) {
-      return null;
-    }
     const { columns } = dslStore.dsl.props[component.id];
     return (columns.value as ColumnInfo[]).map((item, index) => {
       const { key, dataIndex, title } = item;

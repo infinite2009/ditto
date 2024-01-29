@@ -15,6 +15,7 @@ export interface IEditorProps {
   feature?: ComponentFeature;
   id: string;
   parentId: string;
+  draggable: boolean;
 }
 
 export default observer(function EditWrapper({
@@ -23,6 +24,7 @@ export default observer(function EditWrapper({
   childrenId,
   children,
   feature,
+  draggable,
   // 不要赋值默认值
   childrenStyle
 }: IEditorProps) {
@@ -174,17 +176,19 @@ export default observer(function EditWrapper({
   }
 
   let setNodeRef: React.LegacyRef<HTMLDivElement> | undefined;
-  switch (feature) {
-    case ComponentFeature.slot:
-      setNodeRef = setDroppableNodeRef;
-      break;
-    case ComponentFeature.container:
-      setNodeRef = useCombinedRefs(setDroppableNodeRef, setDraggableNodeRef);
-      break;
-    default:
-      // 为了让 dnd-kit 可以测量这个元素的尺寸，需要设置为 droppable
-      setNodeRef = useCombinedRefs(setDroppableNodeRef, setDraggableNodeRef);
-      break;
+  if (draggable) {
+    switch (feature) {
+      case ComponentFeature.slot:
+        setNodeRef = setDroppableNodeRef;
+        break;
+      case ComponentFeature.container:
+        setNodeRef = useCombinedRefs(setDroppableNodeRef, setDraggableNodeRef);
+        break;
+      default:
+        // 为了让 dnd-kit 可以测量这个元素的尺寸，需要设置为 droppable
+        setNodeRef = useCombinedRefs(setDroppableNodeRef, setDraggableNodeRef);
+        break;
+    }
   }
 
   function handleClick(e: { stopPropagation: () => void }) {

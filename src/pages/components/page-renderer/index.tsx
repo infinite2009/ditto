@@ -324,7 +324,7 @@ export default observer((props: IPageRendererProps) => {
       return null;
     }
 
-    if (mode === 'edit' && dslStore?.isInteractive(componentId)) {
+    if (mode === 'edit') {
       if (isRoot) {
         return <PageRootWrapper {...rootProps}>{tpl}</PageRootWrapper>;
       }
@@ -332,6 +332,7 @@ export default observer((props: IPageRendererProps) => {
         <EditWrapper
           key={componentId}
           id={componentId}
+          draggable={dslStore?.isDraggable(componentId)}
           parentId={parentId}
           childrenId={childrenId}
           feature={feature}
@@ -345,7 +346,6 @@ export default observer((props: IPageRendererProps) => {
   }
 
   function render() {
-    console.log('dsl in page render: ', toJS(dslStore.dsl));
     return recursivelyRenderTemplate(dsl.child, true, true);
   }
 

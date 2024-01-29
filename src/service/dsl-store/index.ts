@@ -599,7 +599,7 @@ export default class DSLStore {
    * 判断一个组件是不是在一个 solid 组件内，如果是，则它不会被 EditorWrapper 包装
    * @param componentId
    */
-  isInteractive(componentId: ComponentId) {
+  isDraggable(componentId: ComponentId) {
     const component = this.dsl.componentIndexes[componentId];
     if (!component) {
       return false;
@@ -613,7 +613,7 @@ export default class DSLStore {
       if (!parentConfig.children) {
         return true;
       }
-      if (parentConfig.children.notInteractive) {
+      if (parentConfig.children.notDraggable) {
         return false;
       }
       if (!parent.parentId) {

@@ -987,7 +987,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
       type: 'template',
       name: 'children',
       category: 'children',
-      notInteractive: true
+      notDraggable: true
     }
   },
   FormItem: {
