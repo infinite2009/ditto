@@ -19,6 +19,8 @@ type ColumnInfo = {
   render: { current: string; isText: boolean };
 };
 
+const defaultComponentConfigName = 'Text';
+
 export default observer(function CustomTableForm() {
   const dslStore = useContext(DSLStoreContext);
 
@@ -87,6 +89,7 @@ export default observer(function CustomTableForm() {
               onChange={e => handleSelectComponent(e, dataIndex)}
               suffixIcon={<ExpandThin style={{ pointerEvents: 'none' }} />}
             >
+              <Select.Option value="Text">普通文本</Select.Option>
               <Select.Option value="Input">普通输入框</Select.Option>
               <Select.Option value="Input.Password">密码输入框</Select.Option>
               <Select.Option value="Select">下拉选择器</Select.Option>
@@ -156,7 +159,7 @@ export default observer(function CustomTableForm() {
 
     const { columns, dataSource } = dslStore.dsl.props[tableComponent.id];
     (columns.value as ColumnInfo[]).push(newColumn as ColumnInfo);
-    componentConfigNamesRef.current.push('Input');
+    componentConfigNamesRef.current.push(defaultComponentConfigName);
     dataSource.value = dataSource.value || [];
     (dataSource.value as Record<string, any>[]).forEach((row, index) => {
       (columns.value as ColumnInfo[]).forEach((column, i) => {
@@ -183,7 +186,7 @@ export default observer(function CustomTableForm() {
     };
     (columns.value as ColumnInfo[]).forEach(column => {
       newRow[column.dataIndex] = '默认字段值';
-      dslStore.insertComponent(dslStore.selectedComponent.id, 'Input', 'antd', 0, {
+      dslStore.insertComponent(dslStore.selectedComponent.id, defaultComponentConfigName, 'antd', 0, {
         customId: generateSlotId(tableComponent.id, rowKey, column.dataIndex)
       });
     });
