@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
@@ -6,6 +6,7 @@ import customFormStyle from '@/pages/components/index.module.less';
 import { Select, Typography } from 'antd';
 import { ExpandThin, Minus, PlusThin } from '@/components/icon';
 import { generateSlotId } from '@/util';
+import { toJS } from 'mobx';
 
 type ComponentRef = {
   current: string;
@@ -16,25 +17,29 @@ type ColumnInfo = {
   key: string;
   dataIndex: string;
   title: string;
-  render: { current: string; isText: boolean };
+  render: { current: string; isText: boolean } | { configName: string };
 };
 
 const defaultComponentConfigName = 'Text';
 
 export default observer(function CustomTableForm() {
+  const [componentConfigNames, setComponentConfigNames] = useState<string[]>([]);
+
   const dslStore = useContext(DSLStoreContext);
 
   const dataIndexesRef = useRef<string[]>([]);
   const titlesRef = useRef<string[]>([]);
-  const componentConfigNamesRef = useRef<string[]>([]);
 
   useEffect(() => {
     if (dslStore?.selectedComponent) {
-      const { columns } = dslStore.dsl.props[dslStore.selectedComponent.id];
+      const { columns, dataSource } = dslStore.dsl.props[dslStore.selectedComponent.id];
+      const configNames = [];
       (columns.value as ColumnInfo[]).forEach(item => {
         titlesRef.current.push(item.title);
         dataIndexesRef.current.push(item.dataIndex);
+        configNames.push((item.render as { configName: string }).configName);
       });
+      setComponentConfigNames(configNames);
     }
   }, []);
 
@@ -82,7 +87,7 @@ export default observer(function CustomTableForm() {
           <div className={customFormStyle.header}>
             <span>*</span>
             <Select
-              value={componentConfigNamesRef.current[index]}
+              value={componentConfigNames[index]}
               placeholder="请选择"
               bordered={false}
               dropdownStyle={{ width: 140 }}
@@ -125,9 +130,11 @@ export default observer(function CustomTableForm() {
     }
     return (dataSource.value as Record<string, any>[]).map((item, index) => {
       return (
-        <div key={index}>
-          <span>第{index + 1}行</span>
-          <Minus onClick={() => removeRow(index)} />
+        <div className={customFormStyle.draggableFromItem} key={index}>
+          <div className={customFormStyle.header}>
+            <span>第{index + 1}行</span>
+            <Minus className={customFormStyle.removeIcon} onClick={() => removeRow(index)} />
+          </div>
         </div>
       );
     });
@@ -154,19 +161,21 @@ export default observer(function CustomTableForm() {
       key: newDataIndex,
       dataIndex: newDataIndex,
       title: newTitle,
-      render: {}
+      render: {
+        configName: defaultComponentConfigName
+      }
     };
 
     const { columns, dataSource } = dslStore.dsl.props[tableComponent.id];
     (columns.value as ColumnInfo[]).push(newColumn as ColumnInfo);
-    componentConfigNamesRef.current.push(defaultComponentConfigName);
+    setComponentConfigNames([...componentConfigNames, defaultComponentConfigName]);
     dataSource.value = dataSource.value || [];
     (dataSource.value as Record<string, any>[]).forEach((row, index) => {
       (columns.value as ColumnInfo[]).forEach((column, i) => {
         if (!row[column.dataIndex]) {
           const componentId = generateSlotId(tableComponent.id, index, column.dataIndex);
           if (!dslStore.dsl.componentIndexes[componentId]) {
-            dslStore.insertComponent(dslStore.selectedComponent.id, componentConfigNamesRef.current[i], 'antd', 0, {
+            dslStore.insertComponent(dslStore.selectedComponent.id, componentConfigNames[i], 'antd', 0, {
               customId: componentId
             });
           }
@@ -207,7 +216,7 @@ export default observer(function CustomTableForm() {
     return newLabelName;
   }
 
-  function renderColumnSetting() {
+  function renderRowSetting() {
     if (!dslStore.selectedComponent) {
       return null;
     }
@@ -234,7 +243,7 @@ export default observer(function CustomTableForm() {
         <PlusThin className={customFormStyle.addIcon} onClick={addColumn} />
       </div>
       <div className={customFormStyle.draggableForm}>{renderColumns()}</div>
-      {renderColumnSetting()}
+      {renderRowSetting()}
     </div>
   );
 });
