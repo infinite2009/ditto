@@ -6,18 +6,13 @@ import customFormStyle from '@/pages/components/index.module.less';
 import { Select, Typography } from 'antd';
 import { ExpandThin, Minus, PlusThin } from '@/components/icon';
 import { generateSlotId } from '@/util';
-import { toJS } from 'mobx';
-
-type ComponentRef = {
-  current: string;
-  isText: boolean;
-};
+import ComponentSchemaRef from '@/types/component-schema-ref';
 
 type ColumnInfo = {
   key: string;
   dataIndex: string;
   title: string;
-  render: { current: string; isText: boolean } | { configName: string };
+  render: ComponentSchemaRef;
 };
 
 const defaultComponentConfigName = 'Text';

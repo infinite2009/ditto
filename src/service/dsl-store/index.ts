@@ -271,6 +271,7 @@ export default class DSLStore {
     if (target && index > -1) {
       target.children.splice(index, 0, {
         current: clonedSubtree.id,
+        configName: clonedSubtree.configName,
         isText: false
       });
     }
@@ -303,7 +304,7 @@ export default class DSLStore {
       children = [];
     } else if (componentConfig?.children) {
       // 给当前组件的 children 节点初始化一个空插槽
-      const { value, type } = componentConfig?.children;
+      const { value, type } = componentConfig.children;
       if (type === 'slot') {
         const emptyContainer = this.createEmptyContainer('', { feature: ComponentFeature.slot });
         // 修正父节点 id
@@ -311,6 +312,7 @@ export default class DSLStore {
         children = [
           {
             current: emptyContainer.id,
+            configName: componentConfig.configName,
             isText: false
           }
         ];
@@ -318,6 +320,7 @@ export default class DSLStore {
         children = [
           {
             current: value as string,
+            configName: '',
             isText: true
           }
         ];
@@ -436,6 +439,7 @@ export default class DSLStore {
       // 由于类型设计问题，这里需要初始化一个无效节点
       child: {
         current: '',
+        configName: '',
         isText: true
       },
       componentIndexes: {},
@@ -444,6 +448,7 @@ export default class DSLStore {
     const pageRoot = this.createPageRoot();
     this.dsl.child = {
       current: pageRoot.id,
+      configName: pageRoot.configName,
       isText: false
     };
   }
@@ -661,6 +666,7 @@ export default class DSLStore {
           this.removeReferenceFromParent(childId);
           const ref = {
             current: childComponent.id,
+            configName: childComponent.configName,
             isText: false
           };
           if (insertIndex === -1) {
@@ -748,6 +754,7 @@ export default class DSLStore {
               if (index === 0) {
                 parent[key] = {
                   current: component.id,
+                  configName: component.configName,
                   isText: false
                 };
               }
@@ -762,6 +769,7 @@ export default class DSLStore {
               if (index === 0) {
                 parent[key] = {
                   current: component.id,
+                  configName: component.configName,
                   isText: false
                 };
               }
@@ -791,6 +799,7 @@ export default class DSLStore {
                 component.children = recursiveMap(node.children, component.id).map(item => {
                   return {
                     current: item.id,
+                    configName: item.configName,
                     isText: false
                   };
                 });
@@ -807,6 +816,7 @@ export default class DSLStore {
         }
         parent[key] = {
           current: component.id,
+          configName: component.configName,
           isText: false
         };
       }
@@ -896,7 +906,8 @@ export default class DSLStore {
           component.children = [
             {
               isText: true,
-              current: val
+              current: val,
+              configName: ''
             }
           ];
         }
@@ -951,9 +962,10 @@ export default class DSLStore {
 
       // 如果没有 children，初始化一个，如果需要初始化，说明初始化父节点的代码有 bug
       this.currentParentNode.children = this.currentParentNode.children || [];
-      const ref = {
+      const ref: ComponentSchemaRef = {
         current: newComponentNode.id,
-        isText: false
+        isText: false,
+        configName: componentConfig.configName
       };
       if (insertIndex === -1) {
         this.currentParentNode.children.push(ref);
@@ -1003,11 +1015,13 @@ export default class DSLStore {
         if (!clonedSubtree) {
           return {
             current: '',
+            configName: componentConfig.configName,
             isText: false
           };
         }
         return {
           current: clonedSubtree.id,
+          configName: componentConfig.configName,
           isText: false
         };
       }
@@ -1029,6 +1043,7 @@ export default class DSLStore {
             const clonedSubtree = this.cloneSubtree((clonedPropsSchema.value as IComponentSchema).id);
             const clonedNode = {
               current: clonedSubtree?.id || '',
+              configName: componentConfig.configName,
               isText: false
             };
             if (keyPath === '') {
@@ -1071,6 +1086,7 @@ export default class DSLStore {
     const children = this.findChildren(id).map(item => {
       return {
         current: item.id,
+        configName: item.configName,
         isText: false
       };
     });
