@@ -332,7 +332,6 @@ export default observer((props: IPageRendererProps) => {
         <EditWrapper
           key={componentId}
           id={componentId}
-          draggable={dslStore?.isDraggable(componentId)}
           parentId={parentId}
           childrenId={childrenId}
           feature={feature}
