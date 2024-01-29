@@ -1311,6 +1311,13 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
           // }
         ]
       }
+    },
+    children: {
+      value: [],
+      type: 'template',
+      name: 'children',
+      category: 'children',
+      notDraggable: true
     }
   },
   Tabs: {

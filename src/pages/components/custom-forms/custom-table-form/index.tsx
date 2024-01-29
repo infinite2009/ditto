@@ -54,7 +54,7 @@ export default observer(function CustomTableForm() {
     const { columns } = dslStore.dsl.props[dslStore.selectedComponent.id];
     const index = (columns.value as ColumnInfo[]).findIndex(item => item.dataIndex === dataIndex);
     if (index >= 0) {
-      const newRenderComponent = dslStore.createComponent(data, 'antd');
+      const newRenderComponent = dslStore.insertComponent(dslStore.selectedComponent.id, data, 'antd');
       columns.value[index].render = {
         current: newRenderComponent.id,
         isText: false
@@ -163,7 +163,9 @@ export default observer(function CustomTableForm() {
         if (!row[column.dataIndex]) {
           const componentId = generateSlotId(tableComponent.id, index, column.dataIndex);
           if (!dslStore.dsl.componentIndexes[componentId]) {
-            dslStore.createComponent(componentConfigNamesRef.current[i], 'antd', componentId);
+            dslStore.insertComponent(dslStore.selectedComponent.id, componentConfigNamesRef.current[i], 'antd', 0, {
+              customId: componentId
+            });
           }
         }
       });
@@ -181,7 +183,9 @@ export default observer(function CustomTableForm() {
     };
     (columns.value as ColumnInfo[]).forEach(column => {
       newRow[column.dataIndex] = '默认字段值';
-      dslStore.createComponent('Input', 'antd', generateSlotId(tableComponent.id, rowKey, column.dataIndex));
+      dslStore.insertComponent(dslStore.selectedComponent.id, 'Input', 'antd', 0, {
+        customId: generateSlotId(tableComponent.id, rowKey, column.dataIndex)
+      });
     });
     (dataSource.value as Record<string, any>[]).push(newRow);
     dslStore.updateComponentProps({ rows: dataSource.value }, tableComponent);

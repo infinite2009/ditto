@@ -477,8 +477,14 @@ export default class DSLStore {
    * 插入一个新的组件
    */
   @execute
-  insertComponent(parentId: string, name: string, dependency: string, insertIndex = -1) {
-    return this.dangerousInsertComponent(parentId, name, dependency, insertIndex);
+  insertComponent(
+    parentId: string,
+    name: string,
+    dependency: string,
+    insertIndex = -1,
+    opt: { customId: string } = undefined
+  ) {
+    return this.dangerousInsertComponent(parentId, name, dependency, insertIndex, opt);
   }
 
   fetchComponentInDSL(id: string) {
@@ -926,7 +932,13 @@ export default class DSLStore {
     return deleted;
   }
 
-  private dangerousInsertComponent(parentId: string, name: string, dependency: string, insertIndex = -1) {
+  private dangerousInsertComponent(
+    parentId: string,
+    name: string,
+    dependency: string,
+    insertIndex = -1,
+    opt: { customId: string }
+  ) {
     // 检查传入的组件是否有对应的配置
     const componentConfig = ComponentManager.fetchComponentConfig(name, dependency);
     if (!componentConfig) {
@@ -935,7 +947,7 @@ export default class DSLStore {
     }
     this.currentParentNode = this.fetchComponentInDSL(parentId);
     if (this.currentParentNode) {
-      const newComponentNode = this.createComponent(name, dependency);
+      const newComponentNode = this.createComponent(name, dependency, opt?.customId || '');
 
       // 如果没有 children，初始化一个，如果需要初始化，说明初始化父节点的代码有 bug
       this.currentParentNode.children = this.currentParentNode.children || [];
