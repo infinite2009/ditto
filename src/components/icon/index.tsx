@@ -3,8 +3,12 @@ import { IconFontProps } from '@ant-design/icons/lib/components/IconFont';
 
 export const Icon = createFromIconfontCN({
   // 必需要使用 https 协议，否则会使用 tauri 协议
-  scriptUrl: 'https://at.alicdn.com/t/c/font_4341626_1gagblx6c7o.js'
+  scriptUrl: 'https://at.alicdn.com/t/c/font_4341626_14u2hmnkprf.js'
 });
+
+export function Draggable(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-a-more_horizontal_fillgengduoheng" />;
+}
 
 export function Ok(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-gou-queren" />;

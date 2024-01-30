@@ -3,10 +3,12 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import customFormStyle from '@/pages/components/index.module.less';
-import { Select, Typography } from 'antd';
-import { ExpandThin, Minus, PlusThin } from '@/components/icon';
+import { Divider, Select, Typography } from 'antd';
+import { Draggable, ExpandThin, Minus, Plus, PlusThin } from '@/components/icon';
 import { generateSlotId } from '@/util';
 import ComponentSchemaRef from '@/types/component-schema-ref';
+import { toJS } from 'mobx';
+import { HighlightOutlined } from '@ant-design/icons';
 
 type ColumnInfo = {
   key: string;
@@ -42,30 +44,71 @@ export default observer(function CustomTableForm() {
     if (!dslStore.selectedComponent) {
       return;
     }
-    const { columns } = dslStore.dsl.props[dslStore.selectedComponent.id];
-    const renderComponent = (columns.value as ColumnInfo[]).find(item => item.dataIndex === dataIndex);
-    if (renderComponent?.render) {
-      dslStore.deleteComponent(renderComponent.render.current);
-    }
+    const { columns, dataSource } = dslStore.dsl.props[dslStore.selectedComponent.id];
+    const newColumns = (columns.value as ColumnInfo[]).filter(item => item.dataIndex !== dataIndex);
+    (dataSource.value as Record<string, any>[]).map(item => {
+      const result = { ...item };
+      delete result[dataIndex];
+      return result;
+    });
+    dslStore.updateComponentProps({ columns: newColumns, dataSource: dataSource.value });
+    // 删除对应列的组件
+    (dataSource.value as Record<string, any>[]).forEach((item, index) => {
+      const componentId = generateSlotId(dslStore.selectedComponent.id, index, dataIndex);
+      dslStore.deleteComponent(componentId);
+    });
+    console.log('remove column: ', toJS(dslStore.dsl));
   }
 
   function handleSelectComponent(data: string, dataIndex: string) {
     if (!dslStore.selectedComponent) {
       return;
     }
-    const { columns } = dslStore.dsl.props[dslStore.selectedComponent.id];
-    const index = (columns.value as ColumnInfo[]).findIndex(item => item.dataIndex === dataIndex);
-    if (index >= 0) {
-      const newRenderComponent = dslStore.insertComponent(dslStore.selectedComponent.id, data, 'antd');
-      columns.value[index].render = {
-        current: newRenderComponent.id,
+    const { columns, dataSource } = dslStore.dsl.props[dslStore.selectedComponent.id];
+    const columnsCopy = toJS(columns.value);
+    const columnIndex = (columnsCopy as ColumnInfo[]).findIndex(item => item.dataIndex === dataIndex);
+    if (columnIndex > -1) {
+      const column = columnsCopy[columnIndex];
+      // 删除原先的组件
+      (dataSource.value as Record<string, any>[]).forEach((item, index) => {
+        const tableCellId = generateSlotId(dslStore.selectedComponent.id, index, dataIndex);
+        // BUG: 这里有撤销重做的问题
+        dslStore.deleteComponent(tableCellId);
+        dslStore.insertComponent(dslStore.selectedComponent.id, data, 'antd', 0, {
+          customId: tableCellId
+        });
+      });
+      // 更新 configNames
+      const newComponentConfigNames = [...componentConfigNames];
+      newComponentConfigNames[columnIndex] = data;
+      setComponentConfigNames(newComponentConfigNames);
+
+      // 修改 column 的 render
+      column.render = {
+        current: '',
+        configName: data,
         isText: false
       };
+      dslStore.updateComponentProps({ columns: columnsCopy });
     }
   }
 
   function renderTheme() {
     return <div></div>;
+  }
+
+  function handleEditingColumnName(val: string, dataIndex: string) {
+    const component = dslStore.selectedComponent;
+    if (!component) {
+      return null;
+    }
+    const { columns } = dslStore.dsl.props[component.id];
+    const newColumnsCopy = toJS(columns.value) as ColumnInfo[];
+    const column = newColumnsCopy.find(item => item.dataIndex === dataIndex);
+    if (column) {
+      column.title = val.trim() || column.title;
+    }
+    dslStore.updateComponentProps({ columns: newColumnsCopy });
   }
 
   function renderColumns() {
@@ -80,7 +123,7 @@ export default observer(function CustomTableForm() {
       return (
         <div className={customFormStyle.draggableFromItem} key={key}>
           <div className={customFormStyle.header}>
-            <span>*</span>
+            <Draggable className={customFormStyle.draggableIcon} />
             <Select
               value={componentConfigNames[index]}
               placeholder="请选择"
@@ -103,8 +146,18 @@ export default observer(function CustomTableForm() {
             <Minus className={customFormStyle.removeIcon} onClick={() => removeColumn(dataIndex)} />
           </div>
           <div className={customFormStyle.config}>
-            <span>提示词</span>
-            <Typography.Text>{title}</Typography.Text>
+            <span className={customFormStyle.hintText}>列名</span>
+            <Typography.Text
+              className={customFormStyle.textValue}
+              editable={{
+                icon: <HighlightOutlined />,
+                tooltip: 'click to edit text',
+                onChange: e => handleEditingColumnName(e, dataIndex),
+                enterIcon: null
+              }}
+            >
+              {title}
+            </Typography.Text>
           </div>
         </div>
       );
@@ -127,7 +180,7 @@ export default observer(function CustomTableForm() {
       return (
         <div className={customFormStyle.draggableFromItem} key={index}>
           <div className={customFormStyle.header}>
-            <span>第{index + 1}行</span>
+            <span className={customFormStyle.hintText}>第{index + 1}行</span>
             <Minus className={customFormStyle.removeIcon} onClick={() => removeRow(index)} />
           </div>
         </div>
@@ -162,22 +215,24 @@ export default observer(function CustomTableForm() {
     };
 
     const { columns, dataSource } = dslStore.dsl.props[tableComponent.id];
-    (columns.value as ColumnInfo[]).push(newColumn as ColumnInfo);
-    setComponentConfigNames([...componentConfigNames, defaultComponentConfigName]);
-    dataSource.value = dataSource.value || [];
-    (dataSource.value as Record<string, any>[]).forEach((row, index) => {
+    const newColumns = [...(columns.value as ColumnInfo[])];
+    newColumns.push(newColumn as ColumnInfo);
+    const newConfigNames = [...componentConfigNames, defaultComponentConfigName];
+    setComponentConfigNames(newConfigNames);
+    const newDataSource: Record<string, any>[] = (dataSource.value || []) as Record<string, any>[];
+    newDataSource.forEach((row, index) => {
       (columns.value as ColumnInfo[]).forEach((column, i) => {
         if (!row[column.dataIndex]) {
           const componentId = generateSlotId(tableComponent.id, index, column.dataIndex);
           if (!dslStore.dsl.componentIndexes[componentId]) {
-            dslStore.insertComponent(dslStore.selectedComponent.id, componentConfigNames[i], 'antd', 0, {
+            dslStore.insertComponent(dslStore.selectedComponent.id, newConfigNames[i], 'antd', 0, {
               customId: componentId
             });
           }
         }
       });
     });
-    dslStore.updateComponentProps({ columns: columns.value }, tableComponent);
+    dslStore.updateComponentProps({ columns: newColumns }, tableComponent);
   }
 
   function addRow() {
@@ -222,8 +277,8 @@ export default observer(function CustomTableForm() {
     return (
       <>
         <div className={customFormStyle.addItem}>
-          <span className={customFormStyle.title}>行数据</span>
-          <PlusThin className={customFormStyle.addIcon} onClick={addRow} />
+          <span className={customFormStyle.title}>行</span>
+          <Plus className={customFormStyle.addIcon} onClick={addRow} />
         </div>
         <div className={customFormStyle.draggableForm}>{renderRows()}</div>
       </>
@@ -233,11 +288,13 @@ export default observer(function CustomTableForm() {
   return (
     <div>
       {renderTheme()}
+      <Divider className={customFormStyle.divider} />
       <div className={customFormStyle.addItem}>
-        <span className={customFormStyle.title}>表单项</span>
-        <PlusThin className={customFormStyle.addIcon} onClick={addColumn} />
+        <span className={customFormStyle.title}>列</span>
+        <Plus className={customFormStyle.addIcon} onClick={addColumn} />
       </div>
       <div className={customFormStyle.draggableForm}>{renderColumns()}</div>
+      <Divider className={customFormStyle.divider} />
       {renderRowSetting()}
     </div>
   );
