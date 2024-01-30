@@ -7,6 +7,7 @@ import classNames from 'classnames';
 
 import { observer } from 'mobx-react';
 import styles from './index.module.less';
+import { camelCaseToDash } from '@/util';
 
 export interface IEditorProps {
   children: React.ReactNode;
@@ -96,7 +97,26 @@ export default observer(function EditWrapper({
     if (!childElement) {
       return result;
     }
+
     const computedChildStyle = getComputedStyle(childElement);
+
+    const marginStyleNames: (keyof CSSProperties)[] = [
+      'margin',
+      'marginTop',
+      'marginRight',
+      'marginBottom',
+      'marginLeft'
+    ];
+    marginStyleNames.forEach(name => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (result[name] === undefined && computedChildStyle[name] !== '') {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        result[name] = computedChildStyle[name];
+      }
+    });
+    childElement.style.margin = '0px';
 
     if (!result.display) {
       const display = computedChildStyle.getPropertyValue('display');
@@ -160,15 +180,6 @@ export default observer(function EditWrapper({
       childElement.style.left = '0px';
     }
 
-    switch (feature) {
-      case ComponentFeature.slot:
-        break;
-      case ComponentFeature.container:
-        break;
-      default:
-        break;
-    }
-
     return {
       opacity: isDragging ? 0.5 : 1,
       ...result
@@ -221,6 +232,7 @@ export default observer(function EditWrapper({
         <div className={styles.topRight} />
         <div className={styles.bottomRight} />
         <div className={styles.bottomLeft} />
+        <div className={styles.outline} />
       </>
     );
   }
