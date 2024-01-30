@@ -562,6 +562,118 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
       category: 'children'
     }
   },
+  Amount: {
+    configName: 'Amount',
+    callingName: 'Typography.Text',
+    dependency: 'antd',
+    component: Typography.Text,
+    category: '通用',
+    title: '金额',
+    isHidden: true,
+    icon: CodeSandboxOutlined,
+    propsConfig: {
+      style: {
+        ...defaultStyleConfig
+      },
+      copyable: {
+        id: 'copyable',
+        schemaType: 'props',
+        name: 'copyable',
+        title: '可复制',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      delete: {
+        id: 'delete',
+        schemaType: 'props',
+        name: 'delete',
+        title: '删除线',
+        category: 'hidden',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      disabled: {
+        id: 'disabled',
+        schemaType: 'props',
+        name: 'disabled',
+        title: '禁用',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      editable: {
+        id: 'editable',
+        name: 'editable',
+        title: '可编辑',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      ellipsis: {
+        id: 'ellipsis',
+        name: 'ellipsis',
+        title: '自动省略',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      mark: {
+        id: 'mark',
+        name: 'mark',
+        title: '添加标记',
+        schemaType: 'props',
+        category: 'basic',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      strong: {
+        id: 'strong',
+        name: 'strong',
+        title: '加粗',
+        schemaType: 'props',
+        category: 'hidden',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      italic: {
+        id: 'italic',
+        name: 'italic',
+        title: '斜体',
+        schemaType: 'props',
+        category: 'hidden',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      },
+      underline: {
+        id: 'underline',
+        title: '下划线',
+        name: 'underline',
+        schemaType: 'props',
+        category: 'hidden',
+        value: false,
+        valueType: 'boolean',
+        valueSource: 'editorInput'
+      }
+    },
+    transformerStr: typographyTransformerStr,
+    children: {
+      name: 'children',
+      value: '默认文字',
+      type: 'text',
+      category: 'children'
+    }
+  },
   Paragraph: {
     configName: 'Paragraph',
     callingName: 'Typography.Paragraph',
@@ -1385,7 +1497,24 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     title: '标签',
     dependency: 'antd',
     icon: CodeSandboxOutlined,
-    propsConfig: {}
+    propsConfig: {
+      color: {
+        id: 'color',
+        schemaType: 'props',
+        name: 'color',
+        title: '颜色',
+        valueSource: 'editorInput',
+        valueType: 'string',
+        value: 'success',
+        category: 'basic'
+      }
+    },
+    children: {
+      name: 'children',
+      type: 'text',
+      value: 'success',
+      category: 'children'
+    }
   },
   Tooltip: {
     configName: 'Tooltip',
@@ -1578,6 +1707,17 @@ const defaultComponentValueConfig = {
       italic: false,
       underline: false
     },
+    Amount: {
+      copyable: false,
+      delete: false,
+      disabled: false,
+      editable: false,
+      ellipsis: false,
+      mark: false,
+      strong: false,
+      italic: false,
+      underline: false
+    },
     Paragraph: {
       copyable: false,
       delete: false,
@@ -1679,7 +1819,9 @@ const defaultComponentValueConfig = {
       ],
       tabBarExtraContent: {}
     },
-    Tag: {},
+    Tag: {
+      color: 'success'
+    },
     Tooltip: {},
     Tree: {},
     Alert: {},

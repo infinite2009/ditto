@@ -329,6 +329,40 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
         }
       }
     },
+    Amount: {
+      configName: 'Amount',
+      transformerStr: typographyTransformerStr,
+      schema: {
+        style: {
+          layout: {
+            width: true,
+            height: true,
+            wrap: true,
+            direction: true,
+            alignItems: true,
+            justifyContent: true,
+            padding: true,
+            gap: true
+          },
+          backgroundColor: true,
+          text: {
+            // 字号和行高
+            size: true,
+            color: true,
+            decoration: true
+          }
+        },
+        basic: {
+          children: {
+            name: 'children',
+            type: 'string',
+            title: '内容',
+            component: 'Input',
+            initialValue: '默认文字'
+          }
+        }
+      }
+    },
     Paragraph: {
       configName: 'Paragraph',
       transformerStr: typographyTransformerStr,

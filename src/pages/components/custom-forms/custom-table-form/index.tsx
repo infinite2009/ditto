@@ -111,40 +111,12 @@ export default observer(function CustomTableForm() {
     dslStore.updateComponentProps({ columns: newColumnsCopy });
   }
 
-  function renderColumns() {
-    const component = dslStore.selectedComponent;
-    if (!component) {
-      return null;
-    }
-    const { columns } = dslStore.dsl.props[component.id];
-    return (columns.value as ColumnInfo[]).map((item, index) => {
-      const { key, dataIndex, title } = item;
-
-      return (
-        <div className={customFormStyle.draggableFromItem} key={key}>
-          <div className={customFormStyle.header}>
-            <Draggable className={customFormStyle.draggableIcon} />
-            <Select
-              value={componentConfigNames[index]}
-              placeholder="请选择"
-              bordered={false}
-              dropdownStyle={{ width: 140 }}
-              onChange={e => handleSelectComponent(e, dataIndex)}
-              suffixIcon={<ExpandThin style={{ pointerEvents: 'none' }} />}
-            >
-              <Select.Option value="Text">普通文本</Select.Option>
-              <Select.Option value="Input">普通输入框</Select.Option>
-              <Select.Option value="Input.Password">密码输入框</Select.Option>
-              <Select.Option value="Select">下拉选择器</Select.Option>
-              <Select.Option value="Cascader">级联选择器</Select.Option>
-              <Select.Option value="DatePicker">日期选择器</Select.Option>
-              <Select.Option value="RangePicker">时间范围选择器</Select.Option>
-              <Select.Option value="Radio">单选按钮</Select.Option>
-              <Select.Option value="Checkbox">复选框</Select.Option>
-              <Select.Option value="Switch">开关</Select.Option>
-            </Select>
-            <Minus className={customFormStyle.removeIcon} onClick={() => removeColumn(dataIndex)} />
-          </div>
+  function renderColumnSetting(columnInfo: ColumnInfo) {
+    const { title, dataIndex, render } = columnInfo;
+    const { configName } = render;
+    switch (configName) {
+      default:
+        return (
           <div className={customFormStyle.config}>
             <span className={customFormStyle.hintText}>列名</span>
             <Typography.Text
@@ -159,6 +131,40 @@ export default observer(function CustomTableForm() {
               {title}
             </Typography.Text>
           </div>
+        );
+    }
+  }
+
+  function renderColumns() {
+    const component = dslStore.selectedComponent;
+    if (!component) {
+      return null;
+    }
+    const { columns } = dslStore.dsl.props[component.id];
+    return (columns.value as ColumnInfo[]).map((item, index) => {
+      const { key, dataIndex } = item;
+
+      return (
+        <div className={customFormStyle.draggableFromItem} key={key}>
+          <div className={customFormStyle.header}>
+            <Draggable className={customFormStyle.draggableIcon} />
+            <Select
+              value={componentConfigNames[index]}
+              placeholder="请选择"
+              bordered={false}
+              dropdownStyle={{ width: 140 }}
+              onChange={e => handleSelectComponent(e, dataIndex)}
+              suffixIcon={<ExpandThin style={{ pointerEvents: 'none' }} />}
+            >
+              <Select.Option value="Text">普通内容列</Select.Option>
+              <Select.Option value="Amount">金额列</Select.Option>
+              <Select.Option value="Tag">标签列</Select.Option>
+              <Select.Option value="Switch">开关</Select.Option>
+              <Select.Option value="HorizontalFlex">操作</Select.Option>
+            </Select>
+            <Minus className={customFormStyle.removeIcon} onClick={() => removeColumn(dataIndex)} />
+          </div>
+          {renderColumnSetting(item)}
         </div>
       );
     });
