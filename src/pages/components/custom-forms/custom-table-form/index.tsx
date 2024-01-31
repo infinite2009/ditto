@@ -64,7 +64,6 @@ export default observer(function CustomTableForm() {
     if (!dslStore.selectedComponent) {
       return;
     }
-    debugger;
     const { columns, dataSource } = dslStore.dsl.props[dslStore.selectedComponent.id];
     const columnsCopy = toJS(columns.value);
     const columnIndex = (columnsCopy as ColumnInfo[]).findIndex(item => item.dataIndex === dataIndex);
@@ -138,15 +137,28 @@ export default observer(function CustomTableForm() {
   function changeActionButtonCount(count: number, columnInfo: ColumnInfo) {
     const columnTemplate = dslStore.dsl.componentIndexes[columnInfo.render.current];
     const difference = Math.abs(count - columnTemplate.children.length);
-
-    if (difference > 0) {
+    const { dataSource } = dslStore.dsl.props[dslStore.selectedComponent.id];
+    if (count > columnTemplate.children.length) {
       for (let i = 0; i < difference; i++) {
         dslStore.insertComponent(columnTemplate.id, 'Button', 'antd');
+        // 为对应列增加按钮
+        (dataSource.value as Record<string, any>[]).forEach((item, index) => {
+          const tableCellId = generateSlotId(dslStore.selectedComponent.id, index, columnInfo.dataIndex);
+          dslStore.insertComponent(tableCellId, 'Button', 'antd');
+        });
       }
-    } else if (difference < 0) {
+    } else if (count < columnTemplate.children.length) {
       const currentCount = columnTemplate.children.length;
-      for (let i = currentCount - 1; i > count; i--) {
+      for (let i = currentCount - 1; i > count - 1; i--) {
         dslStore.deleteComponent(columnTemplate.children[i].current);
+        // 为对应列删除按钮
+        (dataSource.value as Record<string, any>[]).forEach((item, index) => {
+          const tableCellId = generateSlotId(dslStore.selectedComponent.id, index, columnInfo.dataIndex);
+          const tableCell = dslStore.dsl.componentIndexes[tableCellId];
+          if (tableCell) {
+            dslStore.deleteComponent(tableCell.children[i].current);
+          }
+        });
       }
     }
   }
@@ -155,7 +167,7 @@ export default observer(function CustomTableForm() {
     const { title, dataIndex, render } = columnInfo;
     const { configName } = render;
     const tpl = [
-      <div key="Typography.Text" className={customFormStyle.config}>
+      <div key="1" className={customFormStyle.config}>
         <span className={customFormStyle.hintText}>表头</span>
         <Typography.Text
           className={customFormStyle.textValue}
@@ -173,12 +185,14 @@ export default observer(function CustomTableForm() {
     switch (configName) {
       case 'HorizontalFlex':
         const columnTemplate = dslStore.dsl.componentIndexes[columnInfo.render.current];
-        debugger;
         tpl.push(
-          <div key="Typography.Text" className={customFormStyle.config}>
+          <div key="2" className={customFormStyle.config}>
             <span className={customFormStyle.hintText}>操作个数</span>
             <InputNumber
               value={columnTemplate.children.length}
+              onPressEnter={e => {
+                e.target.blur();
+              }}
               onBlur={e => {
                 changeActionButtonCount(+e.target.value, columnInfo);
               }}
@@ -226,9 +240,10 @@ export default observer(function CustomTableForm() {
   }
 
   function removeRow(index: number) {
-    const { rows } = dslStore.dsl.props[dslStore.selectedComponent.id];
-    (rows.value as Record<string, any>[]).splice(index, 1);
-    dslStore.updateComponentProps({ rows: rows.value });
+    const { dataSource } = dslStore.dsl.props[dslStore.selectedComponent.id];
+    const dataSourceCopy = toJS(dataSource.value);
+    (dataSourceCopy as Record<string, any>[]).splice(index, 1);
+    dslStore.updateComponentProps({ dataSource: dataSourceCopy });
   }
 
   function renderRows() {
@@ -278,7 +293,7 @@ export default observer(function CustomTableForm() {
       }
     };
     // 创建一个用来生成代码的组件子树，它不会用来预览
-    dslStore.insertComponent(dslStore.selectedComponent.id, newDataIndex, 'antd', 0, {
+    dslStore.insertComponent(dslStore.selectedComponent.id, defaultComponentConfigName, 'antd', -1, {
       customId: templateId
     });
 
@@ -293,7 +308,7 @@ export default observer(function CustomTableForm() {
         if (!(column.dataIndex in row)) {
           const componentId = generateSlotId(tableComponent.id, index, column.dataIndex);
           if (!dslStore.dsl.componentIndexes[componentId]) {
-            dslStore.insertComponent(dslStore.selectedComponent.id, newConfigNames[i], 'antd', 0, {
+            dslStore.insertComponent(dslStore.selectedComponent.id, newConfigNames[i], 'antd', -1, {
               customId: componentId
             });
           }
@@ -313,13 +328,16 @@ export default observer(function CustomTableForm() {
     };
     (columns.value as ColumnInfo[]).forEach(column => {
       newRow[column.dataIndex] = '默认字段值';
-      debugger;
       if (column.render.configName === 'HorizontalFlex') {
         // 先生成一个容器
         const newTemplate = dslStore.insertComponent(dslStore.selectedComponent.id, 'HorizontalFlex', 'antd', 0, {
           customId: generateSlotId(tableComponent.id, rowKey, column.dataIndex)
         });
-        dslStore.insertComponent(newTemplate.id, 'Button', 'antd');
+        // 根据当前 column 里有多少按钮，进行插入
+        const columnTemplate = dslStore.dsl.componentIndexes[column.render.current];
+        for (let i = 0, l = columnTemplate.children.length; i < l; i++) {
+          dslStore.insertComponent(newTemplate.id, 'Button', 'antd');
+        }
       } else {
         dslStore.insertComponent(dslStore.selectedComponent.id, column.render.configName, 'antd', 0, {
           customId: generateSlotId(tableComponent.id, rowKey, column.dataIndex)
