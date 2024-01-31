@@ -57,7 +57,6 @@ export default observer(function CustomTableForm() {
       const componentId = generateSlotId(dslStore.selectedComponent.id, index, dataIndex);
       dslStore.deleteComponent(componentId);
     });
-    console.log('remove column: ', toJS(dslStore.dsl));
   }
 
   function handleSelectComponent(data: string, dataIndex: string) {
@@ -69,15 +68,17 @@ export default observer(function CustomTableForm() {
     const columnIndex = (columnsCopy as ColumnInfo[]).findIndex(item => item.dataIndex === dataIndex);
     if (columnIndex > -1) {
       const column = columnsCopy[columnIndex];
-      // 删除原先的组件
-      (dataSource.value as Record<string, any>[]).forEach((item, index) => {
-        const tableCellId = generateSlotId(dslStore.selectedComponent.id, index, dataIndex);
-        // BUG: 这里有撤销重做的问题
-        dslStore.deleteComponent(tableCellId);
-        dslStore.insertComponent(dslStore.selectedComponent.id, data, 'antd', 0, {
-          customId: tableCellId
+      if ((dataSource?.value as Record<string, any>[])?.length) {
+        // 删除原先的组件
+        (dataSource.value as Record<string, any>[]).forEach((item, index) => {
+          const tableCellId = generateSlotId(dslStore.selectedComponent.id, index, dataIndex);
+          // BUG: 这里有撤销重做的问题
+          dslStore.deleteComponent(tableCellId);
+          dslStore.insertComponent(dslStore.selectedComponent.id, data, 'antd', 0, {
+            customId: tableCellId
+          });
         });
-      });
+      }
       // 更新 configNames
       const newComponentConfigNames = [...componentConfigNames];
       newComponentConfigNames[columnIndex] = data;
@@ -221,14 +222,14 @@ export default observer(function CustomTableForm() {
     };
 
     const { columns, dataSource } = dslStore.dsl.props[tableComponent.id];
-    const newColumns = [...(columns.value as ColumnInfo[])];
+    const newColumns = [...toJS(columns.value as ColumnInfo[])];
     newColumns.push(newColumn as ColumnInfo);
     const newConfigNames = [...componentConfigNames, defaultComponentConfigName];
     setComponentConfigNames(newConfigNames);
     const newDataSource: Record<string, any>[] = (dataSource.value || []) as Record<string, any>[];
     newDataSource.forEach((row, index) => {
-      (columns.value as ColumnInfo[]).forEach((column, i) => {
-        if (!row[column.dataIndex]) {
+      (newColumns as ColumnInfo[]).forEach((column, i) => {
+        if (!(column.dataIndex in row)) {
           const componentId = generateSlotId(tableComponent.id, index, column.dataIndex);
           if (!dslStore.dsl.componentIndexes[componentId]) {
             dslStore.insertComponent(dslStore.selectedComponent.id, newConfigNames[i], 'antd', 0, {
@@ -251,7 +252,7 @@ export default observer(function CustomTableForm() {
     };
     (columns.value as ColumnInfo[]).forEach(column => {
       newRow[column.dataIndex] = '默认字段值';
-      dslStore.insertComponent(dslStore.selectedComponent.id, defaultComponentConfigName, 'antd', 0, {
+      dslStore.insertComponent(dslStore.selectedComponent.id, column.render.configName, 'antd', 0, {
         customId: generateSlotId(tableComponent.id, rowKey, column.dataIndex)
       });
     });

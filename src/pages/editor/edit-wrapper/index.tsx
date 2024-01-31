@@ -151,8 +151,10 @@ export default observer(function EditWrapper({
       }
     }
 
-    childElement.style.width = '100%';
-    childElement.style.height = '100%';
+    if (result.display === 'inline') {
+      childElement.style.width = '100%';
+      childElement.style.height = '100%';
+    }
 
     // 处理定位问题
     if (!result.position) {

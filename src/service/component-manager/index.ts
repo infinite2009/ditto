@@ -669,7 +669,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     transformerStr: typographyTransformerStr,
     children: {
       name: 'children',
-      value: '默认文字',
+      value: '100.00',
       type: 'text',
       category: 'children'
     }
