@@ -170,14 +170,17 @@ export default observer((props: IPageRendererProps) => {
           parent[key] = (...args: any[]) => {
             const item = args[itemIndexInArgs as number];
             // TODO：这里输入的 nodeRef 是不可观察的
-            return recursivelyRenderTemplate({ current: generateSlotId(nodeId, item[indexKey]), isText: false }, true);
+            return recursivelyRenderTemplate(
+              { current: generateSlotId(nodeId, item[indexKey]), configName: '', isText: false },
+              true
+            );
           };
         } else if (repeatType === 'table') {
           parent[key] = (...args: any[]) => {
             const item = args[itemIndexInArgs as number];
             if (indexKey && columnKey) {
               return recursivelyRenderTemplate(
-                { current: generateSlotId(nodeId, item[indexKey], parent[columnKey]), isText: false },
+                { current: generateSlotId(nodeId, item[indexKey], parent[columnKey]), configName: '', isText: false },
                 true
               );
             }
