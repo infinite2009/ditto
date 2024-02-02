@@ -447,5 +447,7 @@ export function proxyXHR() {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   window.XMLHttpRequest = TauriProxyXHR;
 }
