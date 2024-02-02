@@ -13,7 +13,7 @@ export type EventId = string;
 export type ImportType = 'default' | 'object' | '*';
 
 export type TemplateInfo = {
-  data: any;
+  value: any;
   keyPathRegs: TemplateKeyPathsReg[];
   parent: any;
   key: string;

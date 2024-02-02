@@ -742,40 +742,40 @@ export default class DSLStore {
       } = keyPathMatchResult as TemplateKeyPathsReg;
       if (repeatPropRef) {
         // 找到这个 prop
-        const dataSourcePropConfig = propsConfig[repeatPropRef];
-        if (dataSourcePropConfig) {
-          if (repeatType === 'list' && indexKey) {
-            (dataSourcePropConfig.value as any[]).forEach((item, index) => {
-              const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey]), {
-                feature: ComponentFeature.slot
-              });
-              component.parentId = nodeId;
-              // 只保留第一行的render
-              if (index === 0) {
-                parent[key] = {
-                  current: component.id,
-                  configName: component.configName,
-                  isText: false
-                };
-              }
-            });
-          } else if (repeatType === 'table' && indexKey && columnKey) {
-            (dataSourcePropConfig.value as any[]).forEach((item, index) => {
-              const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey], parent[columnKey]), {
-                feature: ComponentFeature.slot
-              });
-              component.parentId = nodeId;
-              // 只保留第一行的render
-              if (index === 0) {
-                parent[key] = {
-                  current: component.id,
-                  configName: component.configName,
-                  isText: false
-                };
-              }
-            });
-          }
-        }
+        // const dataSourcePropConfig = propsConfig[repeatPropRef];
+        // if (dataSourcePropConfig) {
+        //   if (repeatType === 'list' && indexKey) {
+        //     (dataSourcePropConfig.value as any[]).forEach((item, index) => {
+        //       const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey]), {
+        //         feature: ComponentFeature.slot
+        //       });
+        //       component.parentId = nodeId;
+        //       // 只保留第一行的render
+        //       if (index === 0) {
+        //         parent[key] = {
+        //           current: component.id,
+        //           configName: component.configName,
+        //           isText: false
+        //         };
+        //       }
+        //     });
+        //   } else if (repeatType === 'table' && indexKey && columnKey) {
+        //     (dataSourcePropConfig.value as any[]).forEach((item, index) => {
+        //       const component = this.createEmptyContainer(generateSlotId(nodeId, item[indexKey], parent[columnKey]), {
+        //         feature: ComponentFeature.slot
+        //       });
+        //       component.parentId = nodeId;
+        //       // 只保留第一行的render
+        //       if (index === 0) {
+        //         parent[key] = {
+        //           current: component.id,
+        //           configName: component.configName,
+        //           isText: false
+        //         };
+        //       }
+        //     });
+        //   }
+        // }
       } else {
         let component: IComponentSchema;
         // 如果 value 是非真值或者空对象，则插入插槽
@@ -948,7 +948,7 @@ export default class DSLStore {
     name: string,
     dependency: string,
     insertIndex = -1,
-    opt: { customId: string }
+    opt?: { customId: string }
   ) {
     // 检查传入的组件是否有对应的配置
     const componentConfig = ComponentManager.fetchComponentConfig(name, dependency);
