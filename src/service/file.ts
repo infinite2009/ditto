@@ -33,6 +33,7 @@ import { Command } from '@tauri-apps/api/shell';
 import { Platform, platform } from '@tauri-apps/api/os';
 import DbStore from '@/service/db-store';
 import ComponentManager from '@/service/component-manager';
+import IComponentSchema from '@/types/component.schema';
 
 interface EntryTree {
   children?: EntryTree[];
@@ -265,8 +266,15 @@ class FileManager {
   }
 
   async generateReactCode(dsl: IPageSchema) {
+    const dslClone: IPageSchema = cloneDeep(dsl);
     return await createAsyncTask(() => {
-      const simplifiedDSL = this.simplifyProps(dsl);
+      const simplifiedDSL = this.simplifyProps(dslClone);
+      // Ugly: 特殊处理下 Table
+      Object.values(simplifiedDSL.componentIndexes).forEach((component: IComponentSchema) => {
+        if (component.callingName === 'Table') {
+          component.children = [];
+        }
+      });
       const react = new ReactCodeGenerator(simplifiedDSL as unknown as IPageSchema, new TypeScriptCodeGenerator());
       return prettier.format(react.generatePageCode().join('\n'), {
         ...prettierConfig,
@@ -632,13 +640,12 @@ class FileManager {
    * 精简 dsl 的 props
    */
   private simplifyProps(dsl: IPageSchema) {
-    const dslClone = cloneDeep(dsl);
-    const { actions } = dslClone;
-    const indexes = Object.values(dslClone.componentIndexes);
+    const { actions } = dsl;
+    const indexes = Object.values(dsl.componentIndexes);
     indexes.forEach(componentSchema => {
       const { id: componentId, configName, name, dependency, propsRefs } = componentSchema;
       const { propsConfig } = ComponentManager.fetchComponentConfig(configName || name, dependency);
-      const propsDict = dslClone.props[componentId];
+      const propsDict = dsl.props[componentId];
       // 用赋值的数组进行遍历
       const propsRefsCopy = [...propsRefs];
       propsRefsCopy.forEach(ref => {
@@ -675,7 +682,7 @@ class FileManager {
         }
       });
     });
-    return dslClone;
+    return dsl;
   }
 }
 

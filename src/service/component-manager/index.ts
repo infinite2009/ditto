@@ -1340,6 +1340,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
   },
   Table: {
     configName: 'Table',
+    callingName: 'Table',
     dependency: 'antd',
     component: Table,
     category: '数据展示',
