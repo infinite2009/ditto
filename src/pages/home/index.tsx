@@ -205,7 +205,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
       return (
         <li key={project.id}>
           <Dropdown
-            menu={generateDropDownMenu(project)}
+            menu={generateDropDownMenu()}
             overlayClassName={style.dropdownContainer}
             destroyPopupOnHide
             onOpenChange={(open: boolean) => onOpenChange(open, project)}
@@ -359,7 +359,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
         onContextMenu={e => e.stopPropagation()}
       >
         <Dropdown
-          menu={generateDropDownMenu(data)}
+          menu={generateDropDownMenu()}
           overlayClassName={style.dropdownContainer}
           destroyPopupOnHide
           onOpenChange={(open: boolean) => onOpenChange(open, data)}
