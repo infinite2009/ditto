@@ -391,7 +391,7 @@ export default class DSLStore {
         const wrapper = { cp };
         this.setTemplateTo(
           {
-            value: cp,
+            data: cp,
             keyPathRegs: templateKeyPathsReg,
             parent: wrapper,
             key: 'cp',
@@ -716,7 +716,7 @@ export default class DSLStore {
 
   setTemplateTo(tplInfo: TemplateInfo, propsConfig: { [key: string]: IPropsConfigItem }) {
     const basicTplInfo: Partial<TemplateInfo> = {
-      value: undefined,
+      data: undefined,
       keyPathRegs: [],
       parent: undefined,
       key: '',
@@ -724,7 +724,7 @@ export default class DSLStore {
     };
     const fullTplInfo: TemplateInfo = Object.assign(basicTplInfo, tplInfo);
 
-    const { value, keyPathRegs, parent, key, currentKeyPath, nodeId } = fullTplInfo;
+    const { data, keyPathRegs, parent, key, currentKeyPath, nodeId } = fullTplInfo;
     const keyPathMatchResult =
       keyPathRegs.length &&
       keyPathRegs.find(pathObj => {
@@ -807,7 +807,7 @@ export default class DSLStore {
               return component;
             });
           };
-          component = recursiveMap([value], nodeId, ComponentFeature.solid)[0];
+          component = recursiveMap([data], nodeId, ComponentFeature.solid)[0];
         } else {
           component = this.createEmptyContainer('', {
             feature: ComponentFeature.slot
@@ -821,14 +821,14 @@ export default class DSLStore {
         };
       }
     } else {
-      const type = typeOf(value);
+      const type = typeOf(data);
       if (type === 'object') {
-        Object.entries(value).forEach(([key, val]) => {
+        Object.entries(data).forEach(([key, val]) => {
           this.setTemplateTo(
             {
-              value: val,
+              data: val,
               keyPathRegs,
-              parent: value,
+              parent: data,
               key,
               currentKeyPath: `${currentKeyPath ? currentKeyPath + '.' : currentKeyPath}${key}`,
               nodeId
@@ -837,12 +837,12 @@ export default class DSLStore {
           );
         });
       } else if (type === 'array') {
-        value.forEach((item: any, index: number) => {
+        data.forEach((item: any, index: number) => {
           this.setTemplateTo(
             {
-              value: item,
+              data: item,
               keyPathRegs,
-              parent: value,
+              parent: data,
               key: index.toString(),
               currentKeyPath: `${currentKeyPath}[${index}]`,
               nodeId
