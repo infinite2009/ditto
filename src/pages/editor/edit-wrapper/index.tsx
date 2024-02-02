@@ -4,10 +4,9 @@ import { useDraggable, useDroppable } from '@dnd-kit/core';
 import ComponentFeature from '@/types/component-feature';
 import { DSLStoreContext } from '@/hooks/context';
 import classNames from 'classnames';
-
 import { observer } from 'mobx-react';
+
 import styles from './index.module.less';
-import { camelCaseToDash } from '@/util';
 
 export interface IEditorProps {
   children: React.ReactNode;

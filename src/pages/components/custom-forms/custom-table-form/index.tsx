@@ -184,6 +184,7 @@ export default observer(function CustomTableForm() {
     ];
     switch (configName) {
       case 'HorizontalFlex':
+        // eslint-disable-next-line no-case-declarations
         const columnTemplate = dslStore.dsl.componentIndexes[columnInfo.render.current];
         tpl.push(
           <div key="2" className={customFormStyle.config}>
@@ -191,7 +192,7 @@ export default observer(function CustomTableForm() {
             <InputNumber
               value={columnTemplate.children.length}
               onPressEnter={e => {
-                e.target.blur();
+                (e.target as HTMLElement).blur();
               }}
               onBlur={e => {
                 changeActionButtonCount(+e.target.value, columnInfo);
