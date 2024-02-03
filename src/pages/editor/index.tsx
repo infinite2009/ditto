@@ -728,7 +728,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         redirectToPreview();
         break;
       case PageAction.saveFile:
-        saveFile().then();
+        saveFile();
         break;
       case PageAction.openProject:
         await fileManager.openLocalProject();

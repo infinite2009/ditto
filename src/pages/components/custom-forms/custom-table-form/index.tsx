@@ -3,8 +3,8 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import customFormStyle from '@/pages/components/index.module.less';
-import { Divider, Input, InputNumber, Select, Typography } from 'antd';
-import { Draggable, ExpandThin, Minus, Plus, PlusThin } from '@/components/icon';
+import { Divider, InputNumber, Select, Typography } from 'antd';
+import { Draggable, ExpandThin, Minus, Plus } from '@/components/icon';
 import { generateSlotId } from '@/util';
 import ComponentSchemaRef from '@/types/component-schema-ref';
 import { toJS } from 'mobx';
@@ -64,55 +64,24 @@ export default observer(function CustomTableForm() {
     if (!dslStore.selectedComponent) {
       return;
     }
-    const { columns, dataSource } = dslStore.dsl.props[dslStore.selectedComponent.id];
+    const { columns } = dslStore.dsl.props[dslStore.selectedComponent.id];
     const columnsCopy = toJS(columns.value);
     const columnIndex = (columnsCopy as ColumnInfo[]).findIndex(item => item.dataIndex === dataIndex);
     if (columnIndex > -1) {
-      const column = columnsCopy[columnIndex];
-      // 删除原先的组件，然后再插入新组件
-      dslStore.deleteComponent(column.render.current);
-      const newTemplateId = nanoid();
-      const newConfigName = data === 'HorizontalFlex' ? 'HorizontalFlex' : data;
-      const newTemplate = dslStore.insertComponent(dslStore.selectedComponent.id, newConfigName, 'antd', -1, {
-        customId: newTemplateId
-      });
-      column.render = {
-        current: newTemplate.id,
-        configName: newConfigName,
-        isText: false
-      };
-      if (data === 'HorizontalFlex') {
-        dslStore.insertComponent(newTemplate.id, 'Button', 'antd');
-      }
-      if ((dataSource?.value as Record<string, any>[])?.length) {
-        (dataSource.value as Record<string, any>[]).forEach((item, index) => {
-          const tableCellId = generateSlotId(dslStore.selectedComponent.id, index, dataIndex);
-          // BUG: 这里有撤销重做的问题
-          dslStore.deleteComponent(tableCellId);
-          if (data === 'HorizontalFlex') {
-            const templateContainer = dslStore.insertComponent(
-              dslStore.selectedComponent.id,
-              'HorizontalFlex',
-              'antd',
-              0,
-              {
-                customId: tableCellId
-              }
-            );
-            dslStore.insertComponent(templateContainer.id, 'Button', 'antd');
-          } else {
-            dslStore.insertComponent(dslStore.selectedComponent.id, data, 'antd', 0, {
-              customId: tableCellId
-            });
-          }
-        });
-      }
       // 更新 configNames
       const newComponentConfigNames = [...componentConfigNames];
       newComponentConfigNames[columnIndex] = data;
       setComponentConfigNames(newComponentConfigNames);
-
-      dslStore.updateComponentProps({ columns: columnsCopy });
+      // 删除原先的组件，然后再插入新组件
+      dslStore.changeColumnForTable(
+        dslStore.selectedComponent.id,
+        columnIndex,
+        { configName: data, dependency: 'antd' },
+        () => {
+          dslStore.updateComponentProps({ columns: columnsCopy });
+        }
+      );
+      console.log('change component: ', toJS(dslStore.dsl));
     }
   }
 
@@ -142,7 +111,7 @@ export default observer(function CustomTableForm() {
       for (let i = 0; i < difference; i++) {
         dslStore.insertComponent(columnTemplate.id, 'Button', 'antd');
         // 为对应列增加按钮
-        (dataSource.value as Record<string, any>[]).forEach((item, index) => {
+        ((dataSource.value || []) as Record<string, any>[]).forEach((item, index) => {
           const tableCellId = generateSlotId(dslStore.selectedComponent.id, index, columnInfo.dataIndex);
           dslStore.insertComponent(tableCellId, 'Button', 'antd');
         });
@@ -160,6 +129,7 @@ export default observer(function CustomTableForm() {
           }
         });
       }
+      console.log('删除后还有多少节点：', toJS(dslStore.dsl));
     }
   }
 
@@ -244,7 +214,10 @@ export default observer(function CustomTableForm() {
     const { dataSource } = dslStore.dsl.props[dslStore.selectedComponent.id];
     const dataSourceCopy = toJS(dataSource.value);
     (dataSourceCopy as Record<string, any>[]).splice(index, 1);
-    dslStore.updateComponentProps({ dataSource: dataSourceCopy });
+    dslStore.deleteRowForTable(dslStore.selectedComponent.id, index, () => {
+      dslStore.updateComponentProps({ dataSource: dataSourceCopy });
+    });
+    console.log('Removed row：', toJS(dslStore.dsl));
   }
 
   function renderRows() {
@@ -280,23 +253,18 @@ export default observer(function CustomTableForm() {
 
   function addColumn() {
     const tableComponent = dslStore.selectedComponent;
-    const newTitle = generateNewTitle();
-    const newDataIndex = generateNewDataIndex();
     const templateId = nanoid();
+    const dataIndex = generateNewDataIndex();
     const newColumn = {
-      key: newDataIndex,
-      dataIndex: newDataIndex,
-      title: newTitle,
+      key: dataIndex,
+      dataIndex: dataIndex,
+      title: generateNewTitle(),
       render: {
         configName: defaultComponentConfigName,
         current: templateId,
         isText: false
       }
     };
-    // 创建一个用来生成代码的组件子树，它不会用来预览
-    dslStore.insertComponent(dslStore.selectedComponent.id, defaultComponentConfigName, 'antd', -1, {
-      customId: templateId
-    });
 
     const { columns, dataSource } = dslStore.dsl.props[tableComponent.id];
     const newColumns = [...toJS(columns.value as ColumnInfo[])];
@@ -304,54 +272,43 @@ export default observer(function CustomTableForm() {
     const newConfigNames = [...componentConfigNames, defaultComponentConfigName];
     setComponentConfigNames(newConfigNames);
     const newDataSource: Record<string, any>[] = (dataSource.value || []) as Record<string, any>[];
-    newDataSource.forEach((row, index) => {
-      (newColumns as ColumnInfo[]).forEach((column, i) => {
-        if (!(column.dataIndex in row)) {
-          const componentId = generateSlotId(tableComponent.id, index, column.dataIndex);
-          if (!dslStore.dsl.componentIndexes[componentId]) {
-            dslStore.insertComponent(dslStore.selectedComponent.id, newConfigNames[i], 'antd', -1, {
-              customId: componentId
-            });
-          }
-        }
-      });
+    newDataSource.forEach(item => {
+      item[newColumn.dataIndex] = '默认字段值';
     });
-    dslStore.updateComponentProps({ columns: newColumns }, tableComponent);
+    dslStore.insertColumnForTable(
+      { configName: defaultComponentConfigName, dependency: 'antd' },
+      tableComponent.id,
+      -1,
+      () => {
+        dslStore.updateComponentProps({ columns: newColumns }, tableComponent);
+      }
+    );
+    console.log('add column: ', toJS(dslStore.dsl));
   }
 
   function addRow() {
     const tableComponent = dslStore.selectedComponent;
     const { columns, dataSource } = dslStore.dsl.props[tableComponent.id];
-    dataSource.value = dataSource.value || [];
-    const rowKey = (dataSource.value as ColumnInfo[]).length;
+    const newDataSource = toJS(dataSource.value) || [];
+    const rowKey = (newDataSource as ColumnInfo[]).length;
     const newRow = {
       key: rowKey
     };
+    const columnConfig = [];
     (columns.value as ColumnInfo[]).forEach(column => {
       newRow[column.dataIndex] = '默认字段值';
-      if (column.render.configName === 'HorizontalFlex') {
-        // 先生成一个容器
-        const newTemplate = dslStore.insertComponent(dslStore.selectedComponent.id, 'HorizontalFlex', 'antd', 0, {
-          customId: generateSlotId(tableComponent.id, rowKey, column.dataIndex)
-        });
-        // 根据当前 column 里有多少按钮，进行插入
-        const columnTemplate = dslStore.dsl.componentIndexes[column.render.current];
-        for (let i = 0, l = columnTemplate.children.length; i < l; i++) {
-          dslStore.insertComponent(newTemplate.id, 'Button', 'antd');
-        }
-      } else {
-        dslStore.insertComponent(dslStore.selectedComponent.id, column.render.configName, 'antd', 0, {
-          customId: generateSlotId(tableComponent.id, rowKey, column.dataIndex)
-        });
-      }
+      columnConfig.push({ configName: column.render.configName, dependency: 'antd' });
     });
-    (dataSource.value as Record<string, any>[]).push(newRow);
-    dslStore.updateComponentProps({ rows: dataSource.value }, tableComponent);
+    (newDataSource as Record<string, any>[]).push(newRow);
+    dslStore.insertRowForTable(columnConfig, tableComponent.id, () => {
+      dslStore.updateComponentProps({ dataSource: newDataSource }, tableComponent);
+    });
+    console.log('add row: ', toJS(dslStore.dsl));
   }
 
   function generateNewDataIndex() {
     let labelSuffix = 1;
-    const labelPrefix = '字段';
+    const labelPrefix = 'field';
     let nameExists = dataIndexesRef.current.some(item => item === `${labelPrefix}${labelSuffix}`);
     while (nameExists) {
       labelSuffix++;

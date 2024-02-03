@@ -1,15 +1,7 @@
 import { makeAutoObservable, toJS } from 'mobx';
 import IPageSchema from '@/types/page.schema';
 import IComponentSchema from '@/types/component.schema';
-import {
-  flattenObject,
-  generateId,
-  generateSlotId,
-  getParentKeyPath,
-  getValueByPath,
-  hyphenToCamelCase,
-  typeOf
-} from '@/util';
+import { flattenObject, generateId, getParentKeyPath, getValueByPath, hyphenToCamelCase, typeOf } from '@/util';
 import cloneDeep from 'lodash/cloneDeep';
 import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
@@ -229,11 +221,13 @@ export default class DSLStore {
    *
    * @param id
    * @param relatedId
-   * @param index
+   * @param insertType 插入的位置类型
    */
   @execute
   cloneComponent(id: ComponentId, relatedId: ComponentId, insertType: InsertType) {
     const clonedSubtree = this.cloneSubtree(id);
+    console.log('cloneSubtree: ', toJS(this.dsl));
+    debugger;
     if (!clonedSubtree) {
       return;
     }
@@ -275,6 +269,7 @@ export default class DSLStore {
         isText: false
       });
     }
+    console.log('clone component: ', toJS(this.dsl));
   }
 
   /**
@@ -504,22 +499,6 @@ export default class DSLStore {
     return Object.values(this.dsl.componentIndexes).filter(cmp => cmp.parentId === id);
   }
 
-  hideComponent(id: ComponentId) {
-    if (id) {
-      this.hiddenComponentDict[id] = true;
-      // 子节点也隐藏下
-      const children = this.findChildren(id);
-      if (children.length) {
-        children.forEach(child => {
-          this.hideComponent(child.id);
-        });
-      }
-      if (id === this.selectedComponent?.id) {
-        this.resetSelectedComponent();
-      }
-    }
-  }
-
   // /**
   //  * 导入模板，必须用在创建空页面之后用，选中空页面，然后应用此函数
   //  * @param templatePath
@@ -540,6 +519,22 @@ export default class DSLStore {
   //     console.error(err);
   //   }
   // }
+
+  hideComponent(id: ComponentId) {
+    if (id) {
+      this.hiddenComponentDict[id] = true;
+      // 子节点也隐藏下
+      const children = this.findChildren(id);
+      if (children.length) {
+        children.forEach(child => {
+          this.hideComponent(child.id);
+        });
+      }
+      if (id === this.selectedComponent?.id) {
+        this.resetSelectedComponent();
+      }
+    }
+  }
 
   @execute
   initDSL(dsl: IPageSchema = undefined) {
@@ -854,6 +849,136 @@ export default class DSLStore {
     }
   }
 
+  /**
+   * 为表格类组件插入整行数据
+   */
+  insertRowForTable(
+    columns: { configName: string; dependency: string }[],
+    tableComponentId: string,
+    callback: () => void
+  ): void {
+    const tableComponent = this.dsl.componentIndexes[tableComponentId];
+    if (tableComponent) {
+      tableComponent.children = tableComponent.children || [];
+      const rows = tableComponent.children;
+      if (rows.length) {
+        // 如果不止一行，则直接复制
+        this.cloneComponent(rows[rows.length - 1].current, rows[rows.length - 1].current, InsertType.insertAfter);
+        console.log('after clone row: ', toJS(this.dsl));
+      } else {
+        // 先插入一个水平容器作为行的容器，它不会被渲染
+        const rowComponent = this.dangerousInsertComponent(tableComponentId, 'HorizontalFlex', 'antd');
+        columns.forEach(({ configName, dependency }) => {
+          if (configName === 'HorizontalFlex') {
+            const buttonContainer = this.dangerousInsertComponent(rowComponent.id, 'HorizontalFlex', 'antd');
+            this.dangerousInsertComponent(buttonContainer.id, 'Button', 'antd');
+          } else {
+            this.dangerousInsertComponent(rowComponent.id, configName, dependency);
+          }
+        });
+      }
+      if (callback) {
+        callback();
+      }
+    }
+  }
+
+  insertColumnForTable(
+    column: { configName: string; dependency: string },
+    tableComponentId: string,
+    columnIndex?: number,
+    callback?: () => void
+  ) {
+    debugger;
+    const tableComponent = this.dsl.componentIndexes[tableComponentId];
+    if (tableComponent) {
+      const { configName, dependency } = column;
+      // 先插入一个垂直容器作为列的容器，它不会被渲染
+      tableComponent.children = tableComponent.children || [];
+      const rowComponents = tableComponent.children;
+      if (rowComponents.length === 0) {
+        // 如果不存在行，直接创建一行
+        this.insertRowForTable([column], tableComponentId, callback);
+      } else {
+        // 已经存在行，就逐行插入新的列
+        rowComponents.forEach(({ current }) => {
+          if (configName === 'HorizontalFlex') {
+            const buttonContainer = this.dangerousInsertComponent(
+              current,
+              'HorizontalFlex',
+              'antd',
+              columnIndex !== undefined ? columnIndex : -1
+            );
+            this.dangerousInsertComponent(buttonContainer.id, 'Button', 'antd');
+          } else {
+            this.dangerousInsertComponent(
+              current,
+              configName,
+              dependency,
+              columnIndex !== undefined ? columnIndex : -1
+            );
+          }
+        });
+      }
+      if (callback) {
+        callback();
+      }
+    }
+  }
+
+  deleteColumnForTable(tableId: string, columnIndex: number, callback?: () => void) {
+    const tableComponent = this.dsl.componentIndexes[tableId];
+    if (tableComponent) {
+      const rowComponents = tableComponent.children;
+      if (rowComponents.length) {
+        rowComponents.forEach(({ current }) => {
+          const row = this.dsl.componentIndexes[current];
+          this.deleteComponent(row.children[columnIndex].current);
+        });
+      }
+      if (callback) {
+        callback();
+      }
+    }
+  }
+
+  changeColumnForTable(
+    tableId: string,
+    columnIndex: number,
+    newColumn: { configName: string; dependency: string },
+    callback?: () => void
+  ) {
+    const tableComponent = this.dsl.componentIndexes[tableId];
+    if (tableComponent) {
+      const rowComponents = tableComponent.children;
+      if (rowComponents.length) {
+        rowComponents.forEach(({ current }) => {
+          const columns = this.dsl.componentIndexes[current].children;
+          this.dangerousDeleteComponent(columns[columnIndex].current);
+          const { configName, dependency } = newColumn;
+          this.dangerousInsertComponent(current, configName, dependency, columnIndex);
+        });
+      }
+      if (callback) {
+        callback();
+      }
+    }
+  }
+
+  deleteRowForTable(tableId: string, rowIndex: number, callback?: () => void) {
+    const tableComponent = this.dsl.componentIndexes[tableId];
+    if (tableComponent) {
+      const rowComponents = tableComponent.children;
+      if (rowComponents.length) {
+        // 跳过第一行（字段行）
+        this.deleteComponent(rowComponents[rowIndex + 1].current);
+      }
+      if (callback) {
+        callback();
+      }
+    }
+  }
+
   showComponent(id: ComponentId) {
     delete this.hiddenComponentDict[id];
     const children = this.findChildren(id);
@@ -937,7 +1062,7 @@ export default class DSLStore {
     }
     const deleted = this.deleteSubtree(id);
     // 如果当前已选中的组件，已经被删除了，就清空
-    if (this.selectedComponent?.id && !this.dsl.componentIndexes[this.selectedComponent.id]) {
+    if (this.selectedComponent?.id === deleted.id) {
       this.resetSelectedComponent();
     }
     return deleted;
@@ -997,10 +1122,10 @@ export default class DSLStore {
     // 1. 复制 component schema 本身
     const clonedComponentSchema = cloneDeep(componentSchema);
     // 2. 生成新的 component id
-    clonedComponentSchema.id = this.generateComponentIdByName(clonedComponentSchema.name);
+    clonedComponentSchema.id = this.generateComponentIdByName(clonedComponentSchema.configName);
     // 3. 生成新的 displayName
     const componentConfig = ComponentManager.fetchComponentConfig(
-      clonedComponentSchema.name,
+      clonedComponentSchema.configName,
       clonedComponentSchema.dependency
     );
     clonedComponentSchema.displayName = `${componentConfig?.title}${
