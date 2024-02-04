@@ -30,7 +30,7 @@ export default observer(function CustomTableForm() {
 
   useEffect(() => {
     if (dslStore?.selectedComponent) {
-      const { columns, dataSource } = dslStore.dsl.props[dslStore.selectedComponent.id];
+      const { columns } = dslStore.dsl.props[dslStore.selectedComponent.id];
       const configNames = [];
       (columns.value as ColumnInfo[]).forEach(item => {
         titlesRef.current.push(item.title);
@@ -72,6 +72,7 @@ export default observer(function CustomTableForm() {
       const newComponentConfigNames = [...componentConfigNames];
       newComponentConfigNames[columnIndex] = data;
       setComponentConfigNames(newComponentConfigNames);
+      columnsCopy[columnIndex].render.configName = data;
       // 删除原先的组件，然后再插入新组件
       dslStore.changeColumnForTable(
         dslStore.selectedComponent.id,
@@ -133,9 +134,19 @@ export default observer(function CustomTableForm() {
     }
   }
 
-  function renderColumnSetting(columnInfo: ColumnInfo) {
-    const { title, dataIndex, render } = columnInfo;
-    const { configName } = render;
+  function renderColumnSetting(columnInfo: ColumnInfo, index: number) {
+    const rows = dslStore.dsl.componentIndexes[dslStore.selectedComponent.id].children;
+    if (!rows.length) {
+      return null;
+    }
+    const columns = dslStore.dsl.componentIndexes[rows[0].current].children;
+    if (!columns.length) {
+      return null;
+    }
+    const columnRef = columns[index];
+    const { title, dataIndex } = columnInfo;
+    const { configName, current } = columnRef;
+    const column = dslStore.dsl.componentIndexes[current];
     const tpl = [
       <div key="1" className={customFormStyle.config}>
         <span className={customFormStyle.hintText}>表头</span>
@@ -154,13 +165,11 @@ export default observer(function CustomTableForm() {
     ];
     switch (configName) {
       case 'HorizontalFlex':
-        // eslint-disable-next-line no-case-declarations
-        const columnTemplate = dslStore.dsl.componentIndexes[columnInfo.render.current];
         tpl.push(
           <div key="2" className={customFormStyle.config}>
             <span className={customFormStyle.hintText}>操作个数</span>
             <InputNumber
-              value={columnTemplate.children.length}
+              value={column.children.length}
               onPressEnter={e => {
                 (e.target as HTMLElement).blur();
               }}
@@ -204,7 +213,7 @@ export default observer(function CustomTableForm() {
             </Select>
             <Minus className={customFormStyle.removeIcon} onClick={() => removeColumn(dataIndex)} />
           </div>
-          {renderColumnSetting(item)}
+          {renderColumnSetting(item, index)}
         </div>
       );
     });
