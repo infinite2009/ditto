@@ -956,7 +956,10 @@ export default class DSLStore {
           const columns = this.dsl.componentIndexes[current].children;
           this.dangerousDeleteComponent(columns[columnIndex].current);
           const { configName, dependency } = newColumn;
-          this.dangerousInsertComponent(current, configName, dependency, columnIndex);
+          const component = this.dangerousInsertComponent(current, configName, dependency, columnIndex);
+          if (configName === 'HorizontalFlex') {
+            this.dangerousInsertComponent(component.id, 'Button', 'antd');
+          }
         });
       }
       if (callback) {
