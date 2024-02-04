@@ -225,14 +225,12 @@ export default class DSLStore {
    */
   @execute
   cloneComponent(id: ComponentId, relatedId: ComponentId, insertType: InsertType) {
-    const clonedSubtree = this.cloneSubtree(id);
-    console.log('cloneSubtree: ', toJS(this.dsl));
-    debugger;
-    if (!clonedSubtree) {
+    if (!(this.componentExists(id) && this.componentExists(relatedId))) {
       return;
     }
-    let index;
-    let target;
+    let index = -1;
+    // 插入目标组件
+    let target = null;
 
     switch (insertType) {
       case InsertType.insertAfter:
@@ -263,13 +261,16 @@ export default class DSLStore {
     }
 
     if (target && index > -1) {
+      const clonedSubtree = this.cloneSubtree(id, target.id);
+      if (!clonedSubtree) {
+        return;
+      }
       target.children.splice(index, 0, {
         current: clonedSubtree.id,
         configName: clonedSubtree.configName,
         isText: false
       });
     }
-    console.log('clone component: ', toJS(this.dsl));
   }
 
   /**
@@ -889,7 +890,6 @@ export default class DSLStore {
     columnIndex?: number,
     callback?: () => void
   ) {
-    debugger;
     const tableComponent = this.dsl.componentIndexes[tableComponentId];
     if (tableComponent) {
       const { configName, dependency } = column;
@@ -1114,7 +1114,7 @@ export default class DSLStore {
     return importName || configName;
   }
 
-  private cloneSubtree(id: ComponentId) {
+  private cloneSubtree(id: ComponentId, parentId: string) {
     const componentSchema = this.dsl.componentIndexes[id];
     if (!componentSchema) {
       return null;
@@ -1123,20 +1123,24 @@ export default class DSLStore {
     const clonedComponentSchema = cloneDeep(componentSchema);
     // 2. 生成新的 component id
     clonedComponentSchema.id = this.generateComponentIdByName(clonedComponentSchema.configName);
-    // 3. 生成新的 displayName
+    // 3. 修改 parentId
+    clonedComponentSchema.parentId = parentId;
+    // 4. 生成新的 displayName
     const componentConfig = ComponentManager.fetchComponentConfig(
       clonedComponentSchema.configName,
       clonedComponentSchema.dependency
     );
+    // 这里有bug
     clonedComponentSchema.displayName = `${componentConfig?.title}${
-      this.dsl.componentStats[clonedComponentSchema.name]
+      this.dsl.componentStats[clonedComponentSchema.configName]
     }`;
-    // 4. 复制子树，并重新替换父组件的 children
+    // 5. 复制子树，并重新替换父组件的 children
     clonedComponentSchema.children = clonedComponentSchema.children.map(child => {
       if (child.isText) {
         return cloneDeep(child);
       } else {
-        const clonedSubtree = this.cloneSubtree(child.current);
+        const clonedSubtree = this.cloneSubtree(child.current, clonedComponentSchema.id);
+
         if (!clonedSubtree) {
           return {
             current: '',
@@ -1151,9 +1155,9 @@ export default class DSLStore {
         };
       }
     });
-    // 5. 复制 props
+    // 6. 复制 props
     this.dsl.props[clonedComponentSchema.id] = cloneDeep(this.dsl.props[id]);
-    // 6. 遍历每一个 prop，如果它存在插槽，递归复制以插槽为根节点的子树
+    // 7. 遍历每一个 prop，如果它存在插槽，递归复制以插槽为根节点的子树
     const clonedPropsDict = this.dsl.props[clonedComponentSchema.id];
     clonedComponentSchema.propsRefs.forEach(ref => {
       const clonedPropsSchema: IPropsSchema = clonedPropsDict[ref];
@@ -1165,7 +1169,10 @@ export default class DSLStore {
             return new RegExp(regInfo.path).test(keyPath);
           });
           if (matchKeyPath) {
-            const clonedSubtree = this.cloneSubtree((clonedPropsSchema.value as IComponentSchema).id);
+            const clonedSubtree = this.cloneSubtree(
+              (clonedPropsSchema.value as IComponentSchema).id,
+              clonedComponentSchema.id
+            );
             const clonedNode = {
               current: clonedSubtree?.id || '',
               configName: componentConfig.configName,
@@ -1189,9 +1196,9 @@ export default class DSLStore {
         });
       }
     });
-    // 7. 将节点挂载到 componentIndexes
+    // 8. 将节点挂载到 componentIndexes
     this.dsl.componentIndexes[clonedComponentSchema.id] = clonedComponentSchema;
-    return clonedComponentSchema;
+    return this.dsl.componentIndexes[clonedComponentSchema.id];
   }
 
   private createPageRoot() {
@@ -1382,5 +1389,9 @@ export default class DSLStore {
     if (parent) {
       parent.children = parent.children.filter(item => item.current !== id);
     }
+  }
+
+  private componentExists(id: ComponentId) {
+    return id in this.dsl.componentIndexes;
   }
 }
