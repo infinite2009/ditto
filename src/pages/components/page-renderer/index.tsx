@@ -181,8 +181,8 @@ export default observer((props: IPageRendererProps) => {
             const rows = dsl.componentIndexes[nodeId].children;
             const columnIndex = (columns.value as any[]).findIndex(item => item[columnKey] === parent[columnKey]);
             if (columnIndex > -1) {
-              const row = dsl.componentIndexes[rows[args[2] + 1].current].children;
-              if (row[columnIndex]) {
+              const row = dsl.componentIndexes[rows[args[2] + 1]?.current]?.children;
+              if (row?.[columnIndex]) {
                 const columnId = row[columnIndex].current;
                 return recursivelyRenderTemplate({ current: columnId, configName: '', isText: false }, true);
               }
