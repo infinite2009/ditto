@@ -82,7 +82,6 @@ export default observer(function CustomTableForm() {
           dslStore.updateComponentProps({ columns: columnsCopy });
         }
       );
-      console.log('change component: ', toJS(dslStore.dsl));
     }
   }
 
@@ -212,7 +211,6 @@ export default observer(function CustomTableForm() {
     dslStore.deleteRowForTable(dslStore.selectedComponent.id, index, () => {
       dslStore.updateComponentProps({ dataSource: dataSourceCopy });
     });
-    console.log('Removed row：', toJS(dslStore.dsl));
   }
 
   function renderRows() {
@@ -278,7 +276,6 @@ export default observer(function CustomTableForm() {
         dslStore.updateComponentProps({ columns: newColumns }, tableComponent);
       }
     );
-    console.log('add column: ', toJS(dslStore.dsl));
   }
 
   function addRow() {
@@ -298,7 +295,6 @@ export default observer(function CustomTableForm() {
     dslStore.insertRowForTable(columnConfig, tableComponent.id, () => {
       dslStore.updateComponentProps({ dataSource: newDataSource }, tableComponent);
     });
-    console.log('add row: ', toJS(dslStore.dsl));
   }
 
   function generateNewDataIndex() {
