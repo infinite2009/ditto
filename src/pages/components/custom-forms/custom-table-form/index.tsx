@@ -104,34 +104,20 @@ export default observer(function CustomTableForm() {
     dslStore.updateComponentProps({ columns: newColumnsCopy });
   }
 
-  function changeActionButtonCount(count: number, columnInfo: ColumnInfo) {
-    const columnTemplate = dslStore.dsl.componentIndexes[columnInfo.render.current];
-    const difference = Math.abs(count - columnTemplate.children.length);
-    const { dataSource } = dslStore.dsl.props[dslStore.selectedComponent.id];
-    if (count > columnTemplate.children.length) {
-      for (let i = 0; i < difference; i++) {
-        dslStore.insertComponent(columnTemplate.id, 'Button', 'antd');
-        // 为对应列增加按钮
-        ((dataSource.value || []) as Record<string, any>[]).forEach((item, index) => {
-          const tableCellId = generateSlotId(dslStore.selectedComponent.id, index, columnInfo.dataIndex);
-          dslStore.insertComponent(tableCellId, 'Button', 'antd');
-        });
+  function changeActionButtonCount(count: number, index: number) {
+    const table = dslStore.dsl.componentIndexes[dslStore.selectedComponent.id];
+    table.children.forEach(item => {
+      const row = dslStore.dsl.componentIndexes[item.current];
+      const columns = row.children;
+      const column = dslStore.dsl.componentIndexes[columns[index].current];
+      const difference = Math.abs(count - column.children.length);
+      if (count > column.children.length) {
+        const componentConfig = new Array(difference).fill({ name: 'Button', dependency: 'antd' });
+        dslStore.insertComponentsInBatch(column.id, componentConfig);
+      } else if (count < column.children.length) {
+        dslStore.deleteComponentsInBatch(column.id, -1, difference);
       }
-    } else if (count < columnTemplate.children.length) {
-      const currentCount = columnTemplate.children.length;
-      for (let i = currentCount - 1; i > count - 1; i--) {
-        dslStore.deleteComponent(columnTemplate.children[i].current);
-        // 为对应列删除按钮
-        (dataSource.value as Record<string, any>[]).forEach((item, index) => {
-          const tableCellId = generateSlotId(dslStore.selectedComponent.id, index, columnInfo.dataIndex);
-          const tableCell = dslStore.dsl.componentIndexes[tableCellId];
-          if (tableCell) {
-            dslStore.deleteComponent(tableCell.children[i].current);
-          }
-        });
-      }
-      console.log('删除后还有多少节点：', toJS(dslStore.dsl));
-    }
+    });
   }
 
   function renderColumnSetting(columnInfo: ColumnInfo, index: number) {
@@ -174,7 +160,7 @@ export default observer(function CustomTableForm() {
                 (e.target as HTMLElement).blur();
               }}
               onBlur={e => {
-                changeActionButtonCount(+e.target.value, columnInfo);
+                changeActionButtonCount(+e.target.value, index);
               }}
             />
           </div>
