@@ -16,6 +16,7 @@ import InsertType from '@/types/insert-type';
 import fileManager from '@/service/file';
 import { exists } from '@tauri-apps/api/fs';
 import ComponentManager from '@/service/component-manager';
+import { start } from 'repl';
 
 type FormValue = {
   style: CSSProperties;
@@ -486,6 +487,48 @@ export default class DSLStore {
     opt: { customId: string } = undefined
   ) {
     return this.dangerousInsertComponent(parentId, name, dependency, insertIndex, opt);
+  }
+
+  @execute
+  insertComponentsInBatch(
+    parentId: string,
+    componentConfig: {
+      name: string;
+      dependency: string;
+      id?: string;
+    }[],
+    insertIndex = -1
+  ) {
+    if (!componentConfig?.length) {
+      return;
+    }
+    componentConfig.forEach(({ name, dependency, id }, index) => {
+      this.dangerousInsertComponent(parentId, name, dependency, insertIndex === -1 ? -1 : insertIndex + index, {
+        customId: id
+      });
+    });
+  }
+
+  /**
+   *
+   * @param parentId
+   * @param index 如果是 -1，则从尾部开始算，删除 count 个组件
+   * @param count
+   */
+  @execute
+  deleteComponentsInBatch(parentId: string, index: number, count = 1) {
+    if (!this.componentExists(parentId)) {
+      return;
+    }
+    const { children } = this.dsl.componentIndexes[parentId];
+    if (!children?.length) {
+      return;
+    }
+    const startIndex: number = index === -1 ? Math.max(children.length - count, 0) : index;
+    const endIndex: number = index === -1 ? children.length - 1 : Math.min(index + count, children.length - 1);
+    for (let i = startIndex; i <= endIndex; i++) {
+      this.dangerousDeleteComponent(children[i].current);
+    }
   }
 
   fetchComponentInDSL(id: string) {

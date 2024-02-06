@@ -2,11 +2,12 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { Select, Typography } from 'antd';
 import { observer } from 'mobx-react';
 import { DSLStoreContext } from '@/hooks/context';
-import { ExpandThin, Minus, PlusThin } from '@/components/icon';
+import { Draggable, ExpandThin, Minus, PlusThin } from '@/components/icon';
 import IComponentSchema from '@/types/component.schema';
 import { ComponentId } from '@/types';
 
 import customFormStyle from '../../index.module.less';
+import { HighlightOutlined } from '@ant-design/icons';
 
 export default observer(function CustomFormForm() {
   const dslStore = useContext(DSLStoreContext);
@@ -31,6 +32,17 @@ export default observer(function CustomFormForm() {
     dslStore.deleteComponent(id);
   }
 
+  /**
+   * 编辑表单项名称
+   */
+  function handleEditingFormItemName(val: string, index: number) {
+    const form = dslStore.dsl.componentIndexes[dslStore.selectedComponent.id];
+    const formItem = dslStore.dsl.componentIndexes[form.children[index].current];
+    if (val.trim()) {
+      dslStore.updateComponentProps({ label: val.trim() }, formItem);
+    }
+  }
+
   function renderFormItems() {
     const component = dslStore.selectedComponent;
     if (!component) {
@@ -43,14 +55,14 @@ export default observer(function CustomFormForm() {
     const formItems = component.children.map(item => {
       return componentIndexes[item.current];
     });
-    return formItems.map(item => {
-      const { name, label } = dslStore.dsl.props[item.id];
+    return formItems.map((item, index) => {
+      const { label, name } = dslStore.dsl.props[item.id];
       const childRef = item.children[0];
       const childComponent = childRef ? componentIndexes[childRef.current] : null;
       return (
         <div className={customFormStyle.draggableFromItem} key={name.value as string}>
           <div className={customFormStyle.header}>
-            <span>*</span>
+            <Draggable />
             <Select
               value={childComponent?.configName}
               placeholder="请选择"
@@ -72,8 +84,18 @@ export default observer(function CustomFormForm() {
             <Minus className={customFormStyle.removeIcon} onClick={() => removeFormItem(item.id)} />
           </div>
           <div className={customFormStyle.config}>
-            <span>提示词</span>
-            <Typography.Text>{name.value as string}</Typography.Text>
+            <span>表单项名</span>
+            <Typography.Text
+              className={customFormStyle.textValue}
+              editable={{
+                icon: <HighlightOutlined />,
+                tooltip: 'click to edit text',
+                onChange: text => handleEditingFormItemName(text, index),
+                enterIcon: null
+              }}
+            >
+              {label.value as string}
+            </Typography.Text>
           </div>
         </div>
       );
