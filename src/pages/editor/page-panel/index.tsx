@@ -393,7 +393,7 @@ export default observer(function PagePanel({
           />
         </div>
       ) : null}
-      <div id="templatePortal" className={styles.templatePortals}>
+      <div id="templatePortal" className={styles.templatePortal}>
         {renderTemplateForCover()}
       </div>
     </div>
