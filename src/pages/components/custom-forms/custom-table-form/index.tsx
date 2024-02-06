@@ -273,6 +273,14 @@ export default observer(function CustomTableForm() {
       tableComponent.id,
       -1,
       () => {
+        // 修正 column props 中的 render 组件 id
+        const firstRow = dslStore.dsl.componentIndexes[dslStore.selectedComponent.id].children[0];
+        const columnRefs = dslStore.dsl.componentIndexes[firstRow.current].children;
+        columnRefs.forEach((item, index) => {
+          if (newColumns[index]) {
+            newColumns[index].render.current = item.current;
+          }
+        });
         dslStore.updateComponentProps({ columns: newColumns }, tableComponent);
       }
     );
