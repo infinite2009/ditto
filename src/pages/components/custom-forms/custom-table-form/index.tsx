@@ -233,7 +233,7 @@ export default observer(function CustomTableForm() {
 
   function generateNewTitle() {
     let nameSuffix = 1;
-    const namePrefix = 'name';
+    const namePrefix = '字段';
     let nameExists = titlesRef.current.some(item => item === `${namePrefix}${nameSuffix}`);
     while (nameExists) {
       nameSuffix++;
