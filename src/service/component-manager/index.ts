@@ -1608,15 +1608,6 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
       category: 'children'
     }
   },
-  Notification: {
-    configName: 'Notification',
-    dependency: 'antd',
-    component: Notification as unknown as FC,
-    category: '反馈',
-    title: '通知提醒框',
-    icon: CodeSandboxOutlined,
-    propsConfig: {}
-  },
   Popconfirm: {
     configName: 'Popconfirm',
     dependency: 'antd',
