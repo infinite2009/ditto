@@ -3,7 +3,7 @@ import { FC, ForwardedRef, useEffect, useState } from 'react';
 
 import styles from './index.module.less';
 import DraggableComponent from '@/pages/editor/component-panel/draggable-component-item';
-import { CaretRightOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CodeSandboxOutlined } from '@ant-design/icons';
 import ComponentManager from '@/service/component-manager';
 
 interface IComponentIconProps {
@@ -66,7 +66,11 @@ export default function ComponentPanel() {
           title={item.title}
         >
           <div className={styles.componentItem} key={item.key}>
-            <ComponentIcon className={styles.componentIcon} />
+            {ComponentIcon ? (
+              <ComponentIcon className={styles.componentIcon} />
+            ) : (
+              <CodeSandboxOutlined className={styles.defaultIcon} />
+            )}
             <p className={styles.componentTitle} title={item.title}>
               {item.title}
             </p>
