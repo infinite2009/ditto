@@ -42,7 +42,7 @@ export default interface IPropsSchema extends ISchema {
    * 如果存在 keyPath，里边的对应值会变成 template 的引用
    * 如果 valueSource 的值为 handler, 则 value 的值是一个 eventId
    */
-  value: string | boolean | number | Record<string, any> | ((...params: any[]) => any) | any[] | undefined;
+  value?: string | boolean | number | Record<string, any> | ((...params: any[]) => any) | any[] | undefined;
   /*
    * 这个值的来源
    * editorInput: 创建页面时编辑者输入的常量，会指导代码生成器生成常量声明和赋值代码，存入 const

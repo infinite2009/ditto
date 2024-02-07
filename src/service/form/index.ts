@@ -329,6 +329,37 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
         }
       }
     },
+    Select: {
+      configName: 'Select',
+      schema: {
+        basic: {
+          defaultValue: {
+            name: 'defaultValue',
+            type: 'string',
+            title: '值',
+            component: 'Input',
+            initialValue: ''
+          },
+          placeholder: {
+            name: 'placeholder',
+            type: 'string',
+            title: '提示词',
+            component: 'Input',
+            initialValue: '请选择'
+          },
+          options: {
+            name: 'options',
+            type: 'array',
+            title: '选项',
+            component: '',
+            initialValue: [
+              { label: '选项1', value: '0' },
+              { label: '选项2', value: '1' }
+            ]
+          }
+        }
+      }
+    },
     Amount: {
       configName: 'Amount',
       transformerStr: typographyTransformerStr,

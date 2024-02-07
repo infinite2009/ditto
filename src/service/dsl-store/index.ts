@@ -1127,6 +1127,9 @@ export default class DSLStore {
       console.error('未找到有效的组件配置: ', `name: ${name}, dependency: ${dependency}`);
       return;
     }
+    if (name === 'Select') {
+      debugger;
+    }
     this.currentParentNode = this.fetchComponentInDSL(parentId);
     if (this.currentParentNode) {
       const newComponentNode = this.createComponent(name, dependency, opt?.customId || '');

@@ -920,6 +920,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Anchor,
     category: '导航',
     title: '锚点',
+    isHidden: true,
     icon: CodeSandboxOutlined,
     propsConfig: {}
   },
@@ -928,6 +929,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     dependency: 'antd',
     component: Breadcrumb,
     category: '导航',
+    isHidden: true,
     title: '面包屑',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -937,6 +939,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     dependency: 'antd',
     component: Dropdown,
     category: '导航',
+    isHidden: true,
     title: '下拉菜单',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -946,6 +949,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     dependency: 'antd',
     component: Menu,
     category: '导航',
+    isHidden: true,
     title: '菜单导航',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -955,6 +959,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     dependency: 'antd',
     component: Pagination,
     category: '导航',
+    isHidden: true,
     title: '分页',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -964,6 +969,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     dependency: 'antd',
     component: Steps,
     category: '导航',
+    isHidden: true,
     title: '步骤条',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1173,7 +1179,28 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     category: '数据录入',
     title: '选择器',
     icon: CodeSandboxOutlined,
-    propsConfig: {}
+    propsConfig: {
+      defaultValue: {
+        schemaType: 'props',
+        title: '值',
+        id: 'defaultValue',
+        name: 'defaultValue',
+        category: 'basic',
+        isValue: true,
+        valueSource: 'userInput',
+        valueType: 'string'
+      },
+      options: {
+        schemaType: 'props',
+        title: '选项',
+        id: 'options',
+        name: 'options',
+        category: 'basic',
+        isValue: true,
+        valueSource: 'editorInput',
+        valueType: 'string'
+      }
+    }
   },
   Slider: {
     configName: 'Slider',
@@ -1761,7 +1788,23 @@ const defaultComponentValueConfig = {
     Mentions: {},
     Radio: {},
     Rate: {},
-    Select: {},
+    Select: {
+      defaultValue: '0',
+      options: [
+        {
+          value: '0',
+          label: '选项1'
+        },
+        {
+          value: '1',
+          label: '选项2'
+        },
+        {
+          value: '2',
+          label: '选项3'
+        }
+      ]
+    },
     Slider: {},
     Switch: {},
     TimePicker: {},
