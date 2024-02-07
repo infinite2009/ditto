@@ -66,7 +66,7 @@ export default function ComponentPanel() {
           title={item.title}
         >
           <div className={styles.componentItem} key={item.key}>
-            <div className={styles.componentIcon} />
+            <ComponentIcon className={styles.componentIcon} />
             <p className={styles.componentTitle} title={item.title}>
               {item.title}
             </p>

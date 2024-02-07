@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import IComponentSchema from '@/types/component.schema';
 import IPropsSchema from '@/types/props.schema';
 import { PropsFormTransformer } from '@/types/form-config';
@@ -23,7 +23,7 @@ export default interface IComponentConfig {
   isLayer?: boolean;
   isContainer?: boolean;
   title: string;
-  icon: React.ForwardRefExoticComponent<any> | null;
+  icon: FC<any>;
   category: string;
   propsConfig: {
     [key: string]: IPropsConfigItem;

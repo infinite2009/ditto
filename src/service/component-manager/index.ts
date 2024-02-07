@@ -56,6 +56,37 @@ import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import PageRoot from '@/components/page-root';
 import Container from '@/components/container';
 import { fetchCamelotComponentConfig } from '@/service/load-config/camelot';
+import {
+  AnchorIcon,
+  AvatarIcon,
+  BreadCrumbIcon,
+  ButtonIcon,
+  CarouselIcon,
+  CheckboxIcon,
+  CollapseIcon,
+  DatePickerIcon,
+  DrawerIcon,
+  EmptyIcon,
+  ImageIcon,
+  InputIcon,
+  ListIcon,
+  MenuNavigateIcon,
+  PaginationIcon,
+  PopoverIcon,
+  SearchIcon,
+  SelectIcon,
+  SliderIcon,
+  StepsIcon,
+  SwitchIcon,
+  TableIcon,
+  TabsIcon,
+  TagIcon,
+  TextIcon,
+  TitleIcon,
+  TransferIcon,
+  TreeSelectIcon,
+  UploadIcon
+} from '@/components/icon';
 
 const defaultStyleConfig: IPropsConfigItem = {
   id: 'style',
@@ -348,7 +379,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Button,
     category: '通用',
     title: '按钮',
-    icon: CodeSandboxOutlined,
+    icon: ButtonIcon,
     propsConfig: {
       type: {
         id: 'type',
@@ -458,7 +489,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Typography.Text,
     category: '通用',
     title: '文字',
-    icon: CodeSandboxOutlined,
+    icon: TextIcon,
     propsConfig: {
       style: {
         ...defaultStyleConfig
@@ -570,7 +601,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     category: '通用',
     title: '金额',
     isHidden: true,
-    icon: CodeSandboxOutlined,
+    icon: TextIcon,
     propsConfig: {
       style: {
         ...defaultStyleConfig
@@ -681,7 +712,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Typography.Paragraph,
     category: '通用',
     title: '段落',
-    icon: CodeSandboxOutlined,
+    icon: TextIcon,
     propsConfig: {
       style: {
         ...defaultStyleConfig
@@ -792,7 +823,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Typography.Title,
     category: '通用',
     title: '标题',
-    icon: CodeSandboxOutlined,
+    icon: TitleIcon,
     propsConfig: {
       style: {
         ...defaultStyleConfig
@@ -921,7 +952,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     category: '导航',
     title: '锚点',
     isHidden: true,
-    icon: CodeSandboxOutlined,
+    icon: AnchorIcon,
     propsConfig: {}
   },
   Breadcrumb: {
@@ -931,7 +962,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     category: '导航',
     isHidden: true,
     title: '面包屑',
-    icon: CodeSandboxOutlined,
+    icon: BreadCrumbIcon,
     propsConfig: {}
   },
   Dropdown: {
@@ -951,7 +982,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     category: '导航',
     isHidden: true,
     title: '菜单导航',
-    icon: CodeSandboxOutlined,
+    icon: MenuNavigateIcon,
     propsConfig: {}
   },
   Pagination: {
@@ -961,7 +992,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     category: '导航',
     isHidden: true,
     title: '分页',
-    icon: CodeSandboxOutlined,
+    icon: PaginationIcon,
     propsConfig: {}
   },
   Steps: {
@@ -971,7 +1002,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     category: '导航',
     isHidden: true,
     title: '步骤条',
-    icon: CodeSandboxOutlined,
+    icon: StepsIcon,
     propsConfig: {}
   },
   Input: {
@@ -981,7 +1012,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Input,
     category: '数据录入',
     title: '输入框',
-    icon: CodeSandboxOutlined,
+    icon: InputIcon,
     propsConfig: {
       value: {
         id: 'value',
@@ -1013,7 +1044,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     importName: 'Input',
     category: '数据录入',
     title: '搜索框',
-    icon: CodeSandboxOutlined,
+    icon: SearchIcon,
     propsConfig: {}
   },
   'Input.TextArea': {
@@ -1024,7 +1055,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Input.TextArea,
     category: '数据录入',
     title: '多行文本',
-    icon: CodeSandboxOutlined,
+    icon: InputIcon,
     propsConfig: {}
   },
   'Input.Password': {
@@ -1035,7 +1066,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     importName: 'Input',
     category: '数据录入',
     title: '密码框',
-    icon: CodeSandboxOutlined,
+    icon: InputIcon,
     propsConfig: {}
   },
   InputNumber: {
@@ -1044,7 +1075,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: InputNumber,
     category: '数据录入',
     title: '数字输入框',
-    icon: CodeSandboxOutlined,
+    icon: InputIcon,
     propsConfig: {}
   },
   Cascader: {
@@ -1062,7 +1093,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Checkbox,
     category: '数据录入',
     title: '多选框',
-    icon: CodeSandboxOutlined,
+    icon: CheckboxIcon,
     propsConfig: {}
   },
   ColorPicker: {
@@ -1080,7 +1111,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: DatePicker as unknown as FC,
     category: '数据录入',
     title: '日期选择器',
-    icon: CodeSandboxOutlined,
+    icon: DatePickerIcon,
     propsConfig: {}
   },
   RangePicker: {
@@ -1089,7 +1120,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: DatePicker as unknown as FC,
     category: '数据录入',
     title: '时间范围选择器',
-    icon: CodeSandboxOutlined,
+    icon: DatePickerIcon,
     propsConfig: {}
   },
   Form: {
@@ -1178,7 +1209,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Select,
     category: '数据录入',
     title: '选择器',
-    icon: CodeSandboxOutlined,
+    icon: SelectIcon,
     propsConfig: {
       defaultValue: {
         schemaType: 'props',
@@ -1208,7 +1239,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Slider,
     category: '数据录入',
     title: '滑动输入条',
-    icon: CodeSandboxOutlined,
+    icon: SliderIcon,
     propsConfig: {}
   },
   Switch: {
@@ -1217,7 +1248,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Switch,
     category: '数据录入',
     title: '开关',
-    icon: CodeSandboxOutlined,
+    icon: SwitchIcon,
     propsConfig: {}
   },
   TimePicker: {
@@ -1226,7 +1257,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: TimePicker,
     category: '数据录入',
     title: '时间选择器',
-    icon: CodeSandboxOutlined,
+    icon: DatePickerIcon,
     propsConfig: {}
   },
   Transfer: {
@@ -1235,7 +1266,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Transfer,
     category: '数据录入',
     title: '穿梭框',
-    icon: CodeSandboxOutlined,
+    icon: TransferIcon,
     propsConfig: {}
   },
   TreeSelect: {
@@ -1244,7 +1275,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: TreeSelect,
     category: '数据录入',
     title: '树选择',
-    icon: CodeSandboxOutlined,
+    icon: TreeSelectIcon,
     propsConfig: {}
   },
   Upload: {
@@ -1253,7 +1284,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Upload,
     category: '数据录入',
     title: '上传',
-    icon: CodeSandboxOutlined,
+    icon: UploadIcon,
     propsConfig: {}
   },
   Avatar: {
@@ -1262,7 +1293,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Avatar,
     category: '数据展示',
     title: '头像',
-    icon: CodeSandboxOutlined,
+    icon: AvatarIcon,
     propsConfig: {}
   },
   // TODO:
@@ -1299,7 +1330,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Carousel,
     category: '数据展示',
     title: '走马灯',
-    icon: CodeSandboxOutlined,
+    icon: CarouselIcon,
     propsConfig: {}
   },
   Collapse: {
@@ -1308,7 +1339,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Collapse,
     category: '数据展示',
     title: '折叠面板',
-    icon: CodeSandboxOutlined,
+    icon: CollapseIcon,
     propsConfig: {}
   },
   Descriptions: {
@@ -1326,7 +1357,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Empty,
     category: '数据展示',
     title: '空状态',
-    icon: CodeSandboxOutlined,
+    icon: EmptyIcon,
     propsConfig: {}
   },
   Image: {
@@ -1335,7 +1366,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Image as unknown as FC,
     category: '数据展示',
     title: '图片',
-    icon: CodeSandboxOutlined,
+    icon: ImageIcon,
     propsConfig: {}
   },
   List: {
@@ -1344,7 +1375,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     category: '数据展示',
     title: '列表',
     dependency: 'antd',
-    icon: CodeSandboxOutlined,
+    icon: ListIcon,
     propsConfig: {}
   },
   Popover: {
@@ -1353,7 +1384,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Popover,
     category: '数据展示',
     title: '气泡卡片',
-    icon: CodeSandboxOutlined,
+    icon: PopoverIcon,
     propsConfig: {}
   },
   Statistic: {
@@ -1372,7 +1403,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Table,
     category: '数据展示',
     title: '表格',
-    icon: CodeSandboxOutlined,
+    icon: TableIcon,
     propsConfig: {
       style: {
         ...defaultStyleConfig
@@ -1466,7 +1497,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Tabs,
     category: '数据展示',
     title: '标签页',
-    icon: CodeSandboxOutlined,
+    icon: TabsIcon,
     propsConfig: {
       items: {
         id: 'items',
@@ -1524,7 +1555,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     category: '数据展示',
     title: '标签',
     dependency: 'antd',
-    icon: CodeSandboxOutlined,
+    icon: TagIcon,
     propsConfig: {
       color: {
         id: 'color',
@@ -1550,7 +1581,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Tooltip,
     category: '数据展示',
     title: '文字提示',
-    icon: CodeSandboxOutlined,
+    icon: PopoverIcon,
     propsConfig: {}
   },
   Tree: {
@@ -1559,7 +1590,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Tree,
     category: '数据展示',
     title: '树形控件',
-    icon: CodeSandboxOutlined,
+    icon: TreeSelectIcon,
     propsConfig: {}
   },
   Alert: {
@@ -1578,7 +1609,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     isLayer: true,
     category: '反馈',
     title: '抽屉',
-    icon: CodeSandboxOutlined,
+    icon: DrawerIcon,
     propsConfig: {
       open: {
         id: 'open',
@@ -1605,7 +1636,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     category: '反馈',
     title: '模态框',
     isLayer: true,
-    icon: CodeSandboxOutlined,
+    icon: TitleIcon,
     propsConfig: {
       title: {
         id: 'title',
@@ -1650,6 +1681,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Result,
     category: '反馈',
     title: '结果',
+    isHidden: true,
     icon: CodeSandboxOutlined,
     propsConfig: {}
   },
@@ -1658,6 +1690,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     dependency: 'antd',
     component: Affix as unknown as FC,
     category: '其他',
+    isHidden: true,
     title: '固定',
     icon: CodeSandboxOutlined,
     propsConfig: {}
@@ -1665,6 +1698,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
   FloatButton: {
     configName: 'FloatButton',
     dependency: 'antd',
+    isHidden: true,
     component: FloatButton as unknown as FC,
     category: '通用',
     title: '浮动按钮',

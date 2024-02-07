@@ -322,20 +322,122 @@ export function DashedLine(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-xiankuang-xuxian" />;
 }
 
-export function Pagination(props: Omit<IconFontProps, 'type'>) {
+export function DatePickerIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-rili" />;
+}
+
+export function PaginationIcon(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-fenye" />;
 }
 
-export function List(props: Omit<IconFontProps, 'type'>) {
+export function ListIcon(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-liebiao" />;
 }
 
-export function Anchor(props: Omit<IconFontProps, 'type'>) {
+export function AnchorIcon(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-maodian" />;
 }
-export function Empty(props: Omit<IconFontProps, 'type'>) {
+
+export function EmptyIcon(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-kongtai" />;
 }
-export function Checkbox(props: Omit<IconFontProps, 'type'>) {
+
+export function CheckboxIcon(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-gouxuankuang" />;
+}
+
+export function TableIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-biaoge" />;
+}
+
+export function SwitchIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-kaiguan" />;
+}
+
+export function MenuNavigateIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-caidandaohang" />;
+}
+
+export function TitleIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-biaoti" />;
+}
+
+export function DrawerIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-chouti" />;
+}
+
+export function SliderIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-huatiao" />;
+}
+
+export function TabsIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-tab" />;
+}
+
+export function CollapseIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-zhedieliebiao" />;
+}
+
+export function CarouselIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-zoumadeng" />;
+}
+
+export function SelectIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-xuanzekuang" />;
+}
+
+export function ImageIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-tupian" />;
+}
+
+export function TextIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-wenzi" />;
+}
+
+export function AvatarIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-touxiang" />;
+}
+
+export function TreeSelectIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-shuxuanze" />;
+}
+
+export function TagIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-biaoqian" />;
+}
+
+export function RateIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-pingfen" />;
+}
+
+export function SearchIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-sousuokuang" />;
+}
+
+export function StepsIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-buzhoutiao" />;
+}
+
+export function InputIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-shurukuang" />;
+}
+
+export function PopoverIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-qipaokapian" />;
+}
+
+export function UploadIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-shangchuan" />;
+}
+
+export function TransferIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-chuansuokuang" />;
+}
+
+export function BreadCrumbIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-mianbaoxie" />;
+}
+
+export function ButtonIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-anniu" />;
 }
