@@ -3,7 +3,7 @@ import { IconFontProps } from '@ant-design/icons/lib/components/IconFont';
 
 export const Icon = createFromIconfontCN({
   // 必需要使用 https 协议，否则会使用 tauri 协议
-  scriptUrl: 'https://at.alicdn.com/t/c/font_4341626_14u2hmnkprf.js'
+  scriptUrl: 'https://at.alicdn.com/t/c/font_4341626_d9a30ya6rip.js'
 });
 
 export function Draggable(props: Omit<IconFontProps, 'type'>) {
@@ -320,4 +320,22 @@ export function Italic(props: Omit<IconFontProps, 'type'>) {
 
 export function DashedLine(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-xiankuang-xuxian" />;
+}
+
+export function Pagination(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-fenye" />;
+}
+
+export function List(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-liebiao" />;
+}
+
+export function Anchor(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-maodian" />;
+}
+export function Empty(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-kongtai" />;
+}
+export function Checkbox(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-gouxuankuang" />;
 }
