@@ -17,7 +17,7 @@ interface IComponentInfo {
   name: string;
   icon: ForwardedRef<any>;
   dependency: string;
-  category: string;
+  categories: string[];
 }
 
 export default function ComponentPanel() {
@@ -43,13 +43,16 @@ export default function ComponentPanel() {
           isLayer: item.isLayer,
           name: item.configName,
           dependency: item.dependency,
-          category: item.category
+          categories: item.categories
         } as unknown as IComponentInfo;
       });
     const result: Record<string, IComponentInfo[]> = {};
+    console.log('list: ', list);
     list.forEach((item: IComponentInfo) => {
-      result[item.category] = result[item.category] || [];
-      result[item.category].push(item);
+      (item.categories || ['未知']).forEach(category => {
+        result[category] = result[category] || [];
+        result[category].push(item);
+      });
     });
     setComponentListByCategory(result);
   }

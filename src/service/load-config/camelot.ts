@@ -63,9 +63,9 @@ export async function fetchCamelotComponentConfig() {
           configName: item.tag,
           dependency: 'camelot',
           component: createCamelotComponent(item.tag, item.esm),
-          category: '用户技术中心专用',
+          categories: ['用户技术中心专用'],
           title: item.title,
-          icon: CodeSandboxOutlined,
+          icon: null,
           propsConfig: propsConfig,
           noImport: true
         }

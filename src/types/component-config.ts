@@ -24,7 +24,7 @@ export default interface IComponentConfig {
   isContainer?: boolean;
   title: string;
   icon: FC<any>;
-  category: string;
+  categories: string[];
   propsConfig: {
     [key: string]: IPropsConfigItem;
   };
