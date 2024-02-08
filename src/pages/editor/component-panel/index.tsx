@@ -1,4 +1,4 @@
-import { Collapse, Input } from 'antd';
+import { Collapse, Input, Tooltip } from 'antd';
 import { FC, ForwardedRef, useEffect, useState } from 'react';
 
 import styles from './index.module.less';
@@ -65,16 +65,18 @@ export default function ComponentPanel() {
           dependency={item.dependency}
           title={item.title}
         >
-          <div className={styles.componentItem} key={item.key}>
-            {ComponentIcon ? (
-              <ComponentIcon className={styles.componentIcon} />
-            ) : (
-              <CodeSandboxOutlined className={styles.defaultIcon} />
-            )}
-            <p className={styles.componentTitle} title={item.title}>
-              {item.title}
-            </p>
-          </div>
+          <Tooltip title={item.title} key={item.key}>
+            <div className={styles.componentItem}>
+              {ComponentIcon ? (
+                <ComponentIcon className={styles.componentIcon} />
+              ) : (
+                <CodeSandboxOutlined className={styles.defaultIcon} />
+              )}
+              <p className={styles.componentTitle} title={item.title}>
+                {item.title}
+              </p>
+            </div>
+          </Tooltip>
         </DraggableComponent>
       );
     });
