@@ -3,6 +3,7 @@ import IComponentConfig from '@/types/component-config';
 import IFormConfig, { FormItemSchema } from '@/types/form-config';
 import { CodeSandboxOutlined } from '@ant-design/icons';
 import { fetch } from '@tauri-apps/api/http';
+import { ComponentDefaultIcon } from '@/components/icon';
 
 interface PropsConfig {
   description: string;
@@ -65,7 +66,7 @@ export async function fetchCamelotComponentConfig() {
           component: createCamelotComponent(item.tag, item.esm),
           categories: ['用户技术中心专用'],
           title: item.title,
-          icon: null,
+          icon: ComponentDefaultIcon,
           propsConfig: propsConfig,
           noImport: true
         }

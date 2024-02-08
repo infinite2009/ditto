@@ -3,7 +3,7 @@ import { IconFontProps } from '@ant-design/icons/lib/components/IconFont';
 
 export const Icon = createFromIconfontCN({
   // 必需要使用 https 协议，否则会使用 tauri 协议
-  scriptUrl: 'https://at.alicdn.com/t/c/font_4341626_d9a30ya6rip.js'
+  scriptUrl: 'https://at.alicdn.com/t/c/font_4341626_xu0abgaklhb.js'
 });
 
 export function Draggable(props: Omit<IconFontProps, 'type'>) {
@@ -440,4 +440,20 @@ export function BreadCrumbIcon(props: Omit<IconFontProps, 'type'>) {
 
 export function ButtonIcon(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-anniu" />;
+}
+
+export function HorizontalFlexIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-shuipingrongqi" />;
+}
+
+export function VerticalFlexIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-chuizhirongqi" />;
+}
+
+export function ComponentDefaultIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-morenzujian" />;
+}
+
+export function FormIcon(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-biaodan" />;
 }

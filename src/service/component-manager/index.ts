@@ -63,9 +63,12 @@ import {
   CarouselIcon,
   CheckboxIcon,
   CollapseIcon,
+  ComponentDefaultIcon,
   DatePickerIcon,
   DrawerIcon,
   EmptyIcon,
+  FormIcon,
+  HorizontalFlexIcon,
   ImageIcon,
   InputIcon,
   ListIcon,
@@ -84,7 +87,8 @@ import {
   TitleIcon,
   TransferIcon,
   TreeSelectIcon,
-  UploadIcon
+  UploadIcon,
+  VerticalFlexIcon
 } from '@/components/icon';
 
 const defaultStyleConfig: IPropsConfigItem = {
@@ -169,7 +173,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     dependency: 'antd',
     component: PageRoot,
     title: '页面',
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {
       style: {
         ...defaultStyleConfig,
@@ -235,7 +239,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     isContainer: true,
     categories: ['常用'],
     title: '水平弹性布局',
-    icon: null,
+    icon: HorizontalFlexIcon,
     component: Container,
     propsConfig: {
       style: {
@@ -307,7 +311,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     isContainer: true,
     categories: ['常用'],
     title: '垂直弹性布局',
-    icon: null,
+    icon: VerticalFlexIcon,
     component: Container,
     propsConfig: {
       style: {
@@ -934,7 +938,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Divider,
     categories: ['常用'],
     title: '分割线',
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Anchor: {
@@ -962,7 +966,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['导航'],
     isHidden: true,
     title: '下拉菜单',
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Menu: {
@@ -1073,7 +1077,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Cascader,
     categories: ['常用', '信息录入'],
     title: '级联选择',
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Checkbox: {
@@ -1092,7 +1096,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['数据录入'],
     title: '颜色选择器',
     isHidden: true,
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   DatePicker: {
@@ -1119,7 +1123,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['信息录入'],
     title: '表单',
     dependency: 'antd',
-    icon: null,
+    icon: FormIcon,
     propsConfig: {},
     children: {
       value: [],
@@ -1135,7 +1139,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['信息录入'],
     title: '表单项',
     dependency: 'antd',
-    icon: null,
+    icon: ComponentDefaultIcon,
     isHidden: true,
     propsConfig: {
       name: {
@@ -1172,7 +1176,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Mentions,
     categories: ['信息录入'],
     title: '提及',
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Radio: {
@@ -1181,7 +1185,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Radio,
     categories: ['信息录入'],
     title: '单选框',
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Rate: {
@@ -1190,7 +1194,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['信息录入'],
     title: '评分',
     dependency: 'antd',
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Select: {
@@ -1294,7 +1298,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['数据展示'],
     title: '徽标数',
     isHidden: true,
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Calendar: {
@@ -1303,7 +1307,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Calendar,
     categories: ['数据展示'],
     title: '日历',
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Card: {
@@ -1313,7 +1317,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     title: '卡片',
     dependency: 'antd',
     isHidden: true,
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Carousel: {
@@ -1340,7 +1344,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Descriptions,
     categories: ['数据展示'],
     title: '描述列表',
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Empty: {
@@ -1386,7 +1390,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['数据展示'],
     title: '统计数值',
     isHidden: true,
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Table: {
@@ -1594,7 +1598,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['反馈'],
     title: '警告提示',
     isHidden: true,
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Drawer: {
@@ -1629,7 +1633,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     dependency: 'antd',
     component: Modal,
     categories: ['反馈'],
-    title: '模态框',
+    title: '弹窗',
     isLayer: true,
     icon: TitleIcon,
     propsConfig: {
@@ -1668,7 +1672,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['反馈'],
     title: '气泡确认框',
     isHidden: true,
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Result: {
@@ -1678,7 +1682,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['反馈'],
     title: '结果',
     isHidden: true,
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   Affix: {
@@ -1688,7 +1692,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['其他'],
     isHidden: true,
     title: '固定',
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   },
   FloatButton: {
@@ -1698,7 +1702,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: FloatButton as unknown as FC,
     categories: ['通用'],
     title: '浮动按钮',
-    icon: null,
+    icon: ComponentDefaultIcon,
     propsConfig: {}
   }
 };
