@@ -4,6 +4,7 @@ import { FormSchema } from '@/types/form-config';
 import { useForm } from 'antd/es/form/Form';
 
 import style from './index.module.less';
+import { typeOf } from '@/util';
 
 export interface IBasicFormProps {
   onChange: (value: Record<string, any>) => void;
@@ -38,7 +39,14 @@ export default function BasicForm({ value, onChange, formSchema }: IBasicFormPro
       return null;
     }
     return Object.entries(formSchema).map(([name, config]) => {
-      const Component = formItemDict[config.component];
+      const Component = typeOf(config.component === 'string')
+        ? formItemDict[config.component as string]
+        : config.component;
+      if (!Component) {
+        <Form.Item key={name} label={config.title} name={name} help={config.help}>
+          <div>错误：不存在的表单项组件</div>
+        </Form.Item>;
+      }
       return (
         <Form.Item key={name} label={config.title} name={name} help={config.help}>
           <Component {...config.componentProps} />

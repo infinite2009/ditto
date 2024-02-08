@@ -7,7 +7,7 @@ import { FC } from 'react';
 export type PropsFormTransformer = string;
 
 export interface FormItemSchema {
-  component: string;
+  component: string | FC<any>;
   componentProps?: {
     [key: string]: any;
   };

@@ -29,7 +29,7 @@ export default function CustomComponentPanel() {
     const components = Object.values(ComponentManager.componentConfigList).map(item => Object.values(item));
     const result = components
       .flat(1)
-      .filter(item => item.category === 'custom')
+      .filter(item => item.categories.includes('custom'))
       .map(item => {
         return {
           key: item.configName,

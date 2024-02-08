@@ -4,6 +4,7 @@ import CustomTabForm from '@/pages/components/custom-forms/custom-tab-form';
 import { FC } from 'react';
 import CustomTableForm from '@/pages/components/custom-forms/custom-table-form';
 import CustomFormForm from '@/pages/components/custom-forms/custom-form-form';
+import SelectOptions from '@/pages/editor/form-panel/basic-form/select-options';
 
 const flexTransformerStr =
   'return (values => {' +
@@ -351,7 +352,7 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
             name: 'options',
             type: 'array',
             title: '选项',
-            component: '',
+            component: SelectOptions,
             initialValue: [
               { label: '选项1', value: '0' },
               { label: '选项2', value: '1' }
