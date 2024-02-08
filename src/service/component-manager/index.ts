@@ -709,6 +709,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     callingName: 'Typography.Paragraph',
     dependency: 'antd',
     component: Typography.Paragraph,
+    isHidden: true,
     category: '通用',
     title: '段落',
     icon: TextIcon,
@@ -820,6 +821,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     callingName: 'Typography.Title',
     dependency: 'antd',
     component: Typography.Title,
+    isHidden: true,
     category: '通用',
     title: '标题',
     icon: TitleIcon,
@@ -1101,6 +1103,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: ColorPicker,
     category: '数据录入',
     title: '颜色选择器',
+    isHidden: true,
     icon: null,
     propsConfig: {}
   },
@@ -1302,6 +1305,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Badge,
     category: '数据展示',
     title: '徽标数',
+    isHidden: true,
     icon: null,
     propsConfig: {}
   },
@@ -1320,6 +1324,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     category: '数据展示',
     title: '卡片',
     dependency: 'antd',
+    isHidden: true,
     icon: null,
     propsConfig: {}
   },
@@ -1384,6 +1389,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     category: '数据展示',
     title: '气泡卡片',
     icon: PopoverIcon,
+    isHidden: true,
     propsConfig: {}
   },
   Statistic: {
@@ -1392,6 +1398,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Statistic,
     category: '数据展示',
     title: '统计数值',
+    isHidden: true,
     icon: null,
     propsConfig: {}
   },
@@ -1581,6 +1588,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     category: '数据展示',
     title: '文字提示',
     icon: PopoverIcon,
+    isHidden: true,
     propsConfig: {}
   },
   Tree: {
@@ -1671,6 +1679,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     component: Popconfirm as unknown as FC,
     category: '反馈',
     title: '气泡确认框',
+    isHidden: true,
     icon: null,
     propsConfig: {}
   },
