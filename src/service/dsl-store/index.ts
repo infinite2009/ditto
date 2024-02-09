@@ -213,6 +213,8 @@ export default class DSLStore {
     if (Object.keys(this.dsl.componentIndexes).length === 1) {
       return;
     }
+    this.hiddenComponentDict = {};
+    this.currentParentNode = null;
     this.createEmptyDSL(this.dsl.name);
   }
 
