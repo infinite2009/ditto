@@ -487,7 +487,9 @@ export default class DSLStore {
     insertIndex = -1,
     opt: { customId: string } = undefined
   ) {
-    return this.dangerousInsertComponent(parentId, name, dependency, insertIndex, opt);
+    const component = this.dangerousInsertComponent(parentId, name, dependency, insertIndex, opt);
+    this.selectComponent(component.id);
+    return component;
   }
 
   @execute
