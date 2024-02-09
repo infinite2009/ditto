@@ -1726,7 +1726,8 @@ const defaultComponentValueConfig = {
     },
     HorizontalFlex: {
       style: {
-        padding: 8
+        padding: 8,
+        alignSelf: 'stretch'
       },
       vertical: false,
       wrap: 'nowrap',
@@ -1863,6 +1864,9 @@ const defaultComponentValueConfig = {
     Popover: {},
     Statistic: {},
     Table: {
+      style: {
+        alignSelf: 'stretch'
+      },
       columns: [
         {
           title: 'Name',
@@ -1884,6 +1888,9 @@ const defaultComponentValueConfig = {
       ]
     },
     Tabs: {
+      style: {
+        alignSelf: 'stretch'
+      },
       items: [
         {
           key: '1',
