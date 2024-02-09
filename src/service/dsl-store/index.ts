@@ -16,7 +16,6 @@ import InsertType from '@/types/insert-type';
 import fileManager from '@/service/file';
 import { exists } from '@tauri-apps/api/fs';
 import ComponentManager from '@/service/component-manager';
-import { start } from 'repl';
 
 type FormValue = {
   style: CSSProperties;
@@ -309,7 +308,7 @@ export default class DSLStore {
         children = [
           {
             current: emptyContainer.id,
-            configName: componentConfig.configName,
+            configName: emptyContainer.configName,
             isText: false
           }
         ];
@@ -1126,9 +1125,6 @@ export default class DSLStore {
     if (!componentConfig) {
       console.error('未找到有效的组件配置: ', `name: ${name}, dependency: ${dependency}`);
       return;
-    }
-    if (name === 'Select') {
-      debugger;
     }
     this.currentParentNode = this.fetchComponentInDSL(parentId);
     if (this.currentParentNode) {

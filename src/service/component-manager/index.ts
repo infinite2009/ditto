@@ -36,7 +36,6 @@ import {
   Result,
   Select,
   Slider,
-  Space,
   Statistic,
   Steps,
   Switch,
@@ -1615,9 +1614,17 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
         schemaType: 'props',
         name: 'open',
         title: '显示',
-        value: true,
         valueType: 'boolean',
         valueSource: 'userInput',
+        category: 'basic'
+      },
+      title: {
+        id: 'title',
+        schemaType: 'props',
+        name: 'title',
+        title: '标题',
+        valueType: 'string',
+        valueSource: 'editorInput',
         category: 'basic'
       }
     },
@@ -1642,7 +1649,6 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
         schemaType: 'props',
         name: 'title',
         title: '标题',
-        value: '新建弹窗',
         valueType: 'string',
         valueSource: 'editorInput',
         category: 'basic'
@@ -1651,8 +1657,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
         id: 'open',
         schemaType: 'props',
         name: 'open',
-        title: '打开窗口',
-        value: true,
+        title: '显示',
         valueType: 'boolean',
         valueSource: 'userInput',
         category: 'basic'
@@ -1895,6 +1900,7 @@ const defaultComponentValueConfig = {
     Tree: {},
     Alert: {},
     Drawer: {
+      title: '新建抽屉',
       open: true
     },
     Modal: {
