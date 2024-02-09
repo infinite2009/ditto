@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import { DSLStoreContext } from '@/hooks/context';
 
@@ -18,7 +18,7 @@ type Option = {
   value: string;
 };
 
-export default observer(function SelectOptions({ title = '选项' }: ISelectOptionsProps) {
+export default observer(function SelectOptions({ title = '' }: ISelectOptionsProps) {
   const dslStore = useContext(DSLStoreContext);
 
   function generateNewValue() {
@@ -81,6 +81,7 @@ export default observer(function SelectOptions({ title = '选项' }: ISelectOpti
       label: generateNewLabel(),
       value: generateNewValue()
     });
+    dslStore.updateComponentProps({ options: copy }, dslStore.selectedComponent);
   }
 
   function renderOptions() {
@@ -88,9 +89,6 @@ export default observer(function SelectOptions({ title = '选项' }: ISelectOpti
     return ((options.value as { value: string; label: string }[]) || []).map((option, index) => {
       return (
         <div className={styles.optionContainer} key={index}>
-          <div className={styles.header}>
-            <Minus className={styles.removeIcon} onClick={() => removeOption(index)} />
-          </div>
           <div className={styles.option}>
             <span>选项名：</span>
             <Typography.Text
@@ -103,6 +101,7 @@ export default observer(function SelectOptions({ title = '选项' }: ISelectOpti
             >
               {option.label}
             </Typography.Text>
+            <Minus className={styles.removeIcon} onClick={() => removeOption(index)} />
           </div>
           <div className={styles.option}>
             <span>选项值：</span>
@@ -126,7 +125,7 @@ export default observer(function SelectOptions({ title = '选项' }: ISelectOpti
     <div className={styles.selectOptions}>
       <div className={styles.header}>
         <span>{title}</span>
-        <PlusThin onClick={addOption} />
+        <PlusThin className={styles.addIcon} onClick={addOption} />
       </div>
       {renderOptions()}
     </div>
