@@ -36,7 +36,7 @@ const CustomListForm = observer(() => {
     const { dataSource } = dslStore.dsl.props[dslStore.selectedComponent.id];
     return (dataSource.value as Record<string, any>[]).map((item, index) => {
       return (
-        <div key={index}>
+        <div key={index} className={styles.dataItem}>
           <span>数据项{index + 1}</span>
           <Minus className={styles.removeIcon} onClick={() => removeDataItem(index)} />
         </div>
@@ -45,7 +45,7 @@ const CustomListForm = observer(() => {
   }
 
   return (
-    <div>
+    <div className={styles.customListForm}>
       <div className={styles.header}>
         <PlusThin className={styles.addIcon} onClick={addDataItem} />
       </div>
