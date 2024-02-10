@@ -1006,13 +1006,21 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     title: '输入框',
     icon: InputIcon,
     propsConfig: {
-      value: {
-        id: 'value',
+      style: {
+        id: 'style',
         schemaType: 'props',
-        name: 'value',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
+      defaultValue: {
+        id: 'defaultValue',
+        schemaType: 'props',
+        name: 'defaultValue',
         title: '值',
         category: 'basic',
-        value: '',
         valueType: 'string',
         valueSource: 'editorInput'
       },
@@ -1037,7 +1045,37 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['常用', '信息录入'],
     title: '搜索框',
     icon: SearchIcon,
-    propsConfig: {}
+    propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
+      defaultValue: {
+        id: 'defaultValue',
+        schemaType: 'props',
+        name: 'defaultValue',
+        title: '值',
+        category: 'basic',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      placeholder: {
+        id: 'placeholder',
+        schemaType: 'props',
+        name: 'placeholder',
+        title: '提示词',
+        category: 'basic',
+        value: '请输入',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      }
+    }
   },
   'Input.TextArea': {
     configName: 'Input.TextArea',
@@ -1048,7 +1086,37 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['常用', '信息录入'],
     title: '多行文本',
     icon: InputIcon,
-    propsConfig: {}
+    propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
+      defaultValue: {
+        id: 'defaultValue',
+        schemaType: 'props',
+        name: 'defaultValue',
+        title: '值',
+        category: 'basic',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      placeholder: {
+        id: 'placeholder',
+        schemaType: 'props',
+        name: 'placeholder',
+        title: '提示词',
+        category: 'basic',
+        value: '请输入',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      }
+    }
   },
   'Input.Password': {
     configName: 'Input.Password',
@@ -1059,7 +1127,37 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['常用', '信息录入'],
     title: '密码框',
     icon: InputIcon,
-    propsConfig: {}
+    propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
+      defaultValue: {
+        id: 'defaultValue',
+        schemaType: 'props',
+        name: 'defaultValue',
+        title: '值',
+        category: 'basic',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      placeholder: {
+        id: 'placeholder',
+        schemaType: 'props',
+        name: 'placeholder',
+        title: '提示词',
+        category: 'basic',
+        value: '请输入',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      }
+    }
   },
   InputNumber: {
     configName: 'InputNumber',
@@ -1068,7 +1166,37 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['常用', '信息录入'],
     title: '数字输入框',
     icon: InputIcon,
-    propsConfig: {}
+    propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
+      defaultValue: {
+        id: 'defaultValue',
+        schemaType: 'props',
+        name: 'defaultValue',
+        title: '值',
+        category: 'basic',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      },
+      placeholder: {
+        id: 'placeholder',
+        schemaType: 'props',
+        name: 'placeholder',
+        title: '提示词',
+        category: 'basic',
+        value: '请输入',
+        valueType: 'string',
+        valueSource: 'editorInput'
+      }
+    }
   },
   Cascader: {
     configName: 'Cascader',
@@ -1077,7 +1205,18 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     categories: ['常用', '信息录入'],
     title: '级联选择',
     icon: ComponentDefaultIcon,
-    propsConfig: {}
+    propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      }
+    }
   },
   Checkbox: {
     configName: 'Checkbox',
@@ -1372,6 +1511,16 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     dependency: 'antd',
     icon: ListIcon,
     propsConfig: {
+      style: {
+        id: 'style',
+        schemaType: 'props',
+        name: 'style',
+        title: '样式',
+        category: 'style',
+        value: {},
+        valueType: 'object',
+        valueSource: 'editorInput'
+      },
       dataSource: {
         schemaType: 'props',
         title: '数据源',
@@ -1845,13 +1994,26 @@ const defaultComponentValueConfig = {
     Pagination: {},
     Steps: {},
     Input: {
-      value: '',
+      style: {},
       placeholder: '请输入'
     },
-    'Input.Search': {},
-    'Input.TextArea': {},
-    'Input.Password': {},
-    InputNumber: {},
+    'Input.Search': {
+      style: {},
+      placeholder: '请输入'
+    },
+    'Input.TextArea': {
+      style: {},
+      placeholder: '请输入'
+    },
+    'Input.Password': {
+      style: {},
+      placeholder: '请输入'
+    },
+    InputNumber: {
+      style: {},
+      defaultValue: 0,
+      placeholder: '请输入'
+    },
     Cascader: {},
     Checkbox: {},
     ColorPicker: {},

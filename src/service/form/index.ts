@@ -467,11 +467,98 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
     Input: {
       configName: 'Input',
       schema: {
+        style: {
+          layout: {
+            width: true,
+            height: true
+          }
+        },
         basic: {
-          value: {
-            name: 'value',
+          defaultValue: {
+            name: 'defaultValue',
             type: 'string',
-            title: '值',
+            title: '默认值',
+            component: 'Input',
+            initialValue: ''
+          },
+          placeholder: {
+            name: 'template',
+            type: 'string',
+            title: '提示词',
+            component: 'Input',
+            initialValue: '请输入'
+          }
+        }
+      }
+    },
+    'Input.Search': {
+      configName: 'Input.Search',
+      schema: {
+        style: {
+          layout: {
+            width: true,
+            height: true
+          }
+        },
+        basic: {
+          defaultValue: {
+            name: 'defaultValue',
+            type: 'string',
+            title: '默认值',
+            component: 'Input',
+            initialValue: ''
+          },
+          placeholder: {
+            name: 'template',
+            type: 'string',
+            title: '提示词',
+            component: 'Input',
+            initialValue: '请输入'
+          }
+        }
+      }
+    },
+    'Input.TextArea': {
+      configName: 'Input.TextArea',
+      schema: {
+        style: {
+          layout: {
+            width: true,
+            height: true
+          }
+        },
+        basic: {
+          defaultValue: {
+            name: 'defaultValue',
+            type: 'string',
+            title: '默认值',
+            component: 'Input',
+            initialValue: ''
+          },
+          placeholder: {
+            name: 'template',
+            type: 'string',
+            title: '提示词',
+            component: 'Input',
+            initialValue: '请输入'
+          }
+        }
+      }
+    },
+    'Input.Password': {
+      configName: 'Input.Password',
+      schema: {
+        style: {
+          layout: {
+            width: true,
+            height: true
+          }
+        },
+        basic: {
+          defaultValue: {
+            name: 'defaultValue',
+            type: 'string',
+            title: '默认值',
             component: 'Input',
             initialValue: ''
           },

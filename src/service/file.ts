@@ -668,17 +668,22 @@ class FileManager {
           } else if (props.name === 'style') {
             // 针对 style 要特殊处理
             const initialValue = propsConfig[props.name].value as Record<string, any>;
-            Object.keys(initialValue).forEach(key => {
-              if (props.value) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                if (initialValue[key] === props.value[key]) {
+            if (initialValue) {
+              Object.keys(initialValue).forEach(key => {
+                if (props.value) {
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
-                  delete props.value[key];
+                  if (initialValue[key] === props.value[key]) {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    delete props.value[key];
+                  }
                 }
-              }
-            });
+              });
+            }
+            if (!Object.keys(props.value || {}).length) {
+              delete propsDict[props.name];
+            }
           }
         }
       });
