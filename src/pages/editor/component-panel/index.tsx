@@ -47,7 +47,6 @@ export default function ComponentPanel() {
         } as unknown as IComponentInfo;
       });
     const result: Record<string, IComponentInfo[]> = {};
-    console.log('list: ', list);
     list.forEach((item: IComponentInfo) => {
       (item.categories || ['未知']).forEach(category => {
         result[category] = result[category] || [];

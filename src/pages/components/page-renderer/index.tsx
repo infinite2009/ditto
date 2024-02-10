@@ -2,7 +2,7 @@ import { toJS } from 'mobx';
 import React, { FC, PropsWithChildren, Reducer, useContext, useLayoutEffect, useReducer } from 'react';
 import IPropsSchema, { TemplateKeyPathsReg } from '@/types/props.schema';
 import IComponentSchema from '@/types/component.schema';
-import { generateSlotId, typeOf } from '@/util';
+import { typeOf } from '@/util';
 import EditWrapper from '@/pages/editor/edit-wrapper';
 import IComponentConfig from '@/types/component-config';
 import ComponentSchemaRef from '@/types/component-schema-ref';
@@ -166,14 +166,12 @@ export default observer((props: IPageRendererProps) => {
         parent[key] = recursivelyRenderTemplate(data, true);
       } else {
         const { itemIndexInArgs, indexKey, repeatType, columnKey } = keyPathMatchResult as TemplateKeyPathsReg;
-        if (repeatType === 'list' && indexKey) {
-          parent[key] = (...args: any[]) => {
-            const item = args[itemIndexInArgs as number];
+        if (repeatType === 'list') {
+          // Dirty: 这里其实依赖了 antd list 组件本身的接口定义，出现了耦合
+          parent[key] = (item: any) => {
             // TODO：这里输入的 nodeRef 是不可观察的
-            return recursivelyRenderTemplate(
-              { current: generateSlotId(nodeId, item[indexKey]), configName: '', isText: false },
-              true
-            );
+            const list = dsl.componentIndexes[nodeId].children;
+            return recursivelyRenderTemplate(list[item[indexKey]], true);
           };
         } else if (repeatType === 'table') {
           parent[key] = (...args: any[]) => {
@@ -230,6 +228,9 @@ export default observer((props: IPageRendererProps) => {
    * @param isRoot
    */
   function recursivelyRenderTemplate(nodeRef: ComponentSchemaRef, isSlot = false, isRoot = false) {
+    if (!nodeRef) {
+      return null;
+    }
     // 判断节点的类型
     if (nodeRef.isText) {
       return nodeRef.current;
@@ -276,9 +277,10 @@ export default observer((props: IPageRendererProps) => {
     delete componentProps.children;
 
     // 对于 children 是纯文本的组件，如果事件动作修改了它的 children，讲替换掉 schema 中描述的 children。这是运行时的改动，不会影响 dsl 存储
-    const childrenTemplate =
-      transferredComponentState[componentId]?.children ||
-      children.map(c => (c.isText ? c.current : recursivelyRenderTemplate(c)));
+    const childrenTemplate = componentConfig?.children?.noRendering
+      ? []
+      : transferredComponentState[componentId]?.children ||
+        children.map(c => (c.isText ? c.current : recursivelyRenderTemplate(c)));
 
     const childrenId = children.filter(c => !c.isText).map(c => c.current);
 

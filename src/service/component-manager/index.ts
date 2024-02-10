@@ -1371,7 +1371,43 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     title: '列表',
     dependency: 'antd',
     icon: ListIcon,
-    propsConfig: {}
+    propsConfig: {
+      dataSource: {
+        schemaType: 'props',
+        title: '数据源',
+        id: 'dataSource',
+        name: 'dataSource',
+        category: 'basic',
+        isValue: true,
+        valueSource: 'editorInput',
+        valueType: 'array'
+      },
+      renderItem: {
+        schemaType: 'props',
+        title: '渲染项',
+        id: 'renderItem',
+        name: 'renderItem',
+        category: 'basic',
+        templateKeyPathsReg: [
+          {
+            path: '',
+            type: 'function',
+            repeatType: 'list',
+            indexKey: 'index',
+            repeatPropRef: 'dataSource'
+          }
+        ],
+        valueSource: 'editorInput',
+        valueType: 'function'
+      }
+    },
+    children: {
+      name: 'children',
+      value: [],
+      type: 'slot',
+      category: 'children',
+      noRendering: true
+    }
   },
   Popover: {
     configName: 'Popover',
@@ -1484,7 +1520,8 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
       type: 'template',
       name: 'children',
       category: 'children',
-      notDraggable: true
+      notDraggable: true,
+      noRendering: true
     }
   },
   Tabs: {
@@ -1860,7 +1897,10 @@ const defaultComponentValueConfig = {
     Descriptions: {},
     Empty: {},
     Image: {},
-    List: {},
+    List: {
+      dataSource: [],
+      renderItem: {}
+    },
     Popover: {},
     Statistic: {},
     Table: {

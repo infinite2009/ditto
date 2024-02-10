@@ -271,7 +271,8 @@ class FileManager {
       const simplifiedDSL = this.simplifyProps(dslClone);
       // Ugly: 特殊处理下 Table
       Object.values(simplifiedDSL.componentIndexes).forEach((component: IComponentSchema) => {
-        if (component.callingName === 'Table') {
+        const componentConfig = ComponentManager.fetchComponentConfig(component.configName, component.dependency);
+        if (componentConfig.children.noRendering) {
           component.children = [];
         }
       });

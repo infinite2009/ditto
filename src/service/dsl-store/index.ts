@@ -485,9 +485,10 @@ export default class DSLStore {
     name: string,
     dependency: string,
     insertIndex = -1,
-    opt: { customId: string } = undefined
+    opt?: { customId: string },
+    callback?: () => void
   ) {
-    const component = this.dangerousInsertComponent(parentId, name, dependency, insertIndex, opt);
+    const component = this.dangerousInsertComponent(parentId, name, dependency, insertIndex, opt, callback);
     this.selectComponent(component.id);
     return component;
   }
@@ -1101,28 +1102,13 @@ export default class DSLStore {
     }
   }
 
-  private dangerousDeleteComponent(id: ComponentId): IComponentSchema | null {
-    const componentToDelete = this.dsl.componentIndexes[id];
-    if (!componentToDelete) {
-      return;
-    }
-    if (componentToDelete.feature === 'root') {
-      return;
-    }
-    const deleted = this.deleteSubtree(id);
-    // 如果当前已选中的组件，已经被删除了，就清空
-    if (this.selectedComponent?.id === deleted.id) {
-      this.resetSelectedComponent();
-    }
-    return deleted;
-  }
-
-  private dangerousInsertComponent(
+  dangerousInsertComponent(
     parentId: string,
     name: string,
     dependency: string,
     insertIndex = -1,
-    opt?: { customId: string }
+    opt?: { customId: string },
+    callback?: () => void
   ) {
     // 检查传入的组件是否有对应的配置
     const componentConfig = ComponentManager.fetchComponentConfig(name, dependency);
@@ -1147,11 +1133,33 @@ export default class DSLStore {
         this.currentParentNode.children.splice(insertIndex, 0, ref);
       }
       this.currentParentNode = null;
+      if (callback) {
+        callback();
+      }
       return newComponentNode;
     } else {
       this.currentParentNode = null;
       throw new Error(`未找到有效的父节点：${parentId}`);
     }
+  }
+
+  dangerousDeleteComponent(id: ComponentId, callback?: () => void): IComponentSchema | null {
+    const componentToDelete = this.dsl.componentIndexes[id];
+    if (!componentToDelete) {
+      return;
+    }
+    if (componentToDelete.feature === 'root') {
+      return;
+    }
+    const deleted = this.deleteSubtree(id);
+    // 如果当前已选中的组件，已经被删除了，就清空
+    if (this.selectedComponent?.id === deleted.id) {
+      this.resetSelectedComponent();
+    }
+    if (callback) {
+      callback();
+    }
+    return deleted;
   }
 
   private calculateComponentName(config: IComponentConfig) {

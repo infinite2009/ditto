@@ -5,6 +5,7 @@ import { FC } from 'react';
 import CustomTableForm from '@/pages/components/custom-forms/custom-table-form';
 import CustomFormForm from '@/pages/components/custom-forms/custom-form-form';
 import SelectOptions from '@/pages/editor/form-panel/basic-form/select-options';
+import CustomListForm from '@/pages/components/custom-list-form';
 
 const flexTransformerStr =
   'return (values => {' +
@@ -516,6 +517,20 @@ export async function loadFormLibrary(): Promise<Record<string, IFormConfig>> {
       configName: 'Form',
       formComponent: {
         basic: CustomFormForm
+      },
+      schema: {
+        style: {
+          layout: {
+            width: true,
+            height: true
+          }
+        }
+      }
+    },
+    List: {
+      configName: 'List',
+      formComponent: {
+        basic: CustomListForm as FC<any>
       },
       schema: {
         style: {
