@@ -25,6 +25,14 @@ const CommentEditor = observer(({ defaultContent = '' }: ICommentProps) => {
     editorStore.closeComment();
   }
 
+  async function publishComment() {
+    await editorStore.createComment({
+      content,
+      dslId: dslStore.dsl.id
+    });
+    cancelComment();
+  }
+
   function renderEditor() {
     const className = classNames({
       [styles.withContent]: !!content,
@@ -54,7 +62,7 @@ const CommentEditor = observer(({ defaultContent = '' }: ICommentProps) => {
           <Button className={textBtnClass} type="text" onClick={cancelComment}>
             取消
           </Button>
-          <Button className={primaryBtnClass} type="primary">
+          <Button className={primaryBtnClass} type="primary" onClick={publishComment}>
             发布
           </Button>
         </div>

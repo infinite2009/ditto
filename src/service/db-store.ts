@@ -22,6 +22,7 @@ export type CommentInfo = {
   content: string;
   positionTop: number;
   positionLeft: number;
+  resolved: 0 | 1;
   createdTime: number;
   updatedTime: number;
 };
@@ -96,9 +97,10 @@ export default class DbStore {
           'CREATE TABLE IF NOT EXISTS path_project_mapping (id TEXT NOT NULL, path TEXT, project_id INTEGER, created_time NUMERIC, updated_time NUMERIC, FOREIGN KEY (project_id) REFERENCES project_info(id), PRIMARY KEY (id))'
         ),
         db.execute(
-          'CREATE TABLE IF NOT EXISTS comment_info (id TEXT NOT NULL, dsl_id TEXT, component_id TEXT, position_top number, position_left number, content TEXT, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'
+          'CREATE TABLE IF NOT EXISTS comment_info (id TEXT NOT NULL, dsl_id TEXT, component_id TEXT, position_top NUMERIC, position_left NUMERIC, content TEXT, resolved NUMERIC, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'
         )
       ]);
+      console.log('数据库已初始化');
       // 创建表格
     } catch (err) {
       console.error(err);
@@ -156,11 +158,11 @@ export default class DbStore {
   }
 
   static async createComment(data: Omit<Partial<CommentInfo>, 'id' | 'createdTime' | 'updatedTime'>) {
-    return await DbStore.insertRow('comment', data);
+    return await DbStore.insertRow('comment_info', data);
   }
 
   static async updateComment(data: Omit<Partial<CommentInfo>, 'createdTime' | 'updatedTime'>) {
-    return await DbStore.updateRow('comment', data);
+    return await DbStore.updateRow('comment_info', data);
   }
 
   static async selectComments(dslId: string) {
@@ -168,7 +170,7 @@ export default class DbStore {
   }
 
   static async deleteComment(id: string) {
-    return await DbStore.deleteRow('comment', id);
+    return await DbStore.deleteRow('comment_info', id);
   }
 
   private static async deleteRow(tableName: string, id: string) {

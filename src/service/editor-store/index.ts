@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import { ComponentId } from '@/types';
+import DbStore from '@/service/db-store';
 
 export type ViewMode = 'design' | 'code';
 
@@ -23,7 +24,7 @@ export default class EditorStore {
   framework: 'React' | 'Vue' = 'React';
   language: 'TypeScript' | 'JavaScript' = 'TypeScript';
   mode: DesignMode = DesignMode.edit;
-  commentPosition: CommentPosition = { top: 0, left: 0 };
+  relativeCommentPosition: CommentPosition = { top: 0, left: 0 };
   commentOpen: boolean = false;
   componentId: ComponentId;
   private componentPositionDict: Record<string, CommentPosition> = {};
@@ -35,6 +36,16 @@ export default class EditorStore {
 
   get hasCopiedComponent() {
     return !!this.componentIdForCopy;
+  }
+
+  async createComment(data: { dslId: string; content: string }) {
+    await DbStore.createComment({
+      ...data,
+      resolved: 0,
+      componentId: this.componentId,
+      positionTop: this.relativeCommentPosition.top,
+      positionLeft: this.relativeCommentPosition.left
+    });
   }
 
   setFramework(framework: 'React' | 'Vue', language: 'TypeScript' | 'JavaScript') {
@@ -65,7 +76,7 @@ export default class EditorStore {
    * @param postion
    */
   setCommentPosition(postion: CommentPosition) {
-    this.commentPosition = postion;
+    this.relativeCommentPosition = postion;
   }
 
   setComponentIdForComment(componentId: ComponentId) {
@@ -82,8 +93,8 @@ export default class EditorStore {
   getCommentPosition() {
     const { top, left } = this.componentPositionDict[this.componentId];
     return {
-      top: this.commentPosition.top + top,
-      left: this.commentPosition.left + left
+      top: this.relativeCommentPosition.top + top,
+      left: this.relativeCommentPosition.left + left
     };
   }
 
