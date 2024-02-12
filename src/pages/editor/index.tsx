@@ -51,6 +51,8 @@ import { createPortal } from 'react-dom';
 import { Eye, EyeClose } from '@/components/icon';
 import classNames from 'classnames';
 import CodePreview from '@/pages/editor/code-preview';
+import { DesignMode } from '@/service/editor-store';
+import CommentEditor from '../components/comment';
 
 const collisionOffset = 4;
 
@@ -1005,6 +1007,10 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
   }
 
   function renderDesignSection() {
+    const canvasClass = classNames({
+      [styles.canvasInner]: true,
+      [styles.comment]: editorStore.mode === DesignMode.comment
+    });
     return (
       <>
         <DndContext
@@ -1029,7 +1035,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
               {renderLeftPanel()}
             </div>
             <div className={styles.canvas}>
-              <div className={styles.canvasInner}>
+              <div className={canvasClass}>
                 {currentFile ? <PageRenderer mode="edit" scale={scale} pageWidth={pageWidth} /> : <Empty />}
               </div>
               {renderMoreTemplatePanel()}
@@ -1085,6 +1091,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
         {editorStore.viewMode === 'design' ? renderDesignSection() : renderCodeSection()}
       </div>
       <DropAnchor style={anchorStyle} />
+      <CommentEditor />
     </div>
   );
 });

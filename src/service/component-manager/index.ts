@@ -827,7 +827,7 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
     isHidden: true,
     categories: ['常用'],
     title: '标题',
-    icon: TitleIcon,
+    icon: TextIcon,
     propsConfig: {
       style: {
         ...defaultStyleConfig
@@ -1214,6 +1214,25 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
         category: 'style',
         value: {},
         valueType: 'object',
+        valueSource: 'editorInput'
+      },
+      defaultValue: {
+        id: 'defaultValue',
+        name: 'defaultValue',
+        schemaType: 'props',
+        title: '默认值',
+        category: 'basic',
+        valueType: 'array',
+        valueSource: 'editorInput'
+      },
+      options: {
+        id: 'options',
+        schemaType: 'props',
+        name: 'options',
+        title: '选项',
+        category: 'basic',
+        value: [],
+        valueType: 'array',
         valueSource: 'editorInput'
       }
     }

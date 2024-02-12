@@ -3,7 +3,7 @@ import { IconFontProps } from '@ant-design/icons/lib/components/IconFont';
 
 export const Icon = createFromIconfontCN({
   // 必需要使用 https 协议，否则会使用 tauri 协议
-  scriptUrl: 'https://at.alicdn.com/t/c/font_4341626_xu0abgaklhb.js'
+  scriptUrl: 'https://at.alicdn.com/t/c/font_4341626_advk4dbttl.js'
 });
 
 export function Draggable(props: Omit<IconFontProps, 'type'>) {
@@ -456,4 +456,8 @@ export function ComponentDefaultIcon(props: Omit<IconFontProps, 'type'>) {
 
 export function FormIcon(props: Omit<IconFontProps, 'type'>) {
   return <Icon {...props} type="icon-biaodan" />;
+}
+
+export function Comment(props: Omit<IconFontProps, 'type'>) {
+  return <Icon {...props} type="icon-comment" />;
 }

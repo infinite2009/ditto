@@ -10,12 +10,14 @@ import { ComponentId, PropsId, TemplateInfo } from '@/types';
 import IActionSchema from '@/types/action.schema';
 import ActionType from '@/types/action-type';
 import { open } from '@tauri-apps/api/shell';
-import { DSLStoreContext } from '@/hooks/context';
+import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import DSLStore from '@/service/dsl-store';
 import PageRootWrapper from '@/pages/editor/page-root-wrapper';
 import ComponentManager from '@/service/component-manager';
 import ComponentPlaceHolder from '@/pages/editor/place-holder';
+import { DesignMode } from '@/service/editor-store';
+import CommentWrapper from '../comment-wrapper';
 
 export interface IPageRendererProps {
   mode?: 'edit' | 'preview';
@@ -30,9 +32,10 @@ export default observer((props: IPageRendererProps) => {
     return null;
   }
 
-  const { extraStore, onRender, mode = 'preview', scale, pageWidth } = props;
+  const { extraStore, onRender, scale, pageWidth } = props;
 
   const dslStore = useContext(DSLStoreContext);
+  const editorStore = useContext(EditorStoreContext);
 
   const dsl = extraStore ? toJS(extraStore.dsl) : toJS(dslStore.dsl);
 
@@ -332,7 +335,7 @@ export default observer((props: IPageRendererProps) => {
       return null;
     }
 
-    if (mode === 'edit') {
+    if (editorStore.mode === DesignMode.edit) {
       if (isRoot) {
         return <PageRootWrapper {...rootProps}>{tpl}</PageRootWrapper>;
       }
@@ -348,7 +351,17 @@ export default observer((props: IPageRendererProps) => {
           {tpl}
         </EditWrapper>
       );
+    } else if (editorStore.mode === DesignMode.comment) {
+      if (isRoot) {
+        return <PageRootWrapper {...rootProps}>{tpl}</PageRootWrapper>;
+      }
+      return (
+        <CommentWrapper key={componentId} componentId={componentId}>
+          {tpl}
+        </CommentWrapper>
+      );
     }
+
     return tpl;
   }
 

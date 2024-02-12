@@ -14,7 +14,8 @@ enum PageAction {
   // 改变页面尺寸
   changePageSize,
   // 改变画布缩放倍率
-  changeScale
+  changeScale,
+  comment
 }
 
 export default PageAction;

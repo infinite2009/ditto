@@ -1,0 +1,62 @@
+.textArea {
+  width: 240px;
+  height: 20px;
+  border: none;
+  pointer-events: initial !important;
+  box-shadow: none !important;
+  :global {
+    cursor: initial !important;
+  }
+}
+
+.widthContent {
+  height: 144px;
+  overflow: auto;
+  pointer-events: initial !important;
+}
+
+.buttonWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: end;
+  padding: 4px 0;
+  gap: 8px;
+  pointer-events: initial !important;
+}
+
+.btn {
+  border-radius: 6px;
+  border: none;
+  width: 50px;
+  height: 28px;
+  padding: 4px 8px;
+  line-height: 20px;
+  cursor: pointer !important;
+  span {
+    display: block;
+  }
+  &.textBtn {
+    color: #61666d;
+  }
+  &.primaryBtn,
+  &.primaryBtn:hover {
+    background-color: #1A4BFF !important;
+  }
+  :global {
+    * {
+      cursor: pointer !important;
+    }
+  }
+}
+
+.commentContainer {
+  position: fixed;
+  z-index: 99;
+  padding: 8px 8px 4px;
+  border-radius: 8px;
+  border: 1px solid #E3E5E7;
+  background: #FFF;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.20);
+  pointer-events: initial !important;
+}

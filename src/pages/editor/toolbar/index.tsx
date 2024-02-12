@@ -1,17 +1,26 @@
 import styles from './index.module.less';
 import { Divider, Dropdown, message, Radio, Select, Space } from 'antd';
 import PageAction from '@/types/page-action';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import classNames from 'classnames';
 import { AppStoreContext, DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
-import { RadioChangeEvent } from 'antd/es/radio/interface';
 import { Scene } from '@/service/app-store';
-import { Clean, Download, ExpandScreen, ExpandThin, More, Preview, Redo, Share, Undo } from '@/components/icon';
+import {
+  Clean,
+  Comment,
+  Download,
+  ExpandScreen,
+  ExpandThin,
+  More,
+  Preview,
+  Redo,
+  Share,
+  Undo
+} from '@/components/icon';
 import ComponentContextMenu from '@/pages/editor/component-context-menu';
 import style from '@/pages/editor/float-template-panel/index.module.less';
-import fileManager from '@/service/file';
-import editor from '@/pages/editor';
+import { DesignMode } from '@/service/editor-store';
 
 export enum PageWidth {
   wechat = 900,
@@ -128,6 +137,10 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
         type: PageAction.clear
       });
     }
+  }
+
+  function handleComment() {
+    editorStore.toggleCommentMode();
   }
 
   function handleExpand() {
@@ -374,6 +387,13 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
           </Option>
         </Select>
         <Divider className={styles.divider} type="vertical" />
+        <Comment
+          className={classNames({
+            [styles.iconBtn]: true,
+            [styles.selected]: editorStore?.mode === DesignMode.comment
+          })}
+          onClick={handleComment}
+        />
         <Clean className={styles.iconBtn} onClick={handleClear} />
         <ExpandScreen
           className={classNames({

@@ -3,6 +3,7 @@ import { camelToSnake, snakeToCamel } from '@/util';
 import { ProjectInfo } from '@/types/app-data';
 import { nanoid } from 'nanoid';
 import { appLocalDataDir, join } from '@tauri-apps/api/path';
+import { ComponentId } from '@/types';
 
 export type TemplateInfo = {
   id: string;
@@ -10,6 +11,17 @@ export type TemplateInfo = {
   path: string;
   coverPath: string;
   category: string;
+  createdTime: number;
+  updatedTime: number;
+};
+
+export type CommentInfo = {
+  id: string;
+  componentId: ComponentId;
+  dslId: string;
+  content: string;
+  positionTop: number;
+  positionLeft: number;
   createdTime: number;
   updatedTime: number;
 };
@@ -82,6 +94,9 @@ export default class DbStore {
         ),
         db.execute(
           'CREATE TABLE IF NOT EXISTS path_project_mapping (id TEXT NOT NULL, path TEXT, project_id INTEGER, created_time NUMERIC, updated_time NUMERIC, FOREIGN KEY (project_id) REFERENCES project_info(id), PRIMARY KEY (id))'
+        ),
+        db.execute(
+          'CREATE TABLE IF NOT EXISTS comment_info (id TEXT NOT NULL, dsl_id TEXT, component_id TEXT, position_top number, position_left number, content TEXT, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'
         )
       ]);
       // 创建表格
@@ -138,6 +153,22 @@ export default class DbStore {
   static async updateTemplate(data: Omit<Partial<TemplateInfo>, 'createdTime' | 'updatedTime'>) {
     const cp = { ...data };
     return await DbStore.updateRow('template_info', data);
+  }
+
+  static async createComment(data: Omit<Partial<CommentInfo>, 'id' | 'createdTime' | 'updatedTime'>) {
+    return await DbStore.insertRow('comment', data);
+  }
+
+  static async updateComment(data: Omit<Partial<CommentInfo>, 'createdTime' | 'updatedTime'>) {
+    return await DbStore.updateRow('comment', data);
+  }
+
+  static async selectComments(dslId: string) {
+    return await DbStore.selectRows('comment_info', { dslId });
+  }
+
+  static async deleteComment(id: string) {
+    return await DbStore.deleteRow('comment', id);
   }
 
   private static async deleteRow(tableName: string, id: string) {
