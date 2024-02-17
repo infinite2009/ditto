@@ -169,6 +169,10 @@ export default class DbStore {
     return await DbStore.selectRows('comment_info', { dslId });
   }
 
+  static async selectComment(data: { dslId?: string; componentId?: ComponentId }) {
+    return await DbStore.selectRows('comment_info', data);
+  }
+
   static async deleteComment(id: string) {
     return await DbStore.deleteRow('comment_info', id);
   }

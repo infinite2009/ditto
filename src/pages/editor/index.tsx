@@ -53,6 +53,8 @@ import classNames from 'classnames';
 import CodePreview from '@/pages/editor/code-preview';
 import { DesignMode } from '@/service/editor-store';
 import CommentEditor from '../components/comment';
+import DbStore from '@/service/db-store';
+import CommentList from './comment-list';
 
 const collisionOffset = 4;
 
@@ -120,6 +122,11 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     fetchCurrentProject().then();
     fetchProjectData().then();
     fetchTemplateData().then();
+  }
+
+  async function fetchCommentList() {
+    const commentData = await DbStore.selectComments(dslStore.dsl.id);
+    editorStore.setCommentList(commentData);
   }
 
   useEffect(() => {
@@ -766,6 +773,7 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
     const content = await fileManager.openFile(page, currentProject.id);
     if (content) {
       dslStore.initDSL(JSON.parse(content));
+      fetchCommentList().then();
     } else {
       message.error('文件已损坏!');
     }
@@ -1055,10 +1063,21 @@ export default observer(({ onPreview, onPreviewClose, style }: IEditorProps) => 
           className={styles.formPanel}
           style={editorStore?.rightPanelVisible ? undefined : { width: 0, overflow: 'hidden' }}
         >
-          <FormPanel />
+          {renderRightPanel()}
         </div>
       </>
     );
+  }
+
+  function renderRightPanel() {
+    switch (editorStore.mode) {
+      case DesignMode.preview:
+        return null;
+      case DesignMode.comment:
+        return <CommentList />;
+      default:
+        return <FormPanel />;
+    }
   }
 
   function renderCodeSection() {

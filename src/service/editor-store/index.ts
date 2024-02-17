@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import { ComponentId } from '@/types';
-import DbStore from '@/service/db-store';
+import DbStore, { CommentInfo } from '@/service/db-store';
 
 export type ViewMode = 'design' | 'code';
 
@@ -27,6 +27,7 @@ export default class EditorStore {
   relativeCommentPosition: CommentPosition = { top: 0, left: 0 };
   commentOpen: boolean = false;
   componentId: ComponentId;
+  commentList: CommentInfo[];
   private componentPositionDict: Record<string, CommentPosition> = {};
   private hiddenComponents: Record<ComponentId, boolean> = {};
 
@@ -130,6 +131,10 @@ export default class EditorStore {
 
   setSelectedPath(path: string) {
     this.selectedPath = path;
+  }
+
+  setCommentList(commentList: CommentInfo[]) {
+    this.commentList = commentList;
   }
 
   /**
