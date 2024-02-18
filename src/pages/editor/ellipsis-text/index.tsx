@@ -24,5 +24,5 @@ export default function EllipsisText({ className, text }: IEllipsisTextProps) {
     );
   }
 
-  return overflow ? <Tooltip>{renderText()}</Tooltip> : renderText();
+  return overflow ? <Tooltip title={text}>{renderText()}</Tooltip> : renderText();
 }

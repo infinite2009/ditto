@@ -5,6 +5,7 @@ import { EditorStoreContext } from '@/hooks/context';
 import styles from './index.module.less';
 import { ResolveCheck, Trash } from '@/components/icon';
 import { CommentInfo } from '@/service/db-store';
+import EllipsisText from '@/pages/editor/ellipsis-text';
 
 const CommentList = observer(() => {
   const editorStore = useContext(EditorStoreContext);
@@ -25,7 +26,10 @@ const CommentList = observer(() => {
           </span>
           <div className={styles.commentFooter}>
             <span className={styles.updateTime}>3秒前</span>
-            <span className={styles.componentName}>所评论的组件名</span>
+            <EllipsisText
+              className={styles.componentName}
+              text="所评论的组件名所评论的组件名所评论的组件名所评论的组件名所评论的组件名"
+            />
             <div className={styles.commentActionBtnWrapper}>
               <ResolveCheck className={styles.icon} onClick={() => resolveComment(item)} />
               <Trash className={styles.icon} onClick={() => deleteComment(item)} />
