@@ -1,4 +1,5 @@
-import { useLayoutEffect, useRef } from 'react';
+import { Tooltip } from 'antd';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 export interface IEllipsisTextProps {
   className: string;
@@ -7,11 +8,21 @@ export interface IEllipsisTextProps {
 
 export default function EllipsisText({ className, text }: IEllipsisTextProps) {
   const ref = useRef<HTMLSpanElement>(null);
+  const [overflow, setOverflow] = useState<boolean>(false);
 
   useLayoutEffect(() => {
-    if (text) {
+    if (text && ref.current) {
+      setOverflow(ref.current.scrollWidth > ref.current.clientWidth);
     }
   }, [text]);
 
-  return <span className={className} ref={ref}></span>;
+  function renderText() {
+    return (
+      <span className={className} ref={ref}>
+        {text}
+      </span>
+    );
+  }
+
+  return overflow ? <Tooltip>{renderText()}</Tooltip> : renderText();
 }
