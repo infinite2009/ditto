@@ -3,9 +3,23 @@
 }
 
 .header {
-  padding: 0 12px;
+  padding: 4px 12px;
   height: 36px;
+  border-top: 1px solid #F1F2F3;
+  border-bottom: 1px solid #F1F2F3;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 
+.headerTitle {
+  font-weight: 500;
+  line-height: 24px;
+  color: #18191C;
+}
+
+.resolvedTitle {
+  padding: 6px 8px;
 }
 
 .comment {
@@ -14,6 +28,7 @@
   flex-direction: column;
   align-items: start;
   gap: 4px;
+  border-bottom: 1px solid #F1F2F3;
 }
 
 .commentContent {
