@@ -7,6 +7,7 @@ import { CommentInfo } from '@/service/db-store';
 import EllipsisText from '@/pages/editor/ellipsis-text';
 
 import styles from './index.module.less';
+import classNames from 'classnames';
 
 const CommentList = observer(() => {
   const [showResolved, setShowResolved] = useState<boolean>(true);
@@ -34,10 +35,7 @@ const CommentList = observer(() => {
           <span className={styles.commentContent}>{item.content}</span>
           <div className={styles.commentFooter}>
             <span className={styles.updateTime}>3秒前</span>
-            <EllipsisText
-              className={styles.componentName}
-              text={renderComponentName(item.componentId)}
-            />
+            <EllipsisText className={styles.componentName} text={renderComponentName(item.componentId)} />
             <div className={styles.commentActionBtnWrapper}>
               <ResolveCheck className={styles.icon} onClick={() => resolveComment(item)} />
               <Trash className={styles.icon} onClick={() => deleteComment(item)} />
@@ -53,6 +51,10 @@ const CommentList = observer(() => {
   }
 
   function renderResolvedOption() {
+    const iconClass = classNames({
+      [styles.icon]: true,
+      [styles.opacity]: showResolved
+    });
     return {
       items: [
         {
@@ -60,7 +62,7 @@ const CommentList = observer(() => {
           label: (
             <div className={styles.resolvedTitleWrapper}>
               <span className={styles.resolvedTitle}>显示已解决的评论</span>
-              {showResolved ? <Ok className={styles.icon} /> : null}
+              <Ok className={iconClass} />
             </div>
           )
         }
