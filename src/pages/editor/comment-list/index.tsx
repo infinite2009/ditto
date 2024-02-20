@@ -1,4 +1,4 @@
-import { Dropdown } from 'antd';
+import { Button, Dropdown, Typography } from 'antd';
 import { observer } from 'mobx-react';
 import { useContext, useState } from 'react';
 import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
@@ -11,6 +11,7 @@ import classNames from 'classnames';
 
 const CommentList = observer(() => {
   const [showResolved, setShowResolved] = useState<boolean>(true);
+  const [expanded, setExpanded] = useState<boolean>(false);
 
   const editorStore = useContext(EditorStoreContext);
   const dslStore = useContext(DSLStoreContext);
@@ -32,7 +33,32 @@ const CommentList = observer(() => {
     return commentList.map(item => {
       return (
         <div className={styles.comment}>
-          <span className={styles.commentContent}>{item.content}</span>
+          {expanded ? (
+            <Typography.Paragraph className={styles.commentContent} ellipsis={false}>
+              {item.content}
+              <Button type="link" onClick={() => setExpanded(false)}>
+                收起
+              </Button>
+            </Typography.Paragraph>
+          ) : (
+            <Typography.Paragraph
+              className={styles.commentContent}
+              ellipsis={{
+                rows: 3,
+                expandable: true,
+                symbol: '展开',
+                onExpand: () => {
+                  setExpanded(true);
+                },
+                onEllipsis: () => {
+                  setExpanded(false);
+                }
+              }}
+            >
+              {item.content}
+            </Typography.Paragraph>
+          )}
+
           <div className={styles.commentFooter}>
             <span className={styles.updateTime}>3秒前</span>
             <EllipsisText className={styles.componentName} text={renderComponentName(item.componentId)} />
