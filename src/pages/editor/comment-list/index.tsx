@@ -4,6 +4,7 @@ import { useContext, useState } from 'react';
 import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import { More, Ok, ResolveCheck, Trash } from '@/components/icon';
 import { CommentInfo } from '@/service/db-store';
+import EllipsisText from '@/pages/editor/ellipsis-text';
 
 import styles from './index.module.less';
 
@@ -33,7 +34,10 @@ const CommentList = observer(() => {
           <span className={styles.commentContent}>{item.content}</span>
           <div className={styles.commentFooter}>
             <span className={styles.updateTime}>3秒前</span>
-            <span className={styles.componentName}>{renderComponentName(item.componentId)}</span>
+            <EllipsisText
+              className={styles.componentName}
+              text={renderComponentName(item.componentId)}
+            />
             <div className={styles.commentActionBtnWrapper}>
               <ResolveCheck className={styles.icon} onClick={() => resolveComment(item)} />
               <Trash className={styles.icon} onClick={() => deleteComment(item)} />
