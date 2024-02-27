@@ -1,17 +1,30 @@
 import { Button, Dropdown, Typography } from 'antd';
 import { observer } from 'mobx-react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import classNames from 'classnames';
+import { nanoid } from 'nanoid';
 import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import { More, Ok, ResolveCheck, Trash } from '@/components/icon';
 import { CommentInfo } from '@/service/db-store';
 import EllipsisText from '@/pages/editor/ellipsis-text';
 
 import styles from './index.module.less';
-import classNames from 'classnames';
 
 const CommentList = observer(() => {
   const [showResolved, setShowResolved] = useState<boolean>(true);
-  const [expanded, setExpanded] = useState<boolean>(false);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [key, setKey] = useState<string>(nanoid());
+  const [ellpsis, setEllipsis] = useState<Record<string, any>>({
+    rows: 3,
+    expandable: true,
+    symbol: '展开'
+  });
+
+  useEffect(() => {
+    if (expanded) {
+      setKey(nanoid());
+    }
+  }, [expanded]);
 
   const editorStore = useContext(EditorStoreContext);
   const dslStore = useContext(DSLStoreContext);
@@ -33,25 +46,33 @@ const CommentList = observer(() => {
     return commentList.map(item => {
       return (
         <div className={styles.comment}>
-          {expanded ? (
+          {expanded[item.id] ? (
             <Typography.Paragraph className={styles.commentContent} ellipsis={false}>
               {item.content}
-              <Button type="link" onClick={() => setExpanded(false)}>
+              <Button
+                type="link"
+                onClick={() => {
+                  setExpanded({
+                    ...expanded,
+                    [item.id]: false
+                  });
+                  setEllipsis({ ...ellpsis });
+                }}
+              >
                 收起
               </Button>
             </Typography.Paragraph>
           ) : (
             <Typography.Paragraph
+              key={key}
               className={styles.commentContent}
               ellipsis={{
-                rows: 3,
-                expandable: true,
-                symbol: '展开',
+                ...ellpsis,
                 onExpand: () => {
-                  setExpanded(true);
-                },
-                onEllipsis: () => {
-                  setExpanded(false);
+                  setExpanded({
+                    ...expanded,
+                    [item.id]: true
+                  });
                 }
               }}
             >
