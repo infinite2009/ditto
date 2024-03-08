@@ -658,7 +658,7 @@ class FileManager {
           }
         });
         // 如果 props 的值还是初始值，并且不是 状态转移类别的 action 涉及到的 props，就删除
-        if (!actionPropsDict[props.name]) {
+        if (props && !actionPropsDict[props.name]) {
           if (isEqual(props.value, propsConfig[props.name].value)) {
             delete propsDict[props.name];
             const index = propsRefs.indexOf(props.name);
