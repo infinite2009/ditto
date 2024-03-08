@@ -1,11 +1,7 @@
-# Voltron（百变怪）
+# Voltron（原名：Ditto）
 
-# Tauri + React + Typescript
-
-This template should help get you started developing with Tauri, React and Typescript in Vite.
-
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+# 介绍
+这是一款基于 Tauri 的原型出码工具，它能帮助产品和前端快速生成前端静态模板代码，以便加速前端页面开发工作。
+项目仍处于早期，大量新功能更新中（数据源、事件、埋点等）
 
 #
