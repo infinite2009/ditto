@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { AppStoreContext } from '@/hooks/context';
 import { Scene } from '@/service/app-store';
 import style from './index.module.less';
-import { ArrowSmall, Plus } from '@/components/icon';
+import { ArrowSmall, More, Plus } from '@/components/icon';
 
 export interface IHomeProps {
   onDeleteProject: (projectId: string) => void;
@@ -374,7 +374,7 @@ export default function Home({ onOpenProject, onDeleteProject, onRenameProject }
               e.target.click();
             }}
           >
-            ...
+            <More className={style.icon} />
           </div>
         </Dropdown>
       </div>
