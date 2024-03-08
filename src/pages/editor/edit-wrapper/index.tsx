@@ -65,6 +65,7 @@ export default observer(function EditWrapper({
   }, [childrenStyle, feature]);
 
   function processBFC(): CSSProperties {
+    debugger;
     const result: CSSProperties = {};
     const styleNames: (keyof CSSProperties)[] = [
       'display',
@@ -150,10 +151,10 @@ export default observer(function EditWrapper({
       }
     }
 
-    if (result.display === 'inline') {
-      childElement.style.width = '100%';
-      childElement.style.height = '100%';
-    }
+    // if (result.display === 'inline') {
+    childElement.style.width = '100%';
+    childElement.style.height = '100%';
+    // }
 
     // 处理定位问题
     if (!result.position) {
