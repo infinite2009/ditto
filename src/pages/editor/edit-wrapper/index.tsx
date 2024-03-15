@@ -65,7 +65,6 @@ export default observer(function EditWrapper({
   }, [childrenStyle, feature]);
 
   function processBFC(): CSSProperties {
-    debugger;
     const result: CSSProperties = {};
     const styleNames: (keyof CSSProperties)[] = [
       'display',

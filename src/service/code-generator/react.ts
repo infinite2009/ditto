@@ -244,6 +244,9 @@ export default class ReactCodeGenerator {
   ) {
     const { componentIndexes } = this.dsl;
     const template = componentIndexes[templateRef.current];
+    if (!template) {
+      return null;
+    }
     const result: Partial<IDSLStatsInfo> = {
       importInfo: {
         react: {
@@ -457,8 +460,12 @@ export default class ReactCodeGenerator {
                   value,
                   templateKeyPathsReg,
                   (val: ComponentSchemaRef, wrapper: string[] = [], insertIndex = 0) => {
+                    const templateInfo = this.analysisTemplate(val, propsDict);
+                    if (!templateInfo) {
+                      return [];
+                    }
                     const { tsxInfo, importInfo, effectInfo, constantInfo, memoInfo, callbackInfo, stateInfo } =
-                      this.analysisTemplate(val, propsDict);
+                      templateInfo;
                     // 合并统计分析
                     Object.assign(result.stateInfo as object, stateInfo);
                     Object.assign(result.callbackInfo as object, callbackInfo);

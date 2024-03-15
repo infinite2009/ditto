@@ -659,7 +659,7 @@ class FileManager {
         });
         // 如果 props 的值还是初始值，并且不是 状态转移类别的 action 涉及到的 props，就删除
         if (props && !actionPropsDict[props.name]) {
-          if (isEqual(props.value, propsConfig[props.name].value)) {
+          if (isEqual(props.value, propsConfig[props.name]?.value)) {
             delete propsDict[props.name];
             const index = propsRefs.indexOf(props.name);
             if (index !== -1) {
@@ -667,7 +667,7 @@ class FileManager {
             }
           } else if (props.name === 'style') {
             // 针对 style 要特殊处理
-            const initialValue = propsConfig[props.name].value as Record<string, any>;
+            const initialValue = propsConfig[props.name]?.value as Record<string, any>;
             if (initialValue) {
               Object.keys(initialValue).forEach(key => {
                 if (props.value) {

@@ -1015,15 +1015,6 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
         valueType: 'object',
         valueSource: 'editorInput'
       },
-      defaultValue: {
-        id: 'defaultValue',
-        schemaType: 'props',
-        name: 'defaultValue',
-        title: '值',
-        category: 'basic',
-        valueType: 'string',
-        valueSource: 'editorInput'
-      },
       placeholder: {
         id: 'placeholder',
         schemaType: 'props',
@@ -1054,15 +1045,6 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
         category: 'style',
         value: {},
         valueType: 'object',
-        valueSource: 'editorInput'
-      },
-      defaultValue: {
-        id: 'defaultValue',
-        schemaType: 'props',
-        name: 'defaultValue',
-        title: '值',
-        category: 'basic',
-        valueType: 'string',
         valueSource: 'editorInput'
       },
       placeholder: {
@@ -1097,15 +1079,6 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
         valueType: 'object',
         valueSource: 'editorInput'
       },
-      defaultValue: {
-        id: 'defaultValue',
-        schemaType: 'props',
-        name: 'defaultValue',
-        title: '值',
-        category: 'basic',
-        valueType: 'string',
-        valueSource: 'editorInput'
-      },
       placeholder: {
         id: 'placeholder',
         schemaType: 'props',
@@ -1138,15 +1111,6 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
         valueType: 'object',
         valueSource: 'editorInput'
       },
-      defaultValue: {
-        id: 'defaultValue',
-        schemaType: 'props',
-        name: 'defaultValue',
-        title: '值',
-        category: 'basic',
-        valueType: 'string',
-        valueSource: 'editorInput'
-      },
       placeholder: {
         id: 'placeholder',
         schemaType: 'props',
@@ -1175,15 +1139,6 @@ const antdComponentConfig: Record<string, IComponentConfig> = {
         category: 'style',
         value: {},
         valueType: 'object',
-        valueSource: 'editorInput'
-      },
-      defaultValue: {
-        id: 'defaultValue',
-        schemaType: 'props',
-        name: 'defaultValue',
-        title: '值',
-        category: 'basic',
-        valueType: 'string',
         valueSource: 'editorInput'
       },
       placeholder: {
