@@ -11,6 +11,7 @@ import EditorStore from '@/service/editor-store';
 import { Scene } from '@/service/app-store';
 import DbStore from '@/service/db-store';
 import ComponentManager from '@/service/component-manager';
+import { listen } from '@tauri-apps/api/event';
 
 export default observer(function App() {
   const [showUI, setShowUI] = useState<boolean>(false);
@@ -31,8 +32,17 @@ export default observer(function App() {
 
   useEffect(() => {
     init();
+    let unlisten = null;
+    listen<string>('scheme-request-received', event => {
+      console.log(`Got error in window ${event.windowLabel}, payload: ${event.payload}`);
+    }).then(callback => {
+      unlisten = callback;
+    });
     window.addEventListener('keyup', handleKeyEvent);
     return () => {
+      if (unlisten) {
+        unlisten();
+      }
       window.removeEventListener('keyup', handleKeyEvent);
     };
   }, []);
