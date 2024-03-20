@@ -12,6 +12,8 @@ import { Scene } from '@/service/app-store';
 import DbStore from '@/service/db-store';
 import ComponentManager from '@/service/component-manager';
 import { listen } from '@tauri-apps/api/event';
+import { parseCustomProtocolUrl } from '@/util';
+import { appWindow } from '@tauri-apps/api/window';
 
 export default observer(function App() {
   const [showUI, setShowUI] = useState<boolean>(false);
@@ -35,6 +37,16 @@ export default observer(function App() {
     let unlisten = null;
     listen<string>('scheme-request-received', event => {
       console.log(`Got error in window ${event.windowLabel}, payload: ${event.payload}`);
+      if (event.payload) {
+        const result = parseCustomProtocolUrl(event.payload);
+        console.log('打开窗口');
+        appWindow.show();
+        switch (result.host) {
+          case 'login':
+            handleLogin(result.queryParameters?.code as string);
+            break;
+        }
+      }
     }).then(callback => {
       unlisten = callback;
     });
@@ -64,6 +76,12 @@ export default observer(function App() {
       appStore.activateSceneContext(appStore.getContextIdForProject(currentProjectId));
     }
   }, [currentProjectId]);
+
+  // 处理登录
+  function handleLogin(code: string) {
+    debugger;
+    appStore.saveLoginStatus(code);
+  }
 
   function handleKeyEvent(e) {
     e.stopPropagation();
@@ -110,6 +128,7 @@ export default observer(function App() {
   async function init() {
     // 初始化数据库
     await DbStore.init();
+    await appStore.checkLoginStatus();
     // 初始化组件库
     await ComponentManager.init();
     // await fileManager.initAppData();

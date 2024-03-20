@@ -13,6 +13,11 @@
   "tauri": {
     "allowlist": {
       "all": false,
+      "app": {
+        "all": true,
+        "show": true,
+        "hide": true
+      },
       "http": {
         "all": true,
         "request": true,
@@ -119,7 +124,11 @@
         ]
       },
       "window": {
+        "all": true,
+        "show": true,
+        "hide": true,
         "close": true,
+        "create": true,
         "maximize": true,
         "minimize": true,
         "unmaximize": true,

@@ -425,6 +425,7 @@ export function proxyXHR() {
           // 代理请求成功，设置响应数据
           this.status = res.status;
           this.statusText = '';
+          // @ts-ignore
           this.responseText = res.data;
           this.readyState = 4;
           if (this.onload) {
@@ -450,4 +451,22 @@ export function proxyXHR() {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   window.XMLHttpRequest = TauriProxyXHR;
+}
+
+export function parseCustomProtocolUrl(url: string) {
+  const urlParts = new URL(url);
+  const protocol = urlParts.protocol.replace(':', '');
+  const path = urlParts.pathname;
+  let queryParameters: Record<string, string | number> = {};
+
+  urlParts.searchParams.forEach((value, key) => {
+    queryParameters[key] = value;
+  });
+
+  return {
+    protocol,
+    host: urlParts.host,
+    path,
+    queryParameters
+  };
 }

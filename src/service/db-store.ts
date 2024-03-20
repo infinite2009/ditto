@@ -98,6 +98,9 @@ export default class DbStore {
         ),
         db.execute(
           'CREATE TABLE IF NOT EXISTS comment_info (id TEXT NOT NULL, dsl_id TEXT, component_id TEXT, position_top NUMERIC, position_left NUMERIC, content TEXT, resolved NUMERIC, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'
+        ),
+        db.execute(
+          'CREATE TABLE IF NOT EXISTS app_info (id TEXT NOT NULL, account_name TEXT, session_id TEXT, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'
         )
       ]);
       console.log('数据库已初始化');
@@ -175,6 +178,22 @@ export default class DbStore {
 
   static async deleteComment(id: string) {
     return await DbStore.deleteRow('comment_info', id);
+  }
+
+  static async selectAppInfo() {
+    return await DbStore.selectRows('app_info');
+  }
+
+  static async updateAppInfo(data) {
+    return await DbStore.updateRow('app_info', data);
+  }
+
+  static async deleteAppInfo(id: string) {
+    return await DbStore.deleteRow('app_info', id);
+  }
+
+  static async addAppInfo(data: { accountName: string; sessionId: string }) {
+    return await DbStore.insertRow('app_info', data);
   }
 
   private static async deleteRow(tableName: string, id: string) {

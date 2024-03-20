@@ -22,7 +22,7 @@ fn main() {
             tauri_plugin_deep_link::register(
                 "voltron",
                 move |request| {
-                    dbg!(&request);
+                    // dbg!(&request);
                     handle.emit_all("scheme-request-received", request).unwrap();
                 },
             )
