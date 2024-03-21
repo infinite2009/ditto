@@ -11,7 +11,6 @@ export async function loginWithCode(
 ): Promise<http.Response<{ code: number; message: string; data: Record<string, string> }>> {
   // 危险的硬编码，谨防泄露
   const clientSecret = 'UVcxCpqTiEkd3r2lOxI5peAZn6kY17BKsvcTqJAkqotUVYZA';
-  debugger;
   const res: http.Response<{ code: number; message: string; data: Record<string, string> }> = await http.fetch(
     'https://dashboard-mng.bilibili.co/api/v4/client/user_session',
     {

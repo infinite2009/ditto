@@ -629,7 +629,6 @@ export default class AppStore {
         // 没有登录，弹窗提示用户去登录
         open(dashboardUrl);
       }
-      debugger;
     }
   }
 
@@ -641,7 +640,6 @@ export default class AppStore {
     const res = await loginWithCode(code);
     if (res.data.code === 0) {
       const result = await DbStore.selectAppInfo();
-      debugger;
       if (result.length) {
         // 更新app info
         const appInfo = result[0];

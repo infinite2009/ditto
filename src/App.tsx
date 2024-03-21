@@ -79,7 +79,6 @@ export default observer(function App() {
 
   // 处理登录
   function handleLogin(code: string) {
-    debugger;
     appStore.saveLoginStatus(code);
   }
 
