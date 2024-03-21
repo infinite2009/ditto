@@ -14,6 +14,7 @@ import {
 } from '@/data/constant';
 import * as http from '@tauri-apps/api/http';
 import { Body } from '@tauri-apps/api/http';
+import AppStore from '@/service/app-store';
 
 export function toUpperCase(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -341,6 +342,11 @@ export function proxyFetch() {
   // 覆盖全局的 fetch 函数
   window.fetch = new Proxy(window.fetch, {
     apply: async function (target, thisArg, [url, options = {}]) {
+      const loginStatus = await AppStore.checkLoginStatus();
+      if (!loginStatus) {
+        // TODO：发送登录失败的消息，并在原地进行重试
+        return;
+      }
       const contentType = options.headers
         ? options.headers['Content-Type'] || options.headers['content-type']
         : undefined;
@@ -349,7 +355,10 @@ export function proxyFetch() {
 
       const tauriOptions = {
         method: options.method || 'GET',
-        headers: options.headers || {},
+        headers: {
+          ...(options.headers || {}),
+          Cookie: `_AJSESSIONID=${loginStatus.sessionId};username=${loginStatus.accountName}`
+        },
         body
       };
 
@@ -357,8 +366,7 @@ export function proxyFetch() {
         // 使用 Tauri 的 http.fetch
         const response = await http.fetch(finalUrl, tauriOptions);
         return {
-          ok: response.ok,
-          status: response.status,
+          ...response,
           json: () => Promise.resolve(response.data),
           text: () => Promise.resolve(JSON.stringify(response.data))
         };
@@ -373,7 +381,6 @@ export function proxyXHR() {
   const originalXHR = window.XMLHttpRequest;
 
   function TauriProxyXHR() {
-    console.log('fetch xhr 已执行');
     const xhrInstance = new originalXHR();
     this.xhr = xhrInstance;
 

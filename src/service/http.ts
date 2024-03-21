@@ -25,6 +25,5 @@ export async function loginWithCode(
       })
     }
   );
-  console.log('登录：', res);
   return res;
 }

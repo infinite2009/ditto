@@ -8,7 +8,7 @@ import { ProjectInfo } from '@/types/app-data';
 import DSLStore from '@/service/dsl-store';
 import { AppStoreContext, DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import EditorStore from '@/service/editor-store';
-import { Scene } from '@/service/app-store';
+import AppStore, { Scene } from '@/service/app-store';
 import DbStore from '@/service/db-store';
 import ComponentManager from '@/service/component-manager';
 import { listen } from '@tauri-apps/api/event';
@@ -36,10 +36,8 @@ export default observer(function App() {
     init();
     let unlisten = null;
     listen<string>('scheme-request-received', event => {
-      console.log(`Got error in window ${event.windowLabel}, payload: ${event.payload}`);
       if (event.payload) {
         const result = parseCustomProtocolUrl(event.payload);
-        console.log('打开窗口');
         appWindow.show();
         switch (result.host) {
           case 'login':
@@ -79,7 +77,7 @@ export default observer(function App() {
 
   // 处理登录
   function handleLogin(code: string) {
-    appStore.saveLoginStatus(code);
+    AppStore.saveLoginStatus(code);
   }
 
   function handleKeyEvent(e) {
@@ -127,7 +125,7 @@ export default observer(function App() {
   async function init() {
     // 初始化数据库
     await DbStore.init();
-    await appStore.checkLoginStatus();
+    await AppStore.checkLoginStatus();
     // 初始化组件库
     await ComponentManager.init();
     // await fileManager.initAppData();

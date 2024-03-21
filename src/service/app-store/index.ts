@@ -608,13 +608,14 @@ export default class AppStore {
   /**
    * 获取账户，如果没有账户，直接走登录
    */
-  async checkLoginStatus() {
+  static async checkLoginStatus() {
     const result = await DbStore.selectAppInfo();
     const dashboardUrl =
       'https://dashboard-mng.bilibili.co/api/v4/client/authorize?client_name=voltron&redirect_uri=voltron://login';
     if (!result[0]?.sessionId) {
       // 没有记录账号，直接跳转登录
       open(dashboardUrl);
+      return null;
     } else {
       const { sessionId, accountName } = result[0];
       // 有账号，用 sessionId 检查下是否已经登录
@@ -628,14 +629,19 @@ export default class AppStore {
       if (res.data.code !== 0) {
         // 没有登录，弹窗提示用户去登录
         open(dashboardUrl);
+        return null;
       }
+      return {
+        sessionId,
+        accountName
+      };
     }
   }
 
   /**
    * 保存用户的登录态和用户名
    */
-  async saveLoginStatus(code: string) {
+  static async saveLoginStatus(code: string) {
     // 使用 dashboard 给的 code 去获取用户的 session
     const res = await loginWithCode(code);
     if (res.data.code === 0) {

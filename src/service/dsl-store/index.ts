@@ -179,12 +179,9 @@ export default class DSLStore {
       if (this.filePath && (await exists(this.filePath))) {
         await fileManager.savePageDSLFile(this.filePath, this.dsl);
         this.shouldSave = false;
-        console.log('已自动保存');
       } else {
         console.error(`文件路径 ${this.filePath} 不存在`);
       }
-    } else {
-      console.log('已经保存过了');
     }
   }
 
@@ -912,7 +909,6 @@ export default class DSLStore {
       if (rows.length) {
         // 如果不止一行，则直接复制
         this.cloneComponent(rows[rows.length - 1].current, rows[rows.length - 1].current, InsertType.insertAfter);
-        console.log('after clone row: ', toJS(this.dsl));
       } else {
         // 先插入一个水平容器作为行的容器，它不会被渲染
         const rowComponent = this.dangerousInsertComponent(tableComponentId, 'HorizontalFlex', 'antd');

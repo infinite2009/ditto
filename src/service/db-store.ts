@@ -80,7 +80,6 @@ export default class DbStore {
   static async init() {
     try {
       DbStore.db = await Database.load(`sqlite:${await join(await appLocalDataDir(), 'voltron.db')}`);
-      console.log('db 已加载: ', DbStore.db);
       const db = DbStore.db;
       // 创建四张表
       await Promise.all([
@@ -103,7 +102,6 @@ export default class DbStore {
           'CREATE TABLE IF NOT EXISTS app_info (id TEXT NOT NULL, account_name TEXT, session_id TEXT, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'
         )
       ]);
-      console.log('数据库已初始化');
       // 创建表格
     } catch (err) {
       console.error(err);
@@ -198,7 +196,6 @@ export default class DbStore {
 
   private static async deleteRow(tableName: string, id: string) {
     const deleteSql = `DELETE FROM ${tableName} WHERE id = '${id}'`;
-    console.log('delete sql: ', deleteSql);
     await DbStore.db.execute(deleteSql);
   }
 
@@ -224,7 +221,6 @@ export default class DbStore {
     const insertSql = `INSERT INTO ${tableName} (${keysStr}) VALUES (${dataStr})`.replace(/\\/g, '\\\\');
     await DbStore.db.execute(insertSql);
     const project = (await DbStore.selectRows(tableName, { id }))[0];
-    console.log('插入结果：', project);
     return project;
   }
 
