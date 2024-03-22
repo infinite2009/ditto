@@ -21,7 +21,10 @@
       "http": {
         "all": true,
         "request": true,
-        "scope": ["https://**", "http://**"]
+        "scope": [
+          "https://**",
+          "http://**"
+        ]
       },
       "protocol": {
         "asset": true,
@@ -138,6 +141,33 @@
         "setFullscreen": true
       }
     },
+    "security": {
+      "csp": {
+        "script-src": [
+          "'self'",
+          "*",
+          "'unsafe-eval'"
+        ],
+        "style-src": [
+          "'self'",
+          "*",
+          "'unsafe-inline'"
+        ],
+        "img-src": [
+          "'self'",
+          "*"
+        ],
+        "font-src": [
+          "'self'",
+          "data:"
+        ],
+        "default-src": [
+          "tauri://*",
+          "http://*",
+          "https://*"
+        ]
+      }
+    },
     "bundle": {
       "active": true,
       "targets": "all",
@@ -157,7 +187,10 @@
           "language": "zh-CN"
         },
         "nsis": {
-          "languages": ["SimpChinese", "English"],
+          "languages": [
+            "SimpChinese",
+            "English"
+          ],
           "displayLanguageSelector": true
         }
       }

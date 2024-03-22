@@ -477,3 +477,20 @@ export function parseCustomProtocolUrl(url: string) {
     queryParameters
   };
 }
+
+export function supplementProtocolForUrl(url: string, cacheDisabled: boolean = false) {
+  let urlWithProtocol = url;
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    urlWithProtocol = url;
+  } else if (url.startsWith('//')) {
+    urlWithProtocol = `https:${url}`;
+  } else {
+    urlWithProtocol = `https://${url}`;
+  }
+  if (cacheDisabled) {
+    urlWithProtocol = `${urlWithProtocol}${urlWithProtocol.startsWith('?') ? '' : '?'}${
+      urlWithProtocol.endsWith('?') ? '' : '&'
+    }t=${new Date().getTime()}`;
+  }
+  return urlWithProtocol;
+}
