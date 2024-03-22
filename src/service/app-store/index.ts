@@ -2,9 +2,6 @@ import { makeAutoObservable } from 'mobx';
 import { nanoid } from 'nanoid';
 import cloneDeep from 'lodash/cloneDeep';
 import DbStore, { TemplateInfo } from '@/service/db-store';
-import { open } from '@tauri-apps/api/shell';
-import { http } from '@tauri-apps/api';
-import { loginWithCode } from '@/service/http';
 
 export type Modifier = 'ctrl' | 'meta' | 'alt' | 'shift';
 
@@ -426,7 +423,7 @@ export default class AppStore {
   constructor() {
     makeAutoObservable(this);
   }
-
+  
   /**
    * 切换场景
    * @param id
@@ -603,63 +600,5 @@ export default class AppStore {
    */
   unregisterShortKey(scene: Scene, functionKey: string) {
     this.scene[functionKey].shortKey = '';
-  }
-
-  /**
-   * 获取账户，如果没有账户，直接走登录
-   */
-  static async checkLoginStatus() {
-    const result = await DbStore.selectAppInfo();
-    const dashboardUrl =
-      'https://dashboard-mng.bilibili.co/api/v4/client/authorize?client_name=voltron&redirect_uri=voltron://login';
-    if (!result[0]?.sessionId) {
-      // 没有记录账号，直接跳转登录
-      open(dashboardUrl);
-      return null;
-    } else {
-      const { sessionId, accountName } = result[0];
-      // 有账号，用 sessionId 检查下是否已经登录
-      const res: http.Response<{ code: number; message: string; data: Record<string, string | number> }> =
-        await http.fetch('https://dashboard-mng.bilibili.co/api/v4/user/info', {
-          method: 'GET',
-          headers: {
-            Cookie: `_AJSESSIONID=${sessionId};username=${accountName}`
-          }
-        });
-      if (res.data.code !== 0) {
-        // 没有登录，弹窗提示用户去登录
-        open(dashboardUrl);
-        return null;
-      }
-      return {
-        sessionId,
-        accountName
-      };
-    }
-  }
-
-  /**
-   * 保存用户的登录态和用户名
-   */
-  static async saveLoginStatus(code: string) {
-    // 使用 dashboard 给的 code 去获取用户的 session
-    const res = await loginWithCode(code);
-    if (res.data.code === 0) {
-      const result = await DbStore.selectAppInfo();
-      if (result.length) {
-        // 更新app info
-        const appInfo = result[0];
-        DbStore.updateAppInfo({
-          id: appInfo.id,
-          accoutName: res.data.data.username,
-          sessionId: res.data.data.session_id
-        });
-      } else {
-        DbStore.addAppInfo({
-          accountName: res.data.data.username,
-          sessionId: res.data.data.session_id
-        });
-      }
-    }
   }
 }

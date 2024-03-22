@@ -8,7 +8,7 @@ import { ProjectInfo } from '@/types/app-data';
 import DSLStore from '@/service/dsl-store';
 import { AppStoreContext, DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import EditorStore from '@/service/editor-store';
-import AppStore, { Scene } from '@/service/app-store';
+import { Scene } from '@/service/app-store';
 import DbStore from '@/service/db-store';
 import ComponentManager from '@/service/component-manager';
 import { listen } from '@tauri-apps/api/event';
@@ -40,9 +40,6 @@ export default observer(function App() {
         const result = parseCustomProtocolUrl(event.payload);
         appWindow.show();
         switch (result.host) {
-          case 'login':
-            handleLogin(result.queryParameters?.code as string);
-            break;
         }
       }
     }).then(callback => {
@@ -74,11 +71,6 @@ export default observer(function App() {
       appStore.activateSceneContext(appStore.getContextIdForProject(currentProjectId));
     }
   }, [currentProjectId]);
-
-  // 处理登录
-  function handleLogin(code: string) {
-    AppStore.saveLoginStatus(code);
-  }
 
   function handleKeyEvent(e) {
     e.stopPropagation();
@@ -125,7 +117,6 @@ export default observer(function App() {
   async function init() {
     // 初始化数据库
     await DbStore.init();
-    await AppStore.checkLoginStatus();
     // 初始化组件库
     await ComponentManager.init();
     // await fileManager.initAppData();
