@@ -164,7 +164,8 @@
         "default-src": [
           "tauri://*",
           "http://*",
-          "https://*"
+          "https://*",
+          "asset://*"
         ]
       }
     },
