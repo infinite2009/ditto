@@ -1,0 +1,86 @@
+.pageRootWrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  //margin: 0 auto;
+  background-color: #fff;
+  overflow: auto;
+}
+
+.showOutline() {
+  cursor: pointer;
+  border-radius: 4px;
+  outline-offset: -1px;
+  outline: 1px dashed #A7BAFF;
+  background: linear-gradient(0deg, rgba(167, 186, 255, 0.04) 0%, rgba(167, 186, 255, 0.04) 100%), #FFF;
+}
+
+.showOutline {
+  .showOutline();
+}
+
+.canDrop {
+  &:not(.selected):hover {
+    .showOutline();
+  }
+}
+
+.outline {
+  border-radius: 4px;
+  outline: #A7BAFF dotted 2px;
+  background-color: rgba(167, 186, 255, 0.04);
+}
+
+.withoutChildren {
+  position: relative;
+
+  &:after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    line-height: 20px;
+    content: "请插入任意元素";
+    color: #aaa;
+  }
+}
+
+.selected {
+  outline-offset: -1px;
+  box-shadow: 0 0 0 1px #1A4BFF;
+  // outline: #1A4BFF solid 1px;
+
+  .topLeft {
+    top: -3px;
+    left: -3px;
+    .brick();
+  }
+
+  .topRight {
+    top: -3px;
+    right: -3px;
+    .brick();
+  }
+
+  .bottomLeft {
+    bottom: -3px;
+    left: -3px;
+    .brick();
+  }
+
+  .bottomRight {
+    right: -3px;
+    bottom: -3px;
+    .brick();
+  }
+}
+
+.brick {
+  position: absolute;
+  z-index: 99;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #1A4BFF;
+  background-color: #fff;
+}

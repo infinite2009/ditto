@@ -1,0 +1,9 @@
+
+.hover-input .expand-icon {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.hover-input:hover .expand-icon {
+  opacity: 1;
+} 

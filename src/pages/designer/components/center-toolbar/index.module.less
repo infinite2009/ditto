@@ -1,0 +1,36 @@
+.centerToolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  .divider {
+    margin: 0;
+    border-radius: 7px;
+    border-color: #F1F2F3;
+    height: 12px;
+  }
+  .icon {
+    border-radius: 6px;
+    padding: 2px;
+    width: 24px;
+    height: 24px;
+    font-size: 20px;
+    line-height: 20px;
+    color: #61666D;
+    transition: background-color .3s ease-in-out;
+    cursor: pointer;
+    &.selected {
+      color: #1A4BFF;
+      background-color: rgba(76, 109, 228, 0.10);
+
+      //&:hover {
+      //  background-color: rgba(76, 109, 228, 0.10);
+      //}
+    }
+    &:not(.selected):hover {
+      background-color: var(---color-bg-bright, #F6F7F8);
+      transition: background-color .3s ease-in-out;
+    }
+  }
+}

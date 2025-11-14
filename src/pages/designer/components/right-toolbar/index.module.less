@@ -1,0 +1,104 @@
+.rightToolbar {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  .icon {
+    border-radius: 6px;
+    padding: 2px;
+    width: 24px;
+    height: 24px;
+    font-size: 20px;
+    line-height: 20px;
+    color: #61666D;
+    transition: background-color .3s ease-in-out;
+    cursor: pointer;
+    &.hasNotation {
+      position: relative;
+      &:after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        content: "";
+        height: 6px;
+        width: 6px;
+        border-radius: 3px;
+        background-color: #F85A54;
+      }
+    }
+    &:hover {
+      background-color: var(---color-bg-bright, #F6F7F8);
+      transition: background-color .3s ease-in-out;
+    }
+  }
+
+  .buttonGroup {
+    :global {
+      .ant-radio-button-wrapper {
+        &:not(.ant-radio-button-wrapper-checked) {
+          border-color: #F6F7F8;
+          background-color: #F6F7F8;
+          color: #9499A0;
+        }
+        &:first-child {
+          border-start-start-radius: 6px;
+          border-end-start-radius: 6px;
+        }
+        &:last-child {
+          border-end-end-radius: 6px;
+          border-start-end-radius: 6px;
+        }
+      }
+    }
+  }
+}
+
+.componentUpdateRoot {
+  :global {
+    .ant-popover-inner {
+      padding: 20px;
+      .ant-popconfirm-buttons {
+        .ant-btn {
+          margin-left: 12px;
+          padding: 0 12px;
+          height: 28px;
+          span {
+            font-size: 13px;
+            line-height: 26px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.componentUpdateTitle {
+  font-weight: 500;
+  line-height: 22px;
+  font-size: 16px;
+  color: #18191C;
+}
+
+.componentUpdateDescription {
+  margin: 8px 0 12px;
+  width: 220px;
+  color: var(---color-symbol-bold, #61666D);
+  font-size: 13px;
+  line-height: 23px;
+}
+
+.dropdownContainer {
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.10), 0 0 4px 0 rgba(0, 0, 0, 0.06);
+  background-color: #fff;
+
+  :global {
+    .ant-dropdown-menu {
+      all: initial;
+
+      .ant-dropdown-menu-item {
+        all: initial;
+      }
+    }
+  }
+}

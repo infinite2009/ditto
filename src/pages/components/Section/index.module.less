@@ -1,0 +1,58 @@
+.section {
+  padding: 12px;
+  border-bottom: 1px solid #f1f2f3;
+
+  :global {
+    .anticon {
+      cursor: pointer;
+    }
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    padding: 4px;
+    margin-bottom: 4px;
+
+    .title {
+      color: #18191c;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 16px;
+      font-family: 'PingFang SC';
+    }
+  }
+
+  .body {
+    padding-top: 8px;
+  }
+}
+
+.card {
+  padding: 4px 8px 0 8px;
+  border-radius: 4px;
+  background: #f6f7f8;
+  margin-bottom: 8px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .header {
+    display: flex;
+    padding: 4px 0px;
+
+    .drag-handle {
+      margin-right: 6px;
+    }
+
+    .title {
+      flex: 1;
+      color: #18191c;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 16px;
+    }
+  }
+}

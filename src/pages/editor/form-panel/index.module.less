@@ -1,0 +1,85 @@
+@import "../../../styles/index.module.less";
+
+.formPanel {
+  :global {
+    .ant-tabs-nav {
+      margin-bottom: 0;
+      margin-left: 12px;
+    }
+  }
+}
+
+.componentName {
+  border-bottom: 1px solid  #E3E5E7;
+  padding: 20px 12px;
+  color: #18191C;
+  font-family: "PingFang SC", serif;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.noEvent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 140px 0;
+  padding: 40px 0;
+}
+
+.text {
+  display: block;
+  width: 208px;
+  color: #61666D;
+  text-align: center;
+  font-family: "PingFang SC", serif;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.eventIcon {
+  color: #C9CCD0;
+  svg {
+    font-size: 60px;
+  }
+}
+
+.tab {
+  :global {
+    .ant-tabs-content-holder {
+      overflow: auto;
+      height: calc(100vh - 119px);
+    }
+  }
+}
+
+.breadcrumbContainer {
+  overflow-y: hidden;
+  overflow-x: scroll;
+  padding: 4px 12px;
+  width: 100%;
+  flex: auto;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumbItem {
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 12px;
+  line-height: 16px;
+
+  &.active {
+    color: #1677ff;
+    font-weight: bold;
+    cursor: default;
+  }
+}
+
+.separator {
+  margin: 0 8px;
+  color: rgba(0, 0, 0, 0.45);
+  position: relative;
+  top: -1px;
+}

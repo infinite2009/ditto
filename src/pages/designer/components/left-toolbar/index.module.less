@@ -1,0 +1,39 @@
+.lateralLayout(@gap) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: @gap;
+}
+
+.leftToolbar {
+  .lateralLayout(8px);
+  .divider {
+    width: 1px;
+    height: 12px;
+    border-radius: 7px;
+    background: var(---color_line_light, #F1F2F3);
+  }
+  .pageName {
+    white-space: nowrap;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px;
+    font-family: "PingFang SC", sans-serif;
+  }
+  .redoAndUndo {
+    .lateralLayout(4px);
+    .icon {
+      width: 24px;
+      height: 24px;
+      padding: 5px;
+      font-size: 14px;
+      color: #61666D;
+      cursor: pointer;
+      &.disabled {
+        color: #C9CCD0;
+        cursor: not-allowed;
+      }
+    }
+  }
+}

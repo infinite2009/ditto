@@ -1,0 +1,52 @@
+import { FC, JSXElementConstructor, ReactElement } from 'react';
+import IComponentSchema from '@/types/component.schema';
+import IPropsSchema from '@/types/props.schema';
+import { PropsFormTransformer } from '@/types/form-config';
+import ComponentFeature from './component-feature';
+
+export interface IPropsConfigItem extends IPropsSchema {
+  disabled?: boolean;
+}
+
+export default interface IComponentConfig {
+  // 最高优先级，标签名
+  callingName?: string;
+  categories: string[];
+  children?: {
+    name: string;
+    value: IComponentSchema[] | string;
+    /**
+     * text：纯文本节点
+     * template：模板节点，这种就是不能拖入组件，而是靠其他方式插入的
+     * slot：插槽节点，用户将会在这个节点中拖入各种组件
+     */
+    type: 'text' | 'slot' | 'template';
+    category: 'basic' | 'style' | 'interaction' | 'children' | 'hidden';
+    // 禁用当前节点及其后代节点的可交互性，如果为 true，那么这些节点将无法选中和编辑
+    notDraggable?: boolean;
+    noRendering?: boolean;
+  };
+  component?: FC<any> | string | ReactElement<any, string | JSXElementConstructor<any>> | any;
+  // 组件名称
+  configName: string;
+  dependency: string;
+  // 组件属性
+  feature?: ComponentFeature;
+  icon: FC<any>;
+  // 次等优先级，引入变量名
+  importName?: string;
+  // 隐藏组件配置
+  isHidden?: boolean;
+  // 是否是图层类组件，默认为 false
+  isLayer?: boolean;
+  keywords?: string[];
+  // 组件名
+  name?: string;
+  // 不生成导入语句
+  noImport?: boolean;
+  propsConfig: {
+    [key: string]: IPropsConfigItem;
+  };
+  title: string;
+  transformerStr?: PropsFormTransformer;
+}

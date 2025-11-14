@@ -1,0 +1,22 @@
+.page {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background-color: #fff;
+  transition: .3s ease-in-out;
+  //min-height: calc(100vh - 60px);
+  transform: scale(1);
+
+  &.fullScreenHeight {
+    min-height: calc(100vh - 5px);
+  }
+
+  &.preview {
+    height: 100vh;
+    :global #PageRoot0 {
+      overflow-y: auto;
+    }
+  }
+}

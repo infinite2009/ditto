@@ -1,0 +1,25 @@
+.note-display-container {
+  position: absolute;
+  height: 100%;
+  pointer-events: none;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.note-display-top,
+.note-display-right,
+.note-display-bottom,
+.note-display-left {
+  // pointer-events: all;
+}
+
+
+@keyframes dashdraw {
+  from {
+    stroke-dashoffset: 10;
+  }
+}
+
+.animated path {
+  stroke-dasharray: 5;
+  animation: dashdraw 0.5s linear infinite;
+}

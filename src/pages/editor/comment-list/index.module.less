@@ -1,0 +1,105 @@
+.commentList {
+}
+
+.header {
+  padding: 4px 12px;
+  height: 36px;
+  border-top: 1px solid #f1f2f3;
+  border-bottom: 1px solid #f1f2f3;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.headerTitle {
+  font-weight: 500;
+  line-height: 24px;
+  color: #18191c;
+}
+
+.resolvedTitle {
+  font-family: 'PingFang SC';
+  font-size: 13px;
+  font-style: normal;
+  line-height: 20px;
+}
+
+.comment {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 4px;
+  border-bottom: 1px solid #f1f2f3;
+  &:hover {
+    background-color: #f6f7f8;
+  }
+}
+
+.commentContent {
+  line-height: 22px;
+  color: #18191c;
+}
+
+.commentFooter {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  gap: 10px;
+  line-height: 22px;
+  align-self: stretch;
+  color: #9499a0;
+}
+
+.moreIcon {
+  padding: 2px;
+  height: 24px;
+  width: 24px;
+
+  svg {
+    font-size: 20px;
+  }
+}
+
+.componentName {
+  flex-grow: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.commentActionBtnWrapper {
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  gap: 4px;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+
+  svg {
+    font-size: 16px;
+  }
+}
+
+.resolvedTitleWrapper {
+  display: flex;
+  width: 164px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+}
+
+.resolvedIcon {
+  .icon();
+  color: #1a4bff;
+}
+
+.updateTime {
+  flex-shrink: 0;
+  white-space: nowrap;
+}

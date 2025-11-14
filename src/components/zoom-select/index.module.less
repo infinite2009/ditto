@@ -1,0 +1,65 @@
+.lateralLayout() {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.expanded {
+  transform: rotate(180deg);
+  transition: transform .3s ease-in-out;
+}
+
+.zoomLabel {
+  color: #9499A0;
+  transition: transform .3s ease-in-out;
+}
+
+.zoomInput {
+  .lateralLayout();
+  width: 156px;
+  :global {
+    .ant-input {
+      padding: 0 4px;
+      margin: 0 8px;
+    }
+  }
+}
+
+.dropdownContainer {
+  cursor: pointer;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 4px;
+}
+
+.dropdownOverlay {
+  :global {
+    .ant-dropdown-menu {
+      padding: 8px;
+    }
+  }
+}
+
+.dropDownItem {
+  .lateralLayout();
+  justify-content: space-between;
+  border-radius: 6px;
+  padding: 6px 8px;
+  width: 164px;
+  font-size: 12px;
+  line-height: 20px;
+  //font-family: PingFang SC, serif;
+  //color: #18191C;
+
+  &:hover {
+    background-color: #F6F7F8;
+    //cursor: pointer;
+  }
+}
+
+.shortcut {
+  color: #9499A0;
+}

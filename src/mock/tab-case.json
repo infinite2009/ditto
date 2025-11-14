@@ -1,0 +1,514 @@
+{
+  "id": "123",
+  "schemaType": "page",
+  "name": "testPage",
+  "desc": "测试页面",
+  "props": {
+    "c1": {
+      "items": {
+        "id": "items",
+        "schemaType": "props",
+        "name": "items",
+        "category": "basic",
+        "valueType": "array",
+        "valueSource": "editorInput",
+        "templateKeyPathsReg": [
+          {
+            "type": "object",
+            "path": "\\[0\\]\\.children"
+          },
+          {
+            "type": "object",
+            "path": "\\[1\\]\\.children"
+          }
+        ],
+        "value": [
+          {
+            "key": "1",
+            "label": "Tab 1",
+            "children": {
+              "current": "c7",
+              "isText": false
+            }
+          },
+          {
+            "key": "2",
+            "label": "Tab 2",
+            "children": {
+              "current": "c8",
+              "isText": false
+            }
+          }
+        ]
+      },
+      "tabBarExtraContent": {
+        "id": "items",
+        "schemaType": "props",
+        "name": "tabBarExtraContent",
+        "category": "basic",
+        "valueType": "object",
+        "valueSource": "editorInput",
+        "templateKeyPathsReg": [
+          {
+            "type": "object",
+            "path": ""
+          }
+        ],
+        "value": {
+          "current": "c17",
+          "isText": false
+        }
+      }
+    },
+    "c2": {
+      "columns": {
+        "id": "columns",
+        "schemaType": "props",
+        "name": "columns",
+        "category": "basic",
+        "valueType": "array",
+        "valueSource": "editorInput",
+        "templateKeyPathsReg": [
+          {
+            "path": "\\[\\d+\\]\\.render",
+            "type": "function"
+          }
+        ],
+        "value": [
+          {
+            "title": "Name",
+            "dataIndex": "name",
+            "key": "name",
+            "render": {
+              "current": "c13",
+              "isText": false
+            }
+          },
+          {
+            "title": "Age",
+            "dataIndex": "age",
+            "key": "age"
+          },
+          {
+            "title": "Action",
+            "key": "action",
+            "render": {
+              "current": "c14",
+              "isText": false
+            }
+          }
+        ]
+      },
+      "dataSource": {
+        "id": "dataSource",
+        "schemaType": "props",
+        "name": "dataSource",
+        "category": "basic",
+        "valueType": "array",
+        "valueSource": "editorInput",
+        "value": [
+          {
+            "key": "1",
+            "firstName": "John",
+            "lastName": "Brown",
+            "age": 32,
+            "address": "New York No. 1 Lake Park",
+            "tags": [
+              "nice",
+              "developer"
+            ]
+          },
+          {
+            "key": "2",
+            "name": "Jim",
+            "lastName": "Green",
+            "age": 42,
+            "address": "London No. 1 Lake Park",
+            "tags": [
+              "loser"
+            ]
+          },
+          {
+            "key": "3",
+            "name": "Joe",
+            "lastName": "Black",
+            "age": 32,
+            "address": "Sydney No. 1 Lake Park",
+            "tags": [
+              "cool",
+              "teacher"
+            ]
+          }
+        ]
+      }
+    },
+    "c5": {
+      "value": {
+        "id": "value",
+        "schemaType": "props",
+        "name": "value",
+        "category": "basic",
+        "value": "1",
+        "valueType": "string",
+        "valueSource": "editorInput"
+      },
+      "onSearch": {
+        "name": "onSearch",
+        "category": "event",
+        "value": "h1",
+        "valueType": "handler",
+        "valueSource": "editorInput"
+      }
+    },
+    "c6": {
+      "value": {
+        "name": "value",
+        "category": "basic",
+        "value": "2",
+        "valueType": "string",
+        "valueSource": "userInput",
+        "isValue": true
+      },
+      "options": {
+        "name": "options",
+        "category": "basic",
+        "value": [
+          {
+            "value": 1,
+            "label": "选项1"
+          },
+          {
+            "value": "2",
+            "label": "选项2"
+          }
+        ],
+        "valueType": "array",
+        "valueSource": "editorInput"
+      }
+    },
+    "c7": {
+      "items": {
+        "id": "items",
+        "schemaType": "props",
+        "name": "items",
+        "category": "basic",
+        "valueType": "object",
+        "valueSource": "editorInput",
+        "templateKeyPathsReg": [
+          {
+            "type": "object",
+            "path": "\\[0\\]\\.children"
+          },
+          {
+            "type": "object",
+            "path": "\\[1\\]\\.children"
+          }
+        ],
+        "value": [
+          {
+            "key": "1",
+            "label": "测试 Tab 1",
+            "children": {
+              "current": "c11",
+              "isText": false
+            }
+          },
+          {
+            "key": "2",
+            "label": "测试 Tab 2",
+            "children": {
+              "current": "c12",
+              "isText": false
+            }
+          }
+        ]
+      }
+    },
+    "c8": {
+      "title": {
+        "id": "title",
+        "schemaType": "props",
+        "name": "title",
+        "category": "basic",
+        "valueType": "string",
+        "valueSource": "editorInput",
+        "value": "测试按钮1"
+      }
+    },
+    "c9": {
+      "title": {
+        "id": "title",
+        "schemaType": "props",
+        "name": "title",
+        "category": "basic",
+        "valueType": "string",
+        "valueSource": "editorInput",
+        "value": "测试按钮2"
+      }
+    }
+  },
+  "child": {
+    "current": "c0",
+    "isText": false
+  },
+  "componentIndexes": {
+    "c0": {
+      "id": "c0",
+      "schemaType": "component",
+      "name": "Col",
+      "dependency": "antd",
+      "children": [
+        {
+          "current": "c4",
+          "isText": false
+        },
+        {
+          "current": "c1",
+          "isText": false
+        }
+      ]
+    },
+    "c1": {
+      "id": "c1",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Tabs",
+      "propsRefs": [
+        "items",
+        "tabBarExtraContent"
+      ]
+    },
+    "c8": {
+      "id": "c8",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Button",
+      "children": [
+        {
+          "current": "测试按钮3",
+          "isText": true
+        }
+      ]
+    },
+    "c7": {
+      "id": "c7",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Tabs",
+      "propsRefs": [
+        "items"
+      ]
+    },
+    "c11": {
+      "id": "c11",
+      "schemaType": "component",
+      "name": "div",
+      "children": [
+        {
+          "current": "c12",
+          "isText": false
+        },
+        {
+          "current": "c9",
+          "isText": false
+        }
+      ]
+    },
+    "c9": {
+      "id": "c9",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Button",
+      "children": [
+        {
+          "current": "测试按钮2",
+          "isText": true
+        }
+      ]
+    },
+    "c2": {
+      "id": "c2",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Table",
+      "propsRefs": [
+        "columns",
+        "dataSource"
+      ]
+    },
+    "c14": {
+      "id": "c14",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Space",
+      "propsRefs": [
+        "size"
+      ],
+      "children": [
+        {
+          "current": "c15",
+          "isText": false
+        },
+        {
+          "current": "c16",
+          "isText": false
+        }
+      ]
+    },
+    "c16": {
+      "id": "c16",
+      "schemaType": "component",
+      "name": "a",
+      "children": [
+        {
+          "current": "Delete",
+          "isText": true
+        }
+      ]
+    },
+    "c15": {
+      "id": "c15",
+      "schemaType": "component",
+      "name": "a",
+      "children": [
+        {
+          "current": "Invite Lida",
+          "isText": true
+        }
+      ]
+    },
+    "c13": {
+      "id": "c13",
+      "schemaType": "component",
+      "name": "a",
+      "children": [
+        {
+          "current": "text",
+          "isText": true
+        }
+      ]
+    },
+    "c12": {
+      "id": "c12",
+      "name": "div",
+      "children": [
+        {
+          "current": "c3",
+          "isText": false
+        },
+        {
+          "current": "c10",
+          "isText": false
+        }
+      ]
+    },
+    "c10": {
+      "id": "c10",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Button",
+      "children": [
+        {
+          "current": "测试按钮3",
+          "isText": true
+        }
+      ]
+    },
+    "c3": {
+      "id": "c3",
+      "dependency": "antd",
+      "name": "Table",
+      "propsRefs": []
+    },
+    "c4": {
+      "id": "c4",
+      "schemaType": "component",
+      "name": "Col",
+      "dependency": "antd",
+      "children": [
+        {
+          "current": "c5",
+          "isText": false
+        },
+        {
+          "current": "c6",
+          "isText": false
+        }
+      ]
+    },
+    "c6": {
+      "id": "c6",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Select",
+      "propsRefs": [
+        "value",
+        "options"
+      ]
+    },
+    "c5": {
+      "id": "c5",
+      "schemaType": "component",
+      "callingName": "Input.Search",
+      "dependency": "antd",
+      "name": "Input",
+      "propsRefs": [
+        "value"
+      ]
+    },
+    "c17": {
+      "id": "c17",
+      "schemaType": "component",
+      "dependency": "antd",
+      "name": "Button",
+      "children": [
+        {
+          "current": "新建按钮 C17",
+          "isText": true
+        }
+      ]
+    }
+  },
+  "storage": {
+    "inputSearchValue1": "测试"
+  },
+  "query": {
+    "selectValue1": "1"
+  },
+  "events": {
+    "loaded": "h1"
+  },
+  "httpService": {
+    "s1": {
+      "url": "http://localhost",
+      "method": "GET"
+    }
+  },
+  "handlers": {
+    "h1": {
+      "name": "searchData",
+      "desc": "搜索数据",
+      "actionRefs": [
+        "a1"
+      ]
+    }
+  },
+  "actions": {
+    "a1": {
+      "type": "service",
+      "payload": {
+        "method": "GET",
+        "params": {
+          "keyword": "inputSearchValue1",
+          "type": "selectValue1"
+        }
+      }
+    },
+    "a2": {
+      "type": "dataConversion",
+      "payload": {
+        "dataName": "tableValue1"
+      }
+    }
+  }
+}

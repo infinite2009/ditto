@@ -1,0 +1,54 @@
+.codeContent {
+  overflow: auto;
+  border-radius: 8px;
+  width: 100%;
+  height: calc(100vh - 162px);
+  padding: 10px;
+  flex-grow: 1;
+  background-color: #1e1e1e;
+
+  &,
+  * {
+    -webkit-user-select: text; /* Safari */
+    -moz-user-select: text; /* Firefox */
+    -ms-user-select: text; /* Internet Explorer/Edge */
+    user-select: text;
+  }
+
+  /* 如果你想更精确地定位，可以使用更具体的选择器 */
+
+  code[class*="language-"] {
+    &,
+    * {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.codePreview {
+  display: flex;
+  margin: 10px auto !important;
+  width: 900px;
+  height: calc(100vh - 90px);
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.framework {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: end;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.frameworkSelector {
+  width: 150px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+}

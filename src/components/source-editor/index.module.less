@@ -1,0 +1,43 @@
+.codeContent {
+  overflow: auto;
+  border-radius: 8px;
+  width: 100%;
+  padding: 10px;
+  flex-grow: 1;
+  &,
+  * {
+    -webkit-user-select: initial; /* Safari */
+    -moz-user-select: initial;    /* Firefox */
+    -ms-user-select: initial;     /* Internet Explorer/Edge */
+    user-select: initial;
+  }
+
+  /* 如果你想更精确地定位，可以使用更具体的选择器 */
+  code[class*="language-"] {
+    &,
+    * {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.codePreview {
+  display: flex;
+  margin: 10px auto !important;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.framework {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: end;
+  gap: 4px;
+}
+
+.frameworkSelector {
+  width: 150px;
+}

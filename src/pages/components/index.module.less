@@ -1,0 +1,120 @@
+.draggableForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 12px;
+  width: 100%;
+}
+
+.label {
+  flex-shrink: 0;
+}
+
+.propsItem,
+.addItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 12px;
+  .title {
+    line-height: 16px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: #18191C;
+  }
+}
+
+.operationIcon {
+  width: 16px;
+  height: 16px;
+  &:hover {
+    cursor: pointer;
+  }
+  svg {
+    font-size: 16px;
+  }
+}
+
+.addIcon,
+.removeIcon {
+  margin-left: auto;
+  .operationIcon();
+}
+
+.draggableIcon {
+  .operationIcon();
+  margin: 4px 0;
+}
+
+.draggableFromItem {
+  padding: 4px 8px;
+  border-radius: 4px;
+  flex-grow: 1;
+  background-color: #F6F7F8;
+  :global {
+    .ant-form-item {
+      margin-bottom: 0;
+      label {
+        height: 24px;
+        font-size: 12px;
+        line-height: 1;
+      }
+      .ant-form-item-control-input {
+        min-height: auto;
+      }
+    }
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.componentSelector {
+  height: 32px;
+  padding: 4px 0;
+}
+
+
+.placeholder {
+  height: 36px;
+  width: 240px;
+  padding: 6px 4px;
+}
+
+.placeholderText {
+  line-height: 24;
+  color: #9499A0;
+}
+
+.config {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 36px;
+  padding: 6px 4px;
+  gap: 16px;
+}
+
+.hintText {
+  flex-shrink: 0;
+  flex-basis: 88px;
+  line-height: 24px;
+  color: #9499A0;
+}
+
+.textValue {
+  .hintText();
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.divider {
+  border-color: #F1F2F3;
+  margin: 12px 0;
+}

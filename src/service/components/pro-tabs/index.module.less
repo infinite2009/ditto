@@ -1,0 +1,49 @@
+.formItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: space-between;
+  :global {
+    .ant-form-item {
+      margin: 0;
+    }
+  }
+}
+
+.customTabForm {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 12px;
+  gap: 8px;
+}
+
+.titleWrapper {
+  display: flex;
+  height: 24px;
+  align-self: stretch;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.icon {
+  height: 24px;
+  width: 24px;
+  svg {
+    margin: 0 auto;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

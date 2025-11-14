@@ -1,0 +1,62 @@
+@gap: 7px;
+@panelWidth: 200px;
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 34px);
+  overflow: auto;
+
+  :global {
+    .ant-tabs-nav-wrap {
+      margin-left: 12px;
+    }
+  }
+}
+
+.previewArea {
+  display: flex;
+  flex-grow: 1;
+  align-items: stretch;
+  overflow-y: auto;
+}
+
+.canvas {
+  position: relative;
+  //border: 1px solid #f1f2f3;
+  flex-grow: 1;
+  overflow: auto;
+  background: rgba(175, 192, 213, 0.25);
+}
+
+.stickyTab {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 4px;
+  z-index: 1;
+  opacity: 0;
+  cursor: pointer;
+  visibility: hidden;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+
+  &.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.icon {
+  position: fixed;
+  top: 8px;
+  right: 10px;
+  color: #666;
+  cursor: pointer;
+  z-index: 1;
+}

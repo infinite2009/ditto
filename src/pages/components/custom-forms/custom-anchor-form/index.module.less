@@ -1,0 +1,49 @@
+.formItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: space-between;
+  :global {
+    .ant-form-item {
+      margin: 0;
+    }
+  }
+}
+
+.titleWrapper {
+  display: flex;
+  height: 24px;
+  align-self: stretch;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  line-height: 24px;
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 14px;
+}
+
+.icon {
+  height: 24px;
+  width: 24px;
+  svg {
+    margin: 0 auto;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.customAnchorForm {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0 12px 12px;
+  gap: 8px;
+}

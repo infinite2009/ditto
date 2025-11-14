@@ -1,0 +1,76 @@
+.formItem, .operationItem {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.formItemContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.customSliderForm {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0 12px 12px;
+  gap: 8px;
+}
+
+.titleWrapper {
+  display: flex;
+  height: 24px;
+  align-self: stretch;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  line-height: 24px;
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 14px;
+}
+
+.icon {
+  height: 24px;
+  width: 24px;
+
+  svg {
+    margin: 0 auto;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dataSourceContent {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.operationItemContent {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #F6F7F8;
+
+  :global {
+    .ant-form-item {
+      margin-bottom: 0;
+      label {
+        font-size: 12px;
+        line-height: 1;
+      }
+    }
+  }
+}

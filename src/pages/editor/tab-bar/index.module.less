@@ -1,0 +1,39 @@
+.main {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  box-shadow: 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.tabItem {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 4px 10px;
+  transition: background-color 0.3s ease-in-out;
+  &:hover {
+    background: #eee;
+    transition: background-color 0.3s ease-in-out;
+  }
+}
+
+.title {
+  margin-right: 8px;
+  max-width: 120px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  cursor: default;
+}
+
+.selected {
+  border-bottom: 4px solid #396cd8;
+  background-color: #eee;
+}
+
+.modalIcon {
+  font-size: 12px;
+}

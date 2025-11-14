@@ -1,0 +1,79 @@
+.pageRoot {
+  position: relative;
+  display: flex;
+  //align-items: stretch;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-x: auto;
+}
+
+.selected {
+  outline-offset: -1px;
+  outline: #1A4BFF solid 1px;
+}
+
+.brick() {
+  position: absolute;
+  z-index: 99;
+  width: 4px;
+  height: 4px;
+  border: 1px solid #1A4BFF;
+  background-color: #fff;
+}
+
+.topLeft {
+  top: 0;
+  left: 0;
+  .brick();
+}
+
+.topRight {
+  top: 0;
+  right: 0;
+  .brick();
+}
+
+.bottomLeft {
+  bottom: 0;
+  left: 0;
+  .brick();
+}
+
+.bottomRight {
+  right: 0;
+  bottom: 0;
+  .brick();
+}
+
+.menuContentWrapper {
+  min-height: 100px;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  //margin: 0 1px;
+  .selected {
+    outline-offset: -1px;
+    outline: #1A4BFF solid 1px;
+  }
+}
+
+.content {
+  flex-grow: 1;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+}
+.left-inner {
+  height: 0;
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.right {
+  flex: 1;
+}

@@ -1,0 +1,57 @@
+.wrapper {
+  display: flex;
+  position: absolute;
+  // bottom: -26px;
+  // left: 0;
+  white-space: nowrap;
+  opacity: 0;
+  z-index: 100;
+  gap: 4px;
+  padding: 4px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 1px solid #666;
+  transition: opacity 0.3s ease-in-out;
+
+}
+
+.leftBottom {
+  left: 0;
+  bottom: -26px;
+  opacity: 1;
+}
+
+.leftTop {
+  left: 0;
+  top: -26px;
+  opacity: 1;
+}
+
+.rightTop {
+  top: -26px;
+  right: 0;
+  opacity: 1;
+}
+
+.rightBottom {
+  bottom: -26px;
+  right: 0;
+  opacity: 1;
+}
+
+.operate-btn {
+  cursor: pointer;
+}
+
+.copy-btn {
+  color: #007aff;
+  &:hover {
+    color: #0057c0;
+  }
+}
+
+.del-btn {
+  color: #ff3b30;
+  &:hover {
+    color: #c02a1a;
+  }
+}

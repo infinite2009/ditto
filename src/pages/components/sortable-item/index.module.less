@@ -1,0 +1,29 @@
+.draggableFromItem {
+  width: 256px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #F6F7F8;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 32px;
+  padding: 4px 0;
+}
+
+.operationIcon {
+  width: 16px;
+  height: 16px;
+  &:hover {
+    cursor: pointer;
+  }
+  svg {
+    font-size: 16px;
+  }
+}
+
+.draggableIcon {
+  .operationIcon();
+}

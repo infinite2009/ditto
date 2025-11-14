@@ -1,0 +1,33 @@
+.dragOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(300px, 300px);
+  pointer-events: none;
+  z-index: 999;
+}
+
+.dragOverlayAnchor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #1a4bff;
+  background: #fff;
+  z-index: 10;
+  transition: top .2s ease-in-out, left .2s ease-in-out;
+}
+
+.componentPlaceholder {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  z-index: -9;
+  width: 134px;
+  height: 45px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.06);
+  transition: top .2s ease-in-out, left .2s ease-in-out;
+}

@@ -1,0 +1,26 @@
+.infinite-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.content {
+  width: 400%; /* 假设水平滑动，设置足够宽的宽度 */
+  height: 100%;
+  position: relative;
+}
+
+.content-inner {
+  width: 25%;
+  flex-direction: column;
+  display: flex;
+  height: calc(100vh - 86px)
+}
+
+.pinpoint {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 99;
+}

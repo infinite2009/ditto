@@ -1,0 +1,222 @@
+.dialog-wrapper {
+  width: 100vw;
+  height: 100vh;
+}
+
+.dialog-container {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  min-height: 304px;
+  box-sizing: border-box;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dialog-title {
+  font-family: PingFang SC;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: 0px;
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  gap: 24px;
+}
+
+.form-label {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #18191c;
+  width: 80px;
+}
+
+.form-item {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  gap: 8px;
+}
+
+.form-input-wrapper {
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  position: relative;
+}
+
+.form-text-input-wrapper {
+
+  &::after {
+    content: var(--limit-length);
+    letter-spacing: 0px;
+    position: absolute;
+    right: 9px;
+    bottom: 7px;
+    color: var(---color-symbol-light, #c9ccd0);
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 18px;
+    letter-spacing: 0px;
+  }
+
+  & > input {
+    flex: 1;
+    outline: none;
+    border: 1px solid #e5e6eb;
+    border-radius: 8px;
+    padding: 6px 8px;
+  }
+
+  & > input::placeholder {
+    font-weight: 200;
+    font-size: 12px;
+    letter-spacing: 0px;
+  }
+}
+
+.form-label-required::after {
+  content: "*";
+  color: #ff4d4f;
+  margin-left: 2px;
+}
+
+.select-item {
+  border-radius: 6px;
+  width: 100px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  font-family: PingFang SC;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0px;
+  vertical-align: middle;
+  padding-left: 8px;
+  gap: 4px;
+  box-sizing: border-box;
+  color: var(---color-symbol-bold, #61666d);
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+
+  &:hover {
+    background: var(---color-bg-bright, #f6f7f8);
+  }
+}
+
+.select-item-active {
+  --active-color: rgba(26, 75, 255, 1);
+  --active-bg-color: rgba(76, 109, 228, 0.1);
+  border: 1px solid var(--active-color);
+  color: var(--active-color);
+  box-sizing: border-box;
+  width: 100px;
+  height: 32px;
+  flex-shrink: 0;
+  background: var(--active-bg-color);
+  &:hover {
+    background: var(--active-bg-color);
+  }
+}
+
+.fold-panel {
+  background: var(---color-bg-bright, rgba(246, 247, 248, 1));
+  border-radius: 6px;
+  flex: 1;
+}
+
+.fold-panel-header {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  min-height: 20px;
+  user-select: none;
+}
+
+.fold-panel-title {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  text-align: right;
+  color: var(---color-symbol-black, rgba(24, 25, 28, 1));
+}
+
+.fold-panel-desc {
+  font-family: PingFang SC;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0px;
+  vertical-align: middle;
+  color: var(---color-symbol-medium, rgba(148, 153, 160, 1));
+  padding-left: 4px;
+}
+
+.dialog-footer {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+  justify-content: flex-end;
+}
+
+.button {
+  font-family: PingFang SC;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid var(---color-symbol-light, #c9ccd0);
+  box-sizing: border-box;
+  height: 36px;
+  width: 68px;
+  user-select: none;
+}
+
+.button-primary {
+  --active-color: rgba(26, 75, 255, 1);
+  background: var(--active-color);
+  color: #fff;
+  border: none;
+}
+
+.fold-panel-content {
+  margin-top: 12px;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-bottom: 24px;
+}
+
+.form-error-message {
+  color: #ff4d4f;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0px;
+  position: absolute;
+  bottom: -20px;
+}
+
+.form-select {
+  width: 100%;
+}

@@ -1,0 +1,59 @@
+.verticalToolbar {
+  position: relative;
+  .contentContainer {
+    position: absolute;
+    border-radius: 8px;
+    top: 8px;
+    right: 52px;
+    max-height: calc(100vh - 48px);
+    width: 236px;
+    background-color: #fff;
+    z-index: 9;
+    overflow: hidden;
+    box-sizing: border-box;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.06), 0 12px 20px 0 rgba(0, 0, 0, 0.10);
+    transition: width .2s linear;
+  }
+  .verticalToolbarContainer {
+    display: flex;
+    flex-direction: column;
+    width: 44px;
+    padding: 8px;
+    gap: 8px;
+    .icon {
+      border-radius: 6px;
+      width: 28px;
+      height: 28px;
+      font-size: 20px;
+      padding: 4px;
+      line-height: 20px;
+      color: #61666D;
+      transition: background-color .3s ease-in-out;
+      cursor: pointer;
+      &:hover {
+        background-color: var(---color-bg-bright, #F6F7F8);
+        transition: background-color .3s ease-in-out;
+      }
+    }
+
+    .linkWrapper {
+      position: relative;
+      &:before {
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-radius: 3px;
+        width: 6px;
+        height: 6px;
+        content: "";
+        z-index: 9;
+        background-color: #C9CCD0;
+      }
+      &.linked {
+        &:before {
+          background-color: #2AC864;
+        }
+      }
+    }
+  }
+}

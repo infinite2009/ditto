@@ -1,0 +1,19 @@
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import '@bilibili/voltron-design/dist/styles.css';
+
+@theme {
+  --color-blue-500: #1a4bff;
+  --color-symbol-black: #18191c;
+  --spacing: 1px;
+  --default-font-family: 'PingFang SC';
+  --color-line-medium: #e5e5e5;
+  --color-symbol-light: #c9ccd0;
+  --color-required-red: #f85a54;
+  --color-bg-bright: #f6f7f8;
+  --color-line-bold: #e5e5e5;
+  --color-symbol-medium: #9499a0;
+  --color-line-light: #f1f2f3;
+}

@@ -1,0 +1,72 @@
+.border() {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 99;
+  pointer-events: none;
+  outline-offset: -1px;
+}
+
+.voltronAttributeWrapper {
+  position: relative;
+  display: inline-block;
+  &.selected:after {
+    .border();
+    outline: 1.5px solid #396cd8;
+  }
+  &:not(.selected):hover:after {
+    .border();
+    outline: 1px dashed #396cd8;
+  }
+}
+
+.mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9;
+  //&.selected {
+  //  outline: 1.5px solid #396cd8;
+  //}
+  //&.hovered {
+  //  outline: 1px dashed #396cd8;
+  //}
+}
+
+.brick() {
+  position: absolute;
+  z-index: 99;
+  width: 4px;
+  height: 4px;
+  border: 1px solid #1A4BFF;
+  background-color: #fff;
+}
+
+.topLeft {
+  top: -2px;
+  left: -2px;
+  .brick();
+}
+
+.topRight {
+  top: -2px;
+  right: -2px;
+  .brick();
+}
+
+.bottomLeft {
+  bottom: -2px;
+  left: -2px;
+  .brick();
+}
+
+.bottomRight {
+  right: -2px;
+  bottom: -2px;
+  .brick();
+}

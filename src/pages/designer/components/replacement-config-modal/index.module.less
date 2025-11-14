@@ -1,0 +1,63 @@
+.replacementConfigContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.modalHeader {
+  margin-bottom: 16px;
+  height: 24px;
+}
+
+.modalContent {
+  padding: 20px;
+  width: 540px;
+
+  :global {
+    .ant-modal-close {
+      top: 20px;
+      right: 20px;
+      padding: 4px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+.modalFooter {
+  margin-top: 32px !important;
+}
+
+.fieldContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+
+  .fieldLabel {
+    width: 72px;
+    white-space: nowrap;
+    text-align: right;
+    color: #18191C;
+  }
+}
+
+.icon {
+  font-size: 16px;
+  font-weight: 500;
+  color: #61666D;
+}
+
+.branchSelect,
+.componentPathTree {
+  flex-grow: 1;
+}
+
+.fieldInput {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  .fieldInputPrefix {
+    color: #18191C;
+  }
+}

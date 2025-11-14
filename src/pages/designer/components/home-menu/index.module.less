@@ -1,0 +1,34 @@
+.homeMenu {
+  display: flex;
+  padding: 0 4px;
+  align-items: center;
+  gap: 2px;
+  width: 38px;
+  height: 20px;
+  box-sizing: border-box;
+  border-radius: 4px;
+
+  .logo {
+    width: 20px;
+    height: 20px;
+    background-image: url('../../../../assets/logo_128.png');
+    background-size: 20px 20px;
+    object-fit: contain;
+    cursor: pointer;
+  }
+
+  .icon {
+    width: 8px;
+    height: 8px;
+    cursor: pointer;
+    transition: all .3s ease-in-out;
+
+    &.expanded {
+      transform: rotate(90deg);
+      transition: all .3s ease-in-out;
+    }
+  }
+
+  &:hover {
+  }
+}

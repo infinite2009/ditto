@@ -1,0 +1,71 @@
+.projectTree {
+  padding: 0 8px;
+  height: 224px;
+  overflow: auto;
+  :global {
+    .ant-tree-title {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 32px;
+    }
+  }
+}
+
+.templatePortal {
+  position: fixed;
+  width: 1440px;
+  top: 10000px;
+  left: 10000px;
+}
+
+.fileIcon {
+  svg {
+    color: #C19D84;
+  }
+}
+
+.nodeTitle {
+  flex: auto;
+  height: 32px;
+  line-height: 32px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  width: 0;
+}
+
+.pagePanel {
+  width: 200px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #dbdbdb;
+  :global {
+    .ant-tree-treenode-selected {
+      color: #1A4BFF;
+    }
+  }
+}
+
+.pageNameInputWrapper {
+  display: flex;
+  flex-direction: row;
+  margin: 0 8px 4px;
+  padding: 3px 8px;
+  column-gap: 4px;
+  border-radius: 6px;
+  background: rgba(76, 109, 228, 0.10);
+  .fileIcon {
+    svg {
+      color: #C19D84;
+    }
+  }
+  .input {
+    border-radius: 4px !important;
+    padding: 4px;
+    line-height: 16px;
+    border-color: #1A4BFF;
+    caret-color: #1A4BFF;
+    box-shadow: none !important;
+  }
+}
