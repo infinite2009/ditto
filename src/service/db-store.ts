@@ -1,10 +1,8 @@
-import Database from 'tauri-plugin-sql-api';
-import { camelToSnake, isWeb, snakeToCamel } from '@/util';
+import { camelToSnake, snakeToCamel } from '@/util';
 import { ProjectInfo } from '@/types/app-data';
 import { nanoid } from 'nanoid';
-import { appLocalDataDir, join } from '@tauri-apps/api/path';
 import { ComponentId } from '@/types';
-import { GetVoltronModuleList, GetVoltronModuleListAll, PostVoltronCommentList, PostVoltronTemplateList } from '@/api';
+import { GetVoltronModuleListAll, PostVoltronCommentList, PostVoltronTemplateList } from '@/api';
 
 export type TemplateInfo = PostVoltronTemplateList.ResItem;
 // export type TemplateInfo = {
@@ -93,37 +91,6 @@ export default class DbStore {
    */
   static async init() {
     // TODO: need to implement
-    if (isWeb()) {
-      return;
-    }
-    try {
-      DbStore.db = await Database.load(`sqlite:${await join(await appLocalDataDir(), 'voltron.db')}`);
-      const db = DbStore.db;
-      // 创建四张表
-      await Promise.all([
-        // db.execute(
-        //   'CREATE TABLE IF NOT EXISTS template_info (id TEXT NOT NULL, name TEXT, path TEXT, cover_path TEXT, category TEXT, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'
-        // ),
-        // db.execute(
-        //   'CREATE TABLE IF NOT EXISTS module_info (id TEXT NOT NULL, name TEXT, path TEXT, category TEXT, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'
-        // ),
-        db.execute(
-          'CREATE TABLE IF NOT EXISTS project_info (id TEXT NOT NULL, name TEXT, opened_page TEXT, is_open INTEGER, is_active INTEGER, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'
-        ),
-        // db.execute(
-        //   'CREATE TABLE IF NOT EXISTS path_project_mapping (id TEXT NOT NULL, path TEXT, project_id INTEGER, created_time NUMERIC, updated_time NUMERIC, FOREIGN KEY (project_id) REFERENCES project_info(id), PRIMARY KEY (id))'
-        // ),
-        // db.execute(
-        //   'CREATE TABLE IF NOT EXISTS comment_info (id TEXT NOT NULL, dsl_id TEXT, component_id TEXT, position_top NUMERIC, position_left NUMERIC, content TEXT, resolved NUMERIC, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'
-        // ),
-        db.execute(
-          'CREATE TABLE IF NOT EXISTS app_info (id TEXT NOT NULL, account_name TEXT, session_id TEXT, created_time NUMERIC, updated_time NUMERIC, PRIMARY KEY (id))'
-        )
-      ]);
-      // 创建表格
-    } catch (err) {
-      console.error(err);
-    }
   }
 
   static async selectModules(conditions: Record<string, any> = {}) {

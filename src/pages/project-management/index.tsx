@@ -226,11 +226,6 @@ export default function ProjectManagement() {
     await handleOpeningProject(selectedProjectInfoRef.current);
   }
 
-  async function openActiveProject() {
-    const activeProject = await NewFileManager.fetchActiveProject();
-    appStore.setActiveProject(activeProject);
-  }
-
   async function fetchOpenedProjects() {
     const openProjects = await NewFileManager.fetchOpenedProjects();
     appStore.setOpenedProjects(openProjects);
@@ -240,19 +235,12 @@ export default function ProjectManagement() {
   async function handleOpeningProject(projectInfo: ProjectInfo) {
     try {
       const url = `${ROUTE_NAMES.PAGE_EDIT}?projectId=${projectInfo.id}`;
-      if (isWeb()) {
-        window.open(`/voltron${url}`);
-      } else {
-        // 将远端的项目信息同步到本地
-        await NewFileManager.synchronizeLocalProject(projectInfo);
-        fetchOpenedProjects().then();
-        await openActiveProject();
-        navigate(url);
-      }
+      window.open(`/voltron${url}`);
     } catch (err) {
       console.error(err);
     }
   }
+
   /**
    * 重命名项目，展示编辑名称的输入框
    */
@@ -300,7 +288,7 @@ export default function ProjectManagement() {
     const data = selectedProjectInfoRef.current;
     try {
       await NewFileManager.deleteProject(data);
-      await Promise.all([fetchOpenedProjects(), fetchRecentProjects()]);
+      await Promise.all([fetchRecentProjects()]);
       return Promise.resolve(data);
     } catch (e) {
       console.error(e);

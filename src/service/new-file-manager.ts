@@ -106,16 +106,6 @@ export default class NewFileManager {
       projectPlatform: platform
     });
     const project = data;
-    if (!isWeb()) {
-      await DbStore.createProject({
-        id: project.id,
-        name: project.name,
-        customCodeRepoSlug: repoUrl,
-        customCodeRepoBranch: branch,
-        customCodeRepoComponentPath: componentPath,
-        projectPlatform: platform
-      });
-    }
     return project;
   }
 
@@ -135,11 +125,11 @@ export default class NewFileManager {
    * 创建模板
    */
   static async createTemplate({
-    templatePageName,
-    templateBatchKey,
-    coverBatchKey,
-    projectId
-  }: {
+                                templatePageName,
+                                templateBatchKey,
+                                coverBatchKey,
+                                projectId
+                              }: {
     templatePageName: string;
     templateBatchKey: string;
     coverBatchKey: string;
@@ -192,10 +182,6 @@ export default class NewFileManager {
     await postVoltronProjectDelete({
       projectId: project.id
     });
-    if (!isWeb()) {
-      await DbStore.deleteProject(project.id);
-      await this.closeProject(project.id);
-    }
   }
 
   /**
@@ -208,14 +194,7 @@ export default class NewFileManager {
   }
 
   static async fetchActiveProject(): Promise<ProjectInfo> {
-    if (isWeb()) {
-      return null;
-    }
-    const result = await DbStore.selectProjects({ isActive: true });
-    if (result.length) {
-      return result[0];
-    }
-    return null;
+    return Promise.resolve(null);
   }
 
   /**
@@ -262,19 +241,10 @@ export default class NewFileManager {
    * @param appId
    */
   static async fetchInterfacesByAppId(appId: string) {
-    if (isWeb()) {
-      const res = await postVoltronCommonProxy({
-        url: `https://cloud.bilibili.co/akaling/openapi/v1/iface/list/inApp?appid=${appId}`,
-        method: 'GET'
-      });
-      return res.data.items || [];
-    }
-    const res = await customFetch<{ items: any[] }>(
-      `https://cloud.bilibili.co/akaling/openapi/v1/iface/list/inApp?appid=${appId}`,
-      {
-        method: 'GET'
-      }
-    );
+    const res = await postVoltronCommonProxy({
+      url: `https://cloud.bilibili.co/akaling/openapi/v1/iface/list/inApp?appid=${appId}`,
+      method: 'GET'
+    });
     return res.data.items || [];
   }
 
@@ -532,11 +502,11 @@ export default class NewFileManager {
   }
 
   static async uploadDSLFragment({
-    data,
-    name,
-    coverUrl = '',
-    category = 0
-  }: {
+                                   data,
+                                   name,
+                                   coverUrl = '',
+                                   category = 0
+                                 }: {
     data: string;
     name: string;
     coverUrl?: string;

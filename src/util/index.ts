@@ -21,8 +21,8 @@ import AppStore from '@/service/app-store';
 import { info } from '@/service/logging';
 import axios from 'axios';
 
-import DynamicObject from '@/types/dynamic-object';
-import IPropsSchema from '@/types/props.schema';
+import type DynamicObject from '@/types/dynamic-object';
+import type IPropsSchema from '@/types/props.schema';
 import dayjs from 'dayjs';
 import { toJS } from 'mobx';
 
@@ -89,7 +89,7 @@ export function toProgressive(verb: string) {
 }
 
 export function hyphenToCamelCase(input: string) {
-  return input.replace(/-([a-zA-Z])/g, function (match, group1) {
+  return input.replace(/-([a-zA-Z])/g, function(_match, group1) {
     return group1.toUpperCase();
   });
 }
@@ -126,7 +126,7 @@ export async function isMac() {
  * @param prefix
  */
 export function flattenObject(obj, prefix = '') {
-  const result = {};
+  const result: Record<string, any> = {};
 
   if (Array.isArray(obj)) {
     obj.forEach((value, index) => {
@@ -157,14 +157,14 @@ export function flattenObject(obj, prefix = '') {
  * @param obj
  * @param keyPath
  */
-export function getValueByPath(obj: any, keyPath: string) {
+export function getValueByPath(obj: never, keyPath: string) {
   if (keyPath === '') {
     return obj;
   }
 
-  return keyPath.split('.').reduce((acc, key) => {
+  return keyPath.split('.').reduce((acc: never, key: string) => {
     if (key.includes('[')) {
-      const index = key.match(/\[(\d+)\]/)[1];
+      const index: string = key.match(/\[(\d+)\]/)[1];
       return acc[index];
     } else {
       return acc[key];
@@ -366,7 +366,7 @@ export function camelToHyphen(str: string) {
 }
 
 function parseUrlEncodedNested(str: string) {
-  const obj = {};
+  const obj: Record<string, any> = {};
 
   str.split('&').forEach(pair => {
     let [key, value] = pair.split('=');
@@ -425,7 +425,7 @@ export function proxyFetch() {
   }
   // 覆盖全局的 fetch 函数
   window.fetch = new Proxy(window.fetch, {
-    apply: async function (target, thisArg, [url, options = {}]) {
+    apply: async function(target, thisArg, [url, options = {}]) {
       const loginStatus = await AppStore.checkLoginStatusForDesktop();
       if (!loginStatus) {
         // TODO：发送登录失败的消息，并在原地进行重试
@@ -460,217 +460,38 @@ export function proxyFetch() {
   });
 }
 
-export function proxyXHR() {
-  if (!window.__TAURI__) {
-    return;
-  }
-  const originalXHR = window.XMLHttpRequest;
-
-  function TauriProxyXHR() {
-    const xhrInstance = new originalXHR();
-    this.xhr = xhrInstance;
-
-    xhrInstance.onreadystatechange = () => {
-      if (xhrInstance.readyState === 4) {
-        this.status = xhrInstance.status;
-        this.statusText = xhrInstance.statusText;
-        this.responseText = xhrInstance.responseText;
-        this.readyState = xhrInstance.readyState;
-        if (this.onreadystatechange) {
-          this.onreadystatechange();
-        }
-      }
-    };
-  }
-
-  TauriProxyXHR.prototype.open = function (method, url, async, user, password) {
-    this.method = method;
-    this.url = url;
-    this.async = async;
-    this.user = user;
-    this.password = password;
-  };
-
-  TauriProxyXHR.prototype.setRequestHeader = function (header, value) {
-    if (!this.headers) {
-      this.headers = {};
-    }
-    this.headers[header] = value;
-  };
-
-  TauriProxyXHR.prototype.getAllResponseHeaders = function () {
-    return this.xhr.getAllResponseHeaders();
-  };
-
-  TauriProxyXHR.prototype.getResponseHeader = function (header) {
-    return this.xhr.getResponseHeader(header);
-  };
-
-  TauriProxyXHR.prototype.send = function (body) {
-    if (this.url.startsWith('http')) {
-      // 如果是http(s)请求，则通过Tauri后端代理
-      fetch(this.url, {
-        method: this.method,
-        body: body,
-        headers: this.headers
-      })
-        .then(res => {
-          // 代理请求成功，设置响应数据
-          this.status = res.status;
-          this.statusText = '';
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          this.responseText = res.data;
-          this.readyState = 4;
-          if (this.onload) {
-            this.onload();
-          }
-        })
-        .catch(err => {
-          // 代理请求失败
-          if (this.onerror) {
-            this.onerror(err);
-          }
-        });
-    } else {
-      this.xhr.open(this.method, this.url, this.async, this.user, this.password);
-      // 非http(s)请求，使用原生XHR对象
-      for (const header in this.headers) {
-        this.xhr.setRequestHeader(header, this.headers[header]);
-      }
-      this.xhr.send(body);
-    }
-  };
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  window.XMLHttpRequest = TauriProxyXHR;
-}
-
-export function parseCustomProtocolUrl(url: string) {
-  const urlParts = new URL(url);
-  const protocol = urlParts.protocol.replace(':', '');
-  const path = urlParts.pathname;
-  const queryParameters: Record<string, string | number> = {};
-
-  urlParts.searchParams.forEach((value, key) => {
-    queryParameters[key] = value;
-  });
-
-  return {
-    protocol,
-    host: urlParts.host,
-    path,
-    queryParameters
-  };
-}
-
-export function supplementProtocolForUrl(url: string, cacheDisabled = false) {
-  const protocol = '';
-  let urlWithProtocol = url;
-  if (url.startsWith('http://') || url.startsWith('https://')) {
-    urlWithProtocol = url;
-  } else if (url.startsWith('//')) {
-    urlWithProtocol = `http${url.indexOf('uat') > -1 ? '' : 's'}:${url}`;
-  } else {
-    urlWithProtocol = `http${url.indexOf('uat') > -1 ? '' : 's'}://${url}`;
-  }
-  if (cacheDisabled) {
-    urlWithProtocol = `${urlWithProtocol}${urlWithProtocol.startsWith('?') ? '' : '?'}${
-      urlWithProtocol.endsWith('?') ? '' : '&'
-    }t=${new Date().getTime()}`;
-  }
-  return urlWithProtocol;
+export function isWeb() {
+  return true;
 }
 
 export async function customFetch<T = { code: number; data: any; message: string }>(
   url: string,
   options: http.FetchOptions | RequestInit = {}
 ): Promise<http.Response<T>> {
-  if (isWeb()) {
-    const notAuthorized = -101;
-    const res = (await axios(url, {
-      ...options,
-      headers: {
-        'X-CSRF': nanoid(),
-        'x1-bilispy-color': 'dashboard',
-        ...(options.headers || {})
-      },
-      data: options.body
-    } as any)) as any;
+  const notAuthorized = -101;
+  const res = (await axios(url, {
+    ...options,
+    headers: {
+      'X-CSRF': nanoid(),
+      'x1-bilispy-color': 'dashboard',
+      ...(options.headers || {})
+    },
+    data: options.body
+  } as any)) as any;
 
-    // VITE_DISABLE_UN_LOGIN_REDIRECT 在 env.local中配置，控制本地不进行重定向跳转
-    if (res.data.code === notAuthorized && !import.meta.env.VITE_DISABLE_UN_LOGIN_REDIRECT) {
-      console.log('window.location.href: ', window.location.href);
-      if (process.env.NODE_ENV === 'prod') {
-        window.location.href = `https://dashboard-mng.bilibili.co/login.html?caller=${getCaller()}&path=${
-          window.location.pathname
-        }${window.location.search}`;
-      } else {
-        window.location.href = 'http://alpha.dashboard.bilibili.co/login.html?caller=uat-voltron&path=/';
-      }
-      return res;
+  // VITE_DISABLE_UN_LOGIN_REDIRECT 在 env.local中配置，控制本地不进行重定向跳转
+  if (res.data.code === notAuthorized && !import.meta.env.VITE_DISABLE_UN_LOGIN_REDIRECT) {
+    console.log('window.location.href: ', window.location.href);
+    if (process.env.NODE_ENV === 'prod') {
+      window.location.href = `https://dashboard-mng.bilibili.co/login.html?caller=${getCaller()}&path=${
+        window.location.pathname
+      }${window.location.search}`;
     } else {
-      return res;
+      window.location.href = 'http://alpha.dashboard.bilibili.co/login.html?caller=uat-voltron&path=/';
     }
+    return res;
   } else {
-    if (AppStore.loginStatus) {
-      const { sessionId, username } = AppStore.loginStatus;
-      const timeBefore = new Date();
-      const actuallyUrl = url.startsWith('http')
-        ? url
-        : `${(options as any)?.origin || 'https://uat-ee.bilibili.co'}${url}`;
-      info(`Fetching ${actuallyUrl} starting: ${timeBefore}`);
-      const optionsProcessed = {
-        ...options,
-        headers: {
-          ...(options.headers || {}),
-          account: username,
-          'x1-bilispy-color': 'dashboard',
-          'x-account': username,
-          'X-CSRF': nanoid(),
-          cookie: `_AJSESSIONID=${sessionId};username=${username};JSESSIONID=${sessionId}`
-          // cookie: '_AJSESSIONID=6a5dd1eea2a2465ba92b486b53136353; JSESSIONID=C79EEBD6F1F58922119DE4788E24851A'
-        }
-      } as any;
-      const bodyType = typeOf(options.body);
-      const body: any = options.body;
-      switch (bodyType) {
-        case 'object':
-          if (body.file) {
-            const uint8Array = await fileToUint8Array(body.file as File);
-            optionsProcessed.body = Body.form({
-              ...body,
-              file: {
-                file: uint8Array,
-                fileName: body.file.name,
-                mime: body.file.type
-              }
-            });
-          } else {
-            optionsProcessed.body = Body.json(options.body as Record<string, any>);
-          }
-          break;
-        case 'string':
-          optionsProcessed.body = Body.text(options.body as string);
-          break;
-        case 'uint8array':
-          optionsProcessed.body = Body.bytes(options.body as Uint8Array);
-          break;
-        default:
-          optionsProcessed.body = options.body;
-          break;
-      }
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      optionsProcessed.query = options.params || {};
-      delete optionsProcessed.params;
-      const res = (await http.fetch(actuallyUrl, optionsProcessed)) as any;
-      info(`Fetching ${actuallyUrl} ending: ${new Date().getTime() - timeBefore.getTime()}ms`);
-      return res;
-    }
-    return Promise.reject('not authorized');
+    return res;
   }
 }
 
@@ -724,12 +545,12 @@ export function generateHttpRequestFunctionName(path: string, method: string) {
 
 export function proxyConsole() {
   window.console = new Proxy(console, {
-    get: function (target, prop, receiver) {
+    get: function(target, prop, receiver) {
       switch (prop) {
         case 'log':
         case 'warn':
         case 'error':
-          return function (...args) {
+          return function(...args) {
             // 执行额外行为，比如记录日志或处理日志数据
             // console.log('Before logging:', new Date());
 
@@ -749,24 +570,6 @@ export function proxyConsole() {
   });
 }
 
-export async function fileToUint8Array(file: File): Promise<Uint8Array> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = function (event) {
-      const arrayBuffer = event.target.result as ArrayBuffer;
-      const uint8Array = new Uint8Array(arrayBuffer);
-      resolve(uint8Array);
-    };
-
-    reader.onerror = function (event) {
-      reject(new Error('File reading error'));
-    };
-
-    reader.readAsArrayBuffer(file);
-  });
-}
-
 export type GenDSLProps<FieldValue extends Record<string, any>> = {
   [key in keyof FieldValue]: IPropsSchema<FieldValue[key]>;
 };
@@ -775,21 +578,14 @@ export default function getPropsValue(props: DynamicObject<IPropsSchema>) {
   return Object.fromEntries(Object.keys(props).map(i => [i, toJS(props[i]?.value)]));
 }
 
-export function isWeb() {
-  return !window.__TAURI__;
-}
-
 export async function getPlatform() {
-  if (isWeb()) {
-    const ua = window.navigator.userAgent.toLowerCase();
-    if (ua.indexOf('win') > -1) {
-      return 'win32';
-    } else if (ua.indexOf('mac') > -1) {
-      return 'darwin';
-    }
-    return 'unknown';
+  const ua = window.navigator.userAgent.toLowerCase();
+  if (ua.indexOf('win') > -1) {
+    return 'win32';
+  } else if (ua.indexOf('mac') > -1) {
+    return 'darwin';
   }
-  return await platform();
+  return 'unknown';
 }
 
 export function stringToFile(str: string, fileName: string, contentType = 'text/plain') {

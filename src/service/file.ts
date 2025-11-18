@@ -44,16 +44,8 @@ export type GenerateOptions = {
 
 class FileManager {
   private static instance = new FileManager();
-  os: Platform | 'Web';
 
   constructor() {
-    if (isWeb()) {
-      this.os = 'Web';
-    } else {
-      platform().then(res => {
-        this.os = res;
-      });
-    }
   }
 
   static getInstance() {
@@ -243,15 +235,6 @@ class FileManager {
     if (result.length) {
       return result[0].id;
     }
-  }
-
-  async fetchOpenedProjects() {
-    // TODO: need implementation
-    if (isWeb()) {
-      return [];
-    }
-    const projects = await DbStore.selectProjects();
-    return projects.filter((item: ProjectInfo) => item.isOpen);
   }
 
   async fetchProjectData() {

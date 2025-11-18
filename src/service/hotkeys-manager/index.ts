@@ -4,8 +4,7 @@
  * 这一套成员命名有点不准确，最开始没想清楚概念之间的关系
  */
 import { getPlatform } from '@/util';
-import { Platform } from '@tauri-apps/api/os';
-import { HotkeysEvent } from 'react-hotkeys-hook/packages/react-hotkeys-hook/dist/types';
+import type { HotkeysEvent } from 'react-hotkeys-hook/packages/react-hotkeys-hook/dist/types';
 
 export enum HotkeyAction {
   ZOOM_REVERT = 'revert',
@@ -105,8 +104,8 @@ export type Hotkey = {
 export type HotkeyDict = { [key in HotkeyAction]?: Hotkey };
 
 export default class HotkeysManager {
-  static hotkeysConfigCache: HotkeyDict | null | undefined = undefined;
-  static platform: Platform | 'unknown' = undefined;
+  static hotkeysConfigCache: HotkeyDict = {};
+  static platform = undefined;
 
   static fetchHotkey(action: HotkeyAction) {
     if (HotkeysManager.platform) {

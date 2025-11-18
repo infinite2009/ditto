@@ -11,7 +11,7 @@
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
@@ -20,9 +20,15 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
+    "experimentalDecorators": true,
+    "erasableSyntaxOnly": false,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src"]
 }

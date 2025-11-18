@@ -1341,45 +1341,25 @@ function Designer() {
 
   async function handleExportingPageCodeFile() {
     const extension = editorStore.framework === 'React' ? 'tsx' : 'vue';
-    if (isWeb()) {
-      const formattedContent =
-        editorStore.framework === 'React'
-          ? (await fileManager.generateReactCode(dslStore.dsl)).pageCode
-          : await fileManager.generateVueCode(dslStore.dsl);
-      // 创建一个 Blob 对象
-      const blob = new Blob([formattedContent], { type: 'text/plain' });
-      // 创建一个链接
-      const url = URL.createObjectURL(blob);
-      // 创建一个下载链接
-      const a = document.createElement('a');
-      a.href = url;
-      // 设置下载文件的名称
-      a.download = `index.${extension}`;
-      document.body.appendChild(a);
-      a.click(); // 触发下载
-      // 清理
-      document.body.removeChild(a);
-      // 释放 Blob URL
-      URL.revokeObjectURL(url);
-    } else {
-      const exportPageCodeFile =
-        editorStore.framework === 'React' ? fileManager.exportReactPageCodeFile : fileManager.exportVuePageCodeFile;
-      const defaultPath = await join((filePathRef.current || defaultPathRef.current) as string, `index.${extension}`);
-      const selectedFile = await save({
-        title: '导出代码',
-        defaultPath,
-        filters: [
-          {
-            name: `${extension}文件`,
-            extensions: [extension]
-          }
-        ]
-      });
-      if (selectedFile) {
-        filePathRef.current = await dirname(selectedFile);
-        await exportPageCodeFile.apply(fileManager, [selectedFile, dslStore.dsl]);
-      }
-    }
+    const formattedContent =
+      editorStore.framework === 'React'
+        ? (await fileManager.generateReactCode(dslStore.dsl)).pageCode
+        : await fileManager.generateVueCode(dslStore.dsl);
+    // 创建一个 Blob 对象
+    const blob = new Blob([formattedContent], { type: 'text/plain' });
+    // 创建一个链接
+    const url = URL.createObjectURL(blob);
+    // 创建一个下载链接
+    const a = document.createElement('a');
+    a.href = url;
+    // 设置下载文件的名称
+    a.download = `index.${extension}`;
+    document.body.appendChild(a);
+    a.click(); // 触发下载
+    // 清理
+    document.body.removeChild(a);
+    // 释放 Blob URL
+    URL.revokeObjectURL(url);
   }
 
   async function openActiveProject() {
@@ -1399,23 +1379,10 @@ function Designer() {
 
   async function redirectToPreview() {
     const projectId = searchParams.get('projectId');
-    if (isWeb()) {
-      const host = window.location.host;
-      window.open(
-        `//${host}/voltron${ROUTE_NAMES.PAGE_PREVIEW}?projectId=${projectId}&pageId=${editorStore.selectedPageId}`
-      );
-    } else {
-      const activeProject = await NewFileManager.fetchActiveProject();
-      // 将远端的项目信息同步到本地
-      const project: ProjectInfo = {
-        ...activeProject,
-        id: `${DesignMode.preview}_${activeProject.id}`, // 以preview_前缀做开头，tab切换时会正则校验preview_以区分预览页/编辑页
-        name: `预览_${activeProject.name}`
-      };
-      await NewFileManager.synchronizeLocalProject(project);
-      await Promise.all([openActiveProject(), fetchOpenedProjects()]);
-      navigate(`${ROUTE_NAMES.PAGE_PREVIEW}?projectId=${projectId}&pageId=${editorStore.selectedPageId}`);
-    }
+    const host = window.location.host;
+    window.open(
+      `//${host}/voltron${ROUTE_NAMES.PAGE_PREVIEW}?projectId=${projectId}&pageId=${editorStore.selectedPageId}`
+    );
   }
 
   const getProjectDetail = async (projectId: string) => {

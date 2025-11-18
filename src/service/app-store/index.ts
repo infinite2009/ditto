@@ -761,14 +761,6 @@ export default class AppStore {
     this.init().then();
     makeAutoObservable(this);
   }
-
-  static async checkLoginStatus() {
-    if (isWeb()) {
-      return;
-    }
-    return this.checkLoginStatusForDesktop();
-  }
-
   /**
    * 获取账户，如果没有账户，直接走登录
    */

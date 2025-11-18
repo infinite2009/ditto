@@ -206,7 +206,7 @@ export default observer(function Preview() {
           className={classNames({
             [styles.preview]: true
           })}
-          style={{ height: isWeb() ? '100vh' : undefined }}
+          style={{ height: '100vh'}}
         >
           {/* 悬浮tab栏 */}
           <Button

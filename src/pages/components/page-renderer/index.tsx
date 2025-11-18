@@ -131,11 +131,7 @@ const PageRenderer: FC<IPageRendererProps> = observer((props: IPageRendererProps
   }
 
   function executePageDirection(options: PageDirectionOption) {
-    if (isWeb()) {
       window.open(options.url, options.target);
-    } else {
-      open(options.url).then();
-    }
   }
 
   function executeComponentEvent(actionSchema: IActionSchema) {

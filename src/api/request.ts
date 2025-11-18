@@ -1,7 +1,7 @@
 
 
-import { customFetch, isWeb } from '@/util';
-import { Axios, debounceMessage, defaultConfig, type RequestConfig } from '@bilibili/bee-request/antd';
+import { customFetch } from '@/util';
+import { Axios, defaultConfig, type RequestConfig } from '@bilibili/bee-request/antd';
 import { http } from '@tauri-apps/api';
 import { ResponseType } from '@tauri-apps/api/http';
 import mitt from 'mitt';
@@ -12,13 +12,6 @@ const axios = new Axios({
 });
 
 export const emitter = mitt();
-
-if (!isWeb()) {
-  // 桌面端未登录拦截
-  axios.handleUnLogin = (config) => {
-    console.log(config);
-  };
-}
 
 const whiteListUrl = ['/api/voltron/common/proxy'];
 const handleRes = async (res: http.Response<any>) => {
@@ -33,7 +26,7 @@ const handleRes = async (res: http.Response<any>) => {
   return res.data;
 };
 
-const handleError = (e: any) => {
+const handleError = (e: { message: string; data: { message: never; }; }) => {
 
   if(e.message !== "canceled") {
     emitter.emit('errorMessage', { content: e?.data?.message ?? '操作失败'});
@@ -61,27 +54,27 @@ axios.delete = async (url, config) => {
     params: config.params,
     headers: config.headers,
     responseType: config.responseType === 'blob' ? ResponseType.Binary : undefined
-  }).then(handleRes).catch(handleError) as any;
+  }).then(handleRes).catch(handleError) as never;
 };
 
 axios.put = async (url, data, config) => {
   return customFetch(`${defaultConfig.baseURL}${url}`, {
     method: 'PUT',
-    body: data as any,
+    body: data as never,
     headers: config.headers,
     timeout: config.timeout,
     responseType: config.responseType === 'blob' ? ResponseType.Binary : undefined
-  }).then(handleRes).catch(handleError) as any;
+  }).then(handleRes).catch(handleError) as never;
 };
 
 axios.post = async (url, data, config) => {
   return customFetch(`${defaultConfig.baseURL}${url}`, {
     method: 'POST',
-    body: data as any,
+    body: data as never,
     headers: config.headers,
     timeout: config.timeout,
     responseType: config.responseType === 'blob' ? ResponseType.Binary : undefined
-  }).then(handleRes).catch(handleError) as any;
+  }).then(handleRes).catch(handleError) as never;
 };
 
 axios.postForm = async (url, data, config) => {

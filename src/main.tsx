@@ -36,15 +36,5 @@ self.MonacoEnvironment = {
   },
 };
 loader.config({ monaco });
-// proxyConsole();
-proxyFetch();
-proxyXHR();
-if (!isWeb()) {
-  appWindow
-    .listen(TauriEvent.WINDOW_CLOSE_REQUESTED, () => {
-      info('main.tsx: 正在关闭应用...');
-    })
-    .then();
-}
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
