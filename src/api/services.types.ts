@@ -97,21 +97,19 @@ export namespace PostVoltronCommentCreate {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -200,21 +198,19 @@ export namespace GetVoltronCommentDetail {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -289,21 +285,19 @@ export namespace PostVoltronCommentList {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -389,21 +383,19 @@ export namespace PostVoltronCommentUpdate {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -423,7 +415,7 @@ export namespace GetVoltronCommonDeptTree {
   export type Res = any;
 
   export interface Req {
-    deptCode: string;
+    
   }
 }
 
@@ -484,12 +476,7 @@ export namespace PostVoltronCommonEmployeeKeyword {
     total?: number;
   }
   export interface ListItem {
-    adAccount?: string;
     avatarUrl?: string;
-    deptCode?: string;
-    deptCodeSeq?: string;
-    deptName?: string;
-    deptNameSeq?: string;
     nickName?: string;
   }
 }
@@ -604,12 +591,7 @@ export namespace PostVoltronCommonProxyMulti {
  */
 export namespace GetVoltronCommonUserInfo {
   export interface Res {
-    adAccount?: string;
     avatarUrl?: string;
-    deptCode?: string;
-    deptCodeSeq?: string;
-    deptName?: string;
-    deptNameSeq?: string;
     nickName?: string;
   }
 }
@@ -2025,21 +2007,19 @@ export namespace PostVoltronPageCreate {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -2124,21 +2104,19 @@ export namespace GetVoltronPageDetail {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -2209,21 +2187,19 @@ export namespace PostVoltronPageList {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -2305,21 +2281,19 @@ export namespace PostVoltronPageUpdate {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -2389,21 +2363,19 @@ export namespace PostVoltronPageVersionList {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface PageVersionListItem {
@@ -2514,21 +2486,19 @@ export namespace PostVoltronProjectCreate {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -2621,21 +2591,19 @@ export namespace GetVoltronProjectDetail {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -2724,21 +2692,19 @@ export namespace PostVoltronProjectList {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -2837,21 +2803,19 @@ export namespace PostVoltronProjectUpdate {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -2929,21 +2893,19 @@ export namespace PostVoltronTemplateCreate {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -3028,21 +2990,19 @@ export namespace GetVoltronTemplateDetail {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -3117,21 +3077,19 @@ export namespace PostVoltronTemplateList {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }
@@ -3213,21 +3171,19 @@ export namespace PostVoltronTemplateUpdate {
     updaterInfo?: UpdaterInfo;
   }
   export interface CreatorInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
   export interface UpdaterInfo {
-    adAccount: string;
+    
     avatarUrl: string;
-    deptCode: string;
-    deptCodeSeq: string;
-    deptName: string;
-    deptNameSeq: string;
+    
+    
+    
     nickName: string;
   }
 }

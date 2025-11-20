@@ -22,11 +22,9 @@ export function CurrentUserAvatar() {
   const init = useCallback(async () => {
     try {
       const {
-        data: { adAccount, avatarUrl }
+        data: { avatarUrl }
       } = await getVoltronCommonUserInfo();
-      if (adAccount) {
-        serUsername(adAccount);
-      }
+        serUsername('foo');
       if (avatarUrl) {
         setAvatarUrl(avatarUrl);
       } else {

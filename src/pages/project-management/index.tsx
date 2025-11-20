@@ -377,7 +377,7 @@ export default function ProjectManagement() {
           <div className={style.right}>
             <a
               className={style.iconBtn}
-              href="https://doc.weixin.qq.com/smartsheet/form/1_wp1hBoEQAAXdlT7CSef8MGfqzK-Af_AQ_49fc95"
+              href=""
               target="_blank"
               rel="noreferrer"
             >
