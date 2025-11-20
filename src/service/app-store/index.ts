@@ -2,10 +2,9 @@ import { makeAutoObservable } from 'mobx';
 import DbStore, { TemplateInfo } from '@/service/db-store';
 import { open } from '@tauri-apps/api/shell';
 import { http } from '@tauri-apps/api';
-import { loginWithCode } from '@/service/http';
 import { ProjectInfo } from '@/types/app-data';
 import NewFileManager from '@/service/new-file-manager';
-import { getPlatform, isWeb } from '@/util';
+import { getPlatform } from '@/util';
 import { DesignMode } from '@/service/editor-store';
 
 export enum Scene {
@@ -761,88 +760,6 @@ export default class AppStore {
     this.init().then();
     makeAutoObservable(this);
   }
-  /**
-   * 获取账户，如果没有账户，直接走登录
-   */
-  static async checkLoginStatusForDesktop(): Promise<{ sessionId: string; username: string }> {
-    const dashboardUrl =
-      process.env.NODE_ENV === 'prod'
-        ? 'https://dashboard-mng.bilibili.co/api/v4/client/authorize?client_name=voltron&redirect_uri=voltron://login'
-        : 'http://alpha.dashboard.bilibili.co/api/v4/client/authorize?client_name=uat-voltron&redirect_uri=voltron://login';
-    // const dashboardUrl = 'https://dashboard-mng.bilibili.co/api/v4/client/authorize?client_name=voltron&redirect_uri=voltron://login';
-    if (!AppStore.loginStatus) {
-      const result = await DbStore.selectAppInfo();
-      if (result[0]?.sessionId) {
-        AppStore.loginStatus = {
-          sessionId: result[0].sessionId,
-          username: result[0].accountName
-        };
-      }
-    }
-    if (!AppStore.loginStatus && !import.meta.env.VITE_DISABLE_UN_LOGIN_REDIRECT) {
-      // 没有记录账号，直接跳转登录
-      open(dashboardUrl).then(() => {
-        console.log('login open called');
-      });
-      return Promise.reject('no login');
-    } else {
-      const { sessionId, username } = AppStore.loginStatus;
-      const dashboardAPIUrl =
-        process.env.NODE_ENV === 'prod'
-          ? 'https://dashboard-mng.bilibili.co/api/v4/user/info'
-          : 'http://alpha.dashboard.bilibili.co/api/v4/user/info';
-      // const dashboardAPIUrl = 'https://dashboard-mng.bilibili.co/api/v4/user/info';
-      // 有账号，用 sessionId 检查下是否已经登录
-      const res: http.Response<{ code: number; message: string; data: Record<string, string | number> }> =
-        await http.fetch(dashboardAPIUrl, {
-          method: 'GET',
-          headers: {
-            Cookie: `_AJSESSIONID=${sessionId};username=${username}`
-          }
-        });
-      if (res.data.code !== 0 && !import.meta.env.VITE_DISABLE_UN_LOGIN_REDIRECT) {
-        // 没有登录，弹窗提示用户去登录
-        open(dashboardUrl).then(() => {
-          console.log('login open called');
-        });
-        return null;
-      }
-      return {
-        sessionId,
-        username
-      };
-    }
-  }
-
-  /**
-   * 保存用户的登录态和用户名
-   */
-  static async saveLoginStatus(code: string) {
-    // 使用 dashboard 给的 code 去获取用户的 session
-    const res = await loginWithCode(code);
-    if (res.data.code === 0) {
-      const result = await DbStore.selectAppInfo();
-      if (result.length) {
-        // 更新app info
-        const appInfo = result[0];
-        await DbStore.updateAppInfo({
-          id: appInfo.id,
-          accountName: res.data.data.username,
-          sessionId: res.data.data.session_id
-        });
-      } else {
-        await DbStore.addAppInfo({
-          accountName: res.data.data.username,
-          sessionId: res.data.data.session_id
-        });
-      }
-      AppStore.loginStatus = {
-        username: res.data.data.username,
-        sessionId: res.data.data.session_id
-      };
-    }
-  }
-
   async fetchTemplates() {
     const res = await NewFileManager.fetchTemplateList();
     if (!res.length) {

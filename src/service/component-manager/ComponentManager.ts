@@ -19,7 +19,6 @@ import {
   Dropdown,
   Empty,
   FloatButton,
-  Form,
   Input,
   InputNumber,
   List,
@@ -41,64 +40,9 @@ import {
   Transfer,
   Tree,
   TreeSelect,
-  Typography,
   Upload
 } from 'antd';
-import {
-  Affix as BiliAffix,
-  Alert as BiliAlert,
-  Anchor as BiliAnchor,
-  Avatar as BiliAvatar,
-  Badge as BiliBadge,
-  Breadcrumb as BiliBreadcrumb,
-  Button as BiliButton,
-  Calendar as BiliCalendar,
-  Card as BiliCard,
-  Carousel as BiliCarousel,
-  Cascader as BiliCascader,
-  Checkbox as BiliCheckbox,
-  Col as BiliCol,
-  Collapse as BiliCollapse,
-  ColorPicker as BiliColorPicker,
-  DatePicker as BiliDatePicker,
-  Descriptions as BiliDescriptions,
-  Divider as BiliDivider,
-  Drawer as BiliDrawer,
-  Dropdown as BiliDropdown,
-  Empty as BiliEmpty,
-  FloatButton as BiliFloatButton,
-  Image as BiliImage,
-  Input as BiliInput,
-  InputNumber as BiliInputNumber,
-  List as BiliList,
-  Mentions as BiliMentions,
-  Menu as BiliMenu,
-  Modal as BiliModal,
-  Pagination as BiliPagination,
-  Popconfirm as BiliPopconfirm,
-  Popover as BiliPopover,
-  ProMenu as BiliProMenu,
-  ProTabs as BiliProTabs,
-  ProTitle as BiliProTitle,
-  Radio as BiliRadio,
-  Rate as BiliRate,
-  Result as BiliResult,
-  Row as BiliRow,
-  Select as BiliSelect,
-  Slider as BiliSlider,
-  Statistic as BiliStatistic,
-  Steps as BiliSteps,
-  Switch as BiliSwitch,
-  Table as BiliTable,
-  Tabs as BiliTabs,
-  Tag as BiliTag,
-  TimePicker as BiliTimePicker,
-  Tooltip as BiliTooltip,
-  Transfer as BiliTransfer,
-  Tree as BiliTree,
-  TreeSelect as BiliTreeSelect,
-  Upload as BiliUpload
-} from '@bilibili/ui';
+
 import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import {
   AnchorIcon,
@@ -114,7 +58,6 @@ import {
   ImageIcon,
   InputIcon,
   ListIcon,
-  MenuNavigateIcon,
   ModalIcon,
   PaginationIcon,
   PopoverIcon,
@@ -131,8 +74,6 @@ import {
   TreeSelectIcon,
   UploadIcon
 } from '@/components/icon';
-import cloneDeep from 'lodash/cloneDeep';
-import { eeCompConfig } from './eeCompConfig';
 import { nanoid } from 'nanoid';
 import EditComp from '@/components/EditComp';
 import { ComponentConfig, NativeComponentsConfig } from '../components';
@@ -141,75 +82,6 @@ import { generateDefaultStyleConfig } from './utils';
 import AdaptedForm from '@/pages/designer/components/adapted-components/form';
 
 export type Mode = 'preview' | 'edit';
-
-export const genBiliComponentDict = (mode: Mode = 'preview') => ({
-  Affix: BiliAffix,
-  Alert: BiliAlert,
-  Anchor: BiliAnchor,
-  Avatar: BiliAvatar,
-  Badge: BiliBadge,
-  Breadcrumb: BiliBreadcrumb,
-  Button: mode === 'edit' ? EditComp.BiliButton : BiliButton,
-  Calendar: BiliCalendar,
-  Card: BiliCard,
-  Carousel: BiliCarousel,
-  Cascader: BiliCascader,
-  Checkbox: BiliCheckbox,
-  Col: BiliCol,
-  Collapse: BiliCollapse,
-  ColorPicker: BiliColorPicker,
-  DatePicker: BiliDatePicker,
-  Descriptions: BiliDescriptions,
-  Divider: BiliDivider,
-  Drawer: mode === 'edit' ? EditComp.BiliDrawer : BiliDrawer,
-  Dropdown: BiliDropdown,
-  Empty: BiliEmpty,
-  FloatButton: BiliFloatButton,
-  Form: AdaptedForm,
-  FormItem: mode === 'edit' ? EditComp.BiliFormItem : Form.Item,
-  Image: BiliImage,
-  Input: BiliInput,
-  'Input.Search': BiliInput.Search,
-  'Input.TextArea': BiliInput.TextArea,
-  'Input.Password': BiliInput.Password,
-  InputNumber: BiliInputNumber,
-  List: BiliList,
-  Mentions: BiliMentions,
-  Menu: BiliMenu,
-  Modal: BiliModal,
-  Pagination: BiliPagination,
-  Placeholder: BiliImage,
-  Popconfirm: BiliPopconfirm,
-  Popover: BiliPopover,
-  Radio: BiliRadio,
-  RadioGroup: BiliRadio.Group,
-  Rate: BiliRate,
-  Result: BiliResult,
-  RangePicker: BiliDatePicker.RangePicker,
-  Row: BiliRow,
-  Select: mode === 'edit' ? EditComp.BiliSelect : BiliSelect,
-  Slider: BiliSlider,
-  Statistic: BiliStatistic,
-  Steps: BiliSteps,
-  Switch: BiliSwitch,
-  Table: BiliTable,
-  TableNext: BiliTable,
-  Tabs: BiliTabs,
-  Tag: mode === 'edit' ? EditComp.BiliTag : BiliTag,
-  TimePicker: BiliTimePicker,
-  Tooltip: BiliTooltip,
-  Transfer: BiliTransfer,
-  Tree: BiliTree,
-  TreeSelect: BiliTreeSelect,
-  Text: mode === 'edit' ? EditComp.BiliText : Typography.Text,
-  Paragraph: mode === 'edit' ? EditComp.BiliParagraph : Typography.Paragraph,
-  Title: mode === 'edit' ? EditComp.BiliTitle : Typography.Title,
-  Amount: mode === 'edit' ? EditComp.BiliText : Typography.Text,
-  Upload: BiliUpload,
-  ProMenu: BiliProMenu,
-  ProTitle: BiliProTitle,
-  ProTabs: BiliProTabs
-});
 
 const typographyTransformerStr = `return ((values) => {
         if (!values) {
@@ -1070,7 +942,7 @@ export const antdComponentConfig: Record<string, IComponentConfig> = {
       }
     }
   },
-  // WARNING: 这里的key需要与 configName、biliComponentDict中的key、 src/service/form/index.ts 中的 key、configName 保持一致
+  // WARNING: 这里的key需要与 configName、src/service/form/index.ts 中的 key、configName 保持一致
   'Input.TextArea': {
     name: 'Input.TextArea',
     configName: 'Input.TextArea',
@@ -2373,7 +2245,7 @@ export const antdComponentConfig: Record<string, IComponentConfig> = {
         isValue: false,
         valueSource: 'editorInput',
         valueType: 'string',
-        value: 'http://shjd-boss.bilibili.co/ee-fe/image/椭圆形.svg'
+        value: ''
       },
       shape: {
         schemaType: 'props',
@@ -2622,7 +2494,7 @@ export const antdComponentConfig: Record<string, IComponentConfig> = {
         isValue: false,
         valueSource: 'editorInput',
         valueType: 'string',
-        value: 'http://shjd-boss.bilibili.co/ee-fe/image/椭圆形.svg'
+        value: ''
       },
       description: {
         schemaType: 'props',
@@ -3365,250 +3237,6 @@ export const antdComponentConfig: Record<string, IComponentConfig> = {
     title: '浮动按钮',
     icon: ComponentDefaultIcon,
     propsConfig: {}
-  },
-  ProMenu: {
-    configName: 'ProMenu',
-    name: 'ProMenu',
-    component: BiliProMenu as unknown as FC,
-    categories: ['其他'],
-    title: '侧栏菜单',
-    dependency: 'antd',
-    icon: MenuNavigateIcon,
-    propsConfig: {
-      style: generateDefaultStyleConfig(),
-      items: {
-        id: 'items',
-        schemaType: 'props',
-        name: 'items',
-        title: '菜单项',
-        category: 'basic',
-        valueType: 'string',
-        valueSource: 'userInput',
-        value: [
-          {
-            label: '一级菜单-1',
-            key: '1',
-            value: '1',
-            children: [
-              {
-                label: '二级菜单-11',
-                key: '1-1',
-                value: '1-1'
-              },
-              {
-                label: '二级菜单-12',
-                key: '1-2',
-                value: '1-2'
-              }
-            ]
-          },
-          {
-            label: '一级菜单-2',
-            key: '2',
-            value: '2',
-            children: [
-              {
-                label: '二级菜单-21',
-                key: '2-1',
-                value: '2-1'
-              },
-              {
-                label: '二级菜单-22',
-                key: '2-2',
-                value: '2-2'
-              }
-            ]
-          }
-        ]
-      },
-      multiple: {
-        id: 'multiple',
-        schemaType: 'props',
-        name: 'multiple',
-        title: '是否多选',
-        category: 'basic',
-        valueType: 'boolean',
-        valueSource: 'editorInput',
-        value: false
-      },
-      showCollapse: {
-        id: 'showCollapse',
-        schemaType: 'props',
-        name: 'showCollapse',
-        title: '是否启用底部功能区',
-        category: 'basic',
-        valueType: 'boolean',
-        valueSource: 'editorInput',
-        value: true
-      },
-      defaultCollapsed: {
-        id: 'defaultCollapsed',
-        schemaType: 'props',
-        name: 'defaultCollapsed',
-        title: '菜单默认收起',
-        category: 'basic',
-        valueType: 'boolean',
-        valueSource: 'editorInput',
-        value: false
-      },
-      resizable: {
-        id: 'resizable',
-        schemaType: 'props',
-        name: 'resizable',
-        title: '启用拖拽功能',
-        category: 'basic',
-        valueType: 'boolean',
-        valueSource: 'editorInput',
-        value: true
-      },
-      triggerSubMenuAction: {
-        id: 'triggerSubMenuAction',
-        schemaType: 'props',
-        name: 'triggerSubMenuAction',
-        title: 'SubMenu触发行为',
-        valueType: 'string',
-        valueSource: 'editorInput',
-        category: 'basic',
-        value: 'hover'
-      },
-      subMenuOpenDelay: {
-        id: 'subMenuOpenDelay',
-        schemaType: 'props',
-        name: 'subMenuOpenDelay',
-        title: '子菜单延时显示',
-        category: 'basic',
-        value: 0,
-        valueType: 'number',
-        valueSource: 'editorInput'
-      },
-      subMenuCloseDelay: {
-        id: 'subMenuCloseDelay',
-        schemaType: 'props',
-        name: 'subMenuCloseDelay',
-        title: '子菜单延时隐藏',
-        category: 'basic',
-        value: 0.1,
-        valueType: 'number',
-        valueSource: 'editorInput'
-      }
-    }
-  },
-  ProTitle: {
-    configName: 'ProTitle',
-    name: 'ProTitle',
-    component: BiliProTitle as unknown as FC,
-    categories: ['其他'],
-    title: '多级标题',
-    dependency: 'antd',
-    icon: TextIcon,
-    propsConfig: {
-      style: generateDefaultStyleConfig({ alignSelf: 'stretch' }),
-      proTitlePanel: {
-        id: 'proTitlePanel',
-        schemaType: 'props',
-        name: 'proTitlePanel',
-        title: '内容区',
-        category: 'basic',
-        valueType: 'object',
-        valueSource: 'editorInput',
-        templateKeyPathsReg: [
-          {
-            path: '',
-            type: 'object'
-          }
-        ],
-        value: {}
-      },
-      icon: {
-        id: 'icon',
-        schemaType: 'props',
-        name: 'icon',
-        title: '说明Icon',
-        category: 'basic',
-        valueType: 'object',
-        valueSource: 'editorInput',
-        templateKeyPathsReg: [
-          {
-            path: '',
-            type: 'object'
-          }
-        ],
-        value: {}
-      },
-      extraContent: {
-        id: 'extraContent',
-        schemaType: 'props',
-        name: 'extraContent',
-        title: '额外元素',
-        category: 'basic',
-        valueType: 'object',
-        valueSource: 'editorInput',
-        templateKeyPathsReg: [
-          {
-            type: 'object',
-            path: 'left'
-          },
-          {
-            type: 'object',
-            path: 'right'
-          }
-        ],
-        value: {
-          left: undefined,
-          right: undefined
-        }
-      },
-      level: {
-        id: 'level',
-        schemaType: 'props',
-        name: 'level',
-        title: 'SubMenu触发行为',
-        valueType: 'number',
-        valueSource: 'editorInput',
-        category: 'basic',
-        value: 1
-      },
-      title: {
-        id: 'title',
-        schemaType: 'props',
-        name: 'title',
-        title: '标题字段',
-        valueType: 'string',
-        valueSource: 'editorInput',
-        category: 'basic',
-        value: '标题字段'
-      },
-      description: {
-        id: 'description',
-        schemaType: 'props',
-        name: 'description',
-        title: '解释说明',
-        valueType: 'string',
-        valueSource: 'editorInput',
-        category: 'basic',
-        value: '解释说明'
-      },
-      showCollapse: {
-        id: 'showCollapse',
-        schemaType: 'props',
-        name: 'showCollapse',
-        title: '启用「展开/收起」功能',
-        category: 'basic',
-        valueType: 'boolean',
-        valueSource: 'editorInput',
-        value: true
-      },
-      defaultCollapsed: {
-        id: 'defaultCollapsed',
-        schemaType: 'props',
-        name: 'defaultCollapsed',
-        title: '内容区默认收起',
-        category: 'basic',
-        valueType: 'boolean',
-        valueSource: 'editorInput',
-        value: false
-      }
-    }
   }
 };
 
@@ -3691,28 +3319,8 @@ export class ComponentManager {
       ComponentManager.componentConfig = {
         html: nativeComponentConfig,
         antd: antdComponentConfig,
-        ['@bilibili/ee-components']: eeCompConfig
       };
       this.mode = mode;
-      // 加载 bili ui 组件库
-      const biliUIComponentConfig: Record<string, IComponentConfig> = cloneDeep(antdComponentConfig);
-      const biliComponentDict = genBiliComponentDict(mode);
-      Object.values(biliUIComponentConfig).forEach(config => {
-        if (config.dependency === 'antd') {
-          config.dependency = '@bilibili/ui';
-        }
-
-        config.component = biliComponentDict[config.configName];
-        if (fillModeList.includes(config.configName)) {
-          // const configClone = cloneDeep(config);
-          // const newConfigName = 'B' + configClone.configName;
-          // configClone.propsConfig.isFillMode = fillModeConfig;
-          config.propsConfig.isFillMode = fillModeConfig;
-          // configClone.configName = newConfigName;
-          // biliUIComponentConfig[newConfigName] = configClone;
-        }
-      });
-      ComponentManager.componentConfig['@bilibili/ui'] = biliUIComponentConfig;
       return ComponentManager.componentConfig;
     }
     return ComponentManager.componentConfig;

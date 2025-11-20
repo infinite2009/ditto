@@ -4,7 +4,6 @@ import { useContext } from 'react';
 import { DSLStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import ComponentSchemaRef from '@/types/component-schema-ref';
-import { TreeSelectProps } from '@bilibili/ui';
 
 export interface IComponentTreeProps extends Omit<TreeSelectProps, 'value' | 'onSelect'> {
   value?: string | string[];

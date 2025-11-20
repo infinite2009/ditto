@@ -1,6 +1,6 @@
 import React from 'react';
 import { VoltronModalWithPortal } from '@/components/VoltronModalWithPortal';
-import { Button, FormItem } from '@bilibili/voltron-design';
+import { Button, Form } from 'antd';
 import { useAdminPageStore } from '../store/store';
 import { createStoreBooleanSetter } from '../utils';
 import { uncontrolled } from '../utils';

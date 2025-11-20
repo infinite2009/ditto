@@ -1,4 +1,4 @@
-import { Button } from '@bilibili/voltron-design';
+import { Button } from 'antd';
 import { handleCreateMaterialButtonClick } from '../services';
 
 /** “添加组件” 按钮 */

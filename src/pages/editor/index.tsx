@@ -1217,11 +1217,6 @@ export default observer(function Editor() {
     appStore.setActiveProject(activeProject);
   }
 
-  async function fetchOpenedProjects() {
-    const openProjects = await NewFileManager.fetchOpenedProjects();
-    appStore.setOpenedProjects(openProjects);
-  }
-
   async function redirectToPreview() {
     const projectId = searchParams.get('projectId');
     const host = window.location.host;

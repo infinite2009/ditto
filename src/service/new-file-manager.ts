@@ -110,26 +110,14 @@ export default class NewFileManager {
   }
 
   /**
-   * 测试登录
-   */
-  // static async testDashboard(): Promise<any> {
-  //   return await customFetch('http://uat-ee.bilibili.co/api/gundam-api/dag/do', {
-  //     headers: {
-  //       'BEE-projectId': '340',
-  //       'BEE-dagCode': '19b6af62d000200'
-  //     }
-  //   });
-  // }
-
-  /**
    * 创建模板
    */
   static async createTemplate({
-                                templatePageName,
-                                templateBatchKey,
-                                coverBatchKey,
-                                projectId
-                              }: {
+    templatePageName,
+    templateBatchKey,
+    coverBatchKey,
+    projectId
+  }: {
     templatePageName: string;
     templateBatchKey: string;
     coverBatchKey: string;
@@ -240,9 +228,9 @@ export default class NewFileManager {
    *
    * @param appId
    */
-  static async fetchInterfacesByAppId(appId: string) {
+  static async fetchInterfacesByAppId() {
     const res = await postVoltronCommonProxy({
-      url: `https://cloud.bilibili.co/akaling/openapi/v1/iface/list/inApp?appid=${appId}`,
+      url: '',
       method: 'GET'
     });
     return res.data.items || [];
@@ -264,7 +252,7 @@ export default class NewFileManager {
           };
         };
       };
-    }>(`https://cloud.bilibili.co/akaling/v1/iface/${interfaceId}`, {
+    }>('', {
       method: 'GET'
     });
     return res.data.contract.respBodyJson.respBodyJson.properties.data;
@@ -352,8 +340,7 @@ export default class NewFileManager {
     if (!token) {
       return null;
     }
-    const prefix = process.env.NODE_ENV === 'prod' ? '' : 'uat-';
-    const url = `https://${prefix}eeapi.bilibili.co/open-api/nas/record/intranet`;
+    const url = '/';
     const res = await customFetch(url, {
       method: 'GET',
       headers: {
@@ -483,8 +470,7 @@ export default class NewFileManager {
     if (!token) {
       return;
     }
-    const prefix = process.env.NODE_ENV === 'prod' ? '' : 'uat-';
-    const url = `https://${prefix}eeapi.bilibili.co/open-api/nas/newUpload`;
+    const url = ``;
     const file = stringToFile(data, 'index.json', 'application/json');
     const res = await customFetch(url, {
       method: 'POST',
@@ -502,11 +488,11 @@ export default class NewFileManager {
   }
 
   static async uploadDSLFragment({
-                                   data,
-                                   name,
-                                   coverUrl = '',
-                                   category = 0
-                                 }: {
+    data,
+    name,
+    coverUrl = '',
+    category = 0
+  }: {
     data: string;
     name: string;
     coverUrl?: string;
@@ -528,8 +514,7 @@ export default class NewFileManager {
     if (!token) {
       return;
     }
-    const prefix = process.env.NODE_ENV === 'prod' ? '' : 'uat-';
-    const url = `https://${prefix}eeapi.bilibili.co/open-api/nas/newUpload`;
+    const url = ``;
     const res = await customFetch(url, {
       method: 'POST',
       headers: {
@@ -556,8 +541,7 @@ export default class NewFileManager {
     if (NewFileManager.accessToken) {
       return Promise.resolve(NewFileManager.accessToken);
     }
-    const prefix = process.env.NODE_ENV === 'prod' ? '' : 'uat-';
-    const url = `https://${prefix}eeapi.bilibili.co/open-api/auth/open/appAccessToken`;
+    const url = ``;
     const appId =
       process.env.NODE_ENV === 'prod' ? 'b4fa0c8154834b4abde64f449dcd6091' : 'c0d8c5e8a08c4e4d8a1c0ab4ef4fb47a';
     const appSecret =

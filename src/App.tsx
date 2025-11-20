@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react';
 import { useEffect, useState } from 'react';
-import fileManager from '@/service/file';
 import { AppStoreContext } from '@/hooks/context';
 import AppStore, { Scene } from '@/service/app-store';
 import ComponentManager from '@/service/component-manager';
@@ -15,7 +14,7 @@ import { emitter } from './api';
 import HotkeysManager from '@/service/hotkeys-manager';
 import { HotkeysProvider } from 'react-hotkeys-hook';
 
-const App = observer(function () {
+const App = function () {
   const [showUI, setShowUI] = useState<boolean>(false);
 
   const [appStore] = useState<AppStore>(new AppStore());
@@ -33,11 +32,6 @@ const App = observer(function () {
   const reload = useMemoizedFn(() => {
     window.location.reload();
   });
-
-  async function fetchOpenedProjects() {
-    const openProjects = await fileManager.fetchOpenedProjects();
-    appStore.setOpenedProjects(openProjects);
-  }
 
   /**
    * 打开
@@ -59,8 +53,6 @@ const App = observer(function () {
     appStore.fetchTemplates().then();
     // 初始化组件库
     await ComponentManager.init();
-    // await fileManager.initAppData();
-    fetchOpenedProjects().then();
     await openActiveProject();
     setShowUI(true);
   }
@@ -91,7 +83,7 @@ const App = observer(function () {
   }
 
   useEffect(() => {
-    emitter.on('errorMessage', (e: { content: string }) => {
+    emitter.emit('errorMessage', (e: { content: string }) => {
       messageApi.error(e.content).then();
     });
   }, []);
@@ -126,8 +118,10 @@ const App = observer(function () {
       </AntdApp>
     </ConfigProvider>
   );
-});
+};
 
 App.displayName = 'App';
 
-export default App;
+const Index = observer(App);
+
+export default Index;

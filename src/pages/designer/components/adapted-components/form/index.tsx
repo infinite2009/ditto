@@ -1,4 +1,4 @@
-import { Form } from '@bilibili/ui';
+import { Form } from 'antd';
 import { useMount } from 'ahooks';
 
 export default function AdaptedForm({ children, ...otherProps }: any) {

@@ -1,5 +1,5 @@
 import { DSLStoreContext } from '@/hooks/context';
-import { Typography } from '@bilibili/ui';
+import { Typography } from 'antd';
 import { useContext } from 'react';
 import EditableWrapper from '../../EditableWrapper';
 export default ({ compid, ...restProps }) => {

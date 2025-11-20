@@ -1,7 +1,9 @@
 import { useComponentReplaceModal, ComponentReplaceModalStore } from '../store';
 
 import { useCallback } from 'react';
-import { FormItem, Input } from '@bilibili/voltron-design';
+import { Form, Input } from 'antd';
+
+const FormItem = Form.Item;
 
 interface CreateInputParams {
   label: string;

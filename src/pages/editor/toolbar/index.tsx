@@ -1,7 +1,7 @@
 import styles from './index.module.less';
-import { Divider, Dropdown, message, Popover, Radio, Select, Space, Tooltip } from 'antd';
+import { Button, Divider, Dropdown, Popover, Radio, Select, Space, Tag, Tooltip } from 'antd';
 import PageAction from '@/types/page-action';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { AppStoreContext, DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
@@ -23,19 +23,10 @@ import ComponentContextMenu from '@/pages/editor/component-context-menu';
 import style from '@/pages/editor/float-template-panel/index.module.less';
 import { DesignMode } from '@/service/editor-store';
 import ZoomSelect from '@/components/zoom-select';
-import { useSearchParams } from 'react-router-dom';
 import { DiffPropsFnResult } from '@/service/dsl-store';
-import { Button, Tag } from '@bilibili/ui';
 import HotkeysManager, { HotkeyAction } from '@/service/hotkeys-manager';
 import { useMount } from 'ahooks';
-
-export enum PageWidth {
-  wechat = 900,
-  windows = 1280,
-  mac = 1440,
-  monitor = 1920,
-  auto = 0
-}
+import { PageWidth } from '@/enum';
 
 export interface PageActionEvent {
   payload?: { [key: string]: any };
@@ -50,7 +41,7 @@ interface IToolbarProps {
 
 const { Option } = Select;
 
-export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
+const Index = ({ onDo, pageWidth, projectId }: IToolbarProps) => {
   const dslStore = useContext(DSLStoreContext);
   const appStore = useContext(AppStoreContext);
   const editorStore = useContext(EditorStoreContext);
@@ -58,9 +49,6 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
   const [diffs, setDiffs] = useState<Record<string, DiffPropsFnResult>>();
   const [selectIsOpen, setSelectIsOpen] = useState<boolean>(false);
   const [hotkeysConfig, setHotkeysConfig] = useState<any>(null);
-
-  const [searchParams] = useSearchParams();
-
   useMount(async () => {
     const hotkeysConfig = await HotkeysManager.fetchHotkeysConfig();
     setHotkeysConfig(hotkeysConfig);
@@ -161,15 +149,6 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
     }
   }
 
-  function handleComment() {
-    editorStore.toggleMode(editorStore.mode === DesignMode.comment ? DesignMode.edit : DesignMode.comment);
-    if (editorStore.mode === DesignMode.comment) {
-      message.success('已进入评论模式，无法编辑页面').then();
-    } else {
-      message.success('已退出评论模式').then();
-    }
-  }
-
   function handleExpand() {
     if (onDo) {
       onDo({
@@ -184,10 +163,6 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
         type: PageAction.toggleNote
       });
     }
-  }
-
-  function handleShowLayout() {
-    // TODO: 展示布局
   }
 
   function handleChangeView() {
@@ -443,13 +418,6 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
     };
   }
 
-  function renderNoticeDot() {
-    const hasUnresolved = editorStore.commentList.some(item => !item.resolved);
-    if (hasUnresolved) {
-      return <div className={styles.noticeDot} />;
-    }
-  }
-
   useEffect(() => {
     const allDiffs = dslStore.diffAllComponentProps();
     setDiffs(allDiffs);
@@ -474,9 +442,6 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
             <Divider className={styles.divider} type="vertical" />
           </>
         )}
-        {/*<DesktopOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('pc')} />*/}
-        {/*<TabletOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('tablet')} />*/}
-        {/*<MobileOutlined className={styles.iconBtn} onClick={() => handleTogglePlatform('phone')} />*/}
         <div className={styles.screenSizeSelector}>
           <Select
             disabled={editorStore.viewMode !== 'design'}
@@ -659,4 +624,10 @@ export default observer(({ onDo, pageWidth, projectId }: IToolbarProps) => {
       </div>
     </div>
   );
-});
+};
+
+Index.displayName = 'Toolbar';
+
+const Toolbar = observer(Index);
+
+export default Toolbar;

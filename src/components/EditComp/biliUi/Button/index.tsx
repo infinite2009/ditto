@@ -1,18 +1,27 @@
-/* eslint-disable react/display-name */
 import { DSLStoreContext } from '@/hooks/context';
-import { Button } from '@bilibili/ui';
 import { useContext } from 'react';
 import EditableWrapper from '../../EditableWrapper';
-export default ({ children,compid, ...restProps }) => {
+import { Button } from 'antd';
+
+const Index = ({ children, compId, ...restProps }) => {
   const dslStore = useContext(DSLStoreContext);
   const onOK = val => {
-    dslStore.updateComponentProps({
-      children: val
-    }, {
-      id: compid,
-    });
+    dslStore.updateComponentProps(
+      {
+        children: val
+      },
+      {
+        id: compId
+      }
+    );
   };
-  return <Button {...restProps} >
-    <EditableWrapper onOK={onOK}>{children[0] || ''}</EditableWrapper>
-  </Button>;
+  return (
+    <Button {...restProps}>
+      <EditableWrapper onOK={onOK}>{children[0] || ''}</EditableWrapper>
+    </Button>
+  );
 };
+
+Index.displayName = 'Button';
+
+export default Index;

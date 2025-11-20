@@ -1,7 +1,7 @@
 import React from 'react';
 import { KeyOfMaterialDTOVisible, KeyOfMaterialPropsDTOVisible } from '../types';
 import { createMaterialFormInputAndErrorMessage, createMaterialFormOneFieldWith } from '../formutils/services';
-import { Input } from '@bilibili/voltron-design';
+import { Input } from 'antd';
 import { getCreateMaterialFormModel, useCreateMaterialFormData } from '../store/createMaterialFormData';
 import { ImageInput } from './inputs';
 import { useCurrentPropId } from './PropIdContext';

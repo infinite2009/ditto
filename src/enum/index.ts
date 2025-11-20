@@ -23,3 +23,11 @@ export enum HOTKEY_SCOPE {
   PREVIEW = 'PREVIEW',
   ADMIN = 'ADMIN'
 }
+
+export enum PageWidth {
+  wechat = 900,
+  windows = 1280,
+  mac = 1440,
+  monitor = 1920,
+  auto = 0
+}

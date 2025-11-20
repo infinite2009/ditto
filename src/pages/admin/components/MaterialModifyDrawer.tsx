@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, Space } from 'antd';
-import { Button, FormItem } from '@bilibili/voltron-design';
+import { Button, Form } from 'antd';
 import { FormFieldErrorWrapper } from './FormFieldErrorWrapper';
 import {
   CallingNameErrorMessage,
@@ -35,6 +35,8 @@ import {
   closeMaterialModifyDrawerVisible,
   useMaterialModifyDrawerVisible
 } from '../services/useMaterialModifyDrawerVisible';
+
+const FormItem = Form.Item;
 
 export function MaterialModifyDrawer() {
   return (

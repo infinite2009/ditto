@@ -1,7 +1,7 @@
 import HomeMenu from '@/pages/designer/components/home-menu';
 import { Divider } from 'antd';
 import { Redo, Undo } from '@/components/icon';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { DSLStoreContext } from '@/hooks/context';
@@ -56,4 +56,6 @@ function LeftToolbar({ pageName, onDo }: LeftToolbarProps) {
 
 LeftToolbar.displayName = 'LeftToolbar';
 
-export default observer(LeftToolbar);
+const Index = observer(LeftToolbar)
+
+export default Index;

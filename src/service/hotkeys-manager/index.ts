@@ -1,6 +1,5 @@
 /**
  * @file 快捷键管理器
- * @author luodongyang<luodongyang@bilibili.com>
  * 这一套成员命名有点不准确，最开始没想清楚概念之间的关系
  */
 import { getPlatform } from '@/util';

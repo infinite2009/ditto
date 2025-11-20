@@ -6,7 +6,7 @@ import {
   createMaterialFormOneFieldWith
 } from '../formutils/services';
 import React from 'react';
-import {Input} from '@bilibili/voltron-design';
+import {Input} from 'antd';
 import {ImageInput, NumberBooleanSelect} from './inputs';
 import {getModifyMaterialFormModel, useModifyMaterialFormData} from '../store/modifyMaterialFormData';
 

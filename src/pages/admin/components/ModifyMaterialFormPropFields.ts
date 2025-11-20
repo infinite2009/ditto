@@ -2,7 +2,7 @@ import React from "react";
 import { createMaterialFormInputAndErrorMessage } from "../formutils/services";
 import { getModifyMaterialPropsFormModel, useModifyMaterialPropsFormData } from "../store/modifyMaterialPropsFormData";
 import { useCurrentPropId } from "./PropIdContext";
-import { Input } from "@bilibili/voltron-design";
+import { Input } from "antd";
 
 export const [
   [PropDisplayNameInputInner, PropDisplayNameErrorMessage],

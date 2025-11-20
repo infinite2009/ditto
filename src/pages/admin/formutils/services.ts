@@ -1,7 +1,8 @@
 import React from 'react';
 import { isNil, zip } from 'ramda';
 import { FormField, FormModel } from './types';
-import { InputProps } from '@bilibili/voltron-design';
+
+type InputProps = any;
 
 /** 验证指定 FormModal 的指定字段 */
 export function validateMaterialField<T extends FormModel<any>>(field: keyof T, getFormModel: () => T) {

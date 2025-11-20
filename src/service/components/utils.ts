@@ -1,7 +1,6 @@
 import IComponentConfig, { IPropsConfigItem } from '@/types/component-config';
 import IFormConfig, { FormItemSchema, FormSchema, StyleFormConfig } from '@/types/form-config';
 import IPropsSchema from '@/types/props.schema';
-import { AnyObject } from '@bilibili/ui/lib/_util/type';
 import { isArray, isEmpty, omit, pick } from 'lodash';
 import React from 'react';
 

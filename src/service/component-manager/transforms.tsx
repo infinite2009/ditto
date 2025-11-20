@@ -4,8 +4,6 @@ import { Icon } from '@/components/icon';
 import ComponentFeature from '@/types/component-feature';
 import { path, pipe } from 'ramda';
 import * as ANTD from 'antd';
-import * as EECOMPOENT from '@bilibili/ee-components';
-import * as BILIBILIUI from '@bilibili/ui';
 import { HTMLComponents } from './HTMLComponents';
 
 export const transformMaterialDTOToComponentConfig = pipe(renameFields, attachProps, attachIcon, attachComponent);
@@ -83,13 +81,6 @@ function createComponent(input: PipeContext): React.FC | undefined {
     return getComponentFC(ANTD, input.configName);
   }
 
-  if (input.dependency === '@bilibili/ee-components') {
-    return getComponentFC(EECOMPOENT, input.configName);
-  }
-
-  if (input.dependency === '@bilibili/ui') {
-    return getComponentFC(BILIBILIUI, input.configName);
-  }
   if (input.dependency === 'html') {
     return getComponentFC(HTMLComponents, input.configName);
   }

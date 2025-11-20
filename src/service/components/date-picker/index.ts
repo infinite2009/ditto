@@ -1,4 +1,4 @@
-import { DatePicker } from '@bilibili/ui';
+import { DatePicker } from 'antd';
 import { define, generateDefaultStyleConfig } from '../utils';
 import { DatePickerIcon } from '@/components/icon';
 

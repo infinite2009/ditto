@@ -1,6 +1,6 @@
 import useDSLFragmentStore from '@/store/useDSLFragment';
 import DraggableFavoriteComponent from '@/pages/editor/component-panel/draggable-favorite-component-item';
-import { Tooltip } from '@bilibili/ui';
+import { Tooltip } from 'antd';
 import { CaretRightOutlined, CodeSandboxOutlined } from '@ant-design/icons';
 import styles from './index.module.less';
 import { Collapse, Image, Input, message, Modal } from 'antd';

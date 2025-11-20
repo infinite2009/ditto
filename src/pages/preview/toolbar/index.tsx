@@ -7,7 +7,7 @@ import { EditorStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
 import { Desktop } from '@/components/icon';
 import { useSearchParams } from 'react-router-dom';
-import { ArrowExpandLine } from '@bilibili/component-icons';
+import { ArrowDown } from '@/components/icon';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 export enum PageWidth {
@@ -163,7 +163,7 @@ export default observer(({ onDo, pageWidth, showTab, openFile }: IToolbarProps) 
             onOpenChange={onDropdownVisibleChange}
             onChange={handleChangePageSize}
             suffixIcon={
-              <ArrowExpandLine
+              <ArrowDown
                 style={{
                   pointerEvents: 'none',
                   fontSize: '12px',

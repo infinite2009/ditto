@@ -34,8 +34,6 @@ import { postVoltronCommonProxy } from '@/api';
 import dayjs from 'dayjs';
 import { ConfigProvider as AntdConfigProvider } from 'antd';
 import antdZhCN from 'antd/locale/zh_CN';
-import { ConfigProvider as BilibiliConfigProvider } from '@bilibili/ui';
-import bilibiliZhCN from '@bilibili/ui/locale/zh_CN';
 
 export interface IPageRendererProps {
   extraStore?: DSLStore;
@@ -149,11 +147,9 @@ const PageRenderer: FC<IPageRendererProps> = observer((props: IPageRendererProps
         executeHttpRequest(options as HttpActionOption).then();
         break;
       case ActionType.OPEN_LAYER:
-        // componentVisibilityDispatch({ ...options, visible: true });
         executeStateTransition(options as StateTransitionOption);
         break;
       case ActionType.CLOSE_LAYER:
-        // componentVisibilityDispatch({ ...options, visible: false });
         executeStateTransition(options as StateTransitionOption);
         break;
       default:
@@ -491,14 +487,6 @@ const PageRenderer: FC<IPageRendererProps> = observer((props: IPageRendererProps
         ConfigProvider: AntdConfigProvider,
         locale: antdZhCN
       },
-      '@bilibili/ui': {
-        ConfigProvider: BilibiliConfigProvider,
-        locale: bilibiliZhCN
-      },
-      '@bilibili/ee-components': {
-        ConfigProvider: BilibiliConfigProvider,
-        locale: bilibiliZhCN
-      }
     };
     const { ConfigProvider, locale } = providerDict[editorStore.selectedComponentLib];
     if (!ConfigProvider) {

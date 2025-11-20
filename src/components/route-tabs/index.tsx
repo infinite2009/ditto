@@ -25,11 +25,6 @@ export default observer(function RouteTabs() {
     handleSelecting(null).then();
   }, [data]);
 
-  async function fetchOpenedProjects() {
-    const openProjects = await fileManager.fetchOpenedProjects();
-    appStore.setOpenedProjects(openProjects);
-  }
-
   /**
    * 打开
    */
@@ -46,7 +41,7 @@ export default observer(function RouteTabs() {
     } else {
       // 将远端的项目信息同步到本地
       await NewFileManager.synchronizeLocalProject(project);
-      await Promise.all([openActiveProject(), fetchOpenedProjects()]);
+      await openActiveProject();
       // 切换预览页
       if (project?.id?.startsWith(DesignMode.preview)) {
         const realProjectId = project?.id?.match(/preview_(.+)/)?.[1];
@@ -78,7 +73,6 @@ export default observer(function RouteTabs() {
     //   await NewFileManager.savePageDSLFile(editorStore.selectedPageId, dslStore.dsl);
     // }
     await NewFileManager.closeProject(project.id);
-    await fetchOpenedProjects();
 
     if (data?.length) {
       const l = data.length;

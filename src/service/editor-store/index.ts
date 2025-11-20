@@ -63,7 +63,7 @@ export default class EditorStore {
   rightPanelVisible = true;
   scale = 100;
   scaleOrigin: CSSProperties['transformOrigin'] = 'center';
-  selectedComponentLib = '@bilibili/ui';
+  selectedComponentLib = 'antd';
   selectedPageId: string;
   showNote = false;
   sketchViewMode: 'droppable' | 'all';

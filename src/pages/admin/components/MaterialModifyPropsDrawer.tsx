@@ -18,7 +18,7 @@ import { getModifyMaterialPropsFormModel, useModifyMaterialPropsFormData } from 
 
 import { FormFieldErrorWrapper } from './FormFieldErrorWrapper';
 import { PropIdContext } from './PropIdContext';
-import { FormItem } from '@bilibili/voltron-design';
+import { Form } from 'antd';
 
 import {
   createHandleRemovePropButtonClick,
@@ -31,6 +31,8 @@ import {
 import { createListComponentWithLength } from '../services/createList';
 
 const UncontrolledFoldPanel = uncontrolled(FoldPanel);
+
+const FormItem = Form.Item;
 
 export function MaterialModifyPropsDrawer() {
   return (

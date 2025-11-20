@@ -1,13 +1,8 @@
 import IComponentConfig from '@/types/component-config';
 import { MaterialDTO } from '@/pages/admin/types';
-import { cloneDeep } from 'lodash';
 import { getVoltronMaterialPackage } from '@/api';
-import { eeCompConfig } from './eeCompConfig';
 import {
   antdComponentConfig,
-  fillModeConfig,
-  fillModeList,
-  genBiliComponentDict,
   Mode,
   nativeComponentConfig
 } from './ComponentManager';
@@ -93,7 +88,6 @@ export class ComponentManager {
       return Promise.resolve({
         html: nativeComponentConfig,
         antd: antdComponentConfig,
-        ['@bilibili/ee-components']: eeCompConfig
       });
     }
   }
@@ -103,23 +97,8 @@ export class ComponentManager {
       ComponentManager.componentConfig = await ComponentManager.fetchComponentConfigsFromRemote([
         'html',
         'antd',
-        '@bilibili/ee-components'
       ]);
       this.mode = mode;
-      // 加载 bili ui 组件库
-      const biliUIComponentConfig: Record<string, IComponentConfig> = cloneDeep(antdComponentConfig);
-      const biliComponentDict = genBiliComponentDict(mode);
-      Object.values(biliUIComponentConfig).forEach(config => {
-        if (config.dependency === 'antd') {
-          config.dependency = '@bilibili/ui';
-        }
-
-        config.component = biliComponentDict[config.configName];
-        if (fillModeList.includes(config.configName)) {
-          config.propsConfig.isFillMode = fillModeConfig;
-        }
-      });
-      ComponentManager.componentConfig['@bilibili/ui'] = biliUIComponentConfig;
       return ComponentManager.componentConfig;
     }
     console.log('window: ', window.top);

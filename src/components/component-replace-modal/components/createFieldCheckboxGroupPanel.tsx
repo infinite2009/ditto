@@ -1,4 +1,4 @@
-import { CheckboxGroupPanel, CheckboxGroupPanelProps } from '@bilibili/voltron-design';
+import { CheckboxGroupPanel, CheckboxGroupPanelProps } from '@/components/checkbox';
 import { useFieldCheckboxGroup } from './useFieldCheckboxGroup';
 
 type CreateCheckboxGroupPanelParams = Parameters<typeof useFieldCheckboxGroup>[0] &

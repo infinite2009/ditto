@@ -1,13 +1,11 @@
 import { useForm } from 'antd/es/form/Form';
 import { DSLStoreContext, EditorPageStoreContext, EditorStoreContext } from '@/hooks/context';
-import { Key, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Key, ReactNode, useContext, useEffect,useState } from 'react';
 import { Button, Cascader, Col, Form, Input, message, Row, Select, SelectProps, Switch, Tooltip } from 'antd';
-import { debounce, flattenDeep, omitBy, uniq } from 'lodash';
-import { FormProps } from 'antd/lib';
+import { flattenDeep, omitBy, uniq } from 'lodash';
 import DraggableTree from '@/pages/components/draggable-tree';
 import { SettingOutlined } from '@ant-design/icons';
 import { DataNode } from 'antd/es/tree';
-import { ProMenuProps } from '@bilibili/ui';
 import { findNode } from '@/pages/components/draggable-tree/utils';
 import SelectPage from './SelectPage';
 import styles from './index.module.less';
@@ -16,13 +14,12 @@ import NewFileManager from '@/service/new-file-manager';
 import { observer } from 'mobx-react';
 import { UrlType } from '@/enum';
 import { postVoltronMenuUpdate } from '@/api';
-import DSLStore from '@/service/dsl-store';
 
 type MenuConfigProps = {
   projectId: string;
 };
 
-type Item = Omit<ProMenuProps['items'][number], 'type'> & {
+type Item = Omit<any, 'type'> & {
   type: UrlType;
   pageId?: string;
   url?: string;
@@ -76,7 +73,7 @@ function removeLeaf<T extends Tree[]>(treeData: T): T | null {
     })) as T;
 }
 
-export default observer(function MenuConfig({projectId}: MenuConfigProps)  {
+function MenuConfig({projectId}: MenuConfigProps)  {
   const [form] = useForm();
   const editorStore = useContext(EditorStoreContext);
   const dslStore = useContext(DSLStoreContext);
@@ -307,4 +304,8 @@ export default observer(function MenuConfig({projectId}: MenuConfigProps)  {
       </Form>
     </div>
   );
-});
+}
+
+MenuConfig.displayName = 'MenuConfig';
+
+export default MenuConfig;

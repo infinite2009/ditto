@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import { Modal, ModalProps } from '@bilibili/voltron-design';
+import { Modal, ModalProps } from 'antd';
 
 export function VoltronModalWithPortal(props: React.PropsWithChildren<ModalProps>) {
   return ReactDOM.createPortal(

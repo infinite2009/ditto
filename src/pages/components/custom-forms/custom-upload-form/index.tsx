@@ -3,11 +3,10 @@ import { useForm, useWatch } from 'antd/es/form/Form';
 import { Form, Select, Switch } from 'antd';
 import styles from './index.module.less';
 import { fileTypes } from './fileType';
-import { CommonUpload } from '@bilibili/ee-components';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { DSLStoreContext } from '@/hooks/context';
 
-export default function CustomUploadForm({ value, onChange }: ICustomFormProps) {
+export default function CustomUploadForm({ onChange }: ICustomFormProps) {
   const [form] = useForm();
   const isAllAccept = useWatch('checked', form);
   const dslStore = useContext(DSLStoreContext);

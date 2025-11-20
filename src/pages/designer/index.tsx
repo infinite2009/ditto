@@ -1297,24 +1297,6 @@ function Designer() {
     }
   }
 
-  // import React from 'react';
-  // import { Button } from '@bilibili/ui';
-  // export default function Index() {
-  //   return (
-  //     <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: 10 }}>
-  //       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: 10 }}>
-  //         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: 10 }}>
-  //           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: 10 }}>
-  //             <Button style={{ padding: 8 }}>按钮</Button>
-  //             <Button style={{ padding: 8 }}>按钮</Button>
-  //             <Button style={{ padding: 8 }}>按钮</Button>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   async function copySource(isSimple?: boolean) {
     const { id, configName } = dslStore.dsl.componentIndexes[dslStore.selectedComponent.id];
     const { pageCode: code } = await fileManager.generateReactCode(
@@ -1360,16 +1342,6 @@ function Designer() {
     document.body.removeChild(a);
     // 释放 Blob URL
     URL.revokeObjectURL(url);
-  }
-
-  async function openActiveProject() {
-    const activeProject = await NewFileManager.fetchActiveProject();
-    appStore.setActiveProject(activeProject);
-  }
-
-  async function fetchOpenedProjects() {
-    const openProjects = await NewFileManager.fetchOpenedProjects();
-    appStore.setOpenedProjects(openProjects);
   }
 
   function toggleExpandingCanvas() {

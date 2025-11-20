@@ -1,5 +1,5 @@
 import { DSLStoreContext } from '@/hooks/context';
-import { Divider, Popconfirm, Select, Space, Typography } from '@bilibili/ui';
+import { Divider, Popconfirm, Select, Space, Typography } from 'antd';
 import { useContext, useState } from 'react';
 import { DeleteOutlined, HighlightOutlined, PlusOutlined } from '@ant-design/icons';
 import EditForm from './editForm';

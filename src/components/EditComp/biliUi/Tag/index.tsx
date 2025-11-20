@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import { DSLStoreContext } from '@/hooks/context';
-import { Tag } from '@bilibili/ui';
+import { Tag } from 'antd';
 import { useContext } from 'react';
 import EditableWrapper from '../../EditableWrapper';
 export default ({ children,compid, ...restProps }) => {

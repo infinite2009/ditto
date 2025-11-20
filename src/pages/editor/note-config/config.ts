@@ -1,5 +1,6 @@
 import { postVoltronCommonBfsUpload } from "@/api";
-import { TextEditorProps } from "@bilibili/ee-components";
+
+type TextEditorProps = any;
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -31,7 +32,7 @@ export const RichEditorOptions: TextEditorProps['initOptions'] = {
   image_title: true,
   file_picker_types: 'image',
   automatic_uploads: true,
-  images_upload_handler: (blobInfo, progress) => new Promise((resolve, reject) => {
+  images_upload_handler: (blobInfo) => new Promise((resolve, reject) => {
     const file = new File([blobInfo.blob()], blobInfo.filename());
     postVoltronCommonBfsUpload({file}).then(res => {
       resolve(res.data);

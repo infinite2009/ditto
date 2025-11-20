@@ -1,7 +1,6 @@
 import { useAdminPageStore } from '../store/store';
 import { getVoltronMaterial } from '@/api';
 import { PaginationMaterialDTO } from '../types';
-import { ResultData } from '@bilibili/bee-request';
 
 let controller = new AbortController();
 
@@ -17,7 +16,7 @@ export async function fetchMaterialData() {
   setLoading(true);
 
   try {
-    const result: ResultData<PaginationMaterialDTO> = await getVoltronMaterial(
+    const result: any = await getVoltronMaterial(
       {
         pageNum: materialTableCurrentPage,
         pageSize: materialTablePageSize,
@@ -35,6 +34,8 @@ export async function fetchMaterialData() {
     setLoading(false);
     setMaterialData(list, total);
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     if (error.message !== 'canceled') {
       console.error('error_in_fetch_material_data', error);
     }

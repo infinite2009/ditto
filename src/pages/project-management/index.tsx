@@ -226,11 +226,6 @@ export default function ProjectManagement() {
     await handleOpeningProject(selectedProjectInfoRef.current);
   }
 
-  async function fetchOpenedProjects() {
-    const openProjects = await NewFileManager.fetchOpenedProjects();
-    appStore.setOpenedProjects(openProjects);
-  }
-
   // 打开一个项目
   async function handleOpeningProject(projectInfo: ProjectInfo) {
     try {

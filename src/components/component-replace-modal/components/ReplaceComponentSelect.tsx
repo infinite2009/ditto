@@ -1,8 +1,8 @@
 import React from 'react';
 import { SwitchOrder } from '@/components/icon';
 import { DeveloperService } from '@/service/developer';
-import { FormItem } from '@bilibili/voltron-design';
-import { Button, Select } from 'antd';
+import { FormItem } from 'antd';
+import { Button, Select, Form } from 'antd';
 import { useComponentReplaceModal } from '../store';
 
 export const ReplaceComponentSelect = () => (

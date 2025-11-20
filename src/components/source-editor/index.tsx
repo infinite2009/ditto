@@ -7,7 +7,7 @@ import Prism from 'prismjs';
 import 'prismjs/themes/prism-tomorrow.css'; // 这里可以选择不同的主题
 import 'prismjs/components/prism-typescript';
 import style from './index.module.less';
-import { Checkbox, message } from '@bilibili/ui';
+import { Checkbox, message } from 'antd';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { CheckOutlined } from '@ant-design/icons';
 import { Editor } from '@monaco-editor/react';

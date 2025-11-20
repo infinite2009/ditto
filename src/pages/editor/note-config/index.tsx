@@ -2,9 +2,7 @@ import { observer } from 'mobx-react';
 import styles from './index.module.less';
 import { Button, Card, Divider, message, Space } from 'antd';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { RichEditor } from '@bilibili/ee-components';
 import { NoteItem } from '@/service/editor-store';
-import NewFileManager from '@/service/new-file-manager';
 import { EditorStoreContext } from '@/hooks/context';
 import { RichEditorOptions } from './config';
 import { isNil } from 'lodash';
@@ -112,26 +110,14 @@ export default observer(function NoteConfig({ pageId, componentId }: NoteConfigP
         {dataSource.map(i => {
           return showEditor && current?.id === i.id ? (
             <div key={i.id}>
-              <RichEditor
-                value={current?.noteData}
-                placeholder="请输入批注信息"
-                onChange={val => {
-                  setCurrent({
-                    ...current,
-                    noteData: val
-                  });
-                }}
-                maxLength={60000}
-                initOptions={RichEditorOptions}
-
-              ></RichEditor>
+              {/*{ TODO：批注功能富文本编辑器 }*/}
               <Space style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 24 }}>
                 <Button
                   size="small"
                   type="primary"
                   disabled={isNoteChange}
                   loading={loading}
-                  onClick={e => {
+                  onClick={() => {
                     onUpdateNote();
                   }}
                 >
@@ -139,7 +125,7 @@ export default observer(function NoteConfig({ pageId, componentId }: NoteConfigP
                 </Button>
                 <Button
                   size="small"
-                  onClick={e => {
+                  onClick={() => {
                     onCancel();
                   }}
                 >
@@ -153,10 +139,10 @@ export default observer(function NoteConfig({ pageId, componentId }: NoteConfigP
               className={styles['note-item']}
               extra={
                 <Space>
-                  <a href="#" onClick={e => onEdit(i)}>
+                  <a href="#" onClick={() => onEdit(i)}>
                     编辑
                   </a>
-                  <a href="#" onClick={e => onDelete(i.id)}>
+                  <a href="#" onClick={() => onDelete(i.id)}>
                     删除
                   </a>
                 </Space>
@@ -173,7 +159,7 @@ export default observer(function NoteConfig({ pageId, componentId }: NoteConfigP
           <Button
             size="small"
             type="primary"
-            onClick={e => {
+            onClick={() => {
               onAdd();
             }}
           >
@@ -184,25 +170,14 @@ export default observer(function NoteConfig({ pageId, componentId }: NoteConfigP
       <div ref={richEditorRef}>
         {showEditor && !current?.id && (
           <>
-            <RichEditor
-              value={current?.noteData}
-              placeholder="请输入批注信息"
-              initOptions={RichEditorOptions}
-              maxLength={60000}
-              onChange={val => {
-                setCurrent({
-                  ...current,
-                  noteData: val
-                });
-              }}
-            ></RichEditor>
+            {/* TODO: 批注富文本 */}
             <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button
                 size="small"
                 type="primary"
                 disabled={isNoteChange}
                 loading={loading}
-                onClick={e => {
+                onClick={() => {
                   onCreateNote();
                 }}
               >
@@ -210,7 +185,7 @@ export default observer(function NoteConfig({ pageId, componentId }: NoteConfigP
               </Button>
               <Button
                 size="small"
-                onClick={e => {
+                onClick={() => {
                   onCancel();
                 }}
               >

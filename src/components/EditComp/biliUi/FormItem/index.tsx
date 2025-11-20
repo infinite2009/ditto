@@ -1,5 +1,5 @@
 import { DSLStoreContext } from '@/hooks/context';
-import { Form } from '@bilibili/ui';
+import { Form } from 'antd';
 import { useContext } from 'react';
 import EditableWrapper from '../../EditableWrapper';
 // eslint-disable-next-line react/display-name

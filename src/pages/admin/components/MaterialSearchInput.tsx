@@ -1,4 +1,4 @@
-import { Input } from '@bilibili/voltron-design';
+import { Input } from 'antd';
 import { useRef } from 'react';
 import { fetchMaterialData } from '../services/fetchMaterialData';
 import { useAdminPageStore } from '../store/store';

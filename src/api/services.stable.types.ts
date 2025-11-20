@@ -9,7 +9,6 @@
  *
  * @description 接口路径：/voltron/menu/list
  * @description 接口分组：左侧菜单模块 menu
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314174&title=GET/voltron/menu/list#sh/sh001/prod
  * @author tangchen02
  * @time 创建时间：2024-11-21 20:31:50
  * @time 更新时间：2024-11-21 20:44:39
@@ -56,7 +55,6 @@ export namespace GetVoltronMenuList {
  *
  * @description 接口路径：/voltron/menu/update
  * @description 接口分组：左侧菜单模块 menu
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314178&title=POST/voltron/menu/update#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 20:31:50
  * @time 更新时间：2024-11-22 15:46:44
@@ -94,7 +92,6 @@ export namespace PostVoltronMenuUpdate {
  *
  * @description 接口路径：/voltron/common/bfs/upload
  * @description 接口分组：通用模块 common
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=315320&title=POST/voltron/common/bfs/upload#sh/sh001/prod
  * @author tangchen02
  * @time 创建时间：2024-12-02 16:15:56
  * @time 更新时间：2024-12-02 16:32:19

@@ -15,12 +15,10 @@ import CustomTreeForm from '@/pages/components/custom-forms/custom-tree-form';
 import customRangePickerForm from '@/pages/components/custom-forms/custom-range-picker-form';
 import CustomPopoverForm from '@/pages/components/custom-forms/custom-popover-form';
 
-import { eeFormCompConfig } from '../component-manager/eeCompConfig';
 import CustomSliderForm from '@/pages/components/custom-forms/custom-slider-form';
 import CustomTransferForm from '@/pages/components/custom-forms/custom-transfer-form';
 import CustomDescriptionsForm from '@/pages/components/custom-forms/custom-descriptions-form';
 import CustomUploadForm from '@/pages/components/custom-forms/custom-upload-form';
-import CustomEEApprove from '@/pages/components/custom-forms/custom-ee-approve';
 import CustomProMenuForm from '@/pages/components/custom-forms/custom-promenu-form';
 import CustomProTitleForm from '@/pages/components/custom-forms/custom-protitle-form';
 import { NativeSchemaConfig, SchemaConfig } from '../components';
@@ -314,7 +312,7 @@ const ANTD_FORM_CONFIG = {
           name: 'open',
           type: 'boolean',
           title: '显示',
-          component: 'Select',
+          component: 'Select'
         }
       },
       event: {
@@ -339,7 +337,7 @@ const ANTD_FORM_CONFIG = {
           name: 'open',
           type: 'boolean',
           title: '显示',
-          component: 'Select',
+          component: 'Select'
         }
       },
       event: {
@@ -1288,13 +1286,6 @@ const ANTD_FORM_CONFIG = {
           title: '数值精度',
           component: 'InputNumber',
           initialValue: null
-        },
-        title: {
-          name: 'template',
-          type: 'string',
-          title: 'title(bilibili/Ui)',
-          component: 'Input',
-          initialValue: '请输入'
         }
       },
       event: inputEventConfig
@@ -1939,327 +1930,8 @@ const ANTD_FORM_CONFIG = {
   }
 };
 
-function generateBiliUIFormConfig(): Record<string, IFormConfig> {
-  const result = {
-    ...ANTD_FORM_CONFIG
-  };
-  delete result.Cascader;
-  delete result.Input;
-  delete result.InputNumber;
-  delete result.TreeSelect;
-  delete result.Select;
-  return Object.assign(result, {
-    Select: {
-      configName: 'Select',
-      formComponent: {
-        basic: CustomSelectForm as FC<any>
-      },
-      schema: {
-        basic: {
-          defaultValue: {
-            name: 'defaultValue',
-            type: 'string',
-            title: '值',
-            component: 'Input',
-            initialValue: ''
-          },
-          placeholder: {
-            name: 'placeholder',
-            type: 'string',
-            title: '提示词',
-            component: 'Input',
-            initialValue: '请选择'
-          },
-          title: {
-            name: 'template',
-            type: 'string',
-            title: 'title(bilibili/Ui)',
-            component: 'Input',
-            initialValue: '请输入'
-          },
-          disabled: {
-            name: 'disabled',
-            type: 'boolean',
-            title: '禁用',
-            component: 'Switch'
-          },
-          isFillMode: {
-            name: 'isFillMode',
-            type: 'boolean',
-            title: 'FillMode模式',
-            required: false,
-            component: 'Switch'
-          }
-        },
-        event: {
-          onChange: onChangeEventConfig
-        }
-      }
-    },
-    Cascader: {
-      configName: 'Cascader',
-      formComponent: {
-        basic: CustomCascaderForm as FC<any>
-      },
-      schema: {
-        basic: {
-          title: {
-            name: 'template',
-            type: 'string',
-            title: 'title(bilibili/Ui)',
-            component: 'Input',
-            initialValue: '请输入'
-          },
-          isFillMode: {
-            name: 'isFillMode',
-            type: 'boolean',
-            title: '是否 fillMode模式',
-            required: false,
-            component: 'Switch'
-          },
-          disabled: {
-            name: 'disabled',
-            type: 'boolean',
-            title: '禁用',
-            component: 'Switch'
-          }
-        },
-        style: {
-          layout: {
-            width: true,
-            height: true
-          }
-        },
-        event: {
-          onChange: onChangeEventConfig
-        }
-      }
-    },
-    Input: {
-      configName: 'BInput',
-      schema: {
-        style: {
-          layout: {
-            width: true,
-            height: true
-          }
-        },
-        basic: {
-          allowClear: {
-            name: 'allowClear',
-            type: 'boolean',
-            title: '是否展示清除按钮',
-            required: false,
-            component: 'Switch'
-          },
-          bordered: {
-            name: 'bordered',
-            type: 'boolean',
-            title: '是否展示边框',
-            required: false,
-            component: 'Switch',
-            componentProps: data => {
-              return {
-                disabled: data?.isFillMode,
-                checked: data?.isFillMode ? false : data?.checked
-              };
-            }
-          },
-          maxLength: {
-            name: 'maxLength',
-            type: 'string',
-            title: '内容最大长度',
-            component: 'Input',
-            initialValue: ''
-          },
-          showCount: {
-            name: 'showCount',
-            type: 'boolean',
-            title: '是否展示字数',
-            required: false,
-            component: 'Switch'
-          },
-          defaultValue: {
-            name: 'defaultValue',
-            type: 'string',
-            title: '默认值',
-            component: 'Input',
-            initialValue: ''
-          },
-          placeholder: {
-            name: 'placeholder',
-            type: 'string',
-            title: '提示词',
-            component: 'Input',
-            initialValue: '请输入'
-          },
-          title: {
-            name: 'template',
-            type: 'string',
-            title: 'title(bilibili/Ui)',
-            component: 'Input',
-            initialValue: '请输入'
-          },
-          isFillMode: {
-            name: 'isFillMode(bilibili/Ui)',
-            type: 'boolean',
-            title: '是否 fillMode模式',
-            required: false,
-            component: 'Switch'
-          },
-          disabled: {
-            name: 'disabled',
-            type: 'boolean',
-            title: '禁用',
-            component: 'Switch'
-          }
-        },
-        event: inputEventConfig
-      }
-      // events: true
-    },
-    TreeSelect: {
-      configName: 'TreeSelect',
-      formComponent: {
-        basic: CustomTreeForm('treeSelect') as unknown as FC<any>
-      },
-      schema: {
-        style: {
-          layout: {
-            width: true,
-            height: true
-          }
-        },
-        basic: {
-          placeholder: {
-            name: 'placeholder',
-            type: 'string',
-            title: '提示词',
-            component: 'Input',
-            initialValue: '请选择'
-          },
-          multiple: {
-            name: 'placeholder',
-            type: 'boolean',
-            title: '是否多选',
-            component: 'Switch',
-            initialValue: false
-          },
-          treeCheckable: {
-            name: 'treeCheckable',
-            type: 'boolean',
-            title: '是否增加复选框',
-            component: 'Switch',
-            initialValue: false
-          },
-          treeDefaultExpandAll: {
-            name: 'treeDefaultExpandAll',
-            type: 'boolean',
-            title: '自动展开全部',
-            component: 'Switch',
-            initialValue: false
-          },
-          title: {
-            name: 'template',
-            type: 'string',
-            title: 'title(bilibili/Ui)',
-            component: 'Input',
-            initialValue: '请输入'
-          },
-          isFillMode: {
-            name: 'isFillMode',
-            type: 'boolean',
-            title: '是否 fillMode模式',
-            required: false,
-            component: 'Switch'
-          },
-          disabled: {
-            name: 'disabled',
-            type: 'boolean',
-            title: '禁用',
-            component: 'Switch'
-          }
-        },
-        event: {
-          onChange: onChangeEventConfig
-        }
-      }
-    },
-    InputNumber: {
-      configName: 'InputNumber',
-      schema: {
-        style: {
-          layout: {
-            width: true,
-            height: true
-          }
-        },
-        basic: {
-          defaultValue: {
-            name: 'defaultValue',
-            type: 'number',
-            title: '默认值',
-            component: 'InputNumber',
-            initialValue: ''
-          },
-          placeholder: {
-            name: 'template',
-            type: 'string',
-            title: '提示词',
-            component: 'Input',
-            initialValue: '请输入'
-          },
-          controls: {
-            name: 'controls',
-            type: 'boolean',
-            title: '是否显示增减按钮',
-            component: 'Switch',
-            initialValue: true
-          },
-          disabled: {
-            name: 'disabled',
-            type: 'boolean',
-            title: '是否禁用',
-            component: 'Switch',
-            initialValue: false
-          },
-          max: {
-            name: 'max',
-            type: 'number',
-            title: '最大值',
-            component: 'InputNumber',
-            initialValue: null
-          },
-          min: {
-            name: 'min',
-            type: 'number',
-            title: '最小值',
-            component: 'InputNumber',
-            initialValue: null
-          },
-          precision: {
-            name: 'precision',
-            type: 'number',
-            title: '数值精度',
-            component: 'InputNumber',
-            initialValue: null
-          }
-        },
-        event: inputEventConfig
-      }
-      // events: true
-    }
-  }) as Record<string, IFormConfig>;
-}
-
 const TOTAL_FORM_CONFIG = {
-  '@bilibili/ui': generateBiliUIFormConfig(),
   antd: ANTD_FORM_CONFIG,
-  '@bilibili/ee-components': {
-    ...NativeSchemaConfig,
-    ...SchemaConfig,
-    ...eeFormCompConfig
-  },
   html: {
     ...NativeSchemaConfig
   }

@@ -87,7 +87,6 @@ const omit = <T extends Record<string, any>, K extends keyof T>(
  *
  * @description 接口路径：/metrics
  * @description 接口分组：default
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=331888&title=GET/metrics#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-04-01 11:41:40
  * @time 更新时间：2025-05-29 15:11:23
@@ -103,7 +102,6 @@ export const getMetrics = (config: RequestConfig = {}) =>
  *
  * @description 接口路径：/voltron/comment/create
  * @description 接口分组：评论模块 comment
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314093&title=POST/voltron/comment/create#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -124,7 +122,6 @@ export const postVoltronCommentCreate = (
  *
  * @description 接口路径：/voltron/comment/delete
  * @description 接口分组：评论模块 comment
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314079&title=POST/voltron/comment/delete#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -145,7 +142,6 @@ export const postVoltronCommentDelete = (
  *
  * @description 接口路径：/voltron/comment/detail
  * @description 接口分组：评论模块 comment
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314097&title=GET/voltron/comment/detail#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -165,7 +161,6 @@ export const getVoltronCommentDetail = (
  *
  * @description 接口路径：/voltron/comment/list
  * @description 接口分组：评论模块 comment
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314083&title=POST/voltron/comment/list#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -186,7 +181,6 @@ export const postVoltronCommentList = (
  *
  * @description 接口路径：/voltron/comment/update
  * @description 接口分组：评论模块 comment
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314088&title=POST/voltron/comment/update#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -207,7 +201,6 @@ export const postVoltronCommentUpdate = (
  *
  * @description 接口路径：/voltron/common/dept/tree
  * @description 接口分组：通用模块 common
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314094&title=GET/voltron/common/dept/tree#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -227,7 +220,6 @@ export const getVoltronCommonDeptTree = (
  *
  * @description 接口路径：/voltron/common/dict
  * @description 接口分组：通用模块 common
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314091&title=GET/voltron/common/dict#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -243,7 +235,6 @@ export const getVoltronCommonDict = (config: RequestConfig = {}) =>
  *
  * @description 接口路径：/voltron/common/employee/keyword
  * @description 接口分组：通用模块 common
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314102&title=POST/voltron/common/employee/keyword#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -264,7 +255,6 @@ export const postVoltronCommonEmployeeKeyword = (
  *
  * @description 接口路径：/voltron/common/proxy
  * @description 接口分组：通用模块 common
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=315318&title=POST/voltron/common/proxy#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-12-02 16:15:56
  * @time 更新时间：2025-05-29 15:11:23
@@ -285,7 +275,6 @@ export const postVoltronCommonProxy = (
  *
  * @description 接口路径：/voltron/common/proxy-multi
  * @description 接口分组：通用模块 common
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=315319&title=POST/voltron/common/proxy-multi#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-12-02 16:15:56
  * @time 更新时间：2025-05-29 15:11:23
@@ -306,7 +295,6 @@ export const postVoltronCommonProxyMulti = (
  *
  * @description 接口路径：/voltron/common/userInfo
  * @description 接口分组：通用模块 common
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314081&title=GET/voltron/common/userInfo#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -322,7 +310,6 @@ export const getVoltronCommonUserInfo = (config: RequestConfig = {}) =>
  *
  * @description 接口路径：/voltron/developer/analyze-repositories
  * @description 接口分组：开发者模块 developer
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=339630&title=GET/voltron/developer/analyze-repositories#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-13 20:58:50
  * @time 更新时间：2025-05-29 15:11:23
@@ -345,7 +332,6 @@ export const getVoltronDeveloperAnalyzeRepositories = (
  *
  * @description 接口路径：/voltron/developer/repositories-branches
  * @description 接口分组：开发者模块 developer
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=339628&title=GET/voltron/developer/repositories-branches#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-13 20:58:49
  * @time 更新时间：2025-05-29 15:11:23
@@ -368,7 +354,6 @@ export const getVoltronDeveloperRepositoriesBranches = (
  *
  * @description 接口路径：/voltron/developer/repositories-tree
  * @description 接口分组：开发者模块 developer
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=339627&title=GET/voltron/developer/repositories-tree#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-13 20:58:49
  * @time 更新时间：2025-05-29 15:11:23
@@ -391,7 +376,6 @@ export const getVoltronDeveloperRepositoriesTree = (
  *
  * @description 接口路径：/voltron/developer/schemas/component
  * @description 接口分组：开发者模块 developer
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=339629&title=GET/voltron/developer/schemas/component#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-13 20:58:50
  * @time 更新时间：2025-05-29 15:11:23
@@ -412,7 +396,6 @@ export const getVoltronDeveloperSchemasComponent = (
  *
  * @description 接口路径：/voltron/material
  * @description 接口分组：物料组件
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=340048&title=GET/voltron/material#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-17 15:58:23
  * @time 更新时间：2025-05-29 15:11:23
@@ -432,7 +415,6 @@ export const getVoltronMaterial = (
  *
  * @description 接口路径：/voltron/material
  * @description 接口分组：物料组件
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=340049&title=POST/voltron/material#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-17 15:58:23
  * @time 更新时间：2025-05-29 15:11:23
@@ -448,7 +430,6 @@ export const postVoltronMaterial = (
  *
  * @description 接口路径：/voltron/material-prop
  * @description 接口分组：物料组件属性
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=344364&title=GET/voltron/material-prop#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:57
  * @time 更新时间：2025-05-29 15:11:23
@@ -464,7 +445,6 @@ export const getVoltronMaterialProp = (config: RequestConfig = {}) =>
  *
  * @description 接口路径：/voltron/material-prop
  * @description 接口分组：物料组件属性
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=344363&title=POST/voltron/material-prop#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:57
  * @time 更新时间：2025-05-29 15:11:23
@@ -485,7 +465,6 @@ export const postVoltronMaterialProp = (
  *
  * @description 接口路径：/voltron/material-prop/{id}
  * @description 接口分组：物料组件属性
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=344366&title=DELETE/voltron/material-prop/{id}#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:58
  * @time 更新时间：2025-05-29 15:11:23
@@ -507,7 +486,6 @@ export const deleteVoltronMaterialPropById = (
  *
  * @description 接口路径：/voltron/material-prop/{id}
  * @description 接口分组：物料组件属性
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=344367&title=GET/voltron/material-prop/{id}#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:58
  * @time 更新时间：2025-05-29 15:11:23
@@ -529,7 +507,6 @@ export const getVoltronMaterialPropById = (
  *
  * @description 接口路径：/voltron/material-prop/{id}
  * @description 接口分组：物料组件属性
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=344368&title=PATCH/voltron/material-prop/{id}#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:58
  * @time 更新时间：2025-05-29 15:11:23
@@ -550,7 +527,6 @@ export const patchVoltronMaterialPropById = (
  *
  * @description 接口路径：/voltron/material-prop/batch-delete
  * @description 接口分组：物料组件属性
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=344372&title=POST/voltron/material-prop/batch-delete#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-29 15:11:23
  * @time 更新时间：2025-05-29 15:11:23
@@ -571,7 +547,6 @@ export const postVoltronMaterialPropBatchDelete = (
  *
  * @description 接口路径：/voltron/material-prop/material/{materialId}
  * @description 接口分组：物料组件属性
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=344369&title=GET/voltron/material-prop/material/{materialId}#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:58
  * @time 更新时间：2025-05-29 15:11:23
@@ -593,7 +568,6 @@ export const getVoltronMaterialPropMaterialByMaterialId = (
  *
  * @description 接口路径：/voltron/material/{id}
  * @description 接口分组：物料组件
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=340054&title=DELETE/voltron/material/{id}#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-17 15:58:23
  * @time 更新时间：2025-05-29 15:11:23
@@ -615,7 +589,6 @@ export const deleteVoltronMaterialById = (
  *
  * @description 接口路径：/voltron/material/{id}
  * @description 接口分组：物料组件
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=340052&title=GET/voltron/material/{id}#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-17 15:58:23
  * @time 更新时间：2025-05-29 15:11:23
@@ -634,7 +607,6 @@ export const getVoltronMaterialById = (
  *
  * @description 接口路径：/voltron/material/{id}
  * @description 接口分组：物料组件
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=340053&title=PATCH/voltron/material/{id}#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-17 15:58:23
  * @time 更新时间：2025-05-29 15:11:23
@@ -655,7 +627,6 @@ export const patchVoltronMaterialById = (
  *
  * @description 接口路径：/voltron/material/{id}/full
  * @description 接口分组：物料组件
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=340528&title=DELETE/voltron/material/{id}/full#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-21 07:56:29
  * @time 更新时间：2025-05-29 15:11:23
@@ -677,7 +648,6 @@ export const deleteVoltronMaterialFullById = (
  *
  * @description 接口路径：/voltron/material/{id}/full
  * @description 接口分组：物料组件
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=340529&title=GET/voltron/material/{id}/full#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-21 07:56:29
  * @time 更新时间：2025-05-29 15:11:23
@@ -699,7 +669,6 @@ export const getVoltronMaterialFullById = (
  *
  * @description 接口路径：/voltron/material/package
  * @description 接口分组：物料组件
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=340530&title=DELETE/voltron/material/package#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-21 07:56:29
  * @time 更新时间：2025-05-29 15:11:23
@@ -719,7 +688,6 @@ export const deleteVoltronMaterialPackage = (
  *
  * @description 接口路径：/voltron/material/package
  * @description 接口分组：物料组件
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=340531&title=GET/voltron/material/package#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-21 07:58:05
  * @time 更新时间：2025-05-29 15:11:23
@@ -739,7 +707,6 @@ export const getVoltronMaterialPackage = (
  *
  * @description 接口路径：/voltron/material/packages
  * @description 接口分组：物料组件
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=340051&title=GET/voltron/material/packages#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-17 15:58:23
  * @time 更新时间：2025-05-29 15:11:23
@@ -755,7 +722,6 @@ export const getVoltronMaterialPackages = (config: RequestConfig = {}) =>
  *
  * @description 接口路径：/voltron/material/props/batch
  * @description 接口分组：物料组件
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=340527&title=PATCH/voltron/material/props/batch#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-21 07:56:29
  * @time 更新时间：2025-05-29 15:11:23
@@ -776,7 +742,6 @@ export const patchVoltronMaterialPropsBatch = (
  *
  * @description 接口路径：/voltron/module/create
  * @description 接口分组：模块 module
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=330594&title=POST/voltron/module/create#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-03-24 16:57:26
  * @time 更新时间：2025-05-29 15:11:23
@@ -797,7 +762,6 @@ export const postVoltronModuleCreate = (
  *
  * @description 接口路径：/voltron/module/delete
  * @description 接口分组：模块 module
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=330592&title=POST/voltron/module/delete#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-03-24 16:57:26
  * @time 更新时间：2025-05-29 15:11:23
@@ -818,7 +782,6 @@ export const postVoltronModuleDelete = (
  *
  * @description 接口路径：/voltron/module/list
  * @description 接口分组：模块 module
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=330593&title=GET/voltron/module/list#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-03-24 16:57:26
  * @time 更新时间：2025-05-29 15:11:23
@@ -838,7 +801,6 @@ export const getVoltronModuleList = (
  *
  * @description 接口路径：/voltron/module/list-all
  * @description 接口分组：模块 module
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=330602&title=GET/voltron/module/list-all#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-03-24 17:40:30
  * @time 更新时间：2025-05-29 15:11:23
@@ -858,7 +820,6 @@ export const getVoltronModuleListAll = (
  *
  * @description 接口路径：/voltron/module/update
  * @description 接口分组：模块 module
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=330595&title=POST/voltron/module/update#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-03-24 16:57:26
  * @time 更新时间：2025-05-29 15:11:23
@@ -879,7 +840,6 @@ export const postVoltronModuleUpdate = (
  *
  * @description 接口路径：/voltron/navigation/list
  * @description 接口分组：顶部导航模块 navigation
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314075&title=GET/voltron/navigation/list#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -899,7 +859,6 @@ export const getVoltronNavigationList = (
  *
  * @description 接口路径：/voltron/navigation/update
  * @description 接口分组：顶部导航模块 navigation
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314099&title=POST/voltron/navigation/update#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -920,7 +879,6 @@ export const postVoltronNavigationUpdate = (
  *
  * @description 接口路径：/voltron/note/create
  * @description 接口分组：批注模块 note
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314103&title=POST/voltron/note/create#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -937,7 +895,6 @@ export const postVoltronNoteCreate = (
  *
  * @description 接口路径：/voltron/note/delete
  * @description 接口分组：批注模块 note
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314084&title=POST/voltron/note/delete#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -954,7 +911,6 @@ export const postVoltronNoteDelete = (
  *
  * @description 接口路径：/voltron/note/list
  * @description 接口分组：批注模块 note
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314074&title=GET/voltron/note/list#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -974,7 +930,6 @@ export const getVoltronNoteList = (
  *
  * @description 接口路径：/voltron/note/update
  * @description 接口分组：批注模块 note
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314095&title=POST/voltron/note/update#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -991,7 +946,6 @@ export const postVoltronNoteUpdate = (
  *
  * @description 接口路径：/voltron/page/create
  * @description 接口分组：页面模块 page
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314080&title=POST/voltron/page/create#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -1008,7 +962,7 @@ export const postVoltronPageCreate = (
  *
  * @description 接口路径：/voltron/page/delete
  * @description 接口分组：页面模块 page
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314175&title=POST/voltron/page/delete#sh/sh001/prod
+ * 
  * @author openapi
  * @time 创建时间：2024-11-21 20:31:50
  * @time 更新时间：2025-05-29 15:11:23
@@ -1025,7 +979,6 @@ export const postVoltronPageDelete = (
  *
  * @description 接口路径：/voltron/page/detail
  * @description 接口分组：页面模块 page
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314077&title=GET/voltron/page/detail#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -1045,7 +998,6 @@ export const getVoltronPageDetail = (
  *
  * @description 接口路径：/voltron/page/list
  * @description 接口分组：页面模块 page
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314179&title=POST/voltron/page/list#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 20:31:50
  * @time 更新时间：2025-05-29 15:11:23
@@ -1061,7 +1013,6 @@ export const postVoltronPageList = (
  *
  * @description 接口路径：/voltron/page/update
  * @description 接口分组：页面模块 page
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314100&title=POST/voltron/page/update#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -1078,7 +1029,6 @@ export const postVoltronPageUpdate = (
  *
  * @description 接口路径：/voltron/page/version/list
  * @description 接口分组：页面模块 page
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314600&title=POST/voltron/page/version/list#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-26 15:09:56
  * @time 更新时间：2025-05-29 15:11:23
@@ -1099,7 +1049,6 @@ export const postVoltronPageVersionList = (
  *
  * @description 接口路径：/voltron/project/create
  * @description 接口分组：项目模块 project
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314101&title=POST/voltron/project/create#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -1120,7 +1069,6 @@ export const postVoltronProjectCreate = (
  *
  * @description 接口路径：/voltron/project/delete
  * @description 接口分组：项目模块 project
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314085&title=POST/voltron/project/delete#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -1141,7 +1089,6 @@ export const postVoltronProjectDelete = (
  *
  * @description 接口路径：/voltron/project/detail
  * @description 接口分组：项目模块 project
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314086&title=GET/voltron/project/detail#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -1161,7 +1108,6 @@ export const getVoltronProjectDetail = (
  *
  * @description 接口路径：/voltron/project/list
  * @description 接口分组：项目模块 project
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314089&title=POST/voltron/project/list#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -1182,7 +1128,6 @@ export const postVoltronProjectList = (
  *
  * @description 接口路径：/voltron/project/update
  * @description 接口分组：项目模块 project
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314090&title=POST/voltron/project/update#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -1203,15 +1148,14 @@ export const postVoltronProjectUpdate = (
  *
  * @description 接口路径：/voltron/template/create
  * @description 接口分组：模板模块 template
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314096&title=POST/voltron/template/create#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
  * @version v20250529.05
  */
 export const postVoltronTemplateCreate = (
-  params: PostVoltronTemplateCreate.Req,
-  config: RequestConfig = {},
+  params: { coverUrl: string; name: string; projectId: string; templateUrl: string },
+  config: RequestConfig = {}
 ) =>
   axios.post<PostVoltronTemplateCreate.Res>(
     '/voltron/template/create',
@@ -1224,7 +1168,6 @@ export const postVoltronTemplateCreate = (
  *
  * @description 接口路径：/voltron/template/delete
  * @description 接口分组：模板模块 template
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314173&title=POST/voltron/template/delete#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 20:31:50
  * @time 更新时间：2025-05-29 15:11:23
@@ -1245,7 +1188,6 @@ export const postVoltronTemplateDelete = (
  *
  * @description 接口路径：/voltron/template/detail
  * @description 接口分组：模板模块 template
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314098&title=GET/voltron/template/detail#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
  * @time 更新时间：2025-05-29 15:11:23
@@ -1265,7 +1207,6 @@ export const getVoltronTemplateDetail = (
  *
  * @description 接口路径：/voltron/template/list
  * @description 接口分组：模板模块 template
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314177&title=POST/voltron/template/list#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 20:31:50
  * @time 更新时间：2025-05-29 15:11:23
@@ -1286,7 +1227,6 @@ export const postVoltronTemplateList = (
  *
  * @description 接口路径：/voltron/template/update
  * @description 接口分组：模板模块 template
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=314176&title=POST/voltron/template/update#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2024-11-21 20:31:50
  * @time 更新时间：2025-05-29 15:11:23
@@ -1307,7 +1247,6 @@ export const postVoltronTemplateUpdate = (
  *
  * @description 接口路径：/voltron/user/current-user
  * @description 接口分组：用户
- * @description 接口地址：https://cloud.bilibili.co/akali/appsManage?appId=informatization.fe-group.voltron-service&level=2&itemId=344365&title=GET/voltron/user/current-user#sh/sh001/prod
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:58
  * @time 更新时间：2025-05-29 15:11:23

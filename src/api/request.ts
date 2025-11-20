@@ -1,15 +1,10 @@
-
-
 import { customFetch } from '@/util';
-import { Axios, defaultConfig, type RequestConfig } from '@bilibili/bee-request/antd';
 import { http } from '@tauri-apps/api';
 import { ResponseType } from '@tauri-apps/api/http';
 import mitt from 'mitt';
+import { Axios } from 'axios';
 
-const axios = new Axios({
-  ...defaultConfig,
-  caller: 'ee'
-});
+const axios = new Axios();
 
 export const emitter = mitt();
 
@@ -35,7 +30,7 @@ const handleError = (e: { message: string; data: { message: never; }; }) => {
 };
 
 axios.get = async (url, config) => {
-  return customFetch(`${defaultConfig.baseURL}${url}`, {
+  return customFetch(url, {
     ...config,
     method: 'GET',
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -47,7 +42,7 @@ axios.get = async (url, config) => {
 };
 
 axios.delete = async (url, config) => {
-  return customFetch(`${defaultConfig.baseURL}${url}`, {
+  return customFetch(url, {
     method: 'DELETE',
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -58,7 +53,7 @@ axios.delete = async (url, config) => {
 };
 
 axios.put = async (url, data, config) => {
-  return customFetch(`${defaultConfig.baseURL}${url}`, {
+  return customFetch(url, {
     method: 'PUT',
     body: data as never,
     headers: config.headers,
@@ -68,7 +63,7 @@ axios.put = async (url, data, config) => {
 };
 
 axios.post = async (url, data, config) => {
-  return customFetch(`${defaultConfig.baseURL}${url}`, {
+  return customFetch(url, {
     method: 'POST',
     body: data as never,
     headers: config.headers,
@@ -78,7 +73,7 @@ axios.post = async (url, data, config) => {
 };
 
 axios.postForm = async (url, data, config) => {
-  return customFetch(`${defaultConfig.baseURL}${url}`, {
+  return customFetch(url, {
     method: 'POST',
     body: {
       ...data as any
@@ -93,6 +88,3 @@ axios.postForm = async (url, data, config) => {
 };
 
 export default axios;
-export type {
-  RequestConfig
-};

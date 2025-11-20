@@ -21,7 +21,7 @@ export default function AppSelect(props: IAppSelect) {
       setAppIds(['informatization.purchase.pur-center', 'ops.fin-api.payproxy', 'informatization.legal-fe.data-report-server']);
     } else {
       const res = await postVoltronCommonProxy({
-        url: 'https://cloud.bilibili.co/akaling/v1/helper/apps/all',
+        url: '',
         method: 'GET',
       });
       setAppIds(res.data.items.map((app: { path: string }) => app.path));

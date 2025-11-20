@@ -165,4 +165,6 @@ const InfiniteContainer = forwardRef<InfiniteContainerHandle, PropsWithChildren<
 
 InfiniteContainer.displayName = 'InfiniteContainer';
 
-export default observer(InfiniteContainer);
+const Index = observer(InfiniteContainer);
+
+export default Index;

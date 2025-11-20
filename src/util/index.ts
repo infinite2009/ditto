@@ -17,8 +17,6 @@ import {
 } from '@/data/constant';
 import * as http from '@tauri-apps/api/http';
 import { Body } from '@tauri-apps/api/http';
-import AppStore from '@/service/app-store';
-import { info } from '@/service/logging';
 import axios from 'axios';
 
 import type DynamicObject from '@/types/dynamic-object';
@@ -34,7 +32,7 @@ export function toPascal(str: string): string {
   }
 }
 
-export function typeOf(value: any): string {
+export function typeOf(value: never): string {
   const typeStr = Object.prototype.toString.call(value);
   const match = typeStr.match(/\[object (.+)\]/);
   if (match?.length) {
@@ -365,141 +363,28 @@ export function camelToHyphen(str: string) {
   return str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
 }
 
-function parseUrlEncodedNested(str: string) {
-  const obj: Record<string, any> = {};
-
-  str.split('&').forEach(pair => {
-    let [key, value] = pair.split('=');
-    key = decodeURIComponent(key);
-    value = decodeURIComponent(value);
-
-    // 检查是否存在嵌套
-    const match = key.match(/([^[]+)\[([^\]]*)]/);
-    if (match) {
-      const [, parentKey, childKey] = match;
-      if (!obj[parentKey]) {
-        obj[parentKey] = {};
-      }
-      obj[parentKey][childKey] = value;
-    } else {
-      obj[key] = value;
-    }
-  });
-
-  return obj;
-}
-
-function prepareBody(contentType: string, body: any) {
-  if (contentType === 'application/json' && typeof body !== 'string') {
-    return JSON.stringify(body);
-  } else if (contentType === 'application/x-www-form-urlencoded') {
-    if (typeof body === 'object') {
-      return Body.form(body);
-    }
-    if (typeof body === 'string') {
-      return Body.form(parseUrlEncodedNested(body));
-    }
-    return new URLSearchParams(body).toString();
-  }
-  return body; // 对于其他类型，如 'multipart/form-data' 或 'text/plain'，不做转换
-}
-
-function constructUrlWithQuery(url: string, optionsQueryParams: { [s: string]: string } | ArrayLike<string>) {
-  // domain:bilibili.co 的证书不安全，所以降级为 http
-  const urlObj = new URL(supplementProtocolForUrl(url));
-  const urlQueryParams = new URLSearchParams(urlObj.search);
-
-  if (optionsQueryParams) {
-    for (const [key, value] of Object.entries(optionsQueryParams)) {
-      urlQueryParams.set(key, value);
-    }
-  }
-
-  urlObj.search = urlQueryParams.toString();
-  return urlObj.toString();
-}
-
-export function proxyFetch() {
-  if (!window.__TAURI__) {
-    return;
-  }
-  // 覆盖全局的 fetch 函数
-  window.fetch = new Proxy(window.fetch, {
-    apply: async function(target, thisArg, [url, options = {}]) {
-      const loginStatus = await AppStore.checkLoginStatusForDesktop();
-      if (!loginStatus) {
-        // TODO：发送登录失败的消息，并在原地进行重试
-        return;
-      }
-      const contentType = options.headers
-        ? options.headers['Content-Type'] || options.headers['content-type']
-        : undefined;
-      const body = contentType ? prepareBody(contentType, options.body) : options.body;
-      const finalUrl = constructUrlWithQuery(url, options.query);
-      const tauriOptions = {
-        method: options.method || 'GET',
-        headers: {
-          ...(options.headers || {}),
-          Cookie: `_AJSESSIONID=${loginStatus.sessionId};username=${loginStatus.accountName}`
-        },
-        body
-      };
-
-      try {
-        // 使用 Tauri 的 http.fetch
-        const response = await http.fetch(finalUrl, tauriOptions);
-        return {
-          ...response,
-          json: () => Promise.resolve(response.data),
-          text: () => Promise.resolve(JSON.stringify(response.data))
-        };
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  });
-}
-
 export function isWeb() {
   return true;
 }
 
-export async function customFetch<T = { code: number; data: any; message: string }>(
+export async function customFetch<T = { code: number; data: never; message: string }>(
   url: string,
   options: http.FetchOptions | RequestInit = {}
 ): Promise<http.Response<T>> {
-  const notAuthorized = -101;
-  const res = (await axios(url, {
+  return axios(url, {
     ...options,
     headers: {
-      'X-CSRF': nanoid(),
-      'x1-bilispy-color': 'dashboard',
       ...(options.headers || {})
     },
     data: options.body
-  } as any)) as any;
-
-  // VITE_DISABLE_UN_LOGIN_REDIRECT 在 env.local中配置，控制本地不进行重定向跳转
-  if (res.data.code === notAuthorized && !import.meta.env.VITE_DISABLE_UN_LOGIN_REDIRECT) {
-    console.log('window.location.href: ', window.location.href);
-    if (process.env.NODE_ENV === 'prod') {
-      window.location.href = `https://dashboard-mng.bilibili.co/login.html?caller=${getCaller()}&path=${
-        window.location.pathname
-      }${window.location.search}`;
-    } else {
-      window.location.href = 'http://alpha.dashboard.bilibili.co/login.html?caller=uat-voltron&path=/';
-    }
-    return res;
-  } else {
-    return res;
-  }
+  } as never);
 }
 
 /**
  * 判断输入是不是空对象
  * @param obj
  */
-export function isEmpty(obj: Record<string, any>) {
+export function isEmpty(obj: Record<string, never>) {
   if (obj === undefined || obj === null) {
     return true;
   }

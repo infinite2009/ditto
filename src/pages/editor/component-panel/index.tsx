@@ -1,5 +1,5 @@
 import { Collapse, Input, Select, Tooltip } from 'antd';
-import React, { FC, ForwardedRef, useContext, useEffect, useState } from 'react';
+import { FC, ForwardedRef, useContext, useEffect, useState } from 'react';
 import DraggableComponent from '@/pages/editor/component-panel/draggable-component-item';
 import { CaretRightOutlined, CodeSandboxOutlined } from '@ant-design/icons';
 import ComponentManager from '@/service/component-manager';
@@ -31,7 +31,7 @@ function ComponentPanel() {
 
   const [componentListByCategory, setComponentListByCategory] = useState<Record<string, IComponentInfo[]>>({});
   const [selectIsOpen, setSelectIsOpen] = useState<boolean>(false);
-
+  const [activeKey, setActiveKey] = useState<string[]>([]);
   const [searchKeyword, setSearchKeyword] = useState<string>('');
 
   useEffect(() => {
@@ -114,8 +114,6 @@ function ComponentPanel() {
 
     const items = [...commonItems];
 
-    const [activeKey, setActiveKey] = useState<string[]>([]);
-
     return items?.length ? (
       <Collapse
         items={items}
@@ -156,14 +154,9 @@ function ComponentPanel() {
           className={styles.select}
           variant="filled"
           options={[
-            {
-              label: 'Bilibili UI',
-              value: '@bilibili/ui'
-            },
             { label: 'Ant Design', value: 'antd' },
-            { label: 'ee-components', value: '@bilibili/ee-components' }
           ]}
-          defaultValue={'@bilibili/ui'}
+          defaultValue={'antd'}
           onChange={handleSelectingComponentLib}
           onOpenChange={onDropdownVisibleChange}
           styles={ { popup: { root: { width: 140 }}}}
@@ -200,4 +193,6 @@ function ComponentPanel() {
 
 ComponentPanel.displayName = 'ComponentPanel';
 
-export default observer(ComponentPanel);
+const Index = observer(ComponentPanel);
+
+export default Index;

@@ -24,6 +24,7 @@
         "indent": ["error", 2, {"SwitchCase": 1 }],
         "no-debugger": "error",
         "@typescript-eslint/semi": "error",
+        "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/member-delimiter-style": [
             "error",
             {

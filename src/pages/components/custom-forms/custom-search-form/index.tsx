@@ -15,7 +15,7 @@ import FormInput from '@/pages/editor/form-panel/basic-form/form-input';
 
 import customFormStyle from '../../index.module.less';
 
-export default observer(function CustomFormForm() {
+function CustomFormForm() {
   const [showLabel, setShowLabel] = useState<boolean>(true);
 
   const dslStore = useContext(DSLStoreContext);
@@ -23,19 +23,18 @@ export default observer(function CustomFormForm() {
   const fieldNamesRef = useRef<string[]>([]);
   const fieldLabelsDictRef = useRef<Record<string, string>>({});
   const formItemsRef = useRef<Record<string, IComponentSchema>>({});
-  const rowRef = useRef<IComponentSchema>(null);
   const colDictRef = useRef<Record<string, IComponentSchema>>({});
   const dependencyRef = useRef<string>(null);
 
   useEffect(() => {
     if (dslStore?.selectedComponent) {
-      dependencyRef.current = '@bilibili/ui';
+      dependencyRef.current = 'antd';
       const propsDict = dslStore.dsl.props;
       const component = dslStore.selectedComponent;
       const items = dslStore.fetchComponentInDSL(component.id).children || [];
       if (items.length) {
         // 初始化
-        items?.forEach((col, index) => {
+        items?.forEach((col) => {
           const formItem = dslStore.fetchComponentInDSL(col.current);
           fieldLabelsDictRef.current[formItem.id] = propsDict[formItem.id].label?.value as string;
           // 标题没有 name 属性
@@ -64,31 +63,6 @@ export default observer(function CustomFormForm() {
       }
     }
   }, [showLabel]);
-
-  // useEffect(() => {
-  //   // adjustSpanForColumn();
-  // }, [columnSpanSize]);
-
-  // function adjustSpanForColumn() {
-  //   const row = dslStore.fetchComponentInDSL(dslStore.selectedComponent.children?.[0]?.current);
-  //   if (row) {
-  //     const columnIds = row.children?.map(({ current }) => current);
-  //     columnIds?.forEach(id => {
-  //       dslStore.updateComponentProps({ span: columnSpanSize }, dslStore.fetchComponentInDSL(id));
-  //     });
-  //   }
-  // }
-
-  // function handleChangingFillMode(val: boolean) {
-  //   setFillMode(val);
-  // }
-
-  function handleChangingLabelPosition(val: 'horizontal' | 'vertical') {
-    // setLabelPosition(val);
-    if (dslStore.selectedComponent) {
-      dslStore.updateComponentProps({ layout: val }, dslStore.selectedComponent);
-    }
-  }
 
   function handleSelectComponent(data: string, component: IComponentSchema) {
     if (data === 'Text') {
@@ -293,4 +267,10 @@ export default observer(function CustomFormForm() {
       </DndContext>
     </div>
   );
-});
+};
+
+CustomFormForm.displayName = 'CustomFormForm';
+
+const Index = observer(CustomFormForm)
+
+export default Index;

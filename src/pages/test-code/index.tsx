@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Drawer, Input, InputNumber, Modal } from '@bilibili/ui';
+import { Button, Drawer, Input, InputNumber, Modal } from 'antd';
 import userPageStore from './store';
 
 export default function Zaiceshi() {

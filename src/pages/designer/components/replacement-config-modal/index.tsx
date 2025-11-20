@@ -33,7 +33,7 @@ function ReplacementConfigModal({ open, onClose }: ReplacementConfigModalProps) 
       <div className={styles.replacementConfigContent}>
         <div className={styles.fieldContainer}>
           <span className={styles.fieldLabel}>代码仓库地址</span>
-          <div className={styles.fieldInput}><span className={styles.fieldInputPrefix}>https://git.bilibili.co/</span><Input onBlur={handleGitAddr} onPressEnter={handleGitAddr} /></div>
+          <div className={styles.fieldInput}><span className={styles.fieldInputPrefix}>https://github.com/</span><Input onBlur={handleGitAddr} onPressEnter={handleGitAddr} /></div>
         </div>
         <div className={styles.fieldContainer}>
           <span className={styles.fieldLabel}>分支</span>
