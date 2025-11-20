@@ -15,7 +15,7 @@ export interface TemplateKeyPathsReg {
   // 循环渲染引用的prop，例如表格和列表是 dataSource
   repeatPropRef?: string;
   // 重复的类型：表格或者列表
-  repeatType?: 'list' | 'table' | 'transfer' | 'eeApprovalFooter' | 'getContainer';
+  repeatType?: 'list' | 'table' | 'transfer' | 'getContainer';
   type: 'object' | 'function';
 }
 

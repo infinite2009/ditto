@@ -1806,28 +1806,6 @@ const ANTD_FORM_CONFIG = {
       }
     }
   },
-  Approval: {
-    configName: 'Approval',
-    formComponent: {
-      basic: CustomEEApprove as FC<any>
-    },
-    schema: {
-      basic: {
-        immersiveApproval: {
-          name: 'immersiveApproval',
-          type: 'boolean',
-          title: '是否开启连续审批',
-          component: 'Switch'
-        }
-      },
-      style: {
-        layout: {
-          width: true,
-          height: true
-        }
-      }
-    }
-  },
   'Radio.Group': {
     configName: 'Radio.Group',
     schema: {

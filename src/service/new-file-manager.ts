@@ -335,7 +335,7 @@ export default class NewFileManager {
     return templateList;
   }
 
-  static async fetchUrl(batchKey: string) {
+  static async fetchUrl() {
     const token = await NewFileManager.fetchToken();
     if (!token) {
       return null;
@@ -344,11 +344,8 @@ export default class NewFileManager {
     const res = await customFetch(url, {
       method: 'GET',
       headers: {
-        'BEE-AppAccessToken': token
       },
       params: {
-        bucketName: 'QX_FS',
-        batchKey: batchKey
       }
     } as unknown as RequestInit);
     if (res.data?.data?.[0]) {
@@ -476,10 +473,8 @@ export default class NewFileManager {
       method: 'POST',
       headers: {
         'Content-Type': 'multipart/form-data',
-        'BEE-AppAccessToken': token
       },
       body: {
-        bucketName: 'QX_FS',
         storageType: '1',
         file
       }
@@ -518,11 +513,9 @@ export default class NewFileManager {
     const res = await customFetch(url, {
       method: 'POST',
       headers: {
-        'BEE-AppAccessToken': token,
         'Content-Type': 'multipart/form-data'
       },
       body: {
-        bucketName: 'QX_FS',
         storageType: '1',
         file
       }

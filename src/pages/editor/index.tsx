@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { App, Empty, Flex, Input, Tooltip } from 'antd';
-import { PageInfo, ProjectInfo } from '@/types/app-data';
-import Toolbar, { PageActionEvent, PageWidth } from '@/pages/editor/toolbar';
+import { PageInfo } from '@/types/app-data';
+import Toolbar, { PageActionEvent } from '@/pages/editor/toolbar';
 import PagePanel from '@/pages/editor/page-panel';
 import FormPanel from '@/pages/editor/form-panel';
 import styles from './index.module.less';

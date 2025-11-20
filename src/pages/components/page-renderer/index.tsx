@@ -281,15 +281,7 @@ const PageRenderer: FC<IPageRendererProps> = observer((props: IPageRendererProps
             }
             return item.title;
           };
-        } else if (repeatType === 'eeApprovalFooter') {
-          parent[key] = (node: any) => {
-            return node;
-          };
         } else if (repeatType === 'getContainer') {
-          // console.log(data);
-          // parent[key] = () => {
-          //   return document.querySelector(data);
-          // };
         } else {
           parent[key] = () => {
             return recursivelyRenderTemplate(data, true);

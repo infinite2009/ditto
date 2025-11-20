@@ -3,15 +3,16 @@ import { DesignMode } from '@/service/editor-store';
 import HotkeysManager, { HotkeyAction, HotkeyDict } from '@/service/hotkeys-manager';
 import { Annotation, Clean, ExpandDown, ExpandScreen } from '@/components/icon';
 import classNames from 'classnames';
-import React, { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { useMount } from 'ahooks';
 import { DSLStoreContext, EditorStoreContext } from '@/hooks/context';
 import { observer } from 'mobx-react';
-import { PageActionEvent, PageWidth } from '@/pages/editor/toolbar';
+import { PageActionEvent } from '@/pages/editor/toolbar';
 import ZoomSelect from '@/components/zoom-select';
 import PageAction from '@/types/page-action';
 
 import styles from './index.module.less';
+import { PageWidth } from '@/enum';
 
 export interface CenterToolbarProps {
   onDo?: (e: PageActionEvent) => void;
@@ -19,7 +20,6 @@ export interface CenterToolbarProps {
 
 function CenterToolbar({ onDo }: CenterToolbarProps) {
   const editorStore = useContext(EditorStoreContext);
-  const dslStore = useContext(DSLStoreContext);
 
   const [selectIsOpen, setSelectIsOpen] = useState<boolean>(false);
   const [hotkeysConfig, setHotkeysConfig] = useState<HotkeyDict>(null);
@@ -161,4 +161,6 @@ function CenterToolbar({ onDo }: CenterToolbarProps) {
 
 CenterToolbar.displayName = 'CenterToolbar';
 
-export default observer(CenterToolbar);
+const Index = observer(CenterToolbar);
+
+export default Index;

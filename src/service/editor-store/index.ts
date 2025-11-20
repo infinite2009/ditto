@@ -17,8 +17,8 @@ import {
   PageConfig,
   ViewMode
 } from './types';
-import { PageWidth } from '@/pages/editor/toolbar';
 import { VariableInfo } from '@/types/page.schema';
+import { PageWidth } from '@/enum';
 
 export { DesignMode };
 

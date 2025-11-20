@@ -5,7 +5,6 @@ import { default as VerticalFlex } from './vertical-flex';
 import { default as Text } from './text';
 import { default as Table } from './table';
 import { default as DatePicker } from './date-picker';
-import { default as ProTabs } from './pro-tabs';
 import { getComponentProps, getComponentSchema } from './utils';
 
 const components = {
@@ -13,7 +12,6 @@ const components = {
   Text,
   Table,
   DatePicker,
-  ProTabs
 };
 
 const nativeComponents = {

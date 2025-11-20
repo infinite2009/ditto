@@ -5,7 +5,6 @@ import { default as VerticalFlex } from '../components/vertical-flex';
 import { default as Text } from '../components/text';
 import { default as Table } from '../components/table';
 import { default as DatePicker } from '../components/date-picker';
-import { default as ProTabs } from '../components/pro-tabs';
 
 export const HTMLComponents = {
   [Button.configName]: Button.component,
@@ -15,5 +14,4 @@ export const HTMLComponents = {
   [Text.configName]: Text.component,
   [Table.configName]: Table.component,
   [DatePicker.configName]: DatePicker.component,
-  [ProTabs.configName]: ProTabs.component
 };

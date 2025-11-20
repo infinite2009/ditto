@@ -1,9 +1,10 @@
 import React from 'react';
 import { SwitchOrder } from '@/components/icon';
 import { DeveloperService } from '@/service/developer';
-import { FormItem } from 'antd';
 import { Button, Select, Form } from 'antd';
 import { useComponentReplaceModal } from '../store';
+
+const FormItem = Form.Item;
 
 export const ReplaceComponentSelect = () => (
   <FormItem label="组件名称" required>

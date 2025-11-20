@@ -4,6 +4,8 @@ import { ResponseType } from '@tauri-apps/api/http';
 import mitt from 'mitt';
 import { Axios } from 'axios';
 
+export type RequestConfig = any;
+
 const axios = new Axios();
 
 export const emitter = mitt();

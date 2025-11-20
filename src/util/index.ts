@@ -482,20 +482,6 @@ export function stringToFile(str: string, fileName: string, contentType = 'text/
   });
 }
 
-export function getCaller() {
-  // if (!isWeb()) {
-  if (window.location.host.startsWith('ee')) {
-    return 'ee';
-  }
-  if (window.location.host.startsWith('pre-ee')) {
-    return 'pre-ee';
-  }
-  return 'uat-ee';
-  // }
-  // error('isUat 方法仅支持在浏览器端运行');
-  // return 'uat-ee';
-}
-
 export function findComponentRoot(dom: HTMLElement) {
   let node = dom;
   while (node) {

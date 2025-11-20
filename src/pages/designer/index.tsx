@@ -32,7 +32,7 @@ import FloatTemplatePanel from '@/pages/editor/float-template-panel';
 import InfiniteContainer, { InfiniteContainerHandle } from '@/pages/components/infinite-container';
 import { observer } from 'mobx-react';
 import PageAction from '@/types/page-action';
-import { PageActionEvent, PageWidth } from '@/pages/editor/toolbar';
+import { PageActionEvent } from '@/pages/editor/toolbar';
 import fileManager from '@/service/file';
 import copyToClipboard from 'copy-to-clipboard';
 import copy from 'copy-to-clipboard';
