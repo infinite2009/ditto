@@ -27,7 +27,7 @@ import ComponentManager from '@/service/component-manager';
 import ComponentPlaceHolder from '@/pages/editor/place-holder';
 import { DesignMode } from '@/service/editor-store';
 import Page from '@/pages/editor/page';
-import VoltronAttributeContainer, { VoltronAttributes } from '@/components/voltron-attribute-container';
+import VoltronAttributeContainer, { VoltronAttributes } from '@/components/ditto-attribute-container';
 import { findKeyIndices, findNodeByIndices, NodeKey } from '@/pages/components/draggable-tree/utils';
 import DSLStore from '@/service/dsl-store';
 import { postVoltronCommonProxy } from '@/api';

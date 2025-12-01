@@ -20,7 +20,7 @@ export namespace GetMetrics {
 /**
  * 类型名称：新增评论
  *
- * @description 接口路径：/voltron/comment/create
+ * @description 接口路径：/ditto/comment/create
  * @description 接口分组：评论模块 comment
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -117,7 +117,7 @@ export namespace PostVoltronCommentCreate {
 /**
  * 类型名称：删除评论
  *
- * @description 接口路径：/voltron/comment/delete
+ * @description 接口路径：/ditto/comment/delete
  * @description 接口分组：评论模块 comment
  * 
  * @author openapi
@@ -139,7 +139,7 @@ export namespace PostVoltronCommentDelete {
 /**
  * 类型名称：获取评论详情
  *
- * @description 接口路径：/voltron/comment/detail
+ * @description 接口路径：/ditto/comment/detail
  * @description 接口分组：评论模块 comment
  * 
  * @author openapi
@@ -218,7 +218,7 @@ export namespace GetVoltronCommentDetail {
 /**
  * 类型名称：获取评论列表
  *
- * @description 接口路径：/voltron/comment/list
+ * @description 接口路径：/ditto/comment/list
  * @description 接口分组：评论模块 comment
  * 
  * @author openapi
@@ -305,7 +305,7 @@ export namespace PostVoltronCommentList {
 /**
  * 类型名称：编辑评论
  *
- * @description 接口路径：/voltron/comment/update
+ * @description 接口路径：/ditto/comment/update
  * @description 接口分组：评论模块 comment
  * 
  * @author openapi
@@ -403,7 +403,7 @@ export namespace PostVoltronCommentUpdate {
 /**
  * 类型名称：获取完整部门树
  *
- * @description 接口路径：/voltron/common/dept/tree
+ * @description 接口路径：/ditto/common/dept/tree
  * @description 接口分组：通用模块 common
  * 
  * @author openapi
@@ -422,7 +422,7 @@ export namespace GetVoltronCommonDeptTree {
 /**
  * 类型名称：获取码值
  *
- * @description 接口路径：/voltron/common/dict
+ * @description 接口路径：/ditto/common/dict
  * @description 接口分组：通用模块 common
  * 
  * @author openapi
@@ -444,7 +444,7 @@ export namespace GetVoltronCommonDict {
 /**
  * 类型名称：根据昵称或者域账号查询用户信息
  *
- * @description 接口路径：/voltron/common/employee/keyword
+ * @description 接口路径：/ditto/common/employee/keyword
  * @description 接口分组：通用模块 common
  * 
  * @author openapi
@@ -484,7 +484,7 @@ export namespace PostVoltronCommonEmployeeKeyword {
 /**
  * 类型名称：接口转发
  *
- * @description 接口路径：/voltron/common/proxy
+ * @description 接口路径：/ditto/common/proxy
  * @description 接口分组：通用模块 common
  * 
  * @author openapi
@@ -531,7 +531,7 @@ export namespace PostVoltronCommonProxy {
 /**
  * 类型名称：接口转发
  *
- * @description 接口路径：/voltron/common/proxy-multi
+ * @description 接口路径：/ditto/common/proxy-multi
  * @description 接口分组：通用模块 common
  * 
  * @author openapi
@@ -581,7 +581,7 @@ export namespace PostVoltronCommonProxyMulti {
 /**
  * 类型名称：登录人信息
  *
- * @description 接口路径：/voltron/common/userInfo
+ * @description 接口路径：/ditto/common/userInfo
  * @description 接口分组：通用模块 common
  * 
  * @author openapi
@@ -597,9 +597,9 @@ export namespace GetVoltronCommonUserInfo {
 }
 
 /**
- * 类型名称：/voltron/developer/analyze-repositories
+ * 类型名称：/ditto/developer/analyze-repositories
  *
- * @description 接口路径：/voltron/developer/analyze-repositories
+ * @description 接口路径：/ditto/developer/analyze-repositories
  * @description 接口分组：开发者模块 developer
  * 
  * @author openapi
@@ -618,9 +618,9 @@ export namespace GetVoltronDeveloperAnalyzeRepositories {
 }
 
 /**
- * 类型名称：/voltron/developer/repositories-branches
+ * 类型名称：/ditto/developer/repositories-branches
  *
- * @description 接口路径：/voltron/developer/repositories-branches
+ * @description 接口路径：/ditto/developer/repositories-branches
  * @description 接口分组：开发者模块 developer
  * 
  * @author openapi
@@ -638,9 +638,9 @@ export namespace GetVoltronDeveloperRepositoriesBranches {
 }
 
 /**
- * 类型名称：/voltron/developer/repositories-tree
+ * 类型名称：/ditto/developer/repositories-tree
  *
- * @description 接口路径：/voltron/developer/repositories-tree
+ * @description 接口路径：/ditto/developer/repositories-tree
  * @description 接口分组：开发者模块 developer
  * 
  * @author openapi
@@ -659,9 +659,9 @@ export namespace GetVoltronDeveloperRepositoriesTree {
 }
 
 /**
- * 类型名称：/voltron/developer/schemas/component
+ * 类型名称：/ditto/developer/schemas/component
  *
- * @description 接口路径：/voltron/developer/schemas/component
+ * @description 接口路径：/ditto/developer/schemas/component
  * @description 接口分组：开发者模块 developer
  * 
  * @author openapi
@@ -676,7 +676,7 @@ export namespace GetVoltronDeveloperSchemasComponent {
 /**
  * 类型名称：分页查询物料组件
  *
- * @description 接口路径：/voltron/material
+ * @description 接口路径：/ditto/material
  * @description 接口分组：物料组件
  * 
  * @author openapi
@@ -707,7 +707,7 @@ export namespace GetVoltronMaterial {
 /**
  * 类型名称：创建物料组件
  *
- * @description 接口路径：/voltron/material
+ * @description 接口路径：/ditto/material
  * @description 接口分组：物料组件
  * 
  * @author openapi
@@ -819,7 +819,7 @@ export namespace PostVoltronMaterial {
 /**
  * 类型名称：获取所有物料组件属性
  *
- * @description 接口路径：/voltron/material-prop
+ * @description 接口路径：/ditto/material-prop
  * @description 接口分组：物料组件属性
  * 
  * @author openapi
@@ -884,7 +884,7 @@ export namespace GetVoltronMaterialProp {
 /**
  * 类型名称：创建物料组件属性
  *
- * @description 接口路径：/voltron/material-prop
+ * @description 接口路径：/ditto/material-prop
  * @description 接口分组：物料组件属性
  * 
  * @author openapi
@@ -982,7 +982,7 @@ export namespace PostVoltronMaterialProp {
 /**
  * 类型名称：删除物料组件属性
  *
- * @description 接口路径：/voltron/material-prop/{id}
+ * @description 接口路径：/ditto/material-prop/{id}
  * @description 接口分组：物料组件属性
  * 
  * @author openapi
@@ -1001,7 +1001,7 @@ export namespace DeleteVoltronMaterialPropById {
 /**
  * 类型名称：根据ID获取物料组件属性
  *
- * @description 接口路径：/voltron/material-prop/{id}
+ * @description 接口路径：/ditto/material-prop/{id}
  * @description 接口分组：物料组件属性
  * 
  * @author openapi
@@ -1020,7 +1020,7 @@ export namespace GetVoltronMaterialPropById {
 /**
  * 类型名称：更新物料组件属性
  *
- * @description 接口路径：/voltron/material-prop/{id}
+ * @description 接口路径：/ditto/material-prop/{id}
  * @description 接口分组：物料组件属性
  * 
  * @author openapi
@@ -1078,7 +1078,7 @@ export namespace PatchVoltronMaterialPropById {
 /**
  * 类型名称：批量删除物料组件属性
  *
- * @description 接口路径：/voltron/material-prop/batch-delete
+ * @description 接口路径：/ditto/material-prop/batch-delete
  * @description 接口分组：物料组件属性
  * 
  * @author openapi
@@ -1100,7 +1100,7 @@ export namespace PostVoltronMaterialPropBatchDelete {
 /**
  * 类型名称：获取物料组件的所有属性
  *
- * @description 接口路径：/voltron/material-prop/material/{materialId}
+ * @description 接口路径：/ditto/material-prop/material/{materialId}
  * @description 接口分组：物料组件属性
  * 
  * @author openapi
@@ -1168,7 +1168,7 @@ export namespace GetVoltronMaterialPropMaterialByMaterialId {
 /**
  * 类型名称：删除物料组件
  *
- * @description 接口路径：/voltron/material/{id}
+ * @description 接口路径：/ditto/material/{id}
  * @description 接口分组：物料组件
  * 
  * @author openapi
@@ -1187,7 +1187,7 @@ export namespace DeleteVoltronMaterialById {
 /**
  * 类型名称：根据ID获取物料组件
  *
- * @description 接口路径：/voltron/material/{id}
+ * @description 接口路径：/ditto/material/{id}
  * @description 接口分组：物料组件
  * 
  * @author openapi
@@ -1206,7 +1206,7 @@ export namespace GetVoltronMaterialById {
 /**
  * 类型名称：更新物料组件
  *
- * @description 接口路径：/voltron/material/{id}
+ * @description 接口路径：/ditto/material/{id}
  * @description 接口分组：物料组件
  * 
  * @author openapi
@@ -1319,7 +1319,7 @@ export namespace PatchVoltronMaterialById {
 /**
  * 类型名称：删除物料组件及其属性
  *
- * @description 接口路径：/voltron/material/{id}/full
+ * @description 接口路径：/ditto/material/{id}/full
  * @description 接口分组：物料组件
  * 
  * @author openapi
@@ -1341,7 +1341,7 @@ export namespace DeleteVoltronMaterialFullById {
 /**
  * 类型名称：获取物料组件详情（包含属性）
  *
- * @description 接口路径：/voltron/material/{id}/full
+ * @description 接口路径：/ditto/material/{id}/full
  * @description 接口分组：物料组件
  * 
  * @author openapi
@@ -1360,7 +1360,7 @@ export namespace GetVoltronMaterialFullById {
 /**
  * 类型名称：根据包名删除物料组件及其属性
  *
- * @description 接口路径：/voltron/material/package
+ * @description 接口路径：/ditto/material/package
  * @description 接口分组：物料组件
  * 
  * @author openapi
@@ -1382,7 +1382,7 @@ export namespace DeleteVoltronMaterialPackage {
 /**
  * 类型名称：根据包名查询物料组件及其属性
  *
- * @description 接口路径：/voltron/material/package
+ * @description 接口路径：/ditto/material/package
  * @description 接口分组：物料组件
  * 
  * @author openapi
@@ -1408,7 +1408,7 @@ export namespace GetVoltronMaterialPackage {
 /**
  * 类型名称：获取所有物料组件包名
  *
- * @description 接口路径：/voltron/material/packages
+ * @description 接口路径：/ditto/material/packages
  * @description 接口分组：物料组件
  * 
  * @author openapi
@@ -1427,7 +1427,7 @@ export namespace GetVoltronMaterialPackages {
 /**
  * 类型名称：批量更新物料组件属性
  *
- * @description 接口路径：/voltron/material/props/batch
+ * @description 接口路径：/ditto/material/props/batch
  * @description 接口分组：物料组件
  * 
  * @author openapi
@@ -1495,7 +1495,7 @@ export namespace PatchVoltronMaterialPropsBatch {
 /**
  * 类型名称：创建模块
  *
- * @description 接口路径：/voltron/module/create
+ * @description 接口路径：/ditto/module/create
  * @description 接口分组：模块 module
  * 
  * @author openapi
@@ -1529,7 +1529,7 @@ export namespace PostVoltronModuleCreate {
 /**
  * 类型名称：删除模块
  *
- * @description 接口路径：/voltron/module/delete
+ * @description 接口路径：/ditto/module/delete
  * @description 接口分组：模块 module
  * 
  * @author openapi
@@ -1573,7 +1573,7 @@ export namespace PostVoltronModuleDelete {
 /**
  * 类型名称：获取模块列表
  *
- * @description 接口路径：/voltron/module/list
+ * @description 接口路径：/ditto/module/list
  * @description 接口分组：模块 module
  * 
  * @author openapi
@@ -1631,7 +1631,7 @@ export namespace GetVoltronModuleList {
 /**
  * 类型名称：获取所有模块列表
  *
- * @description 接口路径：/voltron/module/list-all
+ * @description 接口路径：/ditto/module/list-all
  * @description 接口分组：模块 module
  * 
  * @author openapi
@@ -1686,7 +1686,7 @@ export namespace GetVoltronModuleListAll {
 /**
  * 类型名称：更新模块
  *
- * @description 接口路径：/voltron/module/update
+ * @description 接口路径：/ditto/module/update
  * @description 接口分组：模块 module
  * 
  * @author openapi
@@ -1724,7 +1724,7 @@ export namespace PostVoltronModuleUpdate {
 /**
  * 类型名称：获取顶部导航列表
  *
- * @description 接口路径：/voltron/navigation/list
+ * @description 接口路径：/ditto/navigation/list
  * @description 接口分组：顶部导航模块 navigation
  * 
  * @author openapi
@@ -1775,7 +1775,7 @@ export namespace GetVoltronNavigationList {
 /**
  * 类型名称：更新顶部导航
  *
- * @description 接口路径：/voltron/navigation/update
+ * @description 接口路径：/ditto/navigation/update
  * @description 接口分组：顶部导航模块 navigation
  * 
  * @author openapi
@@ -1820,7 +1820,7 @@ export namespace PostVoltronNavigationUpdate {
 /**
  * 类型名称：创建批注
  *
- * @description 接口路径：/voltron/note/create
+ * @description 接口路径：/ditto/note/create
  * @description 接口分组：批注模块 note
  * 
  * @author openapi
@@ -1850,7 +1850,7 @@ export namespace PostVoltronNoteCreate {
 /**
  * 类型名称：删除批注
  *
- * @description 接口路径：/voltron/note/delete
+ * @description 接口路径：/ditto/note/delete
  * @description 接口分组：批注模块 note
  * 
  * @author openapi
@@ -1872,7 +1872,7 @@ export namespace PostVoltronNoteDelete {
 /**
  * 类型名称：获取批注列表
  *
- * @description 接口路径：/voltron/note/list
+ * @description 接口路径：/ditto/note/list
  * @description 接口分组：批注模块 note
  * 
  * @author openapi
@@ -1915,7 +1915,7 @@ export namespace GetVoltronNoteList {
 /**
  * 类型名称：更新批注
  *
- * @description 接口路径：/voltron/note/update
+ * @description 接口路径：/ditto/note/update
  * @description 接口分组：批注模块 note
  * 
  * @author openapi
@@ -1941,7 +1941,7 @@ export namespace PostVoltronNoteUpdate {
 /**
  * 类型名称：创建页面
  *
- * @description 接口路径：/voltron/page/create
+ * @description 接口路径：/ditto/page/create
  * @description 接口分组：页面模块 page
  * 
  * @author openapi
@@ -2027,7 +2027,7 @@ export namespace PostVoltronPageCreate {
 /**
  * 类型名称：删除页面
  *
- * @description 接口路径：/voltron/page/delete
+ * @description 接口路径：/ditto/page/delete
  * @description 接口分组：页面模块 page
  * 
  * @author openapi
@@ -2049,7 +2049,7 @@ export namespace PostVoltronPageDelete {
 /**
  * 类型名称：获取页面详情
  *
- * @description 接口路径：/voltron/page/detail
+ * @description 接口路径：/ditto/page/detail
  * @description 接口分组：页面模块 page
  * 
  * @author openapi
@@ -2124,7 +2124,7 @@ export namespace GetVoltronPageDetail {
 /**
  * 类型名称：获取页面列表
  *
- * @description 接口路径：/voltron/page/list
+ * @description 接口路径：/ditto/page/list
  * @description 接口分组：页面模块 page
  * 
  * @author openapi
@@ -2207,7 +2207,7 @@ export namespace PostVoltronPageList {
 /**
  * 类型名称：更新页面
  *
- * @description 接口路径：/voltron/page/update
+ * @description 接口路径：/ditto/page/update
  * @description 接口分组：页面模块 page
  * 
  * @author openapi
@@ -2301,7 +2301,7 @@ export namespace PostVoltronPageUpdate {
 /**
  * 类型名称：获取页面版本列表
  *
- * @description 接口路径：/voltron/page/version/list
+ * @description 接口路径：/ditto/page/version/list
  * @description 接口分组：页面模块 page
  * 
  * @author openapi
@@ -2404,7 +2404,7 @@ export namespace PostVoltronPageVersionList {
 /**
  * 类型名称：创建项目
  *
- * @description 接口路径：/voltron/project/create
+ * @description 接口路径：/ditto/project/create
  * @description 接口分组：项目模块 project
  * 
  * @author openapi
@@ -2506,7 +2506,7 @@ export namespace PostVoltronProjectCreate {
 /**
  * 类型名称：删除项目
  *
- * @description 接口路径：/voltron/project/delete
+ * @description 接口路径：/ditto/project/delete
  * @description 接口分组：项目模块 project
  * 
  * @author openapi
@@ -2528,7 +2528,7 @@ export namespace PostVoltronProjectDelete {
 /**
  * 类型名称：获取项目详情
  *
- * @description 接口路径：/voltron/project/detail
+ * @description 接口路径：/ditto/project/detail
  * @description 接口分组：项目模块 project
  * 
  * @author openapi
@@ -2611,7 +2611,7 @@ export namespace GetVoltronProjectDetail {
 /**
  * 类型名称：获取项目列表
  *
- * @description 接口路径：/voltron/project/list
+ * @description 接口路径：/ditto/project/list
  * @description 接口分组：项目模块 project
  * 
  * @author openapi
@@ -2712,7 +2712,7 @@ export namespace PostVoltronProjectList {
 /**
  * 类型名称：编辑项目
  *
- * @description 接口路径：/voltron/project/update
+ * @description 接口路径：/ditto/project/update
  * @description 接口分组：项目模块 project
  * 
  * @author openapi
@@ -2823,7 +2823,7 @@ export namespace PostVoltronProjectUpdate {
 /**
  * 类型名称：创建模板
  *
- * @description 接口路径：/voltron/template/create
+ * @description 接口路径：/ditto/template/create
  * @description 接口分组：模板模块 template
  * 
  * @author openapi
@@ -2913,7 +2913,7 @@ export namespace PostVoltronTemplateCreate {
 /**
  * 类型名称：删除模板
  *
- * @description 接口路径：/voltron/template/delete
+ * @description 接口路径：/ditto/template/delete
  * @description 接口分组：模板模块 template
  * 
  * @author openapi
@@ -2935,7 +2935,7 @@ export namespace PostVoltronTemplateDelete {
 /**
  * 类型名称：获取模板详情
  *
- * @description 接口路径：/voltron/template/detail
+ * @description 接口路径：/ditto/template/detail
  * @description 接口分组：模板模块 template
  * 
  * @author openapi
@@ -3010,7 +3010,7 @@ export namespace GetVoltronTemplateDetail {
 /**
  * 类型名称：获取模板列表
  *
- * @description 接口路径：/voltron/template/list
+ * @description 接口路径：/ditto/template/list
  * @description 接口分组：模板模块 template
  * 
  * @author openapi
@@ -3097,7 +3097,7 @@ export namespace PostVoltronTemplateList {
 /**
  * 类型名称：编辑模板
  *
- * @description 接口路径：/voltron/template/update
+ * @description 接口路径：/ditto/template/update
  * @description 接口分组：模板模块 template
  * 
  * @author openapi
@@ -3191,7 +3191,7 @@ export namespace PostVoltronTemplateUpdate {
 /**
  * 类型名称：获取当前用户信息
  *
- * @description 接口路径：/voltron/user/current-user
+ * @description 接口路径：/ditto/user/current-user
  * @description 接口分组：用户
  * 
  * @author openapi

@@ -13,7 +13,7 @@ import type {
 /**
  * 接口名称：获取左侧菜单列表
  *
- * @description 接口路径：/voltron/menu/list
+ * @description 接口路径：/ditto/menu/list
  * @description 接口分组：左侧菜单模块 menu
  * @time 创建时间：2024-11-21 20:31:50
  * @time 更新时间：2024-11-21 20:44:39
@@ -23,7 +23,7 @@ export const getVoltronMenuList = (
   params: GetVoltronMenuList.Req,
   config: RequestConfig = {},
 ) =>
-  axios.get<GetVoltronMenuList.Res>('/voltron/menu/list', {
+  axios.get<GetVoltronMenuList.Res>('/ditto/menu/list', {
     params,
     ...config,
   });
@@ -31,7 +31,7 @@ export const getVoltronMenuList = (
 /**
  * 接口名称：更新左侧菜单
  *
- * @description 接口路径：/voltron/menu/update
+ * @description 接口路径：/ditto/menu/update
  * @description 接口分组：左侧菜单模块 menu
  * @author openapi
  * @time 创建时间：2024-11-21 20:31:50
@@ -42,13 +42,13 @@ export const postVoltronMenuUpdate = (
   params: PostVoltronMenuUpdate.Req,
   config: RequestConfig = {},
 ) =>
-  axios.post<PostVoltronMenuUpdate.Res>('/voltron/menu/update', params, config);
+  axios.post<PostVoltronMenuUpdate.Res>('/ditto/menu/update', params, config);
 
 
   /**
  * 接口名称：BFS文件上传
  *
- * @description 接口路径：/voltron/common/bfs/upload
+ * @description 接口路径：/ditto/common/bfs/upload
  * @description 接口分组：通用模块 common
  * @time 创建时间：2024-12-02 16:15:56
  * @time 更新时间：2024-12-02 16:32:19
@@ -59,7 +59,7 @@ export const postVoltronCommonBfsUpload = (
   config: RequestConfig = {},
 ) =>
   axios.postForm<PostVoltronCommonBfsUpload.Res>(
-    '/voltron/common/bfs/upload',
+    '/ditto/common/bfs/upload',
     params,
     config,
   );

@@ -99,7 +99,7 @@ export const getMetrics = (config: RequestConfig = {}) =>
 /**
  * 接口名称：新增评论
  *
- * @description 接口路径：/voltron/comment/create
+ * @description 接口路径：/ditto/comment/create
  * @description 接口分组：评论模块 comment
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -111,7 +111,7 @@ export const postVoltronCommentCreate = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronCommentCreate.Res>(
-    '/voltron/comment/create',
+    '/ditto/comment/create',
     params,
     config,
   );
@@ -119,7 +119,7 @@ export const postVoltronCommentCreate = (
 /**
  * 接口名称：删除评论
  *
- * @description 接口路径：/voltron/comment/delete
+ * @description 接口路径：/ditto/comment/delete
  * @description 接口分组：评论模块 comment
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -131,7 +131,7 @@ export const postVoltronCommentDelete = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronCommentDelete.Res>(
-    '/voltron/comment/delete',
+    '/ditto/comment/delete',
     params,
     config,
   );
@@ -139,7 +139,7 @@ export const postVoltronCommentDelete = (
 /**
  * 接口名称：获取评论详情
  *
- * @description 接口路径：/voltron/comment/detail
+ * @description 接口路径：/ditto/comment/detail
  * @description 接口分组：评论模块 comment
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -150,7 +150,7 @@ export const getVoltronCommentDetail = (
   params: GetVoltronCommentDetail.Req,
   config: RequestConfig = {},
 ) =>
-  axios.get<GetVoltronCommentDetail.Res>('/voltron/comment/detail', {
+  axios.get<GetVoltronCommentDetail.Res>('/ditto/comment/detail', {
     params,
     ...config,
   });
@@ -158,7 +158,7 @@ export const getVoltronCommentDetail = (
 /**
  * 接口名称：获取评论列表
  *
- * @description 接口路径：/voltron/comment/list
+ * @description 接口路径：/ditto/comment/list
  * @description 接口分组：评论模块 comment
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -170,7 +170,7 @@ export const postVoltronCommentList = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronCommentList.Res>(
-    '/voltron/comment/list',
+    '/ditto/comment/list',
     params,
     config,
   );
@@ -178,7 +178,7 @@ export const postVoltronCommentList = (
 /**
  * 接口名称：编辑评论
  *
- * @description 接口路径：/voltron/comment/update
+ * @description 接口路径：/ditto/comment/update
  * @description 接口分组：评论模块 comment
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -190,7 +190,7 @@ export const postVoltronCommentUpdate = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronCommentUpdate.Res>(
-    '/voltron/comment/update',
+    '/ditto/comment/update',
     params,
     config,
   );
@@ -198,7 +198,7 @@ export const postVoltronCommentUpdate = (
 /**
  * 接口名称：获取完整部门树
  *
- * @description 接口路径：/voltron/common/dept/tree
+ * @description 接口路径：/ditto/common/dept/tree
  * @description 接口分组：通用模块 common
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -209,7 +209,7 @@ export const getVoltronCommonDeptTree = (
   params: GetVoltronCommonDeptTree.Req,
   config: RequestConfig = {},
 ) =>
-  axios.get<GetVoltronCommonDeptTree.Res>('/voltron/common/dept/tree', {
+  axios.get<GetVoltronCommonDeptTree.Res>('/ditto/common/dept/tree', {
     params,
     ...config,
   });
@@ -217,7 +217,7 @@ export const getVoltronCommonDeptTree = (
 /**
  * 接口名称：获取码值
  *
- * @description 接口路径：/voltron/common/dict
+ * @description 接口路径：/ditto/common/dict
  * @description 接口分组：通用模块 common
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -225,14 +225,14 @@ export const getVoltronCommonDeptTree = (
  * @version v20250529.05
  */
 export const getVoltronCommonDict = (config: RequestConfig = {}) =>
-  axios.get<GetVoltronCommonDict.Res>('/voltron/common/dict', {
+  axios.get<GetVoltronCommonDict.Res>('/ditto/common/dict', {
     ...config,
   });
 
 /**
  * 接口名称：根据昵称或者域账号查询用户信息
  *
- * @description 接口路径：/voltron/common/employee/keyword
+ * @description 接口路径：/ditto/common/employee/keyword
  * @description 接口分组：通用模块 common
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -244,7 +244,7 @@ export const postVoltronCommonEmployeeKeyword = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronCommonEmployeeKeyword.Res>(
-    '/voltron/common/employee/keyword',
+    '/ditto/common/employee/keyword',
     params,
     config,
   );
@@ -252,7 +252,7 @@ export const postVoltronCommonEmployeeKeyword = (
 /**
  * 接口名称：接口转发
  *
- * @description 接口路径：/voltron/common/proxy
+ * @description 接口路径：/ditto/common/proxy
  * @description 接口分组：通用模块 common
  * @author openapi
  * @time 创建时间：2024-12-02 16:15:56
@@ -264,7 +264,7 @@ export const postVoltronCommonProxy = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronCommonProxy.Res>(
-    '/voltron/common/proxy',
+    '/ditto/common/proxy',
     params,
     config,
   );
@@ -272,7 +272,7 @@ export const postVoltronCommonProxy = (
 /**
  * 接口名称：接口转发
  *
- * @description 接口路径：/voltron/common/proxy-multi
+ * @description 接口路径：/ditto/common/proxy-multi
  * @description 接口分组：通用模块 common
  * @author openapi
  * @time 创建时间：2024-12-02 16:15:56
@@ -284,7 +284,7 @@ export const postVoltronCommonProxyMulti = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronCommonProxyMulti.Res>(
-    '/voltron/common/proxy-multi',
+    '/ditto/common/proxy-multi',
     params,
     config,
   );
@@ -292,7 +292,7 @@ export const postVoltronCommonProxyMulti = (
 /**
  * 接口名称：登录人信息
  *
- * @description 接口路径：/voltron/common/userInfo
+ * @description 接口路径：/ditto/common/userInfo
  * @description 接口分组：通用模块 common
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -300,14 +300,14 @@ export const postVoltronCommonProxyMulti = (
  * @version v20250529.05
  */
 export const getVoltronCommonUserInfo = (config: RequestConfig = {}) =>
-  axios.get<GetVoltronCommonUserInfo.Res>('/voltron/common/userInfo', {
+  axios.get<GetVoltronCommonUserInfo.Res>('/ditto/common/userInfo', {
     ...config,
   });
 
 /**
- * 接口名称：/voltron/developer/analyze-repositories
+ * 接口名称：/ditto/developer/analyze-repositories
  *
- * @description 接口路径：/voltron/developer/analyze-repositories
+ * @description 接口路径：/ditto/developer/analyze-repositories
  * @description 接口分组：开发者模块 developer
  * @author openapi
  * @time 创建时间：2025-05-13 20:58:50
@@ -319,7 +319,7 @@ export const getVoltronDeveloperAnalyzeRepositories = (
   config: RequestConfig = {},
 ) =>
   axios.get<GetVoltronDeveloperAnalyzeRepositories.Res>(
-    '/voltron/developer/analyze-repositories',
+    '/ditto/developer/analyze-repositories',
     {
       params,
       ...config,
@@ -327,9 +327,9 @@ export const getVoltronDeveloperAnalyzeRepositories = (
   );
 
 /**
- * 接口名称：/voltron/developer/repositories-branches
+ * 接口名称：/ditto/developer/repositories-branches
  *
- * @description 接口路径：/voltron/developer/repositories-branches
+ * @description 接口路径：/ditto/developer/repositories-branches
  * @description 接口分组：开发者模块 developer
  * @author openapi
  * @time 创建时间：2025-05-13 20:58:49
@@ -341,7 +341,7 @@ export const getVoltronDeveloperRepositoriesBranches = (
   config: RequestConfig = {},
 ) =>
   axios.get<GetVoltronDeveloperRepositoriesBranches.Res>(
-    '/voltron/developer/repositories-branches',
+    '/ditto/developer/repositories-branches',
     {
       params,
       ...config,
@@ -349,9 +349,9 @@ export const getVoltronDeveloperRepositoriesBranches = (
   );
 
 /**
- * 接口名称：/voltron/developer/repositories-tree
+ * 接口名称：/ditto/developer/repositories-tree
  *
- * @description 接口路径：/voltron/developer/repositories-tree
+ * @description 接口路径：/ditto/developer/repositories-tree
  * @description 接口分组：开发者模块 developer
  * @author openapi
  * @time 创建时间：2025-05-13 20:58:49
@@ -363,7 +363,7 @@ export const getVoltronDeveloperRepositoriesTree = (
   config: RequestConfig = {},
 ) =>
   axios.get<GetVoltronDeveloperRepositoriesTree.Res>(
-    '/voltron/developer/repositories-tree',
+    '/ditto/developer/repositories-tree',
     {
       params,
       ...config,
@@ -371,9 +371,9 @@ export const getVoltronDeveloperRepositoriesTree = (
   );
 
 /**
- * 接口名称：/voltron/developer/schemas/component
+ * 接口名称：/ditto/developer/schemas/component
  *
- * @description 接口路径：/voltron/developer/schemas/component
+ * @description 接口路径：/ditto/developer/schemas/component
  * @description 接口分组：开发者模块 developer
  * @author openapi
  * @time 创建时间：2025-05-13 20:58:50
@@ -384,7 +384,7 @@ export const getVoltronDeveloperSchemasComponent = (
   config: RequestConfig = {},
 ) =>
   axios.get<GetVoltronDeveloperSchemasComponent.Res>(
-    '/voltron/developer/schemas/component',
+    '/ditto/developer/schemas/component',
     {
       ...config,
     },
@@ -393,7 +393,7 @@ export const getVoltronDeveloperSchemasComponent = (
 /**
  * 接口名称：分页查询物料组件
  *
- * @description 接口路径：/voltron/material
+ * @description 接口路径：/ditto/material
  * @description 接口分组：物料组件
  * @author openapi
  * @time 创建时间：2025-05-17 15:58:23
@@ -404,7 +404,7 @@ export const getVoltronMaterial = (
   params: GetVoltronMaterial.Req,
   config: RequestConfig = {},
 ) =>
-  axios.get<GetVoltronMaterial.Res>('/voltron/material', {
+  axios.get<GetVoltronMaterial.Res>('/ditto/material', {
     params,
     ...config,
   });
@@ -412,7 +412,7 @@ export const getVoltronMaterial = (
 /**
  * 接口名称：创建物料组件
  *
- * @description 接口路径：/voltron/material
+ * @description 接口路径：/ditto/material
  * @description 接口分组：物料组件
  * @author openapi
  * @time 创建时间：2025-05-17 15:58:23
@@ -422,12 +422,12 @@ export const getVoltronMaterial = (
 export const postVoltronMaterial = (
   params: PostVoltronMaterial.Req,
   config: RequestConfig = {},
-) => axios.post<PostVoltronMaterial.Res>('/voltron/material', params, config);
+) => axios.post<PostVoltronMaterial.Res>('/ditto/material', params, config);
 
 /**
  * 接口名称：获取所有物料组件属性
  *
- * @description 接口路径：/voltron/material-prop
+ * @description 接口路径：/ditto/material-prop
  * @description 接口分组：物料组件属性
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:57
@@ -435,14 +435,14 @@ export const postVoltronMaterial = (
  * @version v20250529.05
  */
 export const getVoltronMaterialProp = (config: RequestConfig = {}) =>
-  axios.get<GetVoltronMaterialProp.Res>('/voltron/material-prop', {
+  axios.get<GetVoltronMaterialProp.Res>('/ditto/material-prop', {
     ...config,
   });
 
 /**
  * 接口名称：创建物料组件属性
  *
- * @description 接口路径：/voltron/material-prop
+ * @description 接口路径：/ditto/material-prop
  * @description 接口分组：物料组件属性
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:57
@@ -454,7 +454,7 @@ export const postVoltronMaterialProp = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronMaterialProp.Res>(
-    '/voltron/material-prop',
+    '/ditto/material-prop',
     params,
     config,
   );
@@ -462,7 +462,7 @@ export const postVoltronMaterialProp = (
 /**
  * 接口名称：删除物料组件属性
  *
- * @description 接口路径：/voltron/material-prop/{id}
+ * @description 接口路径：/ditto/material-prop/{id}
  * @description 接口分组：物料组件属性
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:58
@@ -474,7 +474,7 @@ export const deleteVoltronMaterialPropById = (
   config: RequestConfig = {},
 ) =>
   axios.delete<DeleteVoltronMaterialPropById.Res>(
-    `/voltron/material-prop/${params.id}`,
+    `/ditto/material-prop/${params.id}`,
     {
       ...config,
     },
@@ -483,7 +483,7 @@ export const deleteVoltronMaterialPropById = (
 /**
  * 接口名称：根据ID获取物料组件属性
  *
- * @description 接口路径：/voltron/material-prop/{id}
+ * @description 接口路径：/ditto/material-prop/{id}
  * @description 接口分组：物料组件属性
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:58
@@ -495,7 +495,7 @@ export const getVoltronMaterialPropById = (
   config: RequestConfig = {},
 ) =>
   axios.get<GetVoltronMaterialPropById.Res>(
-    `/voltron/material-prop/${params.id}`,
+    `/ditto/material-prop/${params.id}`,
     {
       ...config,
     },
@@ -504,7 +504,7 @@ export const getVoltronMaterialPropById = (
 /**
  * 接口名称：更新物料组件属性
  *
- * @description 接口路径：/voltron/material-prop/{id}
+ * @description 接口路径：/ditto/material-prop/{id}
  * @description 接口分组：物料组件属性
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:58
@@ -516,7 +516,7 @@ export const patchVoltronMaterialPropById = (
   config: RequestConfig = {},
 ) =>
   axios.patch<PatchVoltronMaterialPropById.Res>(
-    `/voltron/material-prop/${params.id}`,
+    `/ditto/material-prop/${params.id}`,
     omit(params, ['id']),
     config,
   );
@@ -524,7 +524,7 @@ export const patchVoltronMaterialPropById = (
 /**
  * 接口名称：批量删除物料组件属性
  *
- * @description 接口路径：/voltron/material-prop/batch-delete
+ * @description 接口路径：/ditto/material-prop/batch-delete
  * @description 接口分组：物料组件属性
  * @author openapi
  * @time 创建时间：2025-05-29 15:11:23
@@ -536,7 +536,7 @@ export const postVoltronMaterialPropBatchDelete = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronMaterialPropBatchDelete.Res>(
-    '/voltron/material-prop/batch-delete',
+    '/ditto/material-prop/batch-delete',
     params,
     config,
   );
@@ -544,7 +544,7 @@ export const postVoltronMaterialPropBatchDelete = (
 /**
  * 接口名称：获取物料组件的所有属性
  *
- * @description 接口路径：/voltron/material-prop/material/{materialId}
+ * @description 接口路径：/ditto/material-prop/material/{materialId}
  * @description 接口分组：物料组件属性
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:58
@@ -556,7 +556,7 @@ export const getVoltronMaterialPropMaterialByMaterialId = (
   config: RequestConfig = {},
 ) =>
   axios.get<GetVoltronMaterialPropMaterialByMaterialId.Res>(
-    `/voltron/material-prop/material/${params.materialId}`,
+    `/ditto/material-prop/material/${params.materialId}`,
     {
       ...config,
     },
@@ -565,7 +565,7 @@ export const getVoltronMaterialPropMaterialByMaterialId = (
 /**
  * 接口名称：删除物料组件
  *
- * @description 接口路径：/voltron/material/{id}
+ * @description 接口路径：/ditto/material/{id}
  * @description 接口分组：物料组件
  * @author openapi
  * @time 创建时间：2025-05-17 15:58:23
@@ -577,7 +577,7 @@ export const deleteVoltronMaterialById = (
   config: RequestConfig = {},
 ) =>
   axios.delete<DeleteVoltronMaterialById.Res>(
-    `/voltron/material/${params.id}`,
+    `/ditto/material/${params.id}`,
     {
       ...config,
     },
@@ -586,7 +586,7 @@ export const deleteVoltronMaterialById = (
 /**
  * 接口名称：根据ID获取物料组件
  *
- * @description 接口路径：/voltron/material/{id}
+ * @description 接口路径：/ditto/material/{id}
  * @description 接口分组：物料组件
  * @author openapi
  * @time 创建时间：2025-05-17 15:58:23
@@ -597,14 +597,14 @@ export const getVoltronMaterialById = (
   params: GetVoltronMaterialById.Req,
   config: RequestConfig = {},
 ) =>
-  axios.get<GetVoltronMaterialById.Res>(`/voltron/material/${params.id}`, {
+  axios.get<GetVoltronMaterialById.Res>(`/ditto/material/${params.id}`, {
     ...config,
   });
 
 /**
  * 接口名称：更新物料组件
  *
- * @description 接口路径：/voltron/material/{id}
+ * @description 接口路径：/ditto/material/{id}
  * @description 接口分组：物料组件
  * @author openapi
  * @time 创建时间：2025-05-17 15:58:23
@@ -616,7 +616,7 @@ export const patchVoltronMaterialById = (
   config: RequestConfig = {},
 ) =>
   axios.patch<PatchVoltronMaterialById.Res>(
-    `/voltron/material/${params.id}`,
+    `/ditto/material/${params.id}`,
     omit(params, ['id']),
     config,
   );
@@ -624,7 +624,7 @@ export const patchVoltronMaterialById = (
 /**
  * 接口名称：删除物料组件及其属性
  *
- * @description 接口路径：/voltron/material/{id}/full
+ * @description 接口路径：/ditto/material/{id}/full
  * @description 接口分组：物料组件
  * @author openapi
  * @time 创建时间：2025-05-21 07:56:29
@@ -636,7 +636,7 @@ export const deleteVoltronMaterialFullById = (
   config: RequestConfig = {},
 ) =>
   axios.delete<DeleteVoltronMaterialFullById.Res>(
-    `/voltron/material/${params.id}/full`,
+    `/ditto/material/${params.id}/full`,
     {
       ...config,
     },
@@ -645,7 +645,7 @@ export const deleteVoltronMaterialFullById = (
 /**
  * 接口名称：获取物料组件详情（包含属性）
  *
- * @description 接口路径：/voltron/material/{id}/full
+ * @description 接口路径：/ditto/material/{id}/full
  * @description 接口分组：物料组件
  * @author openapi
  * @time 创建时间：2025-05-21 07:56:29
@@ -657,7 +657,7 @@ export const getVoltronMaterialFullById = (
   config: RequestConfig = {},
 ) =>
   axios.get<GetVoltronMaterialFullById.Res>(
-    `/voltron/material/${params.id}/full`,
+    `/ditto/material/${params.id}/full`,
     {
       ...config,
     },
@@ -666,7 +666,7 @@ export const getVoltronMaterialFullById = (
 /**
  * 接口名称：根据包名删除物料组件及其属性
  *
- * @description 接口路径：/voltron/material/package
+ * @description 接口路径：/ditto/material/package
  * @description 接口分组：物料组件
  * @author openapi
  * @time 创建时间：2025-05-21 07:56:29
@@ -677,7 +677,7 @@ export const deleteVoltronMaterialPackage = (
   params: DeleteVoltronMaterialPackage.Req,
   config: RequestConfig = {},
 ) =>
-  axios.delete<DeleteVoltronMaterialPackage.Res>('/voltron/material/package', {
+  axios.delete<DeleteVoltronMaterialPackage.Res>('/ditto/material/package', {
     params,
     ...config,
   });
@@ -685,7 +685,7 @@ export const deleteVoltronMaterialPackage = (
 /**
  * 接口名称：根据包名查询物料组件及其属性
  *
- * @description 接口路径：/voltron/material/package
+ * @description 接口路径：/ditto/material/package
  * @description 接口分组：物料组件
  * @author openapi
  * @time 创建时间：2025-05-21 07:58:05
@@ -696,7 +696,7 @@ export const getVoltronMaterialPackage = (
   params: GetVoltronMaterialPackage.Req,
   config: RequestConfig = {},
 ) =>
-  axios.get<GetVoltronMaterialPackage.Res>('/voltron/material/package', {
+  axios.get<GetVoltronMaterialPackage.Res>('/ditto/material/package', {
     params,
     ...config,
   });
@@ -704,7 +704,7 @@ export const getVoltronMaterialPackage = (
 /**
  * 接口名称：获取所有物料组件包名
  *
- * @description 接口路径：/voltron/material/packages
+ * @description 接口路径：/ditto/material/packages
  * @description 接口分组：物料组件
  * @author openapi
  * @time 创建时间：2025-05-17 15:58:23
@@ -712,14 +712,14 @@ export const getVoltronMaterialPackage = (
  * @version v20250529.05
  */
 export const getVoltronMaterialPackages = (config: RequestConfig = {}) =>
-  axios.get<GetVoltronMaterialPackages.Res>('/voltron/material/packages', {
+  axios.get<GetVoltronMaterialPackages.Res>('/ditto/material/packages', {
     ...config,
   });
 
 /**
  * 接口名称：批量更新物料组件属性
  *
- * @description 接口路径：/voltron/material/props/batch
+ * @description 接口路径：/ditto/material/props/batch
  * @description 接口分组：物料组件
  * @author openapi
  * @time 创建时间：2025-05-21 07:56:29
@@ -731,7 +731,7 @@ export const patchVoltronMaterialPropsBatch = (
   config: RequestConfig = {},
 ) =>
   axios.patch<PatchVoltronMaterialPropsBatch.Res>(
-    '/voltron/material/props/batch',
+    '/ditto/material/props/batch',
     params,
     config,
   );
@@ -739,7 +739,7 @@ export const patchVoltronMaterialPropsBatch = (
 /**
  * 接口名称：创建模块
  *
- * @description 接口路径：/voltron/module/create
+ * @description 接口路径：/ditto/module/create
  * @description 接口分组：模块 module
  * @author openapi
  * @time 创建时间：2025-03-24 16:57:26
@@ -751,7 +751,7 @@ export const postVoltronModuleCreate = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronModuleCreate.Res>(
-    '/voltron/module/create',
+    '/ditto/module/create',
     params,
     config,
   );
@@ -759,7 +759,7 @@ export const postVoltronModuleCreate = (
 /**
  * 接口名称：删除模块
  *
- * @description 接口路径：/voltron/module/delete
+ * @description 接口路径：/ditto/module/delete
  * @description 接口分组：模块 module
  * @author openapi
  * @time 创建时间：2025-03-24 16:57:26
@@ -771,7 +771,7 @@ export const postVoltronModuleDelete = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronModuleDelete.Res>(
-    '/voltron/module/delete',
+    '/ditto/module/delete',
     params,
     config,
   );
@@ -779,7 +779,7 @@ export const postVoltronModuleDelete = (
 /**
  * 接口名称：获取模块列表
  *
- * @description 接口路径：/voltron/module/list
+ * @description 接口路径：/ditto/module/list
  * @description 接口分组：模块 module
  * @author openapi
  * @time 创建时间：2025-03-24 16:57:26
@@ -790,7 +790,7 @@ export const getVoltronModuleList = (
   params: GetVoltronModuleList.Req,
   config: RequestConfig = {},
 ) =>
-  axios.get<GetVoltronModuleList.Res>('/voltron/module/list', {
+  axios.get<GetVoltronModuleList.Res>('/ditto/module/list', {
     params,
     ...config,
   });
@@ -798,7 +798,7 @@ export const getVoltronModuleList = (
 /**
  * 接口名称：获取所有模块列表
  *
- * @description 接口路径：/voltron/module/list-all
+ * @description 接口路径：/ditto/module/list-all
  * @description 接口分组：模块 module
  * @author openapi
  * @time 创建时间：2025-03-24 17:40:30
@@ -809,7 +809,7 @@ export const getVoltronModuleListAll = (
   params: GetVoltronModuleListAll.Req,
   config: RequestConfig = {},
 ) =>
-  axios.get<GetVoltronModuleListAll.Res>('/voltron/module/list-all', {
+  axios.get<GetVoltronModuleListAll.Res>('/ditto/module/list-all', {
     params,
     ...config,
   });
@@ -817,7 +817,7 @@ export const getVoltronModuleListAll = (
 /**
  * 接口名称：更新模块
  *
- * @description 接口路径：/voltron/module/update
+ * @description 接口路径：/ditto/module/update
  * @description 接口分组：模块 module
  * @author openapi
  * @time 创建时间：2025-03-24 16:57:26
@@ -829,7 +829,7 @@ export const postVoltronModuleUpdate = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronModuleUpdate.Res>(
-    '/voltron/module/update',
+    '/ditto/module/update',
     params,
     config,
   );
@@ -837,7 +837,7 @@ export const postVoltronModuleUpdate = (
 /**
  * 接口名称：获取顶部导航列表
  *
- * @description 接口路径：/voltron/navigation/list
+ * @description 接口路径：/ditto/navigation/list
  * @description 接口分组：顶部导航模块 navigation
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -848,7 +848,7 @@ export const getVoltronNavigationList = (
   params: GetVoltronNavigationList.Req,
   config: RequestConfig = {},
 ) =>
-  axios.get<GetVoltronNavigationList.Res>('/voltron/navigation/list', {
+  axios.get<GetVoltronNavigationList.Res>('/ditto/navigation/list', {
     params,
     ...config,
   });
@@ -856,7 +856,7 @@ export const getVoltronNavigationList = (
 /**
  * 接口名称：更新顶部导航
  *
- * @description 接口路径：/voltron/navigation/update
+ * @description 接口路径：/ditto/navigation/update
  * @description 接口分组：顶部导航模块 navigation
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -868,7 +868,7 @@ export const postVoltronNavigationUpdate = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronNavigationUpdate.Res>(
-    '/voltron/navigation/update',
+    '/ditto/navigation/update',
     params,
     config,
   );
@@ -876,7 +876,7 @@ export const postVoltronNavigationUpdate = (
 /**
  * 接口名称：创建批注
  *
- * @description 接口路径：/voltron/note/create
+ * @description 接口路径：/ditto/note/create
  * @description 接口分组：批注模块 note
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -887,12 +887,12 @@ export const postVoltronNoteCreate = (
   params: PostVoltronNoteCreate.Req,
   config: RequestConfig = {},
 ) =>
-  axios.post<PostVoltronNoteCreate.Res>('/voltron/note/create', params, config);
+  axios.post<PostVoltronNoteCreate.Res>('/ditto/note/create', params, config);
 
 /**
  * 接口名称：删除批注
  *
- * @description 接口路径：/voltron/note/delete
+ * @description 接口路径：/ditto/note/delete
  * @description 接口分组：批注模块 note
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -903,12 +903,12 @@ export const postVoltronNoteDelete = (
   params: PostVoltronNoteDelete.Req,
   config: RequestConfig = {},
 ) =>
-  axios.post<PostVoltronNoteDelete.Res>('/voltron/note/delete', params, config);
+  axios.post<PostVoltronNoteDelete.Res>('/ditto/note/delete', params, config);
 
 /**
  * 接口名称：获取批注列表
  *
- * @description 接口路径：/voltron/note/list
+ * @description 接口路径：/ditto/note/list
  * @description 接口分组：批注模块 note
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -919,7 +919,7 @@ export const getVoltronNoteList = (
   params: GetVoltronNoteList.Req,
   config: RequestConfig = {},
 ) =>
-  axios.get<GetVoltronNoteList.Res>('/voltron/note/list', {
+  axios.get<GetVoltronNoteList.Res>('/ditto/note/list', {
     params,
     ...config,
   });
@@ -927,7 +927,7 @@ export const getVoltronNoteList = (
 /**
  * 接口名称：更新批注
  *
- * @description 接口路径：/voltron/note/update
+ * @description 接口路径：/ditto/note/update
  * @description 接口分组：批注模块 note
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -938,12 +938,12 @@ export const postVoltronNoteUpdate = (
   params: PostVoltronNoteUpdate.Req,
   config: RequestConfig = {},
 ) =>
-  axios.post<PostVoltronNoteUpdate.Res>('/voltron/note/update', params, config);
+  axios.post<PostVoltronNoteUpdate.Res>('/ditto/note/update', params, config);
 
 /**
  * 接口名称：创建页面
  *
- * @description 接口路径：/voltron/page/create
+ * @description 接口路径：/ditto/page/create
  * @description 接口分组：页面模块 page
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -954,12 +954,12 @@ export const postVoltronPageCreate = (
   params: PostVoltronPageCreate.Req,
   config: RequestConfig = {},
 ) =>
-  axios.post<PostVoltronPageCreate.Res>('/voltron/page/create', params, config);
+  axios.post<PostVoltronPageCreate.Res>('/ditto/page/create', params, config);
 
 /**
  * 接口名称：删除页面
  *
- * @description 接口路径：/voltron/page/delete
+ * @description 接口路径：/ditto/page/delete
  * @description 接口分组：页面模块 page
  * 
  * @author openapi
@@ -971,12 +971,12 @@ export const postVoltronPageDelete = (
   params: PostVoltronPageDelete.Req,
   config: RequestConfig = {},
 ) =>
-  axios.post<PostVoltronPageDelete.Res>('/voltron/page/delete', params, config);
+  axios.post<PostVoltronPageDelete.Res>('/ditto/page/delete', params, config);
 
 /**
  * 接口名称：获取页面详情
  *
- * @description 接口路径：/voltron/page/detail
+ * @description 接口路径：/ditto/page/detail
  * @description 接口分组：页面模块 page
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -987,7 +987,7 @@ export const getVoltronPageDetail = (
   params: GetVoltronPageDetail.Req,
   config: RequestConfig = {},
 ) =>
-  axios.get<GetVoltronPageDetail.Res>('/voltron/page/detail', {
+  axios.get<GetVoltronPageDetail.Res>('/ditto/page/detail', {
     params,
     ...config,
   });
@@ -995,7 +995,7 @@ export const getVoltronPageDetail = (
 /**
  * 接口名称：获取页面列表
  *
- * @description 接口路径：/voltron/page/list
+ * @description 接口路径：/ditto/page/list
  * @description 接口分组：页面模块 page
  * @author openapi
  * @time 创建时间：2024-11-21 20:31:50
@@ -1005,12 +1005,12 @@ export const getVoltronPageDetail = (
 export const postVoltronPageList = (
   params: PostVoltronPageList.Req,
   config: RequestConfig = {},
-) => axios.post<PostVoltronPageList.Res>('/voltron/page/list', params, config);
+) => axios.post<PostVoltronPageList.Res>('/ditto/page/list', params, config);
 
 /**
  * 接口名称：更新页面
  *
- * @description 接口路径：/voltron/page/update
+ * @description 接口路径：/ditto/page/update
  * @description 接口分组：页面模块 page
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -1021,12 +1021,12 @@ export const postVoltronPageUpdate = (
   params: PostVoltronPageUpdate.Req,
   config: RequestConfig = {},
 ) =>
-  axios.post<PostVoltronPageUpdate.Res>('/voltron/page/update', params, config);
+  axios.post<PostVoltronPageUpdate.Res>('/ditto/page/update', params, config);
 
 /**
  * 接口名称：获取页面版本列表
  *
- * @description 接口路径：/voltron/page/version/list
+ * @description 接口路径：/ditto/page/version/list
  * @description 接口分组：页面模块 page
  * @author openapi
  * @time 创建时间：2024-11-26 15:09:56
@@ -1038,7 +1038,7 @@ export const postVoltronPageVersionList = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronPageVersionList.Res>(
-    '/voltron/page/version/list',
+    '/ditto/page/version/list',
     params,
     config,
   );
@@ -1046,7 +1046,7 @@ export const postVoltronPageVersionList = (
 /**
  * 接口名称：创建项目
  *
- * @description 接口路径：/voltron/project/create
+ * @description 接口路径：/ditto/project/create
  * @description 接口分组：项目模块 project
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -1058,7 +1058,7 @@ export const postVoltronProjectCreate = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronProjectCreate.Res>(
-    '/voltron/project/create',
+    '/ditto/project/create',
     params,
     config,
   );
@@ -1066,7 +1066,7 @@ export const postVoltronProjectCreate = (
 /**
  * 接口名称：删除项目
  *
- * @description 接口路径：/voltron/project/delete
+ * @description 接口路径：/ditto/project/delete
  * @description 接口分组：项目模块 project
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -1078,7 +1078,7 @@ export const postVoltronProjectDelete = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronProjectDelete.Res>(
-    '/voltron/project/delete',
+    '/ditto/project/delete',
     params,
     config,
   );
@@ -1086,7 +1086,7 @@ export const postVoltronProjectDelete = (
 /**
  * 接口名称：获取项目详情
  *
- * @description 接口路径：/voltron/project/detail
+ * @description 接口路径：/ditto/project/detail
  * @description 接口分组：项目模块 project
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -1097,7 +1097,7 @@ export const getVoltronProjectDetail = (
   params: GetVoltronProjectDetail.Req,
   config: RequestConfig = {},
 ) =>
-  axios.get<GetVoltronProjectDetail.Res>('/voltron/project/detail', {
+  axios.get<GetVoltronProjectDetail.Res>('/ditto/project/detail', {
     params,
     ...config,
   });
@@ -1105,7 +1105,7 @@ export const getVoltronProjectDetail = (
 /**
  * 接口名称：获取项目列表
  *
- * @description 接口路径：/voltron/project/list
+ * @description 接口路径：/ditto/project/list
  * @description 接口分组：项目模块 project
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -1117,7 +1117,7 @@ export const postVoltronProjectList = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronProjectList.Res>(
-    '/voltron/project/list',
+    '/ditto/project/list',
     params,
     config,
   );
@@ -1125,7 +1125,7 @@ export const postVoltronProjectList = (
 /**
  * 接口名称：编辑项目
  *
- * @description 接口路径：/voltron/project/update
+ * @description 接口路径：/ditto/project/update
  * @description 接口分组：项目模块 project
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -1137,7 +1137,7 @@ export const postVoltronProjectUpdate = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronProjectUpdate.Res>(
-    '/voltron/project/update',
+    '/ditto/project/update',
     params,
     config,
   );
@@ -1145,7 +1145,7 @@ export const postVoltronProjectUpdate = (
 /**
  * 接口名称：创建模板
  *
- * @description 接口路径：/voltron/template/create
+ * @description 接口路径：/ditto/template/create
  * @description 接口分组：模板模块 template
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -1157,7 +1157,7 @@ export const postVoltronTemplateCreate = (
   config: RequestConfig = {}
 ) =>
   axios.post<PostVoltronTemplateCreate.Res>(
-    '/voltron/template/create',
+    '/ditto/template/create',
     params,
     config,
   );
@@ -1165,7 +1165,7 @@ export const postVoltronTemplateCreate = (
 /**
  * 接口名称：删除模板
  *
- * @description 接口路径：/voltron/template/delete
+ * @description 接口路径：/ditto/template/delete
  * @description 接口分组：模板模块 template
  * @author openapi
  * @time 创建时间：2024-11-21 20:31:50
@@ -1177,7 +1177,7 @@ export const postVoltronTemplateDelete = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronTemplateDelete.Res>(
-    '/voltron/template/delete',
+    '/ditto/template/delete',
     params,
     config,
   );
@@ -1185,7 +1185,7 @@ export const postVoltronTemplateDelete = (
 /**
  * 接口名称：获取模板详情
  *
- * @description 接口路径：/voltron/template/detail
+ * @description 接口路径：/ditto/template/detail
  * @description 接口分组：模板模块 template
  * @author openapi
  * @time 创建时间：2024-11-21 16:01:59
@@ -1196,7 +1196,7 @@ export const getVoltronTemplateDetail = (
   params: GetVoltronTemplateDetail.Req,
   config: RequestConfig = {},
 ) =>
-  axios.get<GetVoltronTemplateDetail.Res>('/voltron/template/detail', {
+  axios.get<GetVoltronTemplateDetail.Res>('/ditto/template/detail', {
     params,
     ...config,
   });
@@ -1204,7 +1204,7 @@ export const getVoltronTemplateDetail = (
 /**
  * 接口名称：获取模板列表
  *
- * @description 接口路径：/voltron/template/list
+ * @description 接口路径：/ditto/template/list
  * @description 接口分组：模板模块 template
  * @author openapi
  * @time 创建时间：2024-11-21 20:31:50
@@ -1216,7 +1216,7 @@ export const postVoltronTemplateList = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronTemplateList.Res>(
-    '/voltron/template/list',
+    '/ditto/template/list',
     params,
     config,
   );
@@ -1224,7 +1224,7 @@ export const postVoltronTemplateList = (
 /**
  * 接口名称：编辑模板
  *
- * @description 接口路径：/voltron/template/update
+ * @description 接口路径：/ditto/template/update
  * @description 接口分组：模板模块 template
  * @author openapi
  * @time 创建时间：2024-11-21 20:31:50
@@ -1236,7 +1236,7 @@ export const postVoltronTemplateUpdate = (
   config: RequestConfig = {},
 ) =>
   axios.post<PostVoltronTemplateUpdate.Res>(
-    '/voltron/template/update',
+    '/ditto/template/update',
     params,
     config,
   );
@@ -1244,7 +1244,7 @@ export const postVoltronTemplateUpdate = (
 /**
  * 接口名称：获取当前用户信息
  *
- * @description 接口路径：/voltron/user/current-user
+ * @description 接口路径：/ditto/user/current-user
  * @description 接口分组：用户
  * @author openapi
  * @time 创建时间：2025-05-29 14:55:58
@@ -1252,6 +1252,6 @@ export const postVoltronTemplateUpdate = (
  * @version v20250529.05
  */
 export const getVoltronUserCurrentUser = (config: RequestConfig = {}) =>
-  axios.get<GetVoltronUserCurrentUser.Res>('/voltron/user/current-user', {
+  axios.get<GetVoltronUserCurrentUser.Res>('/ditto/user/current-user', {
     ...config,
   });

@@ -104,6 +104,9 @@ importers:
       nanoid:
         specifier: 5.0.9
         version: 5.0.9
+      prettier:
+        specifier: ^3.6.2
+        version: 3.6.2
       prismjs:
         specifier: ^1.29.0
         version: 1.30.0
@@ -3313,6 +3316,11 @@ packages:
   preserve@0.2.0:
     resolution: {integrity: sha512-s/46sYeylUfHNjI+sA/78FAHlmIuKqI9wNnzEOGehAlUUYeObv5C2mOinXBjyUyWmJ2SfcS2/ydApH4hTF4WXQ==}
     engines: {node: '>=0.10.0'}
+
+  prettier@3.6.2:
+    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
@@ -7815,6 +7823,8 @@ snapshots:
 
   preserve@0.2.0:
     optional: true
+
+  prettier@3.6.2: {}
 
   pretty-format@29.7.0:
     dependencies:

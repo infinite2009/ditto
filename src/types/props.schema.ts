@@ -31,7 +31,7 @@ export default interface IPropsSchema<Value = any> extends ISchema {
    * 组件本身的默认值，当 value 和 defaultValue 相等时，代码生成阶段会被简化
    */
   defaultValue?: Value;
-  // 埋点信息，只有 valueSource 为 'handler' 的属性会被 voltron 赋值
+  // 埋点信息，只有 valueSource 为 'handler' 的属性会被 ditto 赋值
   eventTrackingInfo?: string;
   // 如果是值，那么该属性变更时，可以用 useEffect 监听并做出响应。目前来说，对于一个组件，值属性最多支持一个
   isValue?: boolean;

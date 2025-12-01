@@ -6,15 +6,21 @@ import { Axios } from 'axios';
 
 export type RequestConfig = any;
 
-const axios = new Axios();
+const defaultConfig = {
+  baseURL: '/api',
+  timeout: 30 * 1000,
+  withCredentials: true,
+}
+
+const axios = new Axios(defaultConfig);
 
 export const emitter = mitt();
 
-const whiteListUrl = ['/api/voltron/common/proxy'];
+const whiteListUrl = ['/api/ditto/common/proxy'];
 const handleRes = async (res: http.Response<any>) => {
   const url = (res as any).config.url;
   if (whiteListUrl.some(i => i === url)) return res;
-  if (url.indexOf('/api/voltron') > -1) {
+  if (url.indexOf('/api/ditto') > -1) {
     if (res.data && res.data?.code === 0) {
       return res.data;
     }
@@ -32,7 +38,7 @@ const handleError = (e: { message: string; data: { message: never; }; }) => {
 };
 
 axios.get = async (url, config) => {
-  return customFetch(url, {
+  return customFetch(`${defaultConfig.baseURL}${url}`, {
     ...config,
     method: 'GET',
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -44,7 +50,7 @@ axios.get = async (url, config) => {
 };
 
 axios.delete = async (url, config) => {
-  return customFetch(url, {
+  return customFetch(`${defaultConfig.baseURL}${url}`, {
     method: 'DELETE',
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -55,7 +61,7 @@ axios.delete = async (url, config) => {
 };
 
 axios.put = async (url, data, config) => {
-  return customFetch(url, {
+  return customFetch(`${defaultConfig.baseURL}${url}`, {
     method: 'PUT',
     body: data as never,
     headers: config.headers,
@@ -65,7 +71,7 @@ axios.put = async (url, data, config) => {
 };
 
 axios.post = async (url, data, config) => {
-  return customFetch(url, {
+  return customFetch(`${defaultConfig.baseURL}${url}`, {
     method: 'POST',
     body: data as never,
     headers: config.headers,
@@ -75,7 +81,7 @@ axios.post = async (url, data, config) => {
 };
 
 axios.postForm = async (url, data, config) => {
-  return customFetch(url, {
+  return customFetch(`${defaultConfig.baseURL}${url}`, {
     method: 'POST',
     body: {
       ...data as any

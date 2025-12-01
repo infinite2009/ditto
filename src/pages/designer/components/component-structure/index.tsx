@@ -290,7 +290,7 @@ function ComponentStructure() {
 
   async function handleFavoriteComponent(componentId: ComponentId, type: 'component' | 'module') {
     const target = iframeCommunicationService.iframeWindow.document.querySelector<HTMLElement>(
-      `[data-voltron-id="${componentId}"]`
+      `[data-ditto-id="${componentId}"]`
     );
 
     const componentName = dslStore.dsl.componentIndexes[componentId].name;

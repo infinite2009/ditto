@@ -272,7 +272,7 @@ export default observer(function IframeCanvas() {
     if (dslStore.isHiddenOrInHiddenAncestor(componentId)) {
       return;
     }
-    const dom = document.querySelector(`[data-voltron-id=${componentId}]`);
+    const dom = document.querySelector(`[data-ditto-id=${componentId}]`);
     if (!dom) {
       console.error('不存在的组件：', componentId);
       return;

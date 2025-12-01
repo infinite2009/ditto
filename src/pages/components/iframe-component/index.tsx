@@ -6,7 +6,7 @@ export interface IIframeComponentProps {
 
 export default memo(function IframeComponent({ onLoad }: IIframeComponentProps, ref: React.Ref<HTMLIFrameElement>) {
   return (<iframe
-    src="/voltron-dnd/"
+    src="/ditto-dnd/"
     // ref={ref}
     onLoad={onLoad}
     height="100%"

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, Button, Space } from 'antd';
-import { FoldPanel } from '@/components/voltron-design-rc/FoldPanel';
+import { FoldPanel } from '@/components/ditto-design-rc/FoldPanel';
 import { uncontrolled } from '../utils';
 import {
   PropTemplateKeyPathsRegInputInner,

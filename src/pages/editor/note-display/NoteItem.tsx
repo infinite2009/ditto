@@ -22,7 +22,7 @@ export default observer(function NoteItem({ index, data, placement, onClick }: N
   const dslStore = useContext(DSLStoreContext);
   const editorStore = useContext(EditorStoreContext);
   const [containerHeight, setContainerHeight] = useState<number>();
-  const startEl = document.querySelector(`[data-voltron-hidden-id=${data.componentId}]`);
+  const startEl = document.querySelector(`[data-ditto-hidden-id=${data.componentId}]`);
 
   const [startRect, setStartRect] = useState<DOMRect>(new DOMRect(0, 0, 0, 0));
   const [endRect, setEndRect] = useState<DOMRect>(new DOMRect(0, 0, 0, 0));

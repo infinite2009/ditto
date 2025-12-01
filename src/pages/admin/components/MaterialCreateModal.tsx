@@ -39,7 +39,7 @@ import {
 import { createFormModel } from '../formutils/transformer';
 import { nanoid } from 'nanoid';
 import { PropIdContext } from './PropIdContext';
-import { FoldPanel } from '@/components/voltron-design-rc/FoldPanel';
+import { FoldPanel } from '@/components/ditto-design-rc/FoldPanel';
 import { createListComponentWithLength } from '../services/createList';
 const UncontrolledFoldPanel = uncontrolled(FoldPanel);
 

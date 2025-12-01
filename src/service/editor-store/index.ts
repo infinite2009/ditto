@@ -125,7 +125,7 @@ export default class EditorStore {
 
   getRectInfo(id: ComponentId) {
     if (!this.rectInfo[id]) {
-      const dom = this.iframeDocument.querySelector(`[data-voltron-id=${id}]`);
+      const dom = this.iframeDocument.querySelector(`[data-ditto-id=${id}]`);
       if (!dom) {
         return null;
       }
@@ -424,7 +424,7 @@ export default class EditorStore {
       return;
     }
     const zoomingFactor = +(100 / scale).toFixed(2);
-    const pageRoot = iframe.contentWindow.document.querySelector('[data-voltron-component=PageRoot]');
+    const pageRoot = iframe.contentWindow.document.querySelector('[data-ditto-component=PageRoot]');
     const pageRootRectInfo = pageRoot?.getBoundingClientRect() as ExtDOMRect;
     if (!pageRoot) {
       return;

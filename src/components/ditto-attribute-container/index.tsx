@@ -36,7 +36,7 @@ function VoltronAttributeContainer({ voltronAttributes, componentProps, children
   useLayoutEffect(() => {
     if (wrapperRef.current) {
       const node = wrapperRef.current.firstChild as HTMLElement;
-      // 给每一个组件内部的顶层节点都加上 voltron attributes，无论用户选中哪一个，都能选中组件
+      // 给每一个组件内部的顶层节点都加上 ditto attributes，无论用户选中哪一个，都能选中组件
       // 对于不在组件树内渲染的组件，例如 Modal、Drawer、固钉等，以下逻辑无效
       if (node) {
         Object.entries(voltronAttributes).forEach(([key, value]) => {

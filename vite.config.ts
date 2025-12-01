@@ -29,22 +29,23 @@ export default defineConfig(async ({ mode }) => {
       strictPort: true,
       proxy: {
         '/api': {
-
+          target: 'http://localhost:3000',
+          changeOrigin: true
         }
       },
-      // cors: {
-      //   // 配置了 credentials 为 true 后，origin 必须指定域名
-      //   origin: '',
-      //   //   添加此配置的原因是为了防止某些接口需要使用 cookie 时，认证信息无法带过去写问题。
-      //   credentials: true
-      // }
+      cors: {
+        // 配置了 credentials 为 true 后，origin 必须指定域名
+        origin: 'http://localhost',
+        //   添加此配置的原因是为了防止某些接口需要使用 cookie 时，认证信息无法带过去写问题。
+        credentials: true
+      }
     },
     // to make use of `TAURI_DEBUG` and other env variables
     build: {
       // rollupOptions: {
       //   input: {
       //     main: path.resolve(__dirname, '/index.html'),
-      //     iframeDnd: path.resolve(__dirname, '/voltron-dnd/index.html')
+      //     iframeDnd: path.resolve(__dirname, '/ditto-dnd/index.html')
       //   },
       //   output: {
       //     manualChunks(id: string[]) {

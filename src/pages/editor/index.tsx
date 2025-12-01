@@ -384,7 +384,7 @@ export default observer(function Editor() {
 
   function triggerPageRootScroll(direction: ScrollDirection, moveDistance: number) {
     let continueScroll = true;
-    const pageRoot = iframeRef.contentDocument.querySelector<HTMLDivElement>('[data-voltron-component="PageRoot"]');
+    const pageRoot = iframeRef.contentDocument.querySelector<HTMLDivElement>('[data-ditto-component="PageRoot"]');
     if (!pageRoot) {
       return false;
     }
@@ -431,7 +431,7 @@ export default observer(function Editor() {
     if (!componentRoot) {
       return;
     }
-    const pageRoot = iframeRef.contentDocument.querySelector<HTMLDivElement>('[data-voltron-component="PageRoot"]');
+    const pageRoot = iframeRef.contentDocument.querySelector<HTMLDivElement>('[data-ditto-component="PageRoot"]');
     if (pageRoot) {
       const domRect = new DOMRect(e.pageX, e.pageY, 0, 0);
       const { isBoundary, direction, moveDistance } = boundaryDetection(domRect, pageRoot);
@@ -632,7 +632,7 @@ export default observer(function Editor() {
     }
     // 如果是插入图层组件，则强制插入到 page root
     if (editorStore.componentDraggingInfo.isLayer && editorStore.componentDraggingInfo.dndType === 'insert') {
-      const pageRootDOM = iframeRef.contentWindow.document.querySelector('[data-voltron-feature=root]') as HTMLElement;
+      const pageRootDOM = iframeRef.contentWindow.document.querySelector('[data-ditto-feature=root]') as HTMLElement;
       if (pageRootDOM) {
         const pageRootSize = pageRootDOM.getBoundingClientRect();
         setAnchorStyle({
@@ -663,7 +663,7 @@ export default observer(function Editor() {
         isVertical: voltronDirection === 'vertical',
         children: childComponents
           .map(child => {
-            const dom = iframeRef.contentWindow.document.querySelector(`[data-voltron-id=${child.id}]`);
+            const dom = iframeRef.contentWindow.document.querySelector(`[data-ditto-id=${child.id}]`);
             if (!dom) {
               console.error(`无法获取组件${child.id}的DOM节点`);
               return null;
@@ -692,7 +692,7 @@ export default observer(function Editor() {
       // 当前悬停的组件不能拖入，则找到它的父组件，重新执行本函数
       const parentId = dslStore.fetchComponentInDSL(voltronId).parentId;
       if (parentId) {
-        handleDrop(iframeRef.contentWindow.document.querySelector(`[data-voltron-id=${parentId}]`), mouseCoordinate);
+        handleDrop(iframeRef.contentWindow.document.querySelector(`[data-ditto-id=${parentId}]`), mouseCoordinate);
       }
     }
   }
@@ -1432,7 +1432,7 @@ export default observer(function Editor() {
 
   // 收藏组件/模块
   async function handleFavoriteComponent(componentId: ComponentId, type: 'component' | 'module') {
-    const target = iframeRef.contentDocument.querySelector<HTMLElement>(`[data-voltron-id="${componentId}"]`);
+    const target = iframeRef.contentDocument.querySelector<HTMLElement>(`[data-ditto-id="${componentId}"]`);
 
     const componentName = dslStore.dsl.componentIndexes[componentId].name;
     const componentDisplayName = dslStore.dsl.componentIndexes[componentId].displayName || componentName;
@@ -1785,7 +1785,7 @@ export default observer(function Editor() {
       iframeStore.setIframeDocument(iframeRef.contentDocument);
       iframeStore.setIframeWindow(iframeRef.contentWindow);
       const timer = setInterval(() => {
-        const pageRoot = iframeRef.contentDocument.querySelector<HTMLDivElement>('[data-voltron-component="PageRoot"]');
+        const pageRoot = iframeRef.contentDocument.querySelector<HTMLDivElement>('[data-ditto-component="PageRoot"]');
         if (pageRoot) {
           iframeStore.setIsSwitching(false);
           iframeStore.setPageRoot(pageRoot);
@@ -1835,7 +1835,7 @@ export default observer(function Editor() {
                     }}
                   >
                     <iframe
-                      src="/voltron-dnd/"
+                      src="/ditto-dnd/"
                       ref={setIframeRef}
                       onLoad={handleIframeOnload}
                       height="100%"

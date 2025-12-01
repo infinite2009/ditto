@@ -54,7 +54,7 @@ class FileManager {
 
   private static async generateNewFileName(directory: string) {
     const fileName = '未命名页面';
-    const ext = '.voltron';
+    const ext = '.ditto';
     if (!(await exists(`${directory}${sep}${fileName}${ext}`))) {
       return `${fileName}${ext}`;
     }
@@ -252,7 +252,7 @@ class FileManager {
 
     const recursiveMap = (entries: FileEntry[], parentKey: string) => {
       return entries
-        .filter(entry => (entry.name as string).endsWith('.voltron') || entry.children)
+        .filter(entry => (entry.name as string).endsWith('.ditto') || entry.children)
         .map((entry, index) => {
           const r: EntryTree = {
             key: parentKey ? `${parentKey}-${index}` : index.toString(),

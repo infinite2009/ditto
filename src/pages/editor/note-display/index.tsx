@@ -91,7 +91,7 @@ const Note = observer(() => {
   };
 
   const insertHiddenRect = (rect: DOMRect, id: string) => {
-    const dom = document.querySelector(`[data-voltron-hidden-id=${id}]`);
+    const dom = document.querySelector(`[data-ditto-hidden-id=${id}]`);
     if (dom) {
       dom.remove();
     }
@@ -108,7 +108,7 @@ const Note = observer(() => {
     if (id !== 'PageRoot0') {
       // div.style.background = 'rgba(255, 255, 0, 0.2)';
     }
-    div.setAttribute('data-voltron-hidden-id', id);
+    div.setAttribute('data-ditto-hidden-id', id);
     iframe.parentElement.appendChild(div);
   };
 
@@ -118,7 +118,7 @@ const Note = observer(() => {
     const currentPageRootRect = pageRoot.getBoundingClientRect();
     insertHiddenRect(pageRoot.getBoundingClientRect(), 'PageRoot0');
     otherNotes.forEach(i => {
-      const el = pageRoot.querySelector(`[data-voltron-id=${i.componentId}]`);
+      const el = pageRoot.querySelector(`[data-ditto-id=${i.componentId}]`);
       if (el) {
         const { x, y, width, height, top, bottom } = el.getBoundingClientRect();
         insertHiddenRect(el.getBoundingClientRect(), i.componentId);

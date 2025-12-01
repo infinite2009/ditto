@@ -16,7 +16,6 @@ import {
   SHOW_MENU
 } from '@/data/constant';
 import * as http from '@tauri-apps/api/http';
-import { Body } from '@tauri-apps/api/http';
 import axios from 'axios';
 
 import type DynamicObject from '@/types/dynamic-object';

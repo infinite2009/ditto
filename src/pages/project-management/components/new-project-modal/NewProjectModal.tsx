@@ -8,7 +8,7 @@ import { createComponentWithNewProjectModalHookStore, useNewProjectModal } from 
 import { NewProjectModalStore } from './types';
 import { RepoPathSelectTree } from './RepoPathSelectTree';
 import { withClassName } from './utils';
-import { FoldPanel } from '@/components/voltron-design-rc/FoldPanel';
+import { FoldPanel } from '@/components/ditto-design-rc/FoldPanel';
 import { RepoInput } from './RepoInput';
 import { BranchInput } from './BranchInput';
 

@@ -4,7 +4,7 @@ import axios from '@/api/request';
 import { FetchTreeResult } from './types';
 
 export async function fetchGitLabTrees(repo: string, ref: string, path: string) {
-  const result = await axios.get('/voltron/developer/repositories-tree', {
+  const result = await axios.get('/ditto/developer/repositories-tree', {
     params: {
       repo,
       ref,
@@ -20,7 +20,7 @@ export async function fetchGitLabTrees(repo: string, ref: string, path: string) 
 }
 
 export async function fetchGitLabBranches(repo: string, search: string) {
-  const result = await axios.get('/voltron/developer/repositories-branches', {
+  const result = await axios.get('/ditto/developer/repositories-branches', {
     params: {
       repo,
       search

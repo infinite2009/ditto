@@ -113,7 +113,7 @@ const App = function () {
       {contextHolder}
       <AntdApp>
         <AppStoreContext.Provider value={appStore}>
-          <BrowserRouter basename="/voltron">{renderUI()}</BrowserRouter>
+          <BrowserRouter basename="/ditto">{renderUI()}</BrowserRouter>
         </AppStoreContext.Provider>
       </AntdApp>
     </ConfigProvider>

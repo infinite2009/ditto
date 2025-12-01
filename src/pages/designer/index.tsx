@@ -609,7 +609,7 @@ function Designer() {
 
   function triggerPageRootScroll(direction: ScrollDirection, moveDistance: number) {
     let continueScroll = true;
-    const pageRoot = iframeRef.contentDocument.querySelector<HTMLDivElement>('[data-voltron-component="PageRoot"]');
+    const pageRoot = iframeRef.contentDocument.querySelector<HTMLDivElement>('[data-ditto-component="PageRoot"]');
     if (!pageRoot) {
       return false;
     }
@@ -656,7 +656,7 @@ function Designer() {
     if (!componentRoot) {
       return;
     }
-    const pageRoot = iframeRef.contentDocument.querySelector<HTMLDivElement>('[data-voltron-component="PageRoot"]');
+    const pageRoot = iframeRef.contentDocument.querySelector<HTMLDivElement>('[data-ditto-component="PageRoot"]');
     if (pageRoot) {
       const domRect = new DOMRect(e.pageX, e.pageY, 0, 0);
       const { isBoundary, direction, moveDistance } = boundaryDetection(domRect, pageRoot);
@@ -675,7 +675,7 @@ function Designer() {
     }
     // 如果是插入图层组件，则强制插入到 page root
     if (editorStore.componentDraggingInfo.isLayer && editorStore.componentDraggingInfo.dndType === 'insert') {
-      const pageRootDOM = iframeRef.contentWindow.document.querySelector('[data-voltron-feature=root]') as HTMLElement;
+      const pageRootDOM = iframeRef.contentWindow.document.querySelector('[data-ditto-feature=root]') as HTMLElement;
       if (pageRootDOM) {
         const pageRootSize = pageRootDOM.getBoundingClientRect();
         setDropAnchorStyle({
@@ -702,7 +702,7 @@ function Designer() {
       if (parent) {
         // 获取父组件的容器方向，决定锚点的方向
         const parentDirection = (
-          iframeRef.contentDocument.querySelector(`[data-voltron-id=${parent.id}]`) as HTMLElement
+          iframeRef.contentDocument.querySelector(`[data-ditto-id=${parent.id}]`) as HTMLElement
         )?.dataset?.voltronDirection;
         if (parentDirection === 'vertical') {
           // 父容器是垂直容器，则检测上下边缘
@@ -856,7 +856,7 @@ function Designer() {
     // 当前悬停的组件不能拖入，则找到它的父组件，重新执行本函数
     const parentId = dslStore.fetchComponentInDSL(voltronId).parentId;
     if (parentId) {
-      handleDrop(iframeRef.contentWindow.document.querySelector(`[data-voltron-id=${parentId}]`), mouseCoordinate);
+      handleDrop(iframeRef.contentWindow.document.querySelector(`[data-ditto-id=${parentId}]`), mouseCoordinate);
     }
   }
 
@@ -1549,7 +1549,7 @@ function Designer() {
     iframeStore.setIframeDocument(iframeRef.contentDocument);
     iframeStore.setIframeWindow(iframeRef.contentWindow);
     const timer = setInterval(() => {
-      const pageRoot = iframeRef.contentDocument.querySelector<HTMLDivElement>('[data-voltron-component="PageRoot"]');
+      const pageRoot = iframeRef.contentDocument.querySelector<HTMLDivElement>('[data-ditto-component="PageRoot"]');
       if (pageRoot) {
         iframeStore.setIsSwitching(false);
         iframeStore.setPageRoot(pageRoot);
@@ -1658,7 +1658,7 @@ function Designer() {
                   }}
                 >
                   <iframe
-                    src="/voltron-dnd/"
+                    src="/ditto-dnd/"
                     ref={setIframeRef}
                     onLoad={handleIframeOnload}
                     height="100%"

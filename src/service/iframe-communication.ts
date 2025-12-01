@@ -107,7 +107,7 @@ class IframeCommunicationService {
       return;
     }
     if (this.iframeHandlers.length) {
-      this.iframeWindow?.postMessage({ messageId, data: message, from: 'voltron' }, this.iframeWindow.location.origin);
+      this.iframeWindow?.postMessage({ messageId, data: message, from: 'ditto' }, this.iframeWindow.location.origin);
     } else {
       this.replayQueue.push({
         messageId,
@@ -121,7 +121,7 @@ class IframeCommunicationService {
     const messageId = this.generateMessageId();
     this.callbacks[messageId] = callback;
     // 发送消息时包含唯一的 messageId
-    this.parentWindow.postMessage({ messageId, data: message, from: 'voltron' }, this.parentWindow.location.origin);
+    this.parentWindow.postMessage({ messageId, data: message, from: 'ditto' }, this.parentWindow.location.origin);
   }
 
   public setIframeWindow(window: Window) {
@@ -141,8 +141,8 @@ class IframeCommunicationService {
       return; // 忽略不信任的消息来源
     }
     const { messageId, data, from } = event.data;
-    // 有可能是某些插件发来的信息，它不会有 from 这个标识，或者 from 不是 voltron，直接忽略
-    if (from !== 'voltron') {
+    // 有可能是某些插件发来的信息，它不会有 from 这个标识，或者 from 不是 ditto，直接忽略
+    if (from !== 'ditto') {
       return;
     }
 
